@@ -31,7 +31,7 @@ HEAD REPORT
 WITH NOCOUNTER, MAXREC=1
 
 ; =============================================================================
-; 2. GP MEDICATION DETAILS - BLOBGET + MEMREALLOC PATTERN
+; 2. GP MEDICATION DETAILS - BLOBGET + MEMREALLOC, DETAIL LOOP FOR MULTI-RECORD
 ; =============================================================================
 RECORD rec_blob (
   1 list[*]
@@ -70,7 +70,7 @@ JOIN CB WHERE CB.EVENT_ID = CE.EVENT_ID
 JOIN PR WHERE PR.PERSON_ID = CE.PERFORMED_PRSNL_ID
 ORDER BY CE.PERFORMED_DT_TM DESC
 
-HEAD REPORT
+DETAIL
     nCnt = size(rec_blob->list, 5) + 1
     stat = alterlist(rec_blob->list, nCnt)
     rec_blob->list[nCnt].event_id = CE.EVENT_ID
@@ -90,26 +90,32 @@ HEAD REPORT
     stat = memrealloc(blob_out, 1, build("C", CB.BLOB_LENGTH))
     call uar_ocf_uncompress(blob_in, textlen(blob_in), blob_out, CB.BLOB_LENGTH, tlen)
 
-    ; Step 3: RTF to plain text - output buffer also sized to uncompressed length
+    ; Step 3: RTF to plain text - output buffer sized to uncompressed length
     IF (tlen > 0)
         stat = memrealloc(rtf_out, 1, build("C", CB.BLOB_LENGTH))
         stat_rtf = uar_rtf2(blob_out, tlen, rtf_out, CB.BLOB_LENGTH, bsize, 0)
     ENDIF
 
-    ; Step 4: Clean and HTML-escape
+    ; Step 4: Clean text
+    ; uar_rtf2 outputs CHAR(13)+CHAR(10) for line breaks (\par)
+    ; Order matters: strip nulls first, then handle line endings, then HTML-escape
     IF (bsize > 0)
         vCleanText = REPLACE(SUBSTRING(1, bsize, rtf_out), CHAR(0), " ", 0)
-        vCleanText = REPLACE(vCleanText, CHAR(13), "", 0)
-        vCleanText = TRIM(vCleanText, 3)
     ENDIF
 
     IF (TEXTLEN(TRIM(vCleanText)) <= 1)
         vCleanText = "<i>-- No narrative note found --</i>"
     ELSE
-        vCleanText = REPLACE(vCleanText, "&",    "&amp;",  0)
-        vCleanText = REPLACE(vCleanText, "<",    "&lt;",   0)
-        vCleanText = REPLACE(vCleanText, ">",    "&gt;",   0)
+        ; HTML-escape BEFORE adding <br> tags to avoid double-escaping
+        vCleanText = REPLACE(vCleanText, "&",     "&amp;", 0)
+        vCleanText = REPLACE(vCleanText, "<",     "&lt;",  0)
+        vCleanText = REPLACE(vCleanText, ">",     "&gt;",  0)
+        ; Convert CRLF (\r\n) to <br> - must replace combined sequence first
+        vCleanText = REPLACE(vCleanText, concat(CHAR(13), CHAR(10)), "<br>", 0)
+        ; Then catch any standalone CR or LF remaining
+        vCleanText = REPLACE(vCleanText, CHAR(13), "<br>", 0)
         vCleanText = REPLACE(vCleanText, CHAR(10), "<br>", 0)
+        vCleanText = TRIM(vCleanText, 3)
     ENDIF
 
     rec_blob->list[nCnt].blob_text = vCleanText
@@ -275,7 +281,7 @@ HEAD REPORT
 
     ROW + 1 call print("<div id='med-container' class='content-box'>")
 
-    ; GP Blob View
+    ; GP Blob View - renders all records from rec_blob
     ROW + 1 call print("<div id='gp-blob-view' style='display:none;'>")
     FOR (x = 1 TO size(rec_blob->list, 5))
         ROW + 1 call print("<div class='blob-record'>")
