@@ -93,12 +93,21 @@ DETAIL
     ; Step 3: RTF to plain text - output buffer sized to uncompressed length
     IF (tlen > 0)
         stat = memrealloc(rtf_out, 1, build("C", CB.BLOB_LENGTH))
-        stat_rtf = uar_rtf2(blob_out, tlen, rtf_out, CB.BLOB_LENGTH, bsize, 0)
+        
+        ; Verify if the blob is actually RTF before trusting uar_rtf2
+        IF (FINDSTRING("{\rtf", blob_out, 1, 0) > 0)
+            ; Pre-process RTF: replace \line with \par, as uar_rtf2 often ignores \line
+            blob_out = REPLACE(blob_out, "\line", "\par", 0)
+            tlen = TEXTLEN(blob_out)
+            stat_rtf = uar_rtf2(blob_out, tlen, rtf_out, CB.BLOB_LENGTH, bsize, 0)
+        ELSE
+            ; Not RTF (Plain Text). Bypass uar_rtf2 completely to prevent it from stripping linebreaks!
+            rtf_out = blob_out
+            bsize = tlen
+        ENDIF
     ENDIF
 
     ; Step 4: Clean text
-    ; uar_rtf2 outputs CHAR(13)+CHAR(10) for line breaks (\par)
-    ; Order matters: strip nulls first, then handle line endings, then HTML-escape
     IF (bsize > 0)
         vCleanText = REPLACE(SUBSTRING(1, bsize, rtf_out), CHAR(0), " ", 0)
     ENDIF
@@ -106,15 +115,17 @@ DETAIL
     IF (TEXTLEN(TRIM(vCleanText)) <= 1)
         vCleanText = "<i>-- No narrative note found --</i>"
     ELSE
-        ; HTML-escape BEFORE adding <br> tags to avoid double-escaping
+        ; HTML-escape BEFORE adding <br /> tags
         vCleanText = REPLACE(vCleanText, "&",     "&amp;", 0)
         vCleanText = REPLACE(vCleanText, "<",     "&lt;",  0)
         vCleanText = REPLACE(vCleanText, ">",     "&gt;",  0)
-        ; Convert CRLF (\r\n) to <br> - must replace combined sequence first
-        vCleanText = REPLACE(vCleanText, concat(CHAR(13), CHAR(10)), "<br>", 0)
-        ; Then catch any standalone CR or LF remaining
-        vCleanText = REPLACE(vCleanText, CHAR(13), "<br>", 0)
-        vCleanText = REPLACE(vCleanText, CHAR(10), "<br>", 0)
+        
+        ; Convert CRLF (\r\n) to <br /> - must replace combined sequence first
+        vCleanText = REPLACE(vCleanText, concat(CHAR(13), CHAR(10)), "<br />", 0)
+        vCleanText = REPLACE(vCleanText, CHAR(13), "<br />", 0)
+        vCleanText = REPLACE(vCleanText, CHAR(10), "<br />", 0)
+        vCleanText = REPLACE(vCleanText, CHAR(11), "<br />", 0) ; Catch vertical tabs (soft returns)
+        
         vCleanText = TRIM(vCleanText, 3)
     ENDIF
 
@@ -249,7 +260,7 @@ HEAD REPORT
     ROW + 1 call print(".type-badge { font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px; color:white; }")
     ROW + 1 call print(".blob-record { border: 1px solid #ddd; margin-bottom: 15px; padding: 10px; border-left: 5px solid #6f42c1; }")
     ROW + 1 call print(".blob-meta { background: #f8f9fa; padding: 5px; font-size: 12px; margin-bottom: 5px; font-weight: bold; }")
-    ROW + 1 call print(".blob-text { white-space: normal; font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; line-height: 1.5; margin-top: 8px; }")
+    ROW + 1 call print(".blob-text { white-space: pre-wrap; font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; line-height: 1.5; margin-top: 8px; }")
     ROW + 1 call print(".mode-restricted .is-normal { display: none; }")
     ROW + 1 call print(".mode-restricted .is-infusion { display: none; }")
     ROW + 1 call print(".mode-all .is-infusion { display: none; }")
@@ -264,7 +275,7 @@ HEAD REPORT
 
     ROW + 1 call print("<body onload='showRestricted()'>")
 
-    ROW + 1 call print(concat("<div class='pat-header'><b>", NULLVAL(P_NAME, "Patient Not Found"), "</b> | MRN: ", NULLVAL(MRN, "N/A"), " | Person ID: ", TRIM(CNVTSTRING($patient_id)), "</div>"))
+    ROW + 1 call print(concat("<div class='pat-header'><b>", NULLVAL(P_NAME, "Patient Not Found"), "</b> | MRN: ", NULLVAL(MRN, "N/A"), "</div>"))
 
     ROW + 1 call print("<div class='wt-box'>")
     ROW + 1 call print("<span class='wt-label'>Last Dosing Weight:</span>")
