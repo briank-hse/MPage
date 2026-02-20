@@ -74,7 +74,10 @@ DETAIL
     nCnt = size(rec_blob->list, 5) + 1
     stat = alterlist(rec_blob->list, nCnt)
     rec_blob->list[nCnt].event_id = CE.EVENT_ID
-    rec_blob->list[nCnt].dt_tm    = FORMAT(CE.PERFORMED_DT_TM, "DD/MM/YYYY HH:MM")
+    
+    ; Strip default 00:00 midnight times to clean up the display
+    rec_blob->list[nCnt].dt_tm    = REPLACE(FORMAT(CE.PERFORMED_DT_TM, "DD/MM/YYYY HH:MM"), " 00:00", "", 0)
+    
     rec_blob->list[nCnt].prsnl    = PR.NAME_FULL_FORMATTED
 
     tlen       = 0
@@ -261,11 +264,11 @@ HEAD REPORT
     ROW + 1 call print(^.type-badge { font-size:10px; font-weight:bold; padding:3px 8px; color:white; }^)
     
     ; --- LEGACY TABLE PANE CSS ---
-    ROW + 1 call print(^.gp-sidebar { background: #f8f9fa; border-right: 1px solid #ddd; vertical-align: top; width: 220px; }^)
+    ROW + 1 call print(^.gp-sidebar { background: #f8f9fa; border-right: 1px solid #ddd; vertical-align: top; width: 130px; }^)
     ROW + 1 call print(^.gp-content { vertical-align: top; background: #fff; }^)
     ROW + 1 call print(^.gp-scroll-side { height: 500px; overflow-y: auto; overflow-x: hidden; width: 100%; }^)
     ROW + 1 call print(^.gp-scroll-main { height: 500px; overflow-y: auto; overflow-x: hidden; width: 100%; padding: 15px; }^)
-    ROW + 1 call print(^.gp-nav-item { display: block; padding: 10px 15px; color: #333; text-decoration: none; font-size: 13px; border-bottom: 1px solid #eee; }^)
+    ROW + 1 call print(^.gp-nav-item { display: block; padding: 10px 10px; color: #333; text-decoration: none; font-size: 13px; border-bottom: 1px solid #eee; }^)
     ROW + 1 call print(^.gp-nav-item:hover { background: #e2e6ea; color: #0076a8; }^)
     ROW + 1 call print(^.blob-record { border: 1px solid #ddd; margin-bottom: 30px; padding: 15px; border-left: 4px solid #6f42c1; background: #fff; }^)
     ROW + 1 call print(^.blob-meta { background: #f4f6f8; padding: 8px 12px; font-size: 12px; margin-bottom: 10px; font-weight: bold; color: #444; }^)
