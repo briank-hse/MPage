@@ -47,9 +47,10 @@ SET stat = uar_get_meaning_by_codeset(120,"OCFCOMP",1,OcfCD)
 ; PRE-ALLOCATE buffers outside the loop to optimize server memory management
 DECLARE vBlobOut = vc WITH noconstant(fillstring(65536, " "))
 DECLARE vBlobNoRTF = vc WITH noconstant(fillstring(65536, " "))
+DECLARE vCleanText = vc WITH noconstant(fillstring(65536, " "))
 DECLARE bsize = i4 WITH noconstant(0)
+DECLARE out_len = i4 WITH noconstant(0)
 DECLARE vLen = i4 WITH noconstant(0)
-DECLARE vCleanText = vc WITH noconstant("")
 
 SELECT INTO "NL:"
 FROM CE_BLOB CB, CLINICAL_EVENT CE, PRSNL PR
@@ -70,32 +71,37 @@ DETAIL
     ; RESET buffers inside the loop to clear legacy data from previous rows
     vBlobOut = fillstring(65536, " ")
     vBlobNoRTF = fillstring(65536, " ")
+    vCleanText = fillstring(65536, " ")
     bsize = 0
+    out_len = 0
     vLen = TEXTLEN(CB.BLOB_CONTENTS)
-    vCleanText = ""
     
-    ; Safe uncompress with bsize and bound checking
-    IF (CB.COMPRESSION_CD = OcfCD)
-        stat = uar_ocf_uncompress(CB.BLOB_CONTENTS, size(CB.BLOB_CONTENTS), vBlobOut, size(vBlobOut), bsize)
+    ; 1. Bulletproof Uncompress
+    IF (CB.COMPRESSION_CD IN (OcfCD, 728.00))
+        stat = uar_ocf_uncompress(CB.BLOB_CONTENTS, CB.BLOB_LENGTH, vBlobOut, size(vBlobOut), out_len)
     ELSE
         IF (vLen > 9)
             vBlobOut = SUBSTRING(1, vLen - 9, CB.BLOB_CONTENTS)
+            out_len = vLen - 9
         ELSE
             vBlobOut = CB.BLOB_CONTENTS
+            out_len = vLen
         ENDIF
     ENDIF
     
-    ; Strip RTF and capture exact output length into bsize
-    stat = uar_rtf2(vBlobOut, size(vBlobOut), vBlobNoRTF, size(vBlobNoRTF), bsize, 0)
+    ; 2. Strip RTF formatting
+    IF (out_len > 0)
+        stat = uar_rtf2(vBlobOut, out_len, vBlobNoRTF, size(vBlobNoRTF), bsize, 0)
+    ENDIF
     
-    ; Safely extract only the valid characters to drop null bytes
+    ; 3. Clean string by isolating explicit length to drop null bytes
     IF (bsize > 0)
         vCleanText = TRIM(SUBSTRING(1, bsize, vBlobNoRTF), 3)
     ELSE
         vCleanText = TRIM(vBlobNoRTF, 3)
     ENDIF
     
-    ; Convert raw carriage returns to HTML line breaks
+    ; 4. Format for HTML display
     vCleanText = REPLACE(vCleanText, CHAR(13), "")
     vCleanText = REPLACE(vCleanText, CHAR(10), "<br>")
     
@@ -236,7 +242,9 @@ HEAD REPORT
 
     ROW + 1 call print(".blob-record { border: 1px solid #ddd; margin-bottom: 15px; padding: 10px; border-left: 5px solid #6f42c1; }")
     ROW + 1 call print(".blob-meta { background: #f8f9fa; padding: 5px; font-size: 12px; margin-bottom: 5px; font-weight: bold; }")
-    ROW + 1 call print(".blob-text { white-space: pre-wrap; font-family: monospace; font-size: 13px; line-height: 1.4; margin-top: 8px; }")
+    
+    ; The CSS that allows dynamic text wrapping for GP Notes
+    ROW + 1 call print(".blob-text { white-space: normal; font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; line-height: 1.5; margin-top: 8px; }")
 
     ROW + 1 call print(".mode-restricted .is-normal { display: none; }")
     ROW + 1 call print(".mode-restricted .is-infusion { display: none; }")
@@ -254,7 +262,7 @@ HEAD REPORT
     ROW + 1 call print("<body onload='showRestricted()'>")
 
     ; Patient Header
-    ROW + 1 call print(concat("<div class='pat-header'><b>", NULLVAL(P_NAME, "Patient Not Found"), "</b> | MRN: ", NULLVAL(MRN, "N/A"), "</div>"))
+    ROW + 1 call print(concat("<div class='pat-header'><b>", NULLVAL(P_NAME, "Patient Not Found"), "</b> | MRN: ", NULLVAL(MRN, "N/A"), " | Person ID: ", TRIM(CNVTSTRING($patient_id)), "</div>"))
 
     ; Weight Dosing
     ROW + 1 call print("<div class='wt-box'>")
