@@ -129,6 +129,13 @@ DETAIL
         vCleanText = REPLACE(vCleanText, CHAR(10), "<br />", 0)
         vCleanText = REPLACE(vCleanText, CHAR(11), "<br />", 0) ; Catch vertical tabs (soft returns)
         
+        ; Strip excessive consecutive returns to reduce whitespace between sections
+        ; Collapses 3 or more returns down to 2 (creating exactly 1 visual blank line)
+        vCleanText = REPLACE(vCleanText, "<br /><br /><br /><br /><br /><br />", "<br /><br />", 0)
+        vCleanText = REPLACE(vCleanText, "<br /><br /><br /><br /><br />", "<br /><br />", 0)
+        vCleanText = REPLACE(vCleanText, "<br /><br /><br /><br />", "<br /><br />", 0)
+        vCleanText = REPLACE(vCleanText, "<br /><br /><br />", "<br /><br />", 0)
+        
         vCleanText = TRIM(vCleanText, 3)
     ENDIF
 
@@ -189,6 +196,25 @@ HEAD REPORT
     ROW + 1 call print(^<META content='CCLLINK' name='discern'>^)
 
     ROW + 1 call print(^<script>^)
+    ROW + 1 call print(concat(^var totalBlobs = ^, TRIM(CNVTSTRING(size(rec_blob->list, 5))), ^;^))
+    ROW + 1 call print(^var currentBlob = 1;^)
+    
+    ROW + 1 call print(^function goToBlob(idx) {^)
+    ROW + 1 call print(^  if (idx < 1 || idx > totalBlobs) return;^)
+    ROW + 1 call print(^  currentBlob = idx;^)
+    ROW + 1 call print(^  for (var i = 1; i <= totalBlobs; i++) {^)
+    ROW + 1 call print(^    var navItem = document.getElementById('nav-' + i);^)
+    ROW + 1 call print(^    if (navItem) {^)
+    ROW + 1 call print(^      if (i == idx) { navItem.className = 'gp-nav-item active-nav'; }^)
+    ROW + 1 call print(^      else { navItem.className = 'gp-nav-item'; }^)
+    ROW + 1 call print(^    }^)
+    ROW + 1 call print(^  }^)
+    ROW + 1 call print(^  window.location.hash = 'blob-' + idx;^)
+    ROW + 1 call print(^}^)
+    
+    ROW + 1 call print(^function nextBlob() { goToBlob(currentBlob + 1); }^)
+    ROW + 1 call print(^function prevBlob() { goToBlob(currentBlob - 1); }^)
+
     ROW + 1 call print(^function showRestricted() {^)
     ROW + 1 call print(^  document.getElementById('med-list').className = 'list-view mode-restricted';^)
     ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'none';^)
@@ -263,13 +289,17 @@ HEAD REPORT
     ROW + 1 call print(^.print-link:hover { text-decoration: underline; }^)
     ROW + 1 call print(^.type-badge { font-size:10px; font-weight:bold; padding:3px 8px; color:white; }^)
     
-    ; --- LEGACY TABLE PANE CSS ---
+    ; --- LEGACY TABLE PANE CSS WITH NAVIGATION ---
     ROW + 1 call print(^.gp-sidebar { background: #f8f9fa; border-right: 1px solid #ddd; vertical-align: top; width: 130px; }^)
     ROW + 1 call print(^.gp-content { vertical-align: top; background: #fff; }^)
+    ROW + 1 call print(^.gp-content-header { background: #f4f6f8; padding: 10px; border-bottom: 1px solid #ddd; text-align: right; }^)
+    ROW + 1 call print(^.nav-btn { background: #fff; border: 1px solid #ccc; padding: 5px 15px; cursor: pointer; font-size: 12px; margin-left: 5px; color: #333; font-weight: bold; }^)
+    ROW + 1 call print(^.nav-btn:hover { background: #e9ecef; }^)
     ROW + 1 call print(^.gp-scroll-side { height: 500px; overflow-y: auto; overflow-x: hidden; width: 100%; }^)
-    ROW + 1 call print(^.gp-scroll-main { height: 500px; overflow-y: auto; overflow-x: hidden; width: 100%; padding: 15px; }^)
+    ROW + 1 call print(^.gp-scroll-main { height: 450px; overflow-y: auto; overflow-x: hidden; width: 100%; padding: 15px; }^)
     ROW + 1 call print(^.gp-nav-item { display: block; padding: 10px 10px; color: #333; text-decoration: none; font-size: 13px; border-bottom: 1px solid #eee; }^)
     ROW + 1 call print(^.gp-nav-item:hover { background: #e2e6ea; color: #0076a8; }^)
+    ROW + 1 call print(^.active-nav { background: #0076a8 !important; color: #fff !important; font-weight: bold; }^)
     ROW + 1 call print(^.blob-record { border: 1px solid #ddd; margin-bottom: 30px; padding: 15px; border-left: 4px solid #6f42c1; background: #fff; }^)
     ROW + 1 call print(^.blob-meta { background: #f4f6f8; padding: 8px 12px; font-size: 12px; margin-bottom: 10px; font-weight: bold; color: #444; }^)
     ROW + 1 call print(^.blob-text { white-space: pre-wrap; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.6; color: #222; }^)
@@ -306,7 +336,7 @@ HEAD REPORT
     ROW + 1 call print(^<div id='med-container' class='content-box'>^)
 
     ; =========================================================================
-    ; GP Blob View - IE5 Table Split Pane UI
+    ; GP Blob View - IE5 Table Split Pane UI with Navigation
     ; =========================================================================
     ROW + 1 call print(^<div id='gp-blob-view' style='display:none;'>^)
     ROW + 1 call print(^<table width="100%" border="0" cellpadding="0" cellspacing="0" style="height:500px;"><tr>^)
@@ -314,7 +344,11 @@ HEAD REPORT
     ; Sidebar Navigation Loop
     ROW + 1 call print(^<td class="gp-sidebar"><div class="gp-scroll-side">^)
     FOR (x = 1 TO size(rec_blob->list, 5))
-        ROW + 1 call print(concat(^<a class="gp-nav-item" href="#blob-^, TRIM(CNVTSTRING(x)), ^">&#128196; ^, rec_blob->list[x].dt_tm, ^</a>^))
+        IF (x = 1)
+            ROW + 1 call print(concat(^<a id="nav-^, TRIM(CNVTSTRING(x)), ^" class="gp-nav-item active-nav" href="javascript:goToBlob(^, TRIM(CNVTSTRING(x)), ^)">&#128196; ^, rec_blob->list[x].dt_tm, ^</a>^))
+        ELSE
+            ROW + 1 call print(concat(^<a id="nav-^, TRIM(CNVTSTRING(x)), ^" class="gp-nav-item" href="javascript:goToBlob(^, TRIM(CNVTSTRING(x)), ^)">&#128196; ^, rec_blob->list[x].dt_tm, ^</a>^))
+        ENDIF
     ENDFOR
     IF (size(rec_blob->list, 5) = 0)
         ROW + 1 call print(^<div class="gp-nav-item">No records</div>^)
@@ -322,7 +356,15 @@ HEAD REPORT
     ROW + 1 call print(^</div></td>^) ; End sidebar
 
     ; Main Content Loop
-    ROW + 1 call print(^<td class="gp-content"><div class="gp-scroll-main">^)
+    ROW + 1 call print(^<td class="gp-content">^)
+    
+    ; Sticky Header for Navigation Buttons
+    ROW + 1 call print(^<div class="gp-content-header">^)
+    ROW + 1 call print(^  <button class="nav-btn" onclick="prevBlob()">&laquo; Previous</button>^)
+    ROW + 1 call print(^  <button class="nav-btn" onclick="nextBlob()">Next &raquo;</button>^)
+    ROW + 1 call print(^</div>^)
+    
+    ROW + 1 call print(^<div class="gp-scroll-main">^)
     FOR (x = 1 TO size(rec_blob->list, 5))
         ; IE5 relies on name attribute, not id, for anchor jumps
         ROW + 1 call print(concat(^<a name="blob-^, TRIM(CNVTSTRING(x)), ^"></a>^))
