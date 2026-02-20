@@ -177,127 +177,155 @@ ORDER BY
     , O.ORDER_MNEMONIC
 
 ; =============================================================================
-; 4. HTML OUTPUT
+; 4. HTML OUTPUT - IE5 QUIRKS MODE COMPATIBLE
 ; =============================================================================
 HEAD REPORT
-    ROW + 1 call print("<!DOCTYPE html>")
-    ROW + 1 call print("<html><head>")
-    ROW + 1 call print("<meta http-equiv='X-UA-Compatible' content='IE=edge'>")
-    ROW + 1 call print("<META content='CCLLINK' name='discern'>")
+    ROW + 1 call print(^<!DOCTYPE html>^)
+    ROW + 1 call print(^<html><head>^)
+    ROW + 1 call print(^<meta http-equiv='X-UA-Compatible' content='IE=edge'>^)
+    ROW + 1 call print(^<META content='CCLLINK' name='discern'>^)
 
-    ROW + 1 call print("<script>")
-    ROW + 1 call print("function showRestricted() {")
-    ROW + 1 call print("  document.getElementById('med-list').className = 'list-view mode-restricted';")
-    ROW + 1 call print("  document.getElementById('header-row-inf').style.display = 'none';")
-    ROW + 1 call print("  document.getElementById('gp-blob-view').style.display = 'none';")
-    ROW + 1 call print("  document.getElementById('btn1').className = 'tab-btn active';")
-    ROW + 1 call print("  document.getElementById('btn2').className = 'tab-btn';")
-    ROW + 1 call print("  document.getElementById('btn3').className = 'tab-btn';")
-    ROW + 1 call print("  document.getElementById('btn4').className = 'tab-btn';")
-    ROW + 1 call print("  document.getElementById('btn5').className = 'tab-btn';")
-    ROW + 1 call print("}")
+    ROW + 1 call print(^<script>^)
+    ROW + 1 call print(^function showRestricted() {^)
+    ROW + 1 call print(^  document.getElementById('med-list').className = 'list-view mode-restricted';^)
+    ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn active';^)
+    ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn';^)
+    ROW + 1 call print(^}^)
 
-    ROW + 1 call print("function showAll() {")
-    ROW + 1 call print("  document.getElementById('med-list').className = 'list-view mode-all';")
-    ROW + 1 call print("  document.getElementById('header-row-inf').style.display = 'none';")
-    ROW + 1 call print("  document.getElementById('gp-blob-view').style.display = 'none';")
-    ROW + 1 call print("  document.getElementById('btn1').className = 'tab-btn';")
-    ROW + 1 call print("  document.getElementById('btn2').className = 'tab-btn active';")
-    ROW + 1 call print("  document.getElementById('btn3').className = 'tab-btn';")
-    ROW + 1 call print("  document.getElementById('btn4').className = 'tab-btn';")
-    ROW + 1 call print("  document.getElementById('btn5').className = 'tab-btn';")
-    ROW + 1 call print("}")
+    ROW + 1 call print(^function showAll() {^)
+    ROW + 1 call print(^  document.getElementById('med-list').className = 'list-view mode-all';^)
+    ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn active';^)
+    ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn';^)
+    ROW + 1 call print(^}^)
 
-    ROW + 1 call print("function showInfusions() {")
-    ROW + 1 call print("  document.getElementById('med-list').className = 'list-view mode-infusion';")
-    ROW + 1 call print("  document.getElementById('header-row-inf').style.display = 'block';")
-    ROW + 1 call print("  document.getElementById('gp-blob-view').style.display = 'none';")
-    ROW + 1 call print("  document.getElementById('btn1').className = 'tab-btn';")
-    ROW + 1 call print("  document.getElementById('btn2').className = 'tab-btn';")
-    ROW + 1 call print("  document.getElementById('btn3').className = 'tab-btn active';")
-    ROW + 1 call print("  document.getElementById('btn4').className = 'tab-btn';")
-    ROW + 1 call print("  document.getElementById('btn5').className = 'tab-btn';")
-    ROW + 1 call print("}")
+    ROW + 1 call print(^function showInfusions() {^)
+    ROW + 1 call print(^  document.getElementById('med-list').className = 'list-view mode-infusion';^)
+    ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'block';^)
+    ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn active';^)
+    ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn';^)
+    ROW + 1 call print(^}^)
 
-    ROW + 1 call print("function showGP() {")
-    ROW + 1 call print("  document.getElementById('med-list').className = 'list-view mode-hidden';")
-    ROW + 1 call print("  document.getElementById('header-row-inf').style.display = 'none';")
-    ROW + 1 call print("  document.getElementById('gp-blob-view').style.display = 'block';")
-    ROW + 1 call print("  document.getElementById('btn1').className = 'tab-btn';")
-    ROW + 1 call print("  document.getElementById('btn2').className = 'tab-btn';")
-    ROW + 1 call print("  document.getElementById('btn3').className = 'tab-btn';")
-    ROW + 1 call print("  document.getElementById('btn4').className = 'tab-btn active';")
-    ROW + 1 call print("  document.getElementById('btn5').className = 'tab-btn';")
-    ROW + 1 call print("}")
+    ROW + 1 call print(^function showGP() {^)
+    ROW + 1 call print(^  document.getElementById('med-list').className = 'list-view mode-hidden';^)
+    ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'block';^)
+    ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn active';^)
+    ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn';^)
+    ROW + 1 call print(^}^)
 
-    ROW + 1 call print("function showHolder2() {")
-    ROW + 1 call print("  document.getElementById('med-list').className = 'list-view mode-hidden';")
-    ROW + 1 call print("  document.getElementById('header-row-inf').style.display = 'none';")
-    ROW + 1 call print("  document.getElementById('gp-blob-view').style.display = 'none';")
-    ROW + 1 call print("  document.getElementById('btn1').className = 'tab-btn';")
-    ROW + 1 call print("  document.getElementById('btn2').className = 'tab-btn';")
-    ROW + 1 call print("  document.getElementById('btn3').className = 'tab-btn';")
-    ROW + 1 call print("  document.getElementById('btn4').className = 'tab-btn';")
-    ROW + 1 call print("  document.getElementById('btn5').className = 'tab-btn active';")
-    ROW + 1 call print("}")
-    ROW + 1 call print("</script>")
+    ROW + 1 call print(^function showHolder2() {^)
+    ROW + 1 call print(^  document.getElementById('med-list').className = 'list-view mode-hidden';^)
+    ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn active';^)
+    ROW + 1 call print(^}^)
+    ROW + 1 call print(^</script>^)
 
-    ROW + 1 call print("<style>")
-    ROW + 1 call print("body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f4f4; padding: 20px; color:#333; }")
-    ROW + 1 call print(".pat-header { margin-bottom: 10px; font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 10px; }")
-    ROW + 1 call print(".tab-row { overflow: hidden; border-bottom: 1px solid #ccc; padding-left: 5px; }")
-    ROW + 1 call print(".tab-btn { float: left; padding: 10px 20px; margin-right: 4px; cursor: pointer; background: #e0e0e0; border: 1px solid #ccc; border-bottom: none; border-radius: 8px 8px 0 0; font-weight: bold; color: #555; position: relative; top: 1px; }")
-    ROW + 1 call print(".tab-btn:hover { background: #d0d0d0; }")
-    ROW + 1 call print(".tab-btn.active { background: #fff; border-bottom: 1px solid #fff; color: #000; z-index: 2; }")
-    ROW + 1 call print(".content-box { clear: both; border: 1px solid #ccc; background: #fff; padding: 20px; min-height: 200px; }")
-    ROW + 1 call print(".order-item { padding: 10px; border-bottom: 1px solid #eee; }")
-    ROW + 1 call print(".is-restricted { background-color: #fff0f0; border-left: 4px solid #dc3545; }")
-    ROW + 1 call print(".is-normal { border-left: 4px solid #009668; }")
-    ROW + 1 call print(".inf-header { display: none; background-color: #006f99; color: white; padding: 10px; font-weight: bold; }")
-    ROW + 1 call print(".inf-row { background-color: #E6F1E9; border-bottom: 1px solid white; padding: 5px; overflow: hidden; }")
-    ROW + 1 call print(".inf-col { float: left; padding: 5px; font-size: 12px; border-right: 1px solid white; }")
-    ROW + 1 call print(".print-link { color: blue; text-decoration: underline; cursor: pointer; }")
-    ROW + 1 call print(".type-badge { font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px; color:white; }")
-    ROW + 1 call print(".blob-record { border: 1px solid #ddd; margin-bottom: 15px; padding: 10px; border-left: 5px solid #6f42c1; }")
-    ROW + 1 call print(".blob-meta { background: #f8f9fa; padding: 5px; font-size: 12px; margin-bottom: 5px; font-weight: bold; }")
-    ROW + 1 call print(".blob-text { white-space: pre-wrap; font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; line-height: 1.5; margin-top: 8px; }")
-    ROW + 1 call print(".mode-restricted .is-normal { display: none; }")
-    ROW + 1 call print(".mode-restricted .is-infusion { display: none; }")
-    ROW + 1 call print(".mode-all .is-infusion { display: none; }")
-    ROW + 1 call print(".mode-infusion .is-restricted { display: none; }")
-    ROW + 1 call print(".mode-infusion .is-normal { display: none; }")
-    ROW + 1 call print(".mode-hidden { display: none; }")
-    ROW + 1 call print(".wt-box { margin-bottom:15px; background:white; padding:8px; border:1px solid #ddd; border-left:4px solid #0076a8; display:inline-block; font-size:12px; }")
-    ROW + 1 call print(".wt-label { font-weight:bold; color:#555; margin-right:5px; }")
-    ROW + 1 call print(".wt-val { font-size:1.1em; color:#000; }")
-    ROW + 1 call print("</style>")
-    ROW + 1 call print("</head>")
+    ROW + 1 call print(^<style>^)
+    ROW + 1 call print(^body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; color:#333; }^)
+    ROW + 1 call print(^.pat-header { margin-bottom: 10px; font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 10px; }^)
+    ROW + 1 call print(^.tab-row { overflow: hidden; border-bottom: 2px solid #ddd; margin-bottom: 15px; width: 100%; }^)
+    ROW + 1 call print(^.tab-btn { float: left; padding: 10px 20px; margin-right: 5px; cursor: pointer; background: transparent; border: none; border-bottom: 3px solid transparent; color: #666; }^)
+    ROW + 1 call print(^.tab-btn:hover { background: #e9ecef; color: #333; }^)
+    ROW + 1 call print(^.tab-btn.active { border-bottom: 3px solid #0076a8; color: #000; font-weight: bold; background: transparent; }^)
+    ROW + 1 call print(^.content-box { clear: both; background: #fff; padding: 0; min-height: 400px; border: 1px solid #ddd; }^)
+    ROW + 1 call print(^.order-item { padding: 10px; border-bottom: 1px solid #eee; margin: 10px; }^)
+    ROW + 1 call print(^.is-restricted { background-color: #fff0f0; border-left: 4px solid #dc3545; }^)
+    ROW + 1 call print(^.is-normal { border-left: 4px solid #009668; }^)
+    ROW + 1 call print(^.inf-header { display: none; background-color: #f8f9fa; color: #333; padding: 10px; font-weight: bold; border-bottom: 2px solid #ddd; margin: 10px; }^)
+    ROW + 1 call print(^.inf-row { background-color: #fff; border-bottom: 1px solid #eee; padding: 10px; overflow: hidden; margin: 0 10px; }^)
+    ROW + 1 call print(^.inf-col { float: left; padding: 5px; font-size: 13px; }^)
+    ROW + 1 call print(^.print-link { color: #0076a8; text-decoration: none; cursor: pointer; font-weight: bold; }^)
+    ROW + 1 call print(^.print-link:hover { text-decoration: underline; }^)
+    ROW + 1 call print(^.type-badge { font-size:10px; font-weight:bold; padding:3px 8px; color:white; }^)
+    
+    ; --- LEGACY TABLE PANE CSS ---
+    ROW + 1 call print(^.gp-sidebar { background: #f8f9fa; border-right: 1px solid #ddd; vertical-align: top; width: 220px; }^)
+    ROW + 1 call print(^.gp-content { vertical-align: top; background: #fff; }^)
+    ROW + 1 call print(^.gp-scroll-side { height: 500px; overflow-y: auto; overflow-x: hidden; width: 100%; }^)
+    ROW + 1 call print(^.gp-scroll-main { height: 500px; overflow-y: auto; overflow-x: hidden; width: 100%; padding: 15px; }^)
+    ROW + 1 call print(^.gp-nav-item { display: block; padding: 10px 15px; color: #333; text-decoration: none; font-size: 13px; border-bottom: 1px solid #eee; }^)
+    ROW + 1 call print(^.gp-nav-item:hover { background: #e2e6ea; color: #0076a8; }^)
+    ROW + 1 call print(^.blob-record { border: 1px solid #ddd; margin-bottom: 30px; padding: 15px; border-left: 4px solid #6f42c1; background: #fff; }^)
+    ROW + 1 call print(^.blob-meta { background: #f4f6f8; padding: 8px 12px; font-size: 12px; margin-bottom: 10px; font-weight: bold; color: #444; }^)
+    ROW + 1 call print(^.blob-text { white-space: pre-wrap; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.6; color: #222; }^)
+    
+    ROW + 1 call print(^.mode-restricted .is-normal { display: none; }^)
+    ROW + 1 call print(^.mode-restricted .is-infusion { display: none; }^)
+    ROW + 1 call print(^.mode-all .is-infusion { display: none; }^)
+    ROW + 1 call print(^.mode-infusion .is-restricted { display: none; }^)
+    ROW + 1 call print(^.mode-infusion .is-normal { display: none; }^)
+    ROW + 1 call print(^.mode-hidden { display: none; }^)
+    ROW + 1 call print(^.wt-box { margin-bottom:15px; background:white; padding:8px 12px; border:1px solid #ddd; border-left:4px solid #0076a8; display:inline-block; font-size:13px; }^)
+    ROW + 1 call print(^.wt-label { font-weight:bold; color:#555; margin-right:5px; }^)
+    ROW + 1 call print(^.wt-val { font-size:1.1em; color:#000; }^)
+    ROW + 1 call print(^</style>^)
+    ROW + 1 call print(^</head>^)
 
-    ROW + 1 call print("<body onload='showRestricted()'>")
+    ROW + 1 call print(^<body onload='showRestricted()'>^)
 
-    ROW + 1 call print(concat("<div class='pat-header'><b>", NULLVAL(P_NAME, "Patient Not Found"), "</b> | MRN: ", NULLVAL(MRN, "N/A"), "</div>"))
+    ROW + 1 call print(concat(^<div class='pat-header'><b>^, NULLVAL(P_NAME, "Patient Not Found"), ^</b> | MRN: ^, NULLVAL(MRN, "N/A"), ^</div>^))
 
-    ROW + 1 call print("<div class='wt-box'>")
-    ROW + 1 call print("<span class='wt-label'>Last Dosing Weight:</span>")
-    ROW + 1 call print(concat("<span class='wt-val'>", sWeightDisp, "</span>"))
-    ROW + 1 call print("</div>")
+    ROW + 1 call print(^<div class='wt-box'>^)
+    ROW + 1 call print(^<span class='wt-label'>Last Dosing Weight:</span>^)
+    ROW + 1 call print(concat(^<span class='wt-val'>^, sWeightDisp, ^</span>^))
+    ROW + 1 call print(^</div>^)
 
-    ROW + 1 call print("<div class='tab-row'>")
-    ROW + 1 call print("<div id='btn1' class='tab-btn' onclick='showRestricted()'>Antibiotics</div>")
-    ROW + 1 call print("<div id='btn2' class='tab-btn' onclick='showAll()'>All Medications</div>")
-    ROW + 1 call print("<div id='btn3' class='tab-btn' onclick='showInfusions()'>Infusions &amp; Labels</div>")
-    ROW + 1 call print("<div id='btn4' class='tab-btn' onclick='showGP()'>Medication Details (GP)</div>")
-    ROW + 1 call print("<div id='btn5' class='tab-btn' onclick='showHolder2()'>Holder 2</div>")
-    ROW + 1 call print("</div>")
+    ROW + 1 call print(^<div class='tab-row'>^)
+    ROW + 1 call print(^<div id='btn1' class='tab-btn' onclick='showRestricted()'>Antibiotics</div>^)
+    ROW + 1 call print(^<div id='btn2' class='tab-btn' onclick='showAll()'>All Medications</div>^)
+    ROW + 1 call print(^<div id='btn3' class='tab-btn' onclick='showInfusions()'>Infusions &amp; Labels</div>^)
+    ROW + 1 call print(^<div id='btn4' class='tab-btn' onclick='showGP()'>Medication Details (GP)</div>^)
+    ROW + 1 call print(^<div id='btn5' class='tab-btn' onclick='showHolder2()'>Holder 2</div>^)
+    ROW + 1 call print(^</div>^)
 
-    ROW + 1 call print("<div id='med-container' class='content-box'>")
+    ROW + 1 call print(^<div id='med-container' class='content-box'>^)
 
-    ; GP Blob View - renders all records from rec_blob
-    ROW + 1 call print("<div id='gp-blob-view' style='display:none;'>")
+    ; =========================================================================
+    ; GP Blob View - IE5 Table Split Pane UI
+    ; =========================================================================
+    ROW + 1 call print(^<div id='gp-blob-view' style='display:none;'>^)
+    ROW + 1 call print(^<table width="100%" border="0" cellpadding="0" cellspacing="0" style="height:500px;"><tr>^)
+    
+    ; Sidebar Navigation Loop
+    ROW + 1 call print(^<td class="gp-sidebar"><div class="gp-scroll-side">^)
     FOR (x = 1 TO size(rec_blob->list, 5))
-        ROW + 1 call print("<div class='blob-record'>")
-        ROW + 1 call print(concat("<div class='blob-meta'>Performed: ", rec_blob->list[x].dt_tm, " by ", rec_blob->list[x].prsnl, "</div>"))
-        ROW + 1 call print("<div class='blob-text'>")
+        ROW + 1 call print(concat(^<a class="gp-nav-item" href="#blob-^, TRIM(CNVTSTRING(x)), ^">&#128196; ^, rec_blob->list[x].dt_tm, ^</a>^))
+    ENDFOR
+    IF (size(rec_blob->list, 5) = 0)
+        ROW + 1 call print(^<div class="gp-nav-item">No records</div>^)
+    ENDIF
+    ROW + 1 call print(^</div></td>^) ; End sidebar
+
+    ; Main Content Loop
+    ROW + 1 call print(^<td class="gp-content"><div class="gp-scroll-main">^)
+    FOR (x = 1 TO size(rec_blob->list, 5))
+        ; IE5 relies on name attribute, not id, for anchor jumps
+        ROW + 1 call print(concat(^<a name="blob-^, TRIM(CNVTSTRING(x)), ^"></a>^))
+        ROW + 1 call print(^<div class="blob-record">^)
+        ROW + 1 call print(concat(^<div class="blob-meta">Performed: ^, rec_blob->list[x].dt_tm, ^ by ^, rec_blob->list[x].prsnl, ^</div>^) )
+        ROW + 1 call print(^<div class="blob-text">^)
 
         vLen  = textlen(rec_blob->list[x].blob_text)
         bsize = 1
@@ -306,22 +334,25 @@ HEAD REPORT
             bsize = bsize + 500
         ENDWHILE
 
-        ROW + 1 call print("</div></div>")
+        ROW + 1 call print(^</div></div>^)
     ENDFOR
     IF (size(rec_blob->list, 5) = 0)
-        ROW + 1 call print("<p>No GP Medication Details found.</p>")
+        ROW + 1 call print(^<p>No GP Medication Details found for this patient.</p>^)
     ENDIF
-    ROW + 1 call print("</div>")
+    ROW + 1 call print(^</div></td>^) ; End content pane
+    
+    ROW + 1 call print(^</tr></table></div>^) ; End gp-container & gp-blob-view
+    ; =========================================================================
 
-    ROW + 1 call print("<div id='header-row-inf' class='inf-header'>")
-    ROW + 1 call print("<div style='float:left; width:120px;'>Start Date</div>")
-    ROW + 1 call print("<div style='float:left; width:250px;'>Infusion Name</div>")
-    ROW + 1 call print("<div style='float:left; width:80px;'>Type</div>")
-    ROW + 1 call print("<div style='float:left; width:150px;'>Action</div>")
-    ROW + 1 call print("<div style='clear:both;'></div>")
-    ROW + 1 call print("</div>")
+    ROW + 1 call print(^<div id='header-row-inf' class='inf-header'>^)
+    ROW + 1 call print(^<div style='float:left; width:120px;'>Start Date</div>^)
+    ROW + 1 call print(^<div style='float:left; width:250px;'>Infusion Name</div>^)
+    ROW + 1 call print(^<div style='float:left; width:80px;'>Type</div>^)
+    ROW + 1 call print(^<div style='float:left; width:150px;'>Action</div>^)
+    ROW + 1 call print(^<div style='clear:both;'></div>^)
+    ROW + 1 call print(^</div>^)
 
-    ROW + 1 call print("<div id='med-list' class='list-view'>")
+    ROW + 1 call print(^<div id='med-list' class='list-view'>^)
 
 DETAIL
     IF (ORDER_ID > 0)
@@ -336,16 +367,16 @@ DETAIL
             OR FINDSTRING("Tazobactam",   MNEMONIC) > 0
             OR FINDSTRING("Cefotaxime",   MNEMONIC) > 0
         )
-            ROW + 1 call print("<div class='order-item is-restricted'>")
-            call print(concat("<b>", MNEMONIC, "</b> <span style='color:red; font-size:10px; border:1px solid red; padding:0 3px;'>RESTRICTED</span>"))
+            ROW + 1 call print(^<div class='order-item is-restricted'>^)
+            call print(concat(^<b>^, MNEMONIC, ^</b> <span style='color:red; font-size:10px; border:1px solid red; padding:0 3px;'>RESTRICTED</span>^))
         ELSE
-            ROW + 1 call print("<div class='order-item is-normal'>")
-            call print(concat("<b>", MNEMONIC, "</b>"))
+            ROW + 1 call print(^<div class='order-item is-normal'>^)
+            call print(concat(^<b>^, MNEMONIC, ^</b>^))
         ENDIF
 
-        call print(concat("<div style='font-size:12px; color:#555;'>", CDL, "</div>"))
-        call print(concat("<div style='font-size:11px; color:#999;'>Started: ", START_DT, "</div>"))
-        call print("</div>")
+        call print(concat(^<div style='font-size:12px; color:#555;'>^, CDL, ^</div>^))
+        call print(concat(^<div style='font-size:11px; color:#999;'>Started: ^, START_DT, ^</div>^))
+        call print(^</div>^)
 
         IF (
                FINDSTRING("CONTINUOUS",   CNVTUPPER(DISP_CAT)) > 0
@@ -360,62 +391,62 @@ DETAIL
                 AND
                 (FINDSTRING("Glucose", MNEMONIC) > 0 OR FINDSTRING("Sodium", MNEMONIC) > 0 OR FINDSTRING("Maintelyte", MNEMONIC) > 0)
             )
-                ROW + 1 call print("<div class='inf-row is-infusion'>")
-                call print(concat("<div class='inf-col' style='width:120px;'>", START_DT, "</div>"))
-                call print(concat("<div class='inf-col' style='width:250px;'><b>", MNEMONIC, "</b></div>"))
-                call print("<div class='inf-col' style='width:80px;'><span class='type-badge' style='background:#17a2b8;'>FLUID</span></div>")
-                call print("<div class='inf-col' style='width:150px;'>")
+                ROW + 1 call print(^<div class='inf-row is-infusion'>^)
+                call print(concat(^<div class='inf-col' style='width:120px;'>^, START_DT, ^</div>^))
+                call print(concat(^<div class='inf-col' style='width:250px;'><b>^, MNEMONIC, ^</b></div>^))
+                call print(^<div class='inf-col' style='width:80px;'><span class='type-badge' style='background:#17a2b8;'>FLUID</span></div>^)
+                call print(^<div class='inf-col' style='width:150px;'>^)
                 call print(concat(
                     ~<a class='print-link' href='javascript:CCLLINK("01_BK_NICU_FLUID_FFL_FLIPPED:Group1", "MINE, ~,
                     TRIM(CNVTSTRING($patient_id)), ~, ~, TRIM(CNVTSTRING(ORDER_ID)), ~" ,0)'>Print Fluid Label</a>~
                 ))
-                call print("</div><div style='clear:both;'></div></div>")
+                call print(^</div><div style='clear:both;'></div></div>^)
 
             ELSEIF (FINDSTRING("INTERMITTENT", CNVTUPPER(DISP_CAT)) > 0)
-                ROW + 1 call print("<div class='inf-row is-infusion'>")
-                call print(concat("<div class='inf-col' style='width:120px;'>", START_DT, "</div>"))
-                call print(concat("<div class='inf-col' style='width:250px;'><b>", MNEMONIC, "</b></div>"))
-                call print("<div class='inf-col' style='width:80px;'><span class='type-badge' style='background:#ffc107; color:black;'>INTERM</span></div>")
-                call print("<div class='inf-col' style='width:150px;'>")
+                ROW + 1 call print(^<div class='inf-row is-infusion'>^)
+                call print(concat(^<div class='inf-col' style='width:120px;'>^, START_DT, ^</div>^))
+                call print(concat(^<div class='inf-col' style='width:250px;'><b>^, MNEMONIC, ^</b></div>^))
+                call print(^<div class='inf-col' style='width:80px;'><span class='type-badge' style='background:#ffc107; color:black;'>INTERM</span></div>^)
+                call print(^<div class='inf-col' style='width:150px;'>^)
                 call print(concat(
                     ~<a class='print-link' href='javascript:CCLLINK("01_BK_NICU_INTER_FFL_FLIPPED:Group1", "MINE, ~,
                     TRIM(CNVTSTRING($patient_id)), ~, ~, TRIM(CNVTSTRING(ORDER_ID)), ~" ,0)'>Print Intermittent Label</a>~
                 ))
-                call print("</div><div style='clear:both;'></div></div>")
+                call print(^</div><div style='clear:both;'></div></div>^)
 
             ELSEIF (FINDSTRING("UD", CNVTUPPER(DISP_CAT)) > 0)
-                ROW + 1 call print("<div class='inf-row is-infusion'>")
-                call print(concat("<div class='inf-col' style='width:120px;'>", START_DT, "</div>"))
-                call print(concat("<div class='inf-col' style='width:250px;'><b>", MNEMONIC, "</b></div>"))
-                call print("<div class='inf-col' style='width:80px;'><span class='type-badge' style='background:#6c757d;'>PN / UD</span></div>")
-                call print("<div class='inf-col' style='width:150px;'>")
+                ROW + 1 call print(^<div class='inf-row is-infusion'>^)
+                call print(concat(^<div class='inf-col' style='width:120px;'>^, START_DT, ^</div>^))
+                call print(concat(^<div class='inf-col' style='width:250px;'><b>^, MNEMONIC, ^</b></div>^))
+                call print(^<div class='inf-col' style='width:80px;'><span class='type-badge' style='background:#6c757d;'>PN / UD</span></div>^)
+                call print(^<div class='inf-col' style='width:150px;'>^)
                 call print(concat(
                     ~<a class='print-link' href='javascript:CCLLINK("01_BK_NICU_PN_FFL_FLIPPED:Group1", "MINE, ~,
                     TRIM(CNVTSTRING($patient_id)), ~, ~, TRIM(CNVTSTRING(ORDER_ID)), ~" ,0)'>Print PN Label</a>~
                 ))
-                call print("</div><div style='clear:both;'></div></div>")
+                call print(^</div><div style='clear:both;'></div></div>^)
 
             ELSE
-                ROW + 1 call print("<div class='inf-row is-infusion'>")
-                call print(concat("<div class='inf-col' style='width:120px;'>", START_DT, "</div>"))
-                call print(concat("<div class='inf-col' style='width:250px;'><b>", MNEMONIC, "</b></div>"))
-                call print("<div class='inf-col' style='width:80px;'><span class='type-badge' style='background:#28a745;'>SCI</span></div>")
-                call print("<div class='inf-col' style='width:150px;'>")
+                ROW + 1 call print(^<div class='inf-row is-infusion'>^)
+                call print(concat(^<div class='inf-col' style='width:120px;'>^, START_DT, ^</div>^))
+                call print(concat(^<div class='inf-col' style='width:250px;'><b>^, MNEMONIC, ^</b></div>^))
+                call print(^<div class='inf-col' style='width:80px;'><span class='type-badge' style='background:#28a745;'>SCI</span></div>^)
+                call print(^<div class='inf-col' style='width:150px;'>^)
                 call print(concat(
                     ~<a class='print-link' href='javascript:CCLLINK("01_BK_NICU_INF_FFL_FLIPPED:Group1", "MINE, ~,
                     TRIM(CNVTSTRING($patient_id)), ~, ~, TRIM(CNVTSTRING(ORDER_ID)), ~" ,0)'>Print SCI Label</a>~
                 ))
-                call print("</div><div style='clear:both;'></div></div>")
+                call print(^</div><div style='clear:both;'></div></div>^)
             ENDIF
         ENDIF
     ENDIF
 
 FOOT REPORT
     IF (ORDER_ID = 0)
-        ROW + 1 call print("<div style='padding: 15px; color: #666;'>No active orders found for this patient.</div>")
+        ROW + 1 call print(^<div style='padding: 15px; color: #666;'>No active orders found for this patient.</div>^)
     ENDIF
-    ROW + 1 call print("</div></div>")
-    ROW + 1 call print("</body></html>")
+    ROW + 1 call print(^</div></div>^)
+    ROW + 1 call print(^</body></html>^)
 
 WITH NOCOUNTER, SEPARATOR=" ", MAXCOL=32000, FORMAT, LANDSCAPE
 
