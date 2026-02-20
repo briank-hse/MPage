@@ -399,6 +399,10 @@ HEAD REPORT
     IF (size(rec_blob->list, 5) = 0)
         ROW + 1 call print(^<p>No GP Medication Details found for this patient.</p>^)
     ENDIF
+    
+    ; Invisible spacer ensures the final item can scroll cleanly to the top
+    ROW + 1 call print(^<div style="height: 500px; width: 100%;"></div>^)
+    
     ROW + 1 call print(^</div></td>^) ; End content pane
     
     ROW + 1 call print(^</tr></table></div>^) ; End gp-container & gp-blob-view
