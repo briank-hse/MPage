@@ -78,7 +78,7 @@ DETAIL
     
     ; 1. Bulletproof Uncompress
     IF (CB.COMPRESSION_CD IN (OcfCD, 728.00))
-        stat = uar_ocf_uncompress(CB.BLOB_CONTENTS, CB.BLOB_LENGTH, vBlobOut, size(vBlobOut), out_len)
+        stat = uar_ocf_uncompress(CB.BLOB_CONTENTS, size(CB.BLOB_CONTENTS), vBlobOut, size(vBlobOut), out_len)
     ELSE
         IF (vLen > 9)
             vBlobOut = SUBSTRING(1, vLen - 9, CB.BLOB_CONTENTS)
@@ -101,9 +101,11 @@ DETAIL
         vCleanText = TRIM(vBlobNoRTF, 3)
     ENDIF
     
-    ; 4. Format for HTML display
-    vCleanText = REPLACE(vCleanText, CHAR(13), "")
-    vCleanText = REPLACE(vCleanText, CHAR(10), "<br>")
+    ; 4. Format for HTML display and escape HTML tags
+    vCleanText = REPLACE(vCleanText, "<", "&lt;", 0)
+    vCleanText = REPLACE(vCleanText, ">", "&gt;", 0)
+    vCleanText = REPLACE(vCleanText, CHAR(13), "", 0)
+    vCleanText = REPLACE(vCleanText, CHAR(10), "<br>", 0)
     
     rec_blob->list[nCnt].blob_text = vCleanText
 WITH NOCOUNTER
@@ -285,8 +287,16 @@ HEAD REPORT
     FOR (x = 1 TO size(rec_blob->list, 5))
         ROW + 1 call print("<div class='blob-record'>")
         ROW + 1 call print(concat("<div class='blob-meta'>Performed: ", rec_blob->list[x].dt_tm, " by ", rec_blob->list[x].prsnl, "</div>"))
-        ROW + 1 call print(concat("<div class='blob-text'>", rec_blob->list[x].blob_text, "</div>"))
-        ROW + 1 call print("</div>")
+        ROW + 1 call print("<div class='blob-text'>")
+        
+        vLen = textlen(rec_blob->list[x].blob_text)
+        bsize = 1
+        WHILE (bsize <= vLen)
+            col +0 call print(substring(bsize, 500, rec_blob->list[x].blob_text))
+            bsize = bsize + 500
+        ENDWHILE
+        
+        ROW + 1 call print("</div></div>")
     ENDFOR
     IF (size(rec_blob->list, 5) = 0)
         ROW + 1 call print("<p>No GP Medication Details found.</p>")
@@ -348,7 +358,7 @@ HEAD REPORT
                     call print("<div class='inf-col' style='width:80px;'><span class='type-badge' style='background:#17a2b8;'>FLUID</span></div>")
                     call print("<div class='inf-col' style='width:150px;'>")
                     call print(concat(
-                        ~<a class='print-link' href='javascript:CCLLINK("01_GH_NICU_FLUID_FFL_FLIPPED:Group1", "MINE, ~,
+                        ~<a class='print-link' href='javascript:CCLLINK("01_BK_NICU_FLUID_FFL_FLIPPED:Group1", "MINE, ~,
                         TRIM(CNVTSTRING($patient_id)), ~, ~, TRIM(CNVTSTRING(ORDER_ID)), ~" ,0)'>Print Fluid Label</a>~
                     ))
                     call print("</div><div style='clear:both;'></div></div>")
@@ -360,7 +370,7 @@ HEAD REPORT
                     call print("<div class='inf-col' style='width:80px;'><span class='type-badge' style='background:#ffc107; color:black;'>INTERM</span></div>")
                     call print("<div class='inf-col' style='width:150px;'>")
                     call print(concat(
-                        ~<a class='print-link' href='javascript:CCLLINK("01_GH_NICU_INTER_FFL_FLIPPED:Group1", "MINE, ~,
+                        ~<a class='print-link' href='javascript:CCLLINK("01_BK_NICU_INTER_FFL_FLIPPED:Group1", "MINE, ~,
                         TRIM(CNVTSTRING($patient_id)), ~, ~, TRIM(CNVTSTRING(ORDER_ID)), ~" ,0)'>Print Intermittent Label</a>~
                     ))
                     call print("</div><div style='clear:both;'></div></div>")
@@ -372,7 +382,7 @@ HEAD REPORT
                     call print("<div class='inf-col' style='width:80px;'><span class='type-badge' style='background:#6c757d;'>PN / UD</span></div>")
                     call print("<div class='inf-col' style='width:150px;'>")
                     call print(concat(
-                        ~<a class='print-link' href='javascript:CCLLINK("01_GH_NICU_PN_FFL_FLIPPED:Group1", "MINE, ~,
+                        ~<a class='print-link' href='javascript:CCLLINK("01_BK_NICU_PN_FFL_FLIPPED:Group1", "MINE, ~,
                         TRIM(CNVTSTRING($patient_id)), ~, ~, TRIM(CNVTSTRING(ORDER_ID)), ~" ,0)'>Print PN Label</a>~
                     ))
                     call print("</div><div style='clear:both;'></div></div>")
@@ -384,7 +394,7 @@ HEAD REPORT
                     call print("<div class='inf-col' style='width:80px;'><span class='type-badge' style='background:#28a745;'>SCI</span></div>")
                     call print("<div class='inf-col' style='width:150px;'>")
                     call print(concat(
-                        ~<a class='print-link' href='javascript:CCLLINK("01_GH_NICU_INF_FFL_FLIPPED:Group1", "MINE, ~,
+                        ~<a class='print-link' href='javascript:CCLLINK("01_BK_NICU_INF_FFL_FLIPPED:Group1", "MINE, ~,
                         TRIM(CNVTSTRING($patient_id)), ~, ~, TRIM(CNVTSTRING(ORDER_ID)), ~" ,0)'>Print SCI Label</a>~
                     ))
                     call print("</div><div style='clear:both;'></div></div>")
