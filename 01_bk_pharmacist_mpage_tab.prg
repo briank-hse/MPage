@@ -618,14 +618,24 @@ HEAD REPORT
     ROW + 1 call print(^function resizeLayout() {^)
     ROW + 1 call print(^  var h = document.body.clientHeight - 90;^)
     ROW + 1 call print(^  if (h < 300) h = 300;^)
+    
+    ; Legacy element resizing
     ROW + 1 call print(^  var side = document.getElementById('scroll-side');^)
     ROW + 1 call print(^  var main = document.getElementById('scroll-main');^)
     ROW + 1 call print(^  var table = document.getElementById('gp-table');^)
     ROW + 1 call print(^  if(table) table.style.height = h + 'px';^)
     ROW + 1 call print(^  if(side) side.style.height = h + 'px';^)
     ROW + 1 call print(^  if(main) main.style.height = (h - 32) + 'px';^)
-    ROW + 1 call print(^  var contentBoxes = document.getElementsByClassName('content-box');^)
-    ROW + 1 call print(^  for(var i=0; i<contentBoxes.length; i++) { contentBoxes[i].style.height = h + 'px'; }^)
+    
+    ; Fix for IE Quirks mode not supporting getElementsByClassName
+    ROW + 1 call print(^  var medContainer = document.getElementById('med-container');^)
+    ROW + 1 call print(^  if(medContainer) medContainer.style.height = h + 'px';^)
+    
+    ROW + 1 call print(^  var dotView = document.getElementById('dot-view');^)
+    ROW + 1 call print(^  if(dotView) dotView.style.height = h + 'px';^)
+    
+    ROW + 1 call print(^  var acuityView = document.getElementById('acuity-view');^)
+    ROW + 1 call print(^  if(acuityView) acuityView.style.height = h + 'px';^)
     ROW + 1 call print(^}^)
     ROW + 1 call print(^window.onresize = resizeLayout;^)
 
@@ -719,6 +729,7 @@ HEAD REPORT
     ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn active';^)
     ROW + 1 call print(^  document.getElementById('btn6').className = 'tab-btn';^)
+    ROW + 1 call print(^  resizeLayout();^)
     ROW + 1 call print(^}^)
 
     ROW + 1 call print(^function showAcuity() {^)
@@ -734,6 +745,7 @@ HEAD REPORT
     ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn6').className = 'tab-btn active';^)
+    ROW + 1 call print(^  resizeLayout();^)
     ROW + 1 call print(^}^)
     ROW + 1 call print(^</script>^)
 
@@ -853,10 +865,12 @@ HEAD REPORT
     ; =========================================================================
     ROW + 1 call print(^<div id='acuity-view' class='content-box' style='display:none;'>^)
     ROW + 1 call print(CONCAT(^<div class='acuity-banner acuity-^, rec_acuity->color, ^'>Acuity Score: ^, TRIM(CNVTSTRING(rec_acuity->score)), ^ (Triage Tier: ^, CNVTUPPER(rec_acuity->color), ^)</div>^))
-    ROW + 1 call print(^<div style='display:flex; flex-direction:row; padding:0 15px 15px 15px; gap:20px; box-sizing: border-box;'>^)
+    
+    ; IE Quirks Mode Compatible Split Pane Layout
+    ROW + 1 call print(^<table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-top:15px;"><tr>^)
     
     ; LEFT PANE: Active Triggers
-    ROW + 1 call print(^<div style='flex:1;'>^)
+    ROW + 1 call print(^<td width="48%" valign="top" style="padding: 0 10px 15px 15px;">^)
     ROW + 1 call print(^<h3 class='panel-header'>Patient Specific Triggers</h3>^)
     ROW + 1 call print(^<ul class='trigger-list'>^)
     IF (rec_acuity->reason_cnt > 0)
@@ -877,10 +891,10 @@ HEAD REPORT
         ROW + 1 call print(^<b>GREEN (Score 0):</b> Low Risk. Review only if requested by medical or midwifery team.^)
     ENDIF
     ROW + 1 call print(^</div>^)
-    ROW + 1 call print(^</div>^)
+    ROW + 1 call print(^</td>^)
     
     ; RIGHT PANE: Reference Matrix
-    ROW + 1 call print(^<div style='flex:1.2; margin-top: 15px;'>^)
+    ROW + 1 call print(^<td width="52%" valign="top" style="padding: 0 15px 15px 10px;">^)
     ROW + 1 call print(^<h3 class='panel-header' style='margin-bottom: 2px;'>Scoring Reference Matrix</h3>^)
     ROW + 1 call print(^<div style='font-size:11px; color:#666; margin-bottom: 8px;'>Hover over a criteria row to view the exact database fields/strings being evaluated.<br>Criteria based on UKCPA Women's Health Group &amp; ISMP Guidelines. Lab parameters excluded.</div>^)
     ROW + 1 call print(^<table class='ref-table'>^)
@@ -895,7 +909,7 @@ HEAD REPORT
     ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_neuraxial = 1) "tr-active amber-tier" ELSE "" ENDIF, ^' title='Checks active inpatient pharmacy orders for mnemonics containing: BUPIVACAINE or LEVOBUPIVACAINE.'><td>Neuraxial / Epidural Infusion Active</td><td>Medication</td><td>+1</td></tr>^))
     
     ROW + 1 call print(^</tbody></table>^)
-    ROW + 1 call print(^</div></div>^)
+    ROW + 1 call print(^</td></tr></table>^)
     ROW + 1 call print(^<div style="height: 100px; width: 100%;"></div>^)
     ROW + 1 call print(^</div>^)
 
