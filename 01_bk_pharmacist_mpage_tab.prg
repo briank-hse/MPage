@@ -172,7 +172,7 @@ declare v_all_days_list = vc with noconstant(""), maxlen=65534
 declare v_sum_strip     = vc with noconstant(""), maxlen=65534
 declare v_spacer_strip  = vc with noconstant(""), maxlen=65534
 declare v_findpos          = i4 with noconstant(0)
-declare v_after            = vc with noconstant(""), maxlen=65534
+declare v_after          = vc with noconstant(""), maxlen=65534
 declare v_endpos           = i4 with noconstant(0)
 declare v_detail_str       = vc with noconstant("")
 declare v_pipe_pos         = i4 with noconstant(0)
@@ -430,7 +430,7 @@ foot report
           v_spacer_strip = concat(v_spacer_strip, '<span class="cell spacer-bit"></span>')
           v_i = v_i + 1
       endwhile
-        
+       
       v_chart_rows = concat(v_chart_rows,
           '<tr class="summary-row">',
             '<td class="label sticky-med">Antimicrobial Summary</td>',
@@ -525,6 +525,104 @@ if (textlen(v_table_rows) = 0)
 endif
 
 ; =============================================================================
+; 3.5 MATERNITY ACUITY SCORE CALCULATION 
+; =============================================================================
+RECORD rec_acuity (
+    1 score = i4
+    1 color = vc
+    1 poly_count = i4
+    1 reason_cnt = i4
+    1 reasons[*]
+        2 text = vc
+        2 points = i4
+)
+
+; Calculate Polypharmacy & High Risk Meds
+SELECT INTO "NL:"
+    MNEM = CNVTUPPER(O.ORDER_MNEMONIC)
+FROM ORDERS O
+PLAN O WHERE O.PERSON_ID = CNVTREAL($patient_id)
+    AND O.ORDER_STATUS_CD = 2550.00 ; Active
+    AND O.CATALOG_TYPE_CD = 2516.00 ; Pharmacy
+DETAIL
+    rec_acuity->poly_count = rec_acuity->poly_count + 1
+
+    IF (FINDSTRING("TINZAPARIN", MNEM) > 0 OR FINDSTRING("HEPARIN", MNEM) > 0)
+        rec_acuity->score = rec_acuity->score + 2
+        rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+        stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+        rec_acuity->reasons[rec_acuity->reason_cnt].text = "High Risk Med: Anticoagulant"
+        rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
+    ELSEIF (FINDSTRING("INSULIN", MNEM) > 0)
+        rec_acuity->score = rec_acuity->score + 2
+        rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+        stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+        rec_acuity->reasons[rec_acuity->reason_cnt].text = "High Risk Med: Insulin"
+        rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
+    ELSEIF (FINDSTRING("LABETALOL", MNEM) > 0 OR FINDSTRING("NIFEDIPINE", MNEM) > 0)
+        rec_acuity->score = rec_acuity->score + 2
+        rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+        stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+        rec_acuity->reasons[rec_acuity->reason_cnt].text = "High Risk Med: Antihypertensive"
+        rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
+    ELSEIF (FINDSTRING("BUPIVACAINE", MNEM) > 0 OR FINDSTRING("LEVOBUPIVACAINE", MNEM) > 0)
+        rec_acuity->score = rec_acuity->score + 2
+        rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+        stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+        rec_acuity->reasons[rec_acuity->reason_cnt].text = "High Risk Med: Neuraxial / Epidural"
+        rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
+    ENDIF
+WITH NOCOUNTER
+
+; Add polypharmacy score logic
+IF (rec_acuity->poly_count >= 10)
+    SET rec_acuity->score = rec_acuity->score + 3
+    SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+    SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = CONCAT("Severe Polypharmacy (", TRIM(CNVTSTRING(rec_acuity->poly_count)), " active meds)")
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+ELSEIF (rec_acuity->poly_count >= 5)
+    SET rec_acuity->score = rec_acuity->score + 1
+    SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+    SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = CONCAT("Moderate Polypharmacy (", TRIM(CNVTSTRING(rec_acuity->poly_count)), " active meds)")
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 1
+ENDIF
+
+; Check Clinical Events for Massive EBL or Blood Transfusions (7 day lookback)
+SELECT INTO "NL:"
+FROM CLINICAL_EVENT CE
+PLAN CE WHERE CE.PERSON_ID = CNVTREAL($patient_id)
+    AND CE.EVENT_CD IN (15071366.00, 82546829.00) ; Blood Volume Infused, Total EBL
+    AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("7,D")
+    AND CE.RESULT_STATUS_CD IN (25, 34, 35)
+ORDER BY CE.EVENT_CD, CE.PERFORMED_DT_TM DESC
+HEAD CE.EVENT_CD
+    IF (CE.EVENT_CD = 15071366.00) ; Blood transfusion
+        rec_acuity->score = rec_acuity->score + 3
+        rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+        stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+        rec_acuity->reasons[rec_acuity->reason_cnt].text = "Blood Transfusion documented in last 7 days"
+        rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+    ELSEIF (CE.EVENT_CD = 82546829.00 AND CNVTREAL(CE.RESULT_VAL) > 1000) ; Total EBL > 1000
+        rec_acuity->score = rec_acuity->score + 3
+        rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+        stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+        rec_acuity->reasons[rec_acuity->reason_cnt].text = "Massive Obstetric Haemorrhage (EBL > 1000ml)"
+        rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+    ENDIF
+WITH NOCOUNTER
+
+; Determine Final Acuity Color Mapping
+IF (rec_acuity->score >= 3)
+    SET rec_acuity->color = "Red"
+ELSEIF (rec_acuity->score >= 1)
+    SET rec_acuity->color = "Amber"
+ELSE
+    SET rec_acuity->color = "Green"
+ENDIF
+
+; =============================================================================
 ; 4. MAIN MEDICATION QUERY
 ; =============================================================================
 SELECT DISTINCT INTO $OUTDEV
@@ -614,12 +712,14 @@ HEAD REPORT
     ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('dot-view').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('acuity-view').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('med-container').style.display = 'block';^)
     ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn active';^)
     ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn6').className = 'tab-btn';^)
     ROW + 1 call print(^}^)
 
     ROW + 1 call print(^function showAll() {^)
@@ -627,12 +727,14 @@ HEAD REPORT
     ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('dot-view').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('acuity-view').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('med-container').style.display = 'block';^)
     ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn active';^)
     ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn6').className = 'tab-btn';^)
     ROW + 1 call print(^}^)
 
     ROW + 1 call print(^function showInfusions() {^)
@@ -640,12 +742,14 @@ HEAD REPORT
     ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'block';^)
     ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('dot-view').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('acuity-view').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('med-container').style.display = 'block';^)
     ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn active';^)
     ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn6').className = 'tab-btn';^)
     ROW + 1 call print(^}^)
 
     ROW + 1 call print(^function showGP() {^)
@@ -653,12 +757,14 @@ HEAD REPORT
     ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('med-container').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('dot-view').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('acuity-view').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'block';^)
     ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn active';^)
     ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn6').className = 'tab-btn';^)
     ROW + 1 call print(^  resizeLayout();^)
     ROW + 1 call print(^}^)
 
@@ -667,13 +773,31 @@ HEAD REPORT
     ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('med-container').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('acuity-view').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('dot-view').style.display = 'block';^)
     ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn active';^)
+    ROW + 1 call print(^  document.getElementById('btn6').className = 'tab-btn';^)
     ROW + 1 call print(^}^)
+
+    ROW + 1 call print(^function showAcuity() {^)
+    ROW + 1 call print(^  document.getElementById('med-list').className = 'list-view mode-hidden';^)
+    ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('med-container').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('dot-view').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('acuity-view').style.display = 'block';^)
+    ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn';^)
+    ROW + 1 call print(^  document.getElementById('btn6').className = 'tab-btn active';^)
+    ROW + 1 call print(^}^)
+
     ROW + 1 call print(^</script>^)
 
     ROW + 1 call print(^<style>^)
@@ -788,6 +912,14 @@ HEAD REPORT
     ROW + 1 call print(^.summary-row td{border-top:1px solid #ccc;padding-top:4px;}^)
     ROW + 1 call print(^.ticks th{border-bottom:0;background:#fff}^)
     ROW + 1 call print(^.pill{display:inline-block;padding:2px 6px;border-radius:12px;background:#eef;color:#334;}^)
+    
+    ; --- ACUITY SCORE STYLING ---
+    ROW + 1 call print(^.acuity-banner { padding: 20px; color: #fff; font-size: 24px; font-weight: bold; text-align: center; margin: 15px; border-radius: 5px; }^)
+    ROW + 1 call print(^.acuity-Red { background-color: #dc3545; border: 2px solid #b02a37; }^)
+    ROW + 1 call print(^.acuity-Amber { background-color: #ffc107; color: #333; border: 2px solid #d39e00; }^)
+    ROW + 1 call print(^.acuity-Green { background-color: #28a745; border: 2px solid #1e7e34; }^)
+    ROW + 1 call print(^.acuity-reasons { background: #f8f9fa; border: 1px solid #ddd; padding: 15px; margin: 15px; border-radius: 5px; font-size: 14px; }^)
+    
     ROW + 1 call print(^</style>^)
     ROW + 1 call print(^</head>^)
 
@@ -805,6 +937,28 @@ HEAD REPORT
     ROW + 1 call print(^<div id='btn3' class='tab-btn' onclick='showInfusions()'>Infusions &amp; Labels</div>^)
     ROW + 1 call print(^<div id='btn4' class='tab-btn' onclick='showGP()'>Medication Details (GP)</div>^)
     ROW + 1 call print(^<div id='btn5' class='tab-btn' onclick='showHolder2()'>Antimicrobial DOT</div>^)
+    ROW + 1 call print(^<div id='btn6' class='tab-btn' onclick='showAcuity()'>Maternity Acuity</div>^)
+    ROW + 1 call print(^</div>^)
+    
+    ; =========================================================================
+    ; TAB 6: ACUITY VIEW
+    ; =========================================================================
+    ROW + 1 call print(^<div id='acuity-view' style='display:none;' class='content-box'>^)
+    ROW + 1 call print(CONCAT(^<div class='acuity-banner acuity-^, rec_acuity->color, ^'>Acuity Score: ^, TRIM(CNVTSTRING(rec_acuity->score)), ^ (Triage: ^, rec_acuity->color, ^)</div>^))
+    
+    ROW + 1 call print(^<div class='acuity-reasons'>^)
+    ROW + 1 call print(^<h3 style='margin-top:0;'>Triggered Risk Factors</h3><ul>^)
+    
+    IF (rec_acuity->reason_cnt > 0)
+        FOR (x = 1 TO rec_acuity->reason_cnt)
+            ROW + 1 call print(CONCAT(^<li><b>[+^, TRIM(CNVTSTRING(rec_acuity->reasons[x].points)), ^ Points]</b> ^, rec_acuity->reasons[x].text, ^</li>^))
+        ENDFOR
+    ELSE
+        ROW + 1 call print(^<li>No specific high-risk triggers detected (Routine Low-Acuity).</li>^)
+    ENDIF
+    
+    ROW + 1 call print(^</ul></div>^)
+    ROW + 1 call print(^<div class='legend' style='margin:15px;'><i>References: ISMP High-Alert Medications in Acute Care; WHO Medication Without Harm (Polypharmacy criteria); HIQA National Standards for Patient Safety. Note: Laboratory parameters are excluded from this calculation.</i></div>^)
     ROW + 1 call print(^</div>^)
 
     ; =========================================================================
@@ -955,7 +1109,7 @@ DETAIL
         call print(^</div>^)
 
         IF (
-               FINDSTRING("CONTINUOUS",   CNVTUPPER(DISP_CAT)) > 0
+                FINDSTRING("CONTINUOUS",   CNVTUPPER(DISP_CAT)) > 0
             OR FINDSTRING("CONTINUOUS",   CNVTUPPER(ORDER_FORM)) > 0
             OR FINDSTRING("INFUSION",     CNVTUPPER(ORDER_FORM)) > 0
             OR FINDSTRING("ML/HR",        CNVTUPPER(CDL)) > 0
