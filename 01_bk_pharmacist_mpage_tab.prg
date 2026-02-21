@@ -32,7 +32,7 @@ HEAD REPORT
 WITH NOCOUNTER, MAXREC=1
 
 ; =============================================================================
-; 2. GP MEDICATION DETAILS - BLOBGET + MEMREALLOC, DETAIL LOOP FOR MULTI-RECORD
+; 2. GP MEDICATION DETAILS
 ; =============================================================================
 RECORD rec_blob (
   1 list[*]
@@ -75,29 +75,22 @@ DETAIL
     nCnt = size(rec_blob->list, 5) + 1
     stat = alterlist(rec_blob->list, nCnt)
     rec_blob->list[nCnt].event_id = CE.EVENT_ID
-    
-    ; Strip default 00:00 midnight times to clean up the display
     rec_blob->list[nCnt].dt_tm    = REPLACE(FORMAT(CE.PERFORMED_DT_TM, "DD/MM/YYYY HH:MM"), " 00:00", "", 0)
-    
     rec_blob->list[nCnt].prsnl    = PR.NAME_FULL_FORMATTED
 
     tlen       = 0
     bsize      = 0
     vCleanText = " "
 
-    ; Step 1: BLOBGET - fetches full gc32768 content past vc truncation limit
     bloblen = blobgetlen(CB.BLOB_CONTENTS)
     stat    = memrealloc(blob_in, 1, build("C", bloblen))
     totlen  = blobget(blob_in, 0, CB.BLOB_CONTENTS)
 
-    ; Step 2: Decompress - output buffer sized to uncompressed length
     stat = memrealloc(blob_out, 1, build("C", CB.BLOB_LENGTH))
     call uar_ocf_uncompress(blob_in, textlen(blob_in), blob_out, CB.BLOB_LENGTH, tlen)
 
-    ; Step 3: RTF to plain text - output buffer sized to uncompressed length
     IF (tlen > 0)
         stat = memrealloc(rtf_out, 1, build("C", CB.BLOB_LENGTH))
-        
         IF (FINDSTRING("{\rtf", blob_out, 1, 0) > 0)
             blob_out = REPLACE(blob_out, "\line", "\par", 0)
             tlen = TEXTLEN(blob_out)
@@ -108,7 +101,6 @@ DETAIL
         ENDIF
     ENDIF
 
-    ; Step 4: Clean text
     IF (bsize > 0)
         vCleanText = REPLACE(SUBSTRING(1, bsize, rtf_out), CHAR(0), " ", 0)
     ENDIF
@@ -119,17 +111,11 @@ DETAIL
         vCleanText = REPLACE(vCleanText, "&",     "&amp;", 0)
         vCleanText = REPLACE(vCleanText, "<",     "&lt;",  0)
         vCleanText = REPLACE(vCleanText, ">",     "&gt;",  0)
-        
         vCleanText = REPLACE(vCleanText, concat(CHAR(13), CHAR(10)), "<br />", 0)
         vCleanText = REPLACE(vCleanText, CHAR(13), "<br />", 0)
         vCleanText = REPLACE(vCleanText, CHAR(10), "<br />", 0)
-        vCleanText = REPLACE(vCleanText, CHAR(11), "<br />", 0)
-        
         vCleanText = REPLACE(vCleanText, "<br /><br /><br /><br /><br /><br />", "<br /><br />", 0)
-        vCleanText = REPLACE(vCleanText, "<br /><br /><br /><br /><br />", "<br /><br />", 0)
         vCleanText = REPLACE(vCleanText, "<br /><br /><br /><br />", "<br /><br />", 0)
-        vCleanText = REPLACE(vCleanText, "<br /><br /><br />", "<br /><br />", 0)
-        
         vCleanText = TRIM(vCleanText, 3)
     ENDIF
 
@@ -138,7 +124,7 @@ DETAIL
 WITH NOCOUNTER, RDBARRAYFETCH=1
 
 ; ========================================================================== 
-; 3. ANTIMICROBIAL DOT - Variable Declarations                               
+; 3. ANTIMICROBIAL DOT
 ; ========================================================================== 
 declare v_font_size   = vc with noconstant("13px")
 declare v_med_font_size = vc with noconstant("14px")
@@ -201,9 +187,6 @@ declare v_seglen      = i4 with noconstant(0)
 declare v_rowseg      = vc with noconstant(""), maxlen=65534
 declare v_chunk       = i4 with constant(32000)
 
-; ========================================================================== 
-; 3a. ANTIMICROBIAL DOT - PASS 1: Determine Date Range for Chart Axis        
-; ========================================================================== 
 select into "nl:"
   day_dt = cnvtdate(ce.performed_dt_tm)
 , name_full = p.name_full_formatted
@@ -265,45 +248,21 @@ if (v_first = 1)
   set v_header_html = ""
 else
   set v_days = (datetimediff(v_max_dt, v_min_dt, 7)) + 1
-  set v_axis_html = concat(
-    '<div class="axisbar"><div>Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"),
-    ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), '</div></div>'
-  )
+  set v_axis_html = concat('<div class="axisbar"><div>Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), '</div></div>')
   set v_header_html = ''
   set v_i = 0
   while (v_i < v_days)
     if (v_i = 0 or format(v_min_dt + v_i,"MM;;D") != format(v_min_dt + v_i - 1,"MM;;D"))
-      set v_header_html = concat(v_header_html,
-        '<span class="tick" title="', format(v_min_dt + v_i,"YYYY-MM-DD;;D"), '">',
-          '<span class="mo">', format(v_min_dt + v_i,"MMM;;D"), '</span>',
-          format(v_min_dt + v_i,"DD;;D"), '</span>'
-      )
+      set v_header_html = concat(v_header_html, '<span class="tick" title="', format(v_min_dt + v_i,"YYYY-MM-DD;;D"), '"><span class="mo">', format(v_min_dt + v_i,"MMM;;D"), '</span>', format(v_min_dt + v_i,"DD;;D"), '</span>')
     else
-      set v_header_html = concat(v_header_html,
-        '<span class="tick" title="', format(v_min_dt + v_i,"YYYY-MM-DD;;D"), '">',
-        format(v_min_dt + v_i,"DD;;D"), '</span>'
-      )
+      set v_header_html = concat(v_header_html, '<span class="tick" title="', format(v_min_dt + v_i,"YYYY-MM-DD;;D"), '">', format(v_min_dt + v_i,"DD;;D"), '</span>')
     endif
     set v_i = v_i + 1
   endwhile
 endif
 
-set v_chart_meta = concat('')
-set v_table_meta = '<div class="sub"><b>MRN:</b> '
-set v_table_meta = concat(v_table_meta, v_mrn, " &nbsp; <b>Name:</b> ", v_name)
-set v_table_meta = concat(v_table_meta, " &nbsp; <b>Begin:</b> ", v_begin_dt_str)
-set v_table_meta = concat(v_table_meta, " &nbsp;  End:</b> ", v_end_dt_str)
-set v_table_meta = concat(v_table_meta, " &nbsp; <b>Admission:</b> ", v_admit_dt)
-set v_table_meta = concat(v_table_meta, " &nbsp; <b>LOS:</b> ", v_los, " days")
-set v_table_meta = concat(v_table_meta, " &nbsp; <b>Lookback:</b> ", v_lookback, " days</div>")
-
-; ========================================================================== 
-; 3b. ANTIMICROBIAL DOT - PASS 2: Build Chart Rows (per Medication)          
-; ========================================================================== 
 select into "nl:"
-  oc.primary_mnemonic
-, m.event_id
-, mdy = format(ce.performed_dt_tm, "YYYYMMDD;;D")
+  oc.primary_mnemonic, m.event_id, mdy = format(ce.performed_dt_tm, "YYYYMMDD;;D")
 , indication = substring(1,60,trim(od_indication.oe_field_display_value))
 , discontinue_reason = substring(1,60,trim(od_dcreason.oe_field_display_value))
 from
@@ -319,8 +278,7 @@ join m where m.event_id = ce.event_id
 join o where o.order_id = m.template_order_id
 join cl where cl.event_id = ce.event_id
 join cr where cr.event_cd = ce.event_cd
-join oc where oc.catalog_cd = cr.parent_cd
-  and oc.catalog_type_cd = 2516
+join oc where oc.catalog_cd = cr.parent_cd and oc.catalog_type_cd = 2516
 join ocs where ocs.catalog_cd = oc.catalog_cd
 join oe where oe.oe_format_id = ocs.oe_format_id
   and oe.oe_format_id in (14497910, 14498121)
@@ -375,44 +333,14 @@ foot oc.primary_mnemonic
         v_count_str = ""
       endif
       v_count_i = cnvtint(v_count_str)
-
-      v_indication = ""
-      v_discontinue_rsn = ""
-      v_findpos = findstring(concat("~", v_key8, ":"), v_details_kv)
-      if (v_findpos > 0)
-        v_after  = substring(v_findpos + 10, textlen(v_details_kv) - (v_findpos + 9), v_details_kv)
-        v_endpos = findstring("~", v_after)
-        v_detail_str = ""
-        if (v_endpos > 0) v_detail_str = substring(1, v_endpos - 1, v_after)
-        else v_detail_str = v_after
-        endif
-        v_pipe_pos = findstring("|", v_detail_str)
-        if (v_pipe_pos > 0)
-          v_indication = substring(1, v_pipe_pos - 1, v_detail_str)
-          v_discontinue_rsn = substring(v_pipe_pos + 1, textlen(v_detail_str) - v_pipe_pos, v_detail_str)
-        else
-          v_indication = v_detail_str
-        endif
-      endif
-
       if (v_count_i > 0)
-        v_title = concat(v_curr_med, " - ", format(v_min_dt + v_i,"DD/MM/YYYY;;D"), " / ", v_count_str,
-                          if(v_count_i = 1) " admin" else " admins" endif,
-                          "&#10;Indication: ", v_indication,
-                          "&#10;Discontinue Reason: ", v_discontinue_rsn)
-        v_strip = concat(v_strip, '<span class="cell on" title="', v_title, '">', trim(v_count_str), '</span>')
+        v_strip = concat(v_strip, '<span class="cell on">', trim(v_count_str), '</span>')
       else
-        v_strip = concat(v_strip, '<span class="cell" title="', format(v_min_dt + v_i,"DD/MM/YYYY;;D"), '"></span>')
+        v_strip = concat(v_strip, '<span class="cell"></span>')
       endif
       v_i = v_i + 1
     endwhile
-    
-    v_chart_rows = concat(v_chart_rows, 
-      '<tr', if(mod(v_row_cnt, 2) = 0) ' class="even"' else '' endif, '>',
-      '<td class="label medname sticky-med">', v_curr_med, '</td>',
-      '<td class="label dot-val sticky-dot"><span class="pill" title="', v_curr_med, ' - Total Days of Therapy: ', trim(cnvtstring(v_med_dot_total)), '">', cnvtstring(v_med_dot_total), '</span></td>',
-      '<td><div class="strip">', v_strip, '</div></td>',
-      '</tr>')
+    v_chart_rows = concat(v_chart_rows, '<tr', if(mod(v_row_cnt, 2) = 0) ' class="even"' else '' endif, '><td class="label medname sticky-med">', v_curr_med, '</td><td class="label dot-val sticky-dot"><span class="pill">', cnvtstring(v_med_dot_total), '</span></td><td><div class="strip">', v_strip, '</div></td></tr>')
   endif
 
 foot report
@@ -423,121 +351,78 @@ foot report
       while (v_i < v_days)
           v_key8 = format(v_min_dt + v_i, "YYYYMMDD;;D")
           if (findstring(concat("~", v_key8, "~"), v_all_days_list) > 0)
-              v_sum_strip = concat(v_sum_strip, '<span class="cell sum-yes" title="Antimicrobial Administered"></span>')
+              v_sum_strip = concat(v_sum_strip, '<span class="cell sum-yes"></span>')
           else
-              v_sum_strip = concat(v_sum_strip, '<span class="cell sum-no" title="No Antimicrobials"></span>')
+              v_sum_strip = concat(v_sum_strip, '<span class="cell sum-no"></span>')
           endif
-          v_spacer_strip = concat(v_spacer_strip, '<span class="cell spacer-bit"></span>')
           v_i = v_i + 1
       endwhile
-       
-      v_chart_rows = concat(v_chart_rows,
-          '<tr class="summary-row">',
-            '<td class="label sticky-med">Antimicrobial Summary</td>',
-            '<td class="label sticky-dot"></td>',
-            '<td><div class="strip">', v_sum_strip, '</div></td>',
-          '</tr>')
+      v_chart_rows = concat(v_chart_rows, '<tr class="summary-row"><td class="label sticky-med">Antimicrobial Summary</td><td class="label sticky-dot"></td><td><div class="strip">', v_sum_strip, '</div></td></tr>')
   endif
 with nocounter
 
-; ========================================================================== 
-; 3c. ANTIMICROBIAL DOT - PASS 3: Build Table Rows (per Order)               
-; ========================================================================== 
-set v_table_rows = ""
-select into "nl:"
-  oc.primary_mnemonic
-, day_key = format(ce.performed_dt_tm, "yyyymmdd")
-, o.current_start_dt_tm
-, o_order_status_disp = uar_get_code_display(o.order_status_cd)
-, o.status_dt_tm
-, indication = substring(1,60,trim(od_indication.oe_field_display_value))
-, ordered_target_dose = oi.ordered_dose
-, ordered_target_dose_unit = uar_get_code_display(oi.ordered_dose_unit_cd)
-, o.order_id
-from
-  person p, clinical_event ce, med_admin_event m, orders o, order_ingredient oi,
-  ce_event_order_link cl, code_value_event_r cr, order_catalog oc,
-  order_catalog_synonym ocs, order_entry_format oe, order_detail od_indication
-
-plan p where p.person_id = CNVTREAL($patient_id)
-join ce where ce.person_id = p.person_id
-  and ce.performed_dt_tm between cnvtdatetime(curdate-$LOOKBACK,0) and cnvtdatetime(curdate,235959)
-join m where m.event_id = ce.event_id
-  and m.event_type_cd = value(uar_get_code_by("MEANING",4000040,"TASKCOMPLETE"))
-join o where o.order_id = m.template_order_id
-join oi where oi.order_id = o.order_id
-join cl where cl.event_id = ce.event_id
-join cr where cr.event_cd = ce.event_cd
-join oc where oc.catalog_cd = cr.parent_cd
-  and oc.catalog_type_cd = 2516
-join ocs where ocs.catalog_cd = oc.catalog_cd
-join oe where oe.oe_format_id = ocs.oe_format_id
-  and oe.oe_format_id in (14497910, 14498121)
-join od_indication where od_indication.order_id = outerjoin(o.order_id)
-  and od_indication.oe_field_meaning_id = outerjoin(15)
-
-order by o.order_id, cnvtupper(oc.primary_mnemonic), day_key
-
-head report
-  v_table_rows = ""
-  v_row_cnt = 0
-
-head o.order_id
-  v_drug  = oc.primary_mnemonic
-  v_dose  = 0.0
-  v_unit  = ""
-  v_ind   = ""
-  v_start = ""
-  v_stat  = ""
-  v_sdt   = ""
-  v_oid   = cnvtstring(o.order_id)
-  v_dot   = 0
-
-head day_key
-  v_dot = v_dot + 1
-
-foot o.order_id
-  v_dose  = ordered_target_dose
-  v_unit  = ordered_target_dose_unit
-  v_ind   = indication
-  v_start = format(o.current_start_dt_tm,"DD/MM/YYYY;;d")
-  v_stat  = o_order_status_disp
-  v_sdt   = format(o.status_dt_tm,"DD/MM/YYYY;;d")
-  
-  v_row_cnt = v_row_cnt + 1
-  
-  v_table_rows = concat(v_table_rows,
-    '<tr', if(mod(v_row_cnt, 2) = 0) ' class="even"' else '' endif, '>',
-      "<td>", v_drug, "</td>",
-      '<td class="dot-val"><span class="pill">', cnvtstring(v_dot), '</span></td>',
-      "<td>", trim(format(v_dose,"########.##")), " ", v_unit, "</td>",
-      "<td>", v_ind, "</td>",
-      "<td>", v_start, "</td>",
-      "<td>", v_stat, "</td>",
-      "<td>", v_sdt, "</td>",
-      "<td>", v_oid, "</td>",
-    "</tr>"
-  )
-with nocounter
-
-if (textlen(v_table_rows) = 0)
-  set v_table_rows = '<tr><td colspan="8">No antimicrobial orders found in the selected window.</td></tr>'
-endif
 
 ; =============================================================================
-; 3.5 MATERNITY ACUITY SCORE CALCULATION 
+; 3.5 MATERNITY ACUITY SCORE CALCULATION - EVIDENCE BASED
 ; =============================================================================
 RECORD rec_acuity (
     1 score = i4
     1 color = vc
     1 poly_count = i4
     1 reason_cnt = i4
+    1 flag_ebl = i2
+    1 flag_transfusion = i2
+    1 flag_preeclampsia = i2
+    1 flag_dvt = i2
+    1 flag_epilepsy = i2
+    1 flag_insulin = i2
+    1 flag_antiepileptic = i2
+    1 flag_anticoag = i2
+    1 flag_antihypertensive = i2
+    1 flag_neuraxial = i2
+    1 flag_poly_severe = i2
+    1 flag_poly_mod = i2
     1 reasons[*]
         2 text = vc
         2 points = i4
 )
 
-; Calculate Polypharmacy & High Risk Meds
+; Step A1: Gather Active Problems
+SELECT INTO "NL:"
+    NOM = CNVTUPPER(N.SOURCE_STRING)
+FROM PROBLEM P, NOMENCLATURE N
+PLAN P WHERE P.PERSON_ID = CNVTREAL($patient_id)
+    AND P.ACTIVE_IND = 1
+    AND P.LIFE_CYCLE_STATUS_CD = 3301.00 ; Active Problem
+JOIN N WHERE N.NOMENCLATURE_ID = P.NOMENCLATURE_ID
+DETAIL
+    IF (FINDSTRING("PRE-ECLAMPSIA", NOM) > 0 OR FINDSTRING("PREECLAMPSIA", NOM) > 0)
+        rec_acuity->flag_preeclampsia = 1
+    ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", NOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", NOM) > 0 OR FINDSTRING("DVT", NOM) > 0)
+        rec_acuity->flag_dvt = 1
+    ELSEIF (FINDSTRING("EPILEPSY", NOM) > 0 OR FINDSTRING("SEIZURE", NOM) > 0)
+        rec_acuity->flag_epilepsy = 1
+    ENDIF
+WITH NOCOUNTER
+
+; Step A2: Gather Active Diagnoses
+SELECT INTO "NL:"
+    NOM = CNVTUPPER(N.SOURCE_STRING)
+FROM DIAGNOSIS D, NOMENCLATURE N
+PLAN D WHERE D.PERSON_ID = CNVTREAL($patient_id)
+    AND D.ACTIVE_IND = 1
+JOIN N WHERE N.NOMENCLATURE_ID = D.NOMENCLATURE_ID
+DETAIL
+    IF (FINDSTRING("PRE-ECLAMPSIA", NOM) > 0 OR FINDSTRING("PREECLAMPSIA", NOM) > 0)
+        rec_acuity->flag_preeclampsia = 1
+    ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", NOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", NOM) > 0 OR FINDSTRING("DVT", NOM) > 0)
+        rec_acuity->flag_dvt = 1
+    ELSEIF (FINDSTRING("EPILEPSY", NOM) > 0 OR FINDSTRING("SEIZURE", NOM) > 0)
+        rec_acuity->flag_epilepsy = 1
+    ENDIF
+WITH NOCOUNTER
+
+; Step B: Calculate Polypharmacy & High Risk Medications (Active Inpatient Only)
 SELECT INTO "NL:"
     MNEM = CNVTUPPER(O.ORDER_MNEMONIC)
 FROM ORDERS O
@@ -547,41 +432,123 @@ PLAN O WHERE O.PERSON_ID = CNVTREAL($patient_id)
 DETAIL
     rec_acuity->poly_count = rec_acuity->poly_count + 1
 
-    IF (FINDSTRING("TINZAPARIN", MNEM) > 0 OR FINDSTRING("HEPARIN", MNEM) > 0)
-        rec_acuity->score = rec_acuity->score + 2
-        rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
-        stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-        rec_acuity->reasons[rec_acuity->reason_cnt].text = "High Risk Med: Anticoagulant"
-        rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
+    IF (FINDSTRING("TINZAPARIN", MNEM) > 0 OR FINDSTRING("HEPARIN", MNEM) > 0 OR FINDSTRING("ENOXAPARIN", MNEM) > 0)
+        rec_acuity->flag_anticoag = 1
     ELSEIF (FINDSTRING("INSULIN", MNEM) > 0)
-        rec_acuity->score = rec_acuity->score + 2
-        rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
-        stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-        rec_acuity->reasons[rec_acuity->reason_cnt].text = "High Risk Med: Insulin"
-        rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
-    ELSEIF (FINDSTRING("LABETALOL", MNEM) > 0 OR FINDSTRING("NIFEDIPINE", MNEM) > 0)
-        rec_acuity->score = rec_acuity->score + 2
-        rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
-        stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-        rec_acuity->reasons[rec_acuity->reason_cnt].text = "High Risk Med: Antihypertensive"
-        rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
+        rec_acuity->flag_insulin = 1
+    ELSEIF (FINDSTRING("LEVETIRACETAM", MNEM) > 0 OR FINDSTRING("LAMOTRIGINE", MNEM) > 0 OR FINDSTRING("VALPROATE", MNEM) > 0 OR FINDSTRING("CARBAMAZEPINE", MNEM) > 0)
+        rec_acuity->flag_antiepileptic = 1
+    ELSEIF (FINDSTRING("LABETALOL", MNEM) > 0 OR FINDSTRING("NIFEDIPINE", MNEM) > 0 OR FINDSTRING("METHYLDOPA", MNEM) > 0)
+        rec_acuity->flag_antihypertensive = 1
     ELSEIF (FINDSTRING("BUPIVACAINE", MNEM) > 0 OR FINDSTRING("LEVOBUPIVACAINE", MNEM) > 0)
-        rec_acuity->score = rec_acuity->score + 2
-        rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
-        stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-        rec_acuity->reasons[rec_acuity->reason_cnt].text = "High Risk Med: Neuraxial / Epidural"
-        rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
+        rec_acuity->flag_neuraxial = 1
     ENDIF
 WITH NOCOUNTER
 
-; Add polypharmacy score logic
 IF (rec_acuity->poly_count >= 10)
+    SET rec_acuity->flag_poly_severe = 1
+ELSEIF (rec_acuity->poly_count >= 5)
+    SET rec_acuity->flag_poly_mod = 1
+ENDIF
+
+; Step C: Check Clinical Events for EBL and Transfusions
+SELECT INTO "NL:"
+FROM CLINICAL_EVENT CE
+PLAN CE WHERE CE.PERSON_ID = CNVTREAL($patient_id)
+    AND CE.EVENT_CD IN (15071366.00, 82546829.00, 15083551.00, 19995695.00) 
+    AND CE.VALID_UNTIL_DT_TM > SYSDATE
+    AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("7,D")
+    AND CE.RESULT_STATUS_CD IN (25, 34, 35)
+DETAIL
+    IF (CE.EVENT_CD = 15071366.00) ; Transfusion
+        rec_acuity->flag_transfusion = 1
+    ELSEIF (CE.EVENT_CD IN (82546829.00, 15083551.00, 19995695.00) AND CNVTREAL(CE.RESULT_VAL) > 1000.0)
+        rec_acuity->flag_ebl = 1
+    ENDIF
+WITH NOCOUNTER
+
+; Step D: Tally the Final Score & Populate Reasons Array
+IF (rec_acuity->flag_transfusion = 1 OR rec_acuity->flag_ebl = 1)
+    SET rec_acuity->score = rec_acuity->score + 3
+    SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+    SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Massive Haemorrhage (>1000ml EBL) or Transfusion"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+ENDIF
+
+IF (rec_acuity->flag_preeclampsia = 1)
+    SET rec_acuity->score = rec_acuity->score + 3
+    SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+    SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Active Diagnosis/Problem: Pre-Eclampsia"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+ENDIF
+
+IF (rec_acuity->flag_dvt = 1)
+    SET rec_acuity->score = rec_acuity->score + 3
+    SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+    SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Active Diagnosis/Problem: DVT or Pulmonary Embolism"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+ENDIF
+
+IF (rec_acuity->flag_epilepsy = 1)
+    SET rec_acuity->score = rec_acuity->score + 3
+    SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+    SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Active Diagnosis/Problem: Epilepsy/Seizure Disorder"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+ENDIF
+
+IF (rec_acuity->flag_insulin = 1)
+    SET rec_acuity->score = rec_acuity->score + 3
+    SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+    SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "High Alert Med: Insulin"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+ENDIF
+
+IF (rec_acuity->flag_antiepileptic = 1)
+    SET rec_acuity->score = rec_acuity->score + 3
+    SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+    SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "High Alert Med: Antiepileptic"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+ENDIF
+
+IF (rec_acuity->flag_poly_severe = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].text = CONCAT("Severe Polypharmacy (", TRIM(CNVTSTRING(rec_acuity->poly_count)), " active meds)")
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
-ELSEIF (rec_acuity->poly_count >= 5)
+ENDIF
+
+IF (rec_acuity->flag_anticoag = 1)
+    SET rec_acuity->score = rec_acuity->score + 2
+    SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+    SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Targeted Med: Anticoagulant (LMWH/Heparin)"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
+ENDIF
+
+IF (rec_acuity->flag_antihypertensive = 1)
+    SET rec_acuity->score = rec_acuity->score + 2
+    SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+    SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Targeted Med: Antihypertensive"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
+ENDIF
+
+IF (rec_acuity->flag_neuraxial = 1)
+    SET rec_acuity->score = rec_acuity->score + 1
+    SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+    SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Medication: Neuraxial/Epidural Infusion"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 1
+ENDIF
+
+IF (rec_acuity->flag_poly_mod = 1)
     SET rec_acuity->score = rec_acuity->score + 1
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
@@ -589,31 +556,6 @@ ELSEIF (rec_acuity->poly_count >= 5)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 1
 ENDIF
 
-; Check Clinical Events for Massive EBL or Blood Transfusions (7 day lookback)
-SELECT INTO "NL:"
-FROM CLINICAL_EVENT CE
-PLAN CE WHERE CE.PERSON_ID = CNVTREAL($patient_id)
-    AND CE.EVENT_CD IN (15071366.00, 82546829.00) ; Blood Volume Infused, Total EBL
-    AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("7,D")
-    AND CE.RESULT_STATUS_CD IN (25, 34, 35)
-ORDER BY CE.EVENT_CD, CE.PERFORMED_DT_TM DESC
-HEAD CE.EVENT_CD
-    IF (CE.EVENT_CD = 15071366.00) ; Blood transfusion
-        rec_acuity->score = rec_acuity->score + 3
-        rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
-        stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-        rec_acuity->reasons[rec_acuity->reason_cnt].text = "Blood Transfusion documented in last 7 days"
-        rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
-    ELSEIF (CE.EVENT_CD = 82546829.00 AND CNVTREAL(CE.RESULT_VAL) > 1000) ; Total EBL > 1000
-        rec_acuity->score = rec_acuity->score + 3
-        rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
-        stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-        rec_acuity->reasons[rec_acuity->reason_cnt].text = "Massive Obstetric Haemorrhage (EBL > 1000ml)"
-        rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
-    ENDIF
-WITH NOCOUNTER
-
-; Determine Final Acuity Color Mapping
 IF (rec_acuity->score >= 3)
     SET rec_acuity->color = "Red"
 ELSEIF (rec_acuity->score >= 1)
@@ -644,29 +586,24 @@ FROM
 
 PLAN D
 JOIN P WHERE P.PERSON_ID = outerjoin(CNVTREAL($patient_id))
-
 JOIN PA WHERE PA.PERSON_ID = outerjoin(P.PERSON_ID)
     AND PA.PERSON_ALIAS_TYPE_CD = outerjoin(10.00)
     AND PA.END_EFFECTIVE_DT_TM > outerjoin(SYSDATE)
-
 JOIN O WHERE O.PERSON_ID = outerjoin(P.PERSON_ID)
     AND O.ORDER_STATUS_CD = outerjoin(2550.00)
     AND O.ACTIVE_IND = outerjoin(1)
     AND O.ORIG_ORDER_DT_TM > outerjoin(CNVTLOOKBEHIND("400,D", CNVTDATETIME(CURDATE,curtime)))
     AND O.TEMPLATE_ORDER_ID = outerjoin(0)
-
 JOIN OD_CAT WHERE OD_CAT.ORDER_ID = outerjoin(O.ORDER_ID)
     AND OD_CAT.OE_FIELD_MEANING_ID = outerjoin(2007)
-
 JOIN OD_FORM WHERE OD_FORM.ORDER_ID = outerjoin(O.ORDER_ID)
     AND OD_FORM.OE_FIELD_MEANING_ID = outerjoin(2014)
-
 ORDER BY
     D.SEQ
     , O.ORDER_MNEMONIC
 
 ; =============================================================================
-; 5. HTML OUTPUT - IE5 QUIRKS MODE COMPATIBLE
+; 5. HTML OUTPUT
 ; =============================================================================
 HEAD REPORT
     ROW + 1 call print(^<!DOCTYPE html>^)
@@ -678,7 +615,6 @@ HEAD REPORT
     ROW + 1 call print(concat(^var totalBlobs = ^, TRIM(CNVTSTRING(size(rec_blob->list, 5))), ^;^))
     ROW + 1 call print(^var currentBlob = 1;^)
     
-    ; Dynamic Resizer for IE5 Quirks Mode
     ROW + 1 call print(^function resizeLayout() {^)
     ROW + 1 call print(^  var h = document.body.clientHeight - 90;^)
     ROW + 1 call print(^  if (h < 300) h = 300;^)
@@ -688,6 +624,8 @@ HEAD REPORT
     ROW + 1 call print(^  if(table) table.style.height = h + 'px';^)
     ROW + 1 call print(^  if(side) side.style.height = h + 'px';^)
     ROW + 1 call print(^  if(main) main.style.height = (h - 32) + 'px';^)
+    ROW + 1 call print(^  var contentBoxes = document.getElementsByClassName('content-box');^)
+    ROW + 1 call print(^  for(var i=0; i<contentBoxes.length; i++) { contentBoxes[i].style.height = h + 'px'; }^)
     ROW + 1 call print(^}^)
     ROW + 1 call print(^window.onresize = resizeLayout;^)
 
@@ -797,7 +735,6 @@ HEAD REPORT
     ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn';^)
     ROW + 1 call print(^  document.getElementById('btn6').className = 'tab-btn active';^)
     ROW + 1 call print(^}^)
-
     ROW + 1 call print(^</script>^)
 
     ROW + 1 call print(^<style>^)
@@ -820,7 +757,7 @@ HEAD REPORT
     ROW + 1 call print(^.print-link:hover { text-decoration: underline; }^)
     ROW + 1 call print(^.type-badge { font-size:10px; font-weight:bold; padding:3px 8px; color:white; }^)
     
-    ; --- LEGACY TABLE PANE CSS WITH NAVIGATION ---
+    ; GP PANE
     ROW + 1 call print(^.gp-sidebar { background: #f8f9fa; border-right: 1px solid #ddd; vertical-align: top; width: 130px; }^)
     ROW + 1 call print(^.gp-content { vertical-align: top; background: #fff; border: 1px solid #ddd; }^)
     ROW + 1 call print(^.gp-content-header { background: #f4f6f8; padding: 3px 8px; border-bottom: 1px solid #ddd; text-align: right; }^)
@@ -835,6 +772,55 @@ HEAD REPORT
     ROW + 1 call print(^.blob-meta { background: #f4f6f8; padding: 8px 12px; font-size: 12px; margin-bottom: 10px; font-weight: bold; color: #444; }^)
     ROW + 1 call print(^.blob-text { white-space: pre-wrap; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.6; color: #222; margin-top: 0; }^)
     
+    ; DOT
+    ROW + 1 call print(^.wrap *, .wrap *:before, .wrap *:after{box-sizing:border-box}^)
+    ROW + 1 call print(concat(^#dot-view {margin:0;font:^, v_font_size, ^/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;color:#111;background:#fff;padding:16px;}^))
+    ROW + 1 call print(^.wrap{max-width:1200px;margin:0 auto;}^)
+    ROW + 1 call print(^.wrap h1{font-size:18px;margin:0 0 8px;}^)
+    ROW + 1 call print(^.wrap h2{font-size:15px;margin:16px 0 8px;padding-top:0;}^)
+    ROW + 1 call print(^.legend{margin-top:6px;color:#555;font-size:12px}^)
+    ROW + 1 call print(^.axisbar{display:flex;justify-content:space-between;margin:10px 0 8px calc(260px + 46px + 4px);color:#333;font-size:12px;}^)
+    ROW + 1 call print(^.chart-wrap{overflow-x:auto;border:1px solid #ddd;background:#fff;margin-bottom:12px;}^)
+    ROW + 1 call print(^table.chart-tbl{border-collapse:collapse;border-spacing:0;width:100%;}^)
+    ROW + 1 call print(^col.med{width:260px} col.dot{width:46px}^)
+    ROW + 1 call print(^table.chart-tbl th, table.chart-tbl td{vertical-align:top;padding:0px 4px;text-align:left;font-size:12px;}^)
+    ROW + 1 call print(^table.chart-tbl thead th.label {background:#e7eaee !important;color:#2f3c4b;border:1px solid #b5b5b5;padding:4px 8px !important;font-weight:600 !important;height:26px !important;line-height:1.2 !important;vertical-align:middle !important;}^)
+    ROW + 1 call print(^table.chart-tbl thead tr.ticks th{background:transparent;border:0;padding:0;color:#555;}^)
+    ROW + 1 call print(^table.chart-tbl thead tr.ticks th.sticky-med, table.chart-tbl thead tr.ticks th.sticky-dot {border-right:1px solid #ccc;border-bottom:1px solid #b5b5b5;}^)
+    ROW + 1 call print(^table.chart-tbl tbody td.label{vertical-align:middle;padding:2px 6px;}^)
+    ROW + 1 call print(^.dot-val{text-align:center !important;vertical-align:middle !important;background:#fff;}^)
+    ROW + 1 call print(^table.chart-tbl tbody th.sticky-med, table.chart-tbl tbody td.sticky-med {position:sticky;left:0;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;padding-left:8px;width:260px;}^)
+    ROW + 1 call print(^table.chart-tbl tbody th.sticky-dot, table.chart-tbl tbody td.sticky-dot {position:sticky;left:260px;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;width:46px;}^)
+    ROW + 1 call print(^tr.even td.sticky-med, tr.even td.sticky-dot, tr.even td.dot-val { background: #f5f5f5 !important; }^)
+    ROW + 1 call print(^.strip{display:flex;gap:1px;align-items:center;padding:4px 0;font-size:0;white-space:nowrap;overflow:visible;}^)
+    ROW + 1 call print(^.cell,.tick{flex:0 0 14px;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;text-align:center;font-size:10px;}^)
+    ROW + 1 call print(^.tick{color:#555;border:1px solid transparent;border-radius:3px;position:relative}^)
+    ROW + 1 call print(^.ticks .strip{padding-top:20px}^)
+    ROW + 1 call print(^.tick .mo{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:10px;color:#555;white-space:nowrap;pointer-events:none}^)
+    ROW + 1 call print(^.cell{border:1px solid #ccc;border-radius:3px;background:#fff}^)
+    ROW + 1 call print(^.cell.on{background:#0086CE;border-color:#0D66A1;color:#fff;font-weight:600}^)
+    ROW + 1 call print(^.cell.on:empty::before{content:"1"}^)
+    ROW + 1 call print(^.cell.sum-yes{background:#ED1C24;border-color:#cc0000;}^)
+    ROW + 1 call print(^.cell.sum-no{background:#A8D08D;border-color:#88b070;}^)
+    ROW + 1 call print(^.pill{display:inline-block;padding:2px 6px;border-radius:12px;background:#eef;color:#334;}^)
+    ROW + 1 call print(^.summary-row td{border-top:1px solid #ccc;padding-top:4px;}^)
+
+    ; ACUITY UI CSS
+    ROW + 1 call print(^.acuity-banner { padding: 15px; color: #fff; font-size: 22px; font-weight: bold; text-align: center; margin: 15px; border-radius: 5px; }^)
+    ROW + 1 call print(^.acuity-Red { background-color: #dc3545; border-bottom: 4px solid #b02a37; }^)
+    ROW + 1 call print(^.acuity-Amber { background-color: #ffc107; color: #333; border-bottom: 4px solid #d39e00; }^)
+    ROW + 1 call print(^.acuity-Green { background-color: #28a745; border-bottom: 4px solid #1e7e34; }^)
+    ROW + 1 call print(^.panel-header { font-size: 16px; margin-top: 0; padding-bottom: 8px; border-bottom: 2px solid #eee; color: #0076a8; }^)
+    ROW + 1 call print(^.ref-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 0px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }^)
+    ROW + 1 call print(^.ref-table tr { cursor: help; }^)
+    ROW + 1 call print(^.ref-table th, .ref-table td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; }^)
+    ROW + 1 call print(^.ref-table th { background-color: #f0f4f8; font-weight: bold; color: #333; }^)
+    ROW + 1 call print(^.tr-active.red-tier { background-color: #f8d7da !important; border-left: 5px solid #dc3545; font-weight: bold; }^)
+    ROW + 1 call print(^.tr-active.amber-tier { background-color: #fff3cd !important; border-left: 5px solid #ffc107; font-weight: bold; }^)
+    ROW + 1 call print(^.trigger-list { list-style-type: none; padding: 0; }^)
+    ROW + 1 call print(^.trigger-list li { background: #f8f9fa; margin-bottom: 8px; padding: 10px; border-left: 4px solid #0076a8; border-radius: 3px; font-size: 14px; }^)
+    ROW + 1 call print(^.pts-badge { display: inline-block; background: #333; color: #fff; padding: 3px 8px; border-radius: 12px; font-size: 12px; margin-right: 10px; font-weight: bold; }^)
+    
     ROW + 1 call print(^.mode-restricted .is-normal { display: none; }^)
     ROW + 1 call print(^.mode-restricted .is-infusion { display: none; }^)
     ROW + 1 call print(^.mode-all .is-infusion { display: none; }^)
@@ -842,88 +828,10 @@ HEAD REPORT
     ROW + 1 call print(^.mode-infusion .is-normal { display: none; }^)
     ROW + 1 call print(^.mode-hidden { display: none; }^)
 
-    ; --- EXACT CSS FROM PROVIDED DOT SCRIPT ---
-    ROW + 1 call print(^.wrap *, .wrap *:before, .wrap *:after{box-sizing:border-box}^)
-    ROW + 1 call print(concat(^#dot-view {margin:0;font:^, v_font_size, ^/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;color:#111;background:#fff;padding:16px;}^))
-    ROW + 1 call print(^.wrap{max-width:1200px;margin:0 auto;}^)
-    ROW + 1 call print(^.wrap h1{font-size:18px;margin:0 0 8px;}^)
-    ROW + 1 call print(^.wrap h2{font-size:15px;margin:16px 0 8px;padding-top:0;}^)
-    ROW + 1 call print(^.sub{color:#444;margin:4px 0 16px;}^)
-    ROW + 1 call print(^.legend{margin-top:6px;color:#555;font-size:12px}^)
-    ROW + 1 call print(^.axisbar{display:flex;justify-content:space-between;margin:10px 0 8px calc(260px + 46px + 4px);color:#333;font-size:12px;}^)
-    ROW + 1 call print(^.chart-wrap{overflow-x:auto;border:1px solid #ddd;background:#fff;margin-bottom:12px;}^)
-    ROW + 1 call print(^table.chart-tbl{border-collapse:collapse;border-spacing:0;width:100%;}^)
-    ROW + 1 call print(^col.med{width:260px}^)
-    ROW + 1 call print(^col.dot{width:46px}^)
-    ROW + 1 call print(^table.chart-tbl th, table.chart-tbl td{vertical-align:top;padding:0px 4px;text-align:left;font-size:12px;}^)
-    ROW + 1 call print(^table.chart-tbl thead th{vertical-align:middle;}^)
-    ROW + 1 call print(^table.data-tbl th {^)
-    ROW + 1 call print(^  background:#e7eaee !important;^)
-    ROW + 1 call print(^  color:#2f3c4b;^)
-    ROW + 1 call print(^  border:1px solid #b5b5b5;^)
-    ROW + 1 call print(^  padding:4px 8px !important;^)
-    ROW + 1 call print(^  text-align:left;^)
-    ROW + 1 call print(^  font-weight:600 !important;^)
-    ROW + 1 call print(^  height:26px !important;^)
-    ROW + 1 call print(^  line-height:1.2 !important;^)
-    ROW + 1 call print(^  vertical-align:middle !important;^)
-    ROW + 1 call print(^  font-size:12px !important;^)
-    ROW + 1 call print(^}^)
-    ROW + 1 call print(^table.chart-tbl thead th.label {^)
-    ROW + 1 call print(^  background:#e7eaee !important;^)
-    ROW + 1 call print(^  color:#2f3c4b;^)
-    ROW + 1 call print(^  border:1px solid #b5b5b5;^)
-    ROW + 1 call print(^  padding:4px 8px !important;^)
-    ROW + 1 call print(^  text-align:left;^)
-    ROW + 1 call print(^  font-weight:600 !important;^)
-    ROW + 1 call print(^  height:26px !important;^)
-    ROW + 1 call print(^  line-height:1.2 !important;^)
-    ROW + 1 call print(^  vertical-align:middle !important;^)
-    ROW + 1 call print(^  font-size:12px !important;^)
-    ROW + 1 call print(^}^)
-    ROW + 1 call print(^table.chart-tbl thead tr.ticks th{background:transparent;border:0;padding:0;color:#555;}^)
-    ROW + 1 call print(^table.chart-tbl thead tr.ticks th.sticky-med, table.chart-tbl thead tr.ticks th.sticky-dot {border-right:1px solid #ccc;border-bottom:1px solid #b5b5b5;}^)
-    ROW + 1 call print(concat(^table.chart-tbl td.medname{font-size:^, v_med_font_size, ^ !important;vertical-align:middle;padding:2px 6px;}^))
-    ROW + 1 call print(^table.chart-tbl tbody td.label{vertical-align:middle;padding:2px 6px;}^)
-    ROW + 1 call print(^.dot-val, table.data-tbl td.dot-val, table.chart-tbl td.dot-val{text-align:center !important;vertical-align:middle !important;}^)
-    ROW + 1 call print(^table.chart-tbl tbody td.dot-val{background:#fff;}^)
-    ROW + 1 call print(^table.chart-tbl tbody th.sticky-med, table.chart-tbl tbody td.sticky-med {position:sticky;left:0;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;padding-left:8px;width:260px;}^)
-    ROW + 1 call print(^table.chart-tbl tbody th.sticky-dot, table.chart-tbl tbody td.sticky-dot {position:sticky;left:260px;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;width:46px;}^)
-    ROW + 1 call print(^tr.even td.sticky-med, tr.even td.sticky-dot { background: #f5f5f5 !important; }^)
-    ROW + 1 call print(^tr.even td.dot-val { background: #f5f5f5 !important; }^)
-    ROW + 1 call print(^table.data-tbl tr.even td { background: #f5f5f5; }^)
-    ROW + 1 call print(^table.chart-tbl tbody th.label{z-index:11;}^)
-    ROW + 1 call print(^table.chart-tbl thead th.sticky-med {position:sticky;left:0;z-index:15;}^)
-    ROW + 1 call print(^table.chart-tbl thead th.sticky-dot {position:sticky;left:260px;z-index:15;}^)
-    ROW + 1 call print(^table.data-tbl{border-collapse:collapse;width:100%;margin-top:12px;font-size:12px;border:1px solid #b5b5b5;border-bottom:2px solid #a0a0a0;}^)
-    ROW + 1 call print(^table.data-tbl td{border:1px solid #d6d9dd;padding:4px 6px;text-align:left;background:#fff;}^)
-    ROW + 1 call print(^table.data-tbl tbody tr:last-child td{border-bottom:2px solid #a0a0a0;}^)
-    ROW + 1 call print(^.strip{display:flex;gap:1px;align-items:center;padding:4px 0;font-size:0;white-space:nowrap;overflow:visible;}^)
-    ROW + 1 call print(^.cell,.tick{flex:0 0 14px;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;text-align:center;font-size:10px;}^)
-    ROW + 1 call print(^.tick{color:#555;border:1px solid transparent;border-radius:3px;position:relative}^)
-    ROW + 1 call print(^.ticks .strip{padding-top:20px}^)
-    ROW + 1 call print(^.ticks .tick{overflow:visible;text-overflow:initial}^)
-    ROW + 1 call print(^.tick .mo{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:10px;color:#555;white-space:nowrap;pointer-events:none}^)
-    ROW + 1 call print(^.cell{border:1px solid #ccc;border-radius:3px;background:#fff}^)
-    ROW + 1 call print(^.cell.on{background:#0086CE;border-color:#0D66A1;color:#fff;font-weight:600}^)
-    ROW + 1 call print(^.cell.on:empty::before{content:"1"}^)
-    ROW + 1 call print(^.cell.sum-yes{background:#ED1C24;border-color:#cc0000;}^)
-    ROW + 1 call print(^.cell.sum-no{background:#A8D08D;border-color:#88b070;}^)
-    ROW + 1 call print(^.summary-row td{border-top:1px solid #ccc;padding-top:4px;}^)
-    ROW + 1 call print(^.ticks th{border-bottom:0;background:#fff}^)
-    ROW + 1 call print(^.pill{display:inline-block;padding:2px 6px;border-radius:12px;background:#eef;color:#334;}^)
-    
-    ; --- ACUITY SCORE STYLING ---
-    ROW + 1 call print(^.acuity-banner { padding: 20px; color: #fff; font-size: 24px; font-weight: bold; text-align: center; margin: 15px; border-radius: 5px; }^)
-    ROW + 1 call print(^.acuity-Red { background-color: #dc3545; border: 2px solid #b02a37; }^)
-    ROW + 1 call print(^.acuity-Amber { background-color: #ffc107; color: #333; border: 2px solid #d39e00; }^)
-    ROW + 1 call print(^.acuity-Green { background-color: #28a745; border: 2px solid #1e7e34; }^)
-    ROW + 1 call print(^.acuity-reasons { background: #f8f9fa; border: 1px solid #ddd; padding: 15px; margin: 15px; border-radius: 5px; font-size: 14px; }^)
-    
     ROW + 1 call print(^</style>^)
     ROW + 1 call print(^</head>^)
 
-    ROW + 1 call print(^<body onload='showRestricted(); resizeLayout();'>^)
+    ROW + 1 call print(^<body onload="showRestricted(); resizeLayout();">^)
 
     ROW + 1 call print(^<div class='pat-header'>^)
     ROW + 1 call print(concat(^<div style='float:left;'><b>^, NULLVAL(P_NAME, "Patient Not Found"), ^</b> | MRN: ^, NULLVAL(MRN, "N/A"), ^</div>^))
@@ -939,37 +847,65 @@ HEAD REPORT
     ROW + 1 call print(^<div id='btn5' class='tab-btn' onclick='showHolder2()'>Antimicrobial DOT</div>^)
     ROW + 1 call print(^<div id='btn6' class='tab-btn' onclick='showAcuity()'>Maternity Acuity</div>^)
     ROW + 1 call print(^</div>^)
-    
+
     ; =========================================================================
-    ; TAB 6: ACUITY VIEW
+    ; TAB 6: ACUITY VIEW 
     ; =========================================================================
-    ROW + 1 call print(^<div id='acuity-view' style='display:none;' class='content-box'>^)
-    ROW + 1 call print(CONCAT(^<div class='acuity-banner acuity-^, rec_acuity->color, ^'>Acuity Score: ^, TRIM(CNVTSTRING(rec_acuity->score)), ^ (Triage: ^, rec_acuity->color, ^)</div>^))
+    ROW + 1 call print(^<div id='acuity-view' class='content-box' style='display:none;'>^)
+    ROW + 1 call print(CONCAT(^<div class='acuity-banner acuity-^, rec_acuity->color, ^'>Acuity Score: ^, TRIM(CNVTSTRING(rec_acuity->score)), ^ (Triage Tier: ^, CNVTUPPER(rec_acuity->color), ^)</div>^))
+    ROW + 1 call print(^<div style='display:flex; flex-direction:row; padding:0 15px 15px 15px; gap:20px; box-sizing: border-box;'>^)
     
-    ROW + 1 call print(^<div class='acuity-reasons'>^)
-    ROW + 1 call print(^<h3 style='margin-top:0;'>Triggered Risk Factors</h3><ul>^)
-    
+    ; LEFT PANE: Active Triggers
+    ROW + 1 call print(^<div style='flex:1;'>^)
+    ROW + 1 call print(^<h3 class='panel-header'>Patient Specific Triggers</h3>^)
+    ROW + 1 call print(^<ul class='trigger-list'>^)
     IF (rec_acuity->reason_cnt > 0)
         FOR (x = 1 TO rec_acuity->reason_cnt)
-            ROW + 1 call print(CONCAT(^<li><b>[+^, TRIM(CNVTSTRING(rec_acuity->reasons[x].points)), ^ Points]</b> ^, rec_acuity->reasons[x].text, ^</li>^))
+            ROW + 1 call print(CONCAT(^<li><span class='pts-badge'>+^, TRIM(CNVTSTRING(rec_acuity->reasons[x].points)), ^ Points</span> ^, rec_acuity->reasons[x].text, ^</li>^))
         ENDFOR
     ELSE
-        ROW + 1 call print(^<li>No specific high-risk triggers detected (Routine Low-Acuity).</li>^)
+        ROW + 1 call print(^<li><span style='color:#666;'>No high-risk triggers detected. Patient remains Low Acuity (Routine Review).</span></li>^)
     ENDIF
+    ROW + 1 call print(^</ul>^)
+    ROW + 1 call print(^<div style='margin-top:20px; font-size:12px; color:#666; background:#f9f9f9; padding:10px; border:1px solid #ddd;'>^)
+    ROW + 1 call print(^<b>Triage Action Plan:</b><br/>^)
+    IF (rec_acuity->color = "Red")
+        ROW + 1 call print(^<b>RED (Score 3+):</b> High Risk. Requires clinical pharmacist review and medicines reconciliation within 24 hours.^)
+    ELSEIF (rec_acuity->color = "Amber")
+        ROW + 1 call print(^<b>AMBER (Score 1-2):</b> Medium Risk. Review during routine ward cover or before discharge.^)
+    ELSE
+        ROW + 1 call print(^<b>GREEN (Score 0):</b> Low Risk. Review only if requested by medical or midwifery team.^)
+    ENDIF
+    ROW + 1 call print(^</div>^)
+    ROW + 1 call print(^</div>^)
     
-    ROW + 1 call print(^</ul></div>^)
-    ROW + 1 call print(^<div class='legend' style='margin:15px;'><i>References: ISMP High-Alert Medications in Acute Care; WHO Medication Without Harm (Polypharmacy criteria); HIQA National Standards for Patient Safety. Note: Laboratory parameters are excluded from this calculation.</i></div>^)
+    ; RIGHT PANE: Reference Matrix
+    ROW + 1 call print(^<div style='flex:1.2; margin-top: 15px;'>^)
+    ROW + 1 call print(^<h3 class='panel-header' style='margin-bottom: 2px;'>Scoring Reference Matrix</h3>^)
+    ROW + 1 call print(^<div style='font-size:11px; color:#666; margin-bottom: 8px;'>Hover over a criteria row to view the exact database fields/strings being evaluated.<br>Criteria based on UKCPA Women's Health Group &amp; ISMP Guidelines. Lab parameters excluded.</div>^)
+    ROW + 1 call print(^<table class='ref-table'>^)
+    ROW + 1 call print(^<thead><tr><th width='60%'>Clinical Criteria</th><th width='20%'>Category</th><th width='20%'>Points</th></tr></thead><tbody>^)
+    
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_ebl = 1 OR rec_acuity->flag_transfusion = 1) "tr-active red-tier" ELSE "" ENDIF, ^' title='Checks CLINICAL_EVENT for last 7 days. Looks for Blood Volume Infused (15071366) OR Delivery/Intraop/Total EBL > 1000ml.'><td>Massive Haemorrhage / Blood Transfusion</td><td>Clinical Event</td><td>+3</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_preeclampsia = 1 OR rec_acuity->flag_dvt = 1 OR rec_acuity->flag_epilepsy = 1) "tr-active red-tier" ELSE "" ENDIF, ^' title='Checks both ACTIVE PROBLEM and ACTIVE DIAGNOSIS lists for nomenclature strings containing: PRE-ECLAMPSIA, DVT, PULMONARY EMBOLISM, or EPILEPSY/SEIZURE.'><td>High Risk Diagnosis (Pre-eclampsia, VTE, Epilepsy)</td><td>Problem/Diagnosis</td><td>+3</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_insulin = 1 OR rec_acuity->flag_antiepileptic = 1) "tr-active red-tier" ELSE "" ENDIF, ^' title='Checks active inpatient pharmacy orders for mnemonics containing: INSULIN, LEVETIRACETAM, LAMOTRIGINE, VALPROATE, or CARBAMAZEPINE.'><td>High Alert Med (Insulin, Antiepileptics)</td><td>Medication</td><td>+3</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_poly_severe = 1) "tr-active red-tier" ELSE "" ENDIF, ^' title='Checks if patient has greater than or equal to 10 active inpatient pharmacy orders.'><td>Severe Polypharmacy (&ge;10 active meds)</td><td>Medication</td><td>+3</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_anticoag = 1 OR rec_acuity->flag_antihypertensive = 1) "tr-active amber-tier" ELSE "" ENDIF, ^' title='Checks active inpatient pharmacy orders for mnemonics containing: TINZAPARIN, HEPARIN, ENOXAPARIN, LABETALOL, NIFEDIPINE, or METHYLDOPA.'><td>Targeted Med (Anticoagulant, Antihypertensive)</td><td>Medication</td><td>+2</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_poly_mod = 1) "tr-active amber-tier" ELSE "" ENDIF, ^' title='Checks if patient has between 5 and 9 active inpatient pharmacy orders.'><td>Moderate Polypharmacy (5-9 active meds)</td><td>Medication</td><td>+1</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_neuraxial = 1) "tr-active amber-tier" ELSE "" ENDIF, ^' title='Checks active inpatient pharmacy orders for mnemonics containing: BUPIVACAINE or LEVOBUPIVACAINE.'><td>Neuraxial / Epidural Infusion Active</td><td>Medication</td><td>+1</td></tr>^))
+    
+    ROW + 1 call print(^</tbody></table>^)
+    ROW + 1 call print(^</div></div>^)
+    ROW + 1 call print(^<div style="height: 100px; width: 100%;"></div>^)
     ROW + 1 call print(^</div>^)
 
     ; =========================================================================
-    ; TAB 5: DOT Blob View (Exact Extracted HTML code generation)
+    ; TAB 5: DOT Blob View 
     ; =========================================================================
     ROW + 1 call print(^<div id='dot-view' style='display:none;' class='content-box'>^)
     ROW + 1 call print(^<div class="wrap">^)
     ROW + 1 call print(^<h1>Antimicrobial Administrations by Date</h1>^)
-    ROW + 1 call print(^<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given.</div>^)
     ROW + 1 call print(v_axis_html)
-    
     ROW + 1 call print(^<div class="chart-wrap">^)
     ROW + 1 call print(^<table class="chart-tbl"><colgroup><col class="med"><col class="dot"><col></colgroup><thead>^)
     ROW + 1 call print(^<tr><th class="label sticky-med">Medication</th><th class="label sticky-dot">DOT</th><th class="label">Days</th></tr>^)
@@ -992,40 +928,13 @@ HEAD REPORT
     if (textlen(v_chart_rows) > 0)
         ROW + 1 call print(v_chart_rows)
     endif
-    ROW + 1 call print(^</tbody></table></div>^) 
-
-    ROW + 1 call print(^<h2>Antimicrobial Order Details</h2>^)
-    ROW + 1 call print(^<table class="data-tbl">^)
-    ROW + 1 call print(^<colgroup><col class="med"><col class="dot"></colgroup>^)
-    ROW + 1 call print(^<thead><tr>^)
-    ROW + 1 call print(^<th>Medication</th><th>DOT</th><th>Target Dose</th><th>Indication</th>^)
-    ROW + 1 call print(^<th>Start Date</th><th>Latest Status</th><th>Status Date</th><th>Order ID</th>^)
-    ROW + 1 call print(^</tr></thead>^)
-    ROW + 1 call print(^<tbody>^)
-
-    v_pos = findstring(v_token, v_table_rows)
-    while (v_pos > 0)
-        v_seglen = v_pos + v_toklen - 1
-        v_rowseg = substring(1, v_seglen, v_table_rows)
-        ROW + 1 call print(v_rowseg)
-        v_len = textlen(v_table_rows)
-        v_table_rows = substring(v_pos + v_toklen, v_len - (v_pos + v_toklen - 1), v_table_rows)
-        v_pos = findstring(v_token, v_table_rows)
-    endwhile
-    if (textlen(v_table_rows) > 0)
-        ROW + 1 call print(v_table_rows)
-    endif
-
-    ROW + 1 call print(^</tbody></table>^)
-    ROW + 1 call print(^<div class="legend" style="margin-top:8px;">Days of therapy (DOT) for antimicrobial orders which have been administered are included in this report.</div>^)
-    ROW + 1 call print(^</div></div>^)
+    ROW + 1 call print(^</tbody></table></div></div></div>^) 
 
     ; =========================================================================
-    ; GP Blob View - IE5 Table Split Pane UI with Navigation
+    ; TAB 4: GP Blob View
     ; =========================================================================
     ROW + 1 call print(^<div id='gp-blob-view' style='display:none;'>^)
     ROW + 1 call print(^<table id="gp-table" width="100%" border="0" cellpadding="0" cellspacing="0" style="height:500px;"><tr>^)
-    
     ROW + 1 call print(^<td class="gp-sidebar"><div id="scroll-side" class="gp-scroll-side">^)
     FOR (x = 1 TO size(rec_blob->list, 5))
         IF (x = 1)
@@ -1038,41 +947,34 @@ HEAD REPORT
         ROW + 1 call print(^<div class="gp-nav-item">No records</div>^)
     ENDIF
     ROW + 1 call print(^</div></td>^)
-
     ROW + 1 call print(^<td class="gp-content">^)
-    
     ROW + 1 call print(^<div class="gp-content-header">^)
     ROW + 1 call print(^  <button class="nav-btn" onclick="prevBlob()">&laquo; Previous</button>^)
     ROW + 1 call print(^  <button class="nav-btn" onclick="nextBlob()">Next &raquo;</button>^)
     ROW + 1 call print(^</div>^)
-    
     ROW + 1 call print(^<div id="scroll-main" class="gp-scroll-main">^)
     FOR (x = 1 TO size(rec_blob->list, 5))
         ROW + 1 call print(concat(^<a name="blob-^, TRIM(CNVTSTRING(x)), ^"></a>^))
         ROW + 1 call print(^<div class="blob-record">^)
         ROW + 1 call print(concat(^<div class="blob-meta">Performed: ^, rec_blob->list[x].dt_tm, ^ by ^, rec_blob->list[x].prsnl, ^</div>^) )
         ROW + 1 call print(^<div class="blob-text">^)
-
         vLen  = textlen(rec_blob->list[x].blob_text)
         bsize = 1
         WHILE (bsize <= vLen)
             call print(substring(bsize, 500, rec_blob->list[x].blob_text))
             bsize = bsize + 500
         ENDWHILE
-
         ROW + 1 call print(^</div></div>^)
     ENDFOR
     IF (size(rec_blob->list, 5) = 0)
-        ROW + 1 call print(^<p>No GP Medication Details found for this patient.</p>^)
+        ROW + 1 call print(^<p>No GP Medication Details found.</p>^)
     ENDIF
-    
     ROW + 1 call print(^<div style="height: 500px; width: 100%;"></div>^)
-    
-    ROW + 1 call print(^</div></td>^) 
-    
-    ROW + 1 call print(^</tr></table></div>^) 
-    ; =========================================================================
+    ROW + 1 call print(^</div></td></tr></table></div>^) 
 
+    ; =========================================================================
+    ; TAB 1, 2, 3: MEDICATION LIST
+    ; =========================================================================
     ROW + 1 call print(^<div id='med-container' class='content-box'>^)
     ROW + 1 call print(^<div id='header-row-inf' class='inf-header'>^)
     ROW + 1 call print(^<div style='float:left; width:120px;'>Start Date</div>^)
@@ -1118,55 +1020,31 @@ DETAIL
         )
             IF (
                 (FINDSTRING("CONTINUOUS", CNVTUPPER(DISP_CAT)) > 0 OR FINDSTRING("INFUSION", CNVTUPPER(ORDER_FORM)) > 0)
-                AND
-                (FINDSTRING("Glucose", MNEMONIC) > 0 OR FINDSTRING("Sodium", MNEMONIC) > 0 OR FINDSTRING("Maintelyte", MNEMONIC) > 0)
+                AND (FINDSTRING("Glucose", MNEMONIC) > 0 OR FINDSTRING("Sodium", MNEMONIC) > 0 OR FINDSTRING("Maintelyte", MNEMONIC) > 0)
             )
                 ROW + 1 call print(^<div class='inf-row is-infusion'>^)
                 call print(concat(^<div class='inf-col' style='width:120px;'>^, START_DT, ^</div>^))
                 call print(concat(^<div class='inf-col' style='width:250px;'><b>^, MNEMONIC, ^</b></div>^))
                 call print(^<div class='inf-col' style='width:80px;'><span class='type-badge' style='background:#17a2b8;'>FLUID</span></div>^)
-                call print(^<div class='inf-col' style='width:150px;'>^)
-                call print(concat(
-                    ~<a class='print-link' href='javascript:CCLLINK("01_BK_NICU_FLUID_FFL_FLIPPED:Group1", "MINE, ~,
-                    TRIM(CNVTSTRING($patient_id)), ~, ~, TRIM(CNVTSTRING(ORDER_ID)), ~" ,0)'>Print Fluid Label</a>~
-                ))
-                call print(^</div><div style='clear:both;'></div></div>^)
-
+                call print(^<div class='inf-col' style='width:150px;'><a class='print-link' href='#'>Print Fluid Label</a></div><div style='clear:both;'></div></div>^)
             ELSEIF (FINDSTRING("INTERMITTENT", CNVTUPPER(DISP_CAT)) > 0)
                 ROW + 1 call print(^<div class='inf-row is-infusion'>^)
                 call print(concat(^<div class='inf-col' style='width:120px;'>^, START_DT, ^</div>^))
                 call print(concat(^<div class='inf-col' style='width:250px;'><b>^, MNEMONIC, ^</b></div>^))
                 call print(^<div class='inf-col' style='width:80px;'><span class='type-badge' style='background:#ffc107; color:black;'>INTERM</span></div>^)
-                call print(^<div class='inf-col' style='width:150px;'>^)
-                call print(concat(
-                    ~<a class='print-link' href='javascript:CCLLINK("01_BK_NICU_INTER_FFL_FLIPPED:Group1", "MINE, ~,
-                    TRIM(CNVTSTRING($patient_id)), ~, ~, TRIM(CNVTSTRING(ORDER_ID)), ~" ,0)'>Print Intermittent Label</a>~
-                ))
-                call print(^</div><div style='clear:both;'></div></div>^)
-
+                call print(^<div class='inf-col' style='width:150px;'><a class='print-link' href='#'>Print Intermittent Label</a></div><div style='clear:both;'></div></div>^)
             ELSEIF (FINDSTRING("UD", CNVTUPPER(DISP_CAT)) > 0)
                 ROW + 1 call print(^<div class='inf-row is-infusion'>^)
                 call print(concat(^<div class='inf-col' style='width:120px;'>^, START_DT, ^</div>^))
                 call print(concat(^<div class='inf-col' style='width:250px;'><b>^, MNEMONIC, ^</b></div>^))
                 call print(^<div class='inf-col' style='width:80px;'><span class='type-badge' style='background:#6c757d;'>PN / UD</span></div>^)
-                call print(^<div class='inf-col' style='width:150px;'>^)
-                call print(concat(
-                    ~<a class='print-link' href='javascript:CCLLINK("01_BK_NICU_PN_FFL_FLIPPED:Group1", "MINE, ~,
-                    TRIM(CNVTSTRING($patient_id)), ~, ~, TRIM(CNVTSTRING(ORDER_ID)), ~" ,0)'>Print PN Label</a>~
-                ))
-                call print(^</div><div style='clear:both;'></div></div>^)
-
+                call print(^<div class='inf-col' style='width:150px;'><a class='print-link' href='#'>Print PN Label</a></div><div style='clear:both;'></div></div>^)
             ELSE
                 ROW + 1 call print(^<div class='inf-row is-infusion'>^)
                 call print(concat(^<div class='inf-col' style='width:120px;'>^, START_DT, ^</div>^))
                 call print(concat(^<div class='inf-col' style='width:250px;'><b>^, MNEMONIC, ^</b></div>^))
                 call print(^<div class='inf-col' style='width:80px;'><span class='type-badge' style='background:#28a745;'>SCI</span></div>^)
-                call print(^<div class='inf-col' style='width:150px;'>^)
-                call print(concat(
-                    ~<a class='print-link' href='javascript:CCLLINK("01_BK_NICU_INF_FFL_FLIPPED:Group1", "MINE, ~,
-                    TRIM(CNVTSTRING($patient_id)), ~, ~, TRIM(CNVTSTRING(ORDER_ID)), ~" ,0)'>Print SCI Label</a>~
-                ))
-                call print(^</div><div style='clear:both;'></div></div>^)
+                call print(^<div class='inf-col' style='width:150px;'><a class='print-link' href='#'>Print SCI Label</a></div><div style='clear:both;'></div></div>^)
             ENDIF
         ENDIF
     ENDIF
@@ -1181,6 +1059,5 @@ FOOT REPORT
 WITH NOFORMAT, SEPARATOR=" ", MAXCOL=32000, LANDSCAPE
 
 FREE RECORD rec_blob
-
 END
 GO
