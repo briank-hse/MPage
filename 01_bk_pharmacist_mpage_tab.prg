@@ -449,6 +449,10 @@ WITH NOCOUNTER
 
 ; Step B: Calculate Polypharmacy & High Risk Medications (Active Inpatient Only)
 SELECT INTO "NL:"
+    MNEM = O.ORDER_MNEMONIC,
+    UNOM = CNVTUPPER(O.ORDER_MNEMONIC),
+    DT_STR = FORMAT(O.CURRENT_START_DT_TM, "DD/MM/YYYY HH:MM"),
+    SDL = O.SIMPLIFIED_DISPLAY_LINE
 FROM ORDERS O
     , ACT_PW_COMP APC
 PLAN O WHERE O.PERSON_ID = CNVTREAL($patient_id)
@@ -461,35 +465,41 @@ JOIN APC WHERE APC.PARENT_ENTITY_ID = OUTERJOIN(O.ORDER_ID)
     AND APC.ACTIVE_IND = OUTERJOIN(1)
 ORDER BY O.ORDER_ID
 HEAD O.ORDER_ID
-    ; EXCLUSION LOGIC: Ignore PRN orders that are linked to a PowerPlan, AND ignore standard IV Fluids
-    IF ((O.PRN_IND = 1 AND APC.PATHWAY_ID > 0.0)
-        OR FINDSTRING("SODIUM CHLORIDE", CNVTUPPER(O.ORDER_MNEMONIC)) > 0 
-        OR FINDSTRING("LACTATE", CNVTUPPER(O.ORDER_MNEMONIC)) > 0 
-        OR FINDSTRING("GLUCOSE", CNVTUPPER(O.ORDER_MNEMONIC)) > 0
-        OR FINDSTRING("MAINTELYTE", CNVTUPPER(O.ORDER_MNEMONIC)) > 0
-        OR FINDSTRING("WATER FOR INJECTION", CNVTUPPER(O.ORDER_MNEMONIC)) > 0)
-        stat = 1 
+    ; EXCLUSION LOGIC: Ignore specific symptomatic meds ONLY if linked to a PowerPlan, AND ignore standard IV Fluids
+    IF ((APC.PATHWAY_ID > 0.0 AND (
+            FINDSTRING("CHLORPHENAMINE", UNOM) > 0 OR 
+            FINDSTRING("CYCLIZINE", UNOM) > 0 OR 
+            FINDSTRING("LACTULOSE", UNOM) > 0 OR 
+            FINDSTRING("ONDANSETRON", UNOM) > 0
+        ))
+        OR FINDSTRING("SODIUM CHLORIDE", UNOM) > 0 
+        OR FINDSTRING("LACTATE", UNOM) > 0 
+        OR FINDSTRING("GLUCOSE", UNOM) > 0
+        OR FINDSTRING("MAINTELYTE", UNOM) > 0
+        OR FINDSTRING("WATER FOR INJECTION", UNOM) > 0)
+        
+        stat = 1 ; Do nothing, skip counting this towards polypharmacy
     ELSE
         rec_acuity->poly_count = rec_acuity->poly_count + 1
-        rec_acuity->det_poly = CONCAT(rec_acuity->det_poly, "<div class='trigger-det-item'>&bull; <b>", TRIM(O.ORDER_MNEMONIC), "</b> ", TRIM(O.SIMPLIFIED_DISPLAY_LINE), " (Started: ", FORMAT(O.CURRENT_START_DT_TM, "DD/MM/YYYY HH:MM"), ")</div>")
+        rec_acuity->det_poly = CONCAT(rec_acuity->det_poly, "<div class='trigger-det-item'>&bull; <b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
     ENDIF
 
-    ; HIGH RISK MEDICATION FLAGS (Flagged regardless of PRN/Fluid status)
-    IF (FINDSTRING("TINZAPARIN", CNVTUPPER(O.ORDER_MNEMONIC)) > 0 OR FINDSTRING("HEPARIN", CNVTUPPER(O.ORDER_MNEMONIC)) > 0 OR FINDSTRING("ENOXAPARIN", CNVTUPPER(O.ORDER_MNEMONIC)) > 0)
+    ; HIGH RISK MEDICATION FLAGS (Flagged regardless of PowerPlan/Fluid status)
+    IF (FINDSTRING("TINZAPARIN", UNOM) > 0 OR FINDSTRING("HEPARIN", UNOM) > 0 OR FINDSTRING("ENOXAPARIN", UNOM) > 0)
         rec_acuity->flag_anticoag = 1
-        rec_acuity->det_anticoag = CONCAT(rec_acuity->det_anticoag, "<div class='trigger-det-item'><b>", TRIM(O.ORDER_MNEMONIC), "</b> ", TRIM(O.SIMPLIFIED_DISPLAY_LINE), " (Started: ", FORMAT(O.CURRENT_START_DT_TM, "DD/MM/YYYY HH:MM"), ")</div>")
-    ELSEIF (FINDSTRING("INSULIN", CNVTUPPER(O.ORDER_MNEMONIC)) > 0)
+        rec_acuity->det_anticoag = CONCAT(rec_acuity->det_anticoag, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
+    ELSEIF (FINDSTRING("INSULIN", UNOM) > 0)
         rec_acuity->flag_insulin = 1
-        rec_acuity->det_insulin = CONCAT(rec_acuity->det_insulin, "<div class='trigger-det-item'><b>", TRIM(O.ORDER_MNEMONIC), "</b> ", TRIM(O.SIMPLIFIED_DISPLAY_LINE), " (Started: ", FORMAT(O.CURRENT_START_DT_TM, "DD/MM/YYYY HH:MM"), ")</div>")
-    ELSEIF (FINDSTRING("LEVETIRACETAM", CNVTUPPER(O.ORDER_MNEMONIC)) > 0 OR FINDSTRING("LAMOTRIGINE", CNVTUPPER(O.ORDER_MNEMONIC)) > 0 OR FINDSTRING("VALPROATE", CNVTUPPER(O.ORDER_MNEMONIC)) > 0 OR FINDSTRING("CARBAMAZEPINE", CNVTUPPER(O.ORDER_MNEMONIC)) > 0)
+        rec_acuity->det_insulin = CONCAT(rec_acuity->det_insulin, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
+    ELSEIF (FINDSTRING("LEVETIRACETAM", UNOM) > 0 OR FINDSTRING("LAMOTRIGINE", UNOM) > 0 OR FINDSTRING("VALPROATE", UNOM) > 0 OR FINDSTRING("CARBAMAZEPINE", UNOM) > 0)
         rec_acuity->flag_antiepileptic = 1
-        rec_acuity->det_antiepileptic = CONCAT(rec_acuity->det_antiepileptic, "<div class='trigger-det-item'><b>", TRIM(O.ORDER_MNEMONIC), "</b> ", TRIM(O.SIMPLIFIED_DISPLAY_LINE), " (Started: ", FORMAT(O.CURRENT_START_DT_TM, "DD/MM/YYYY HH:MM"), ")</div>")
-    ELSEIF (FINDSTRING("LABETALOL", CNVTUPPER(O.ORDER_MNEMONIC)) > 0 OR FINDSTRING("NIFEDIPINE", CNVTUPPER(O.ORDER_MNEMONIC)) > 0 OR FINDSTRING("METHYLDOPA", CNVTUPPER(O.ORDER_MNEMONIC)) > 0)
+        rec_acuity->det_antiepileptic = CONCAT(rec_acuity->det_antiepileptic, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
+    ELSEIF (FINDSTRING("LABETALOL", UNOM) > 0 OR FINDSTRING("NIFEDIPINE", UNOM) > 0 OR FINDSTRING("METHYLDOPA", UNOM) > 0)
         rec_acuity->flag_antihypertensive = 1
-        rec_acuity->det_antihypertensive = CONCAT(rec_acuity->det_antihypertensive, "<div class='trigger-det-item'><b>", TRIM(O.ORDER_MNEMONIC), "</b> ", TRIM(O.SIMPLIFIED_DISPLAY_LINE), " (Started: ", FORMAT(O.CURRENT_START_DT_TM, "DD/MM/YYYY HH:MM"), ")</div>")
-    ELSEIF (FINDSTRING("BUPIVACAINE", CNVTUPPER(O.ORDER_MNEMONIC)) > 0 OR FINDSTRING("LEVOBUPIVACAINE", CNVTUPPER(O.ORDER_MNEMONIC)) > 0)
+        rec_acuity->det_antihypertensive = CONCAT(rec_acuity->det_antihypertensive, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
+    ELSEIF (FINDSTRING("BUPIVACAINE", UNOM) > 0 OR FINDSTRING("LEVOBUPIVACAINE", UNOM) > 0)
         rec_acuity->flag_neuraxial = 1
-        rec_acuity->det_neuraxial = CONCAT(rec_acuity->det_neuraxial, "<div class='trigger-det-item'><b>", TRIM(O.ORDER_MNEMONIC), "</b> ", TRIM(O.SIMPLIFIED_DISPLAY_LINE), " (Started: ", FORMAT(O.CURRENT_START_DT_TM, "DD/MM/YYYY HH:MM"), ")</div>")
+        rec_acuity->det_neuraxial = CONCAT(rec_acuity->det_neuraxial, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
     ENDIF
 WITH NOCOUNTER
 
