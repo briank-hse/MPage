@@ -363,7 +363,7 @@ with nocounter
 
 
 ; =============================================================================
-; 3.5 MATERNITY ACUITY SCORE CALCULATION - EVIDENCE BASED WITH EXPAND
+; 3.5 SINGLE PATIENT ACUITY SCORE CALCULATION
 ; =============================================================================
 RECORD rec_acuity (
     1 score = i4
@@ -383,7 +383,6 @@ RECORD rec_acuity (
     1 flag_poly_severe = i2
     1 flag_poly_mod = i2
     
-    ; Detail Strings for Expander Panels
     1 det_ebl = vc
     1 det_transfusion = vc
     1 det_preeclampsia = vc
@@ -402,15 +401,11 @@ RECORD rec_acuity (
         2 detail_html = vc
 )
 
-; Step A1: Gather Active Problems
+; Gather Active Problems
 SELECT INTO "NL:"
-    NOM = N.SOURCE_STRING,
-    UNOM = CNVTUPPER(N.SOURCE_STRING),
-    DT_STR = FORMAT(P.ONSET_DT_TM, "DD/MM/YYYY")
+    NOM = N.SOURCE_STRING, UNOM = CNVTUPPER(N.SOURCE_STRING), DT_STR = FORMAT(P.ONSET_DT_TM, "DD/MM/YYYY")
 FROM PROBLEM P, NOMENCLATURE N
-PLAN P WHERE P.PERSON_ID = CNVTREAL($patient_id)
-    AND P.ACTIVE_IND = 1
-    AND P.LIFE_CYCLE_STATUS_CD = 3301.00 ; Active Problem
+PLAN P WHERE P.PERSON_ID = CNVTREAL($patient_id) AND P.ACTIVE_IND = 1 AND P.LIFE_CYCLE_STATUS_CD = 3301.00
 JOIN N WHERE N.NOMENCLATURE_ID = P.NOMENCLATURE_ID
 DETAIL
     IF (FINDSTRING("PRE-ECLAMPSIA", UNOM) > 0 OR FINDSTRING("PREECLAMPSIA", UNOM) > 0)
@@ -425,14 +420,11 @@ DETAIL
     ENDIF
 WITH NOCOUNTER
 
-; Step A2: Gather Active Diagnoses
+; Gather Active Diagnoses
 SELECT INTO "NL:"
-    NOM = N.SOURCE_STRING,
-    UNOM = CNVTUPPER(N.SOURCE_STRING),
-    DT_STR = FORMAT(D.DIAG_DT_TM, "DD/MM/YYYY")
+    NOM = N.SOURCE_STRING, UNOM = CNVTUPPER(N.SOURCE_STRING), DT_STR = FORMAT(D.DIAG_DT_TM, "DD/MM/YYYY")
 FROM DIAGNOSIS D, NOMENCLATURE N
-PLAN D WHERE D.PERSON_ID = CNVTREAL($patient_id)
-    AND D.ACTIVE_IND = 1
+PLAN D WHERE D.PERSON_ID = CNVTREAL($patient_id) AND D.ACTIVE_IND = 1
 JOIN N WHERE N.NOMENCLATURE_ID = D.NOMENCLATURE_ID
 DETAIL
     IF (FINDSTRING("PRE-ECLAMPSIA", UNOM) > 0 OR FINDSTRING("PREECLAMPSIA", UNOM) > 0)
@@ -447,44 +439,25 @@ DETAIL
     ENDIF
 WITH NOCOUNTER
 
-; Step B: Calculate Polypharmacy & High Risk Medications (Active Inpatient Only)
+; Calculate Polypharmacy & High Risk Medications
 SELECT INTO "NL:"
-    MNEM = O.ORDER_MNEMONIC,
-    UNOM = CNVTUPPER(O.ORDER_MNEMONIC),
-    DT_STR = FORMAT(O.CURRENT_START_DT_TM, "DD/MM/YYYY HH:MM"),
-    SDL = O.SIMPLIFIED_DISPLAY_LINE
-FROM ORDERS O
-    , ACT_PW_COMP APC
-PLAN O WHERE O.PERSON_ID = CNVTREAL($patient_id)
-    AND O.ORDER_STATUS_CD = 2550.00 ; Ordered (Active)
-    AND O.CATALOG_TYPE_CD = 2516.00 ; Pharmacy
-    AND O.ORIG_ORD_AS_FLAG = 0      ; Normal order (exclude prescriptions and home meds)
-    AND O.TEMPLATE_ORDER_ID = 0     ; Exclude administration orders
-JOIN APC WHERE APC.PARENT_ENTITY_ID = OUTERJOIN(O.ORDER_ID)
-    AND APC.PARENT_ENTITY_NAME = OUTERJOIN("ORDERS")
-    AND APC.ACTIVE_IND = OUTERJOIN(1)
+    MNEM = O.ORDER_MNEMONIC, UNOM = CNVTUPPER(O.ORDER_MNEMONIC)
+    , DT_STR = FORMAT(O.CURRENT_START_DT_TM, "DD/MM/YYYY HH:MM"), SDL = O.SIMPLIFIED_DISPLAY_LINE
+FROM ORDERS O, ACT_PW_COMP APC
+PLAN O WHERE O.PERSON_ID = CNVTREAL($patient_id) AND O.ORDER_STATUS_CD = 2550.00 AND O.CATALOG_TYPE_CD = 2516.00 
+    AND O.ORIG_ORD_AS_FLAG = 0 AND O.TEMPLATE_ORDER_ID = 0
+JOIN APC WHERE APC.PARENT_ENTITY_ID = OUTERJOIN(O.ORDER_ID) AND APC.PARENT_ENTITY_NAME = OUTERJOIN("ORDERS") AND APC.ACTIVE_IND = OUTERJOIN(1)
 ORDER BY O.ORDER_ID
 HEAD O.ORDER_ID
-    ; EXCLUSION LOGIC: Ignore specific symptomatic meds ONLY if linked to a PowerPlan, AND ignore standard IV Fluids
-    IF ((APC.PATHWAY_ID > 0.0 AND (
-            FINDSTRING("CHLORPHENAMINE", UNOM) > 0 OR 
-            FINDSTRING("CYCLIZINE", UNOM) > 0 OR 
-            FINDSTRING("LACTULOSE", UNOM) > 0 OR 
-            FINDSTRING("ONDANSETRON", UNOM) > 0
-        ))
-        OR FINDSTRING("SODIUM CHLORIDE", UNOM) > 0 
-        OR FINDSTRING("LACTATE", UNOM) > 0 
-        OR FINDSTRING("GLUCOSE", UNOM) > 0
-        OR FINDSTRING("MAINTELYTE", UNOM) > 0
-        OR FINDSTRING("WATER FOR INJECTION", UNOM) > 0)
-        
-        stat = 1 ; Do nothing, skip counting this towards polypharmacy
+    IF ((APC.PATHWAY_ID > 0.0 AND (FINDSTRING("CHLORPHENAMINE", UNOM) > 0 OR FINDSTRING("CYCLIZINE", UNOM) > 0 OR FINDSTRING("LACTULOSE", UNOM) > 0 OR FINDSTRING("ONDANSETRON", UNOM) > 0))
+        OR FINDSTRING("SODIUM CHLORIDE", UNOM) > 0 OR FINDSTRING("LACTATE", UNOM) > 0 OR FINDSTRING("GLUCOSE", UNOM) > 0
+        OR FINDSTRING("MAINTELYTE", UNOM) > 0 OR FINDSTRING("WATER FOR INJECTION", UNOM) > 0)
+        stat = 1 
     ELSE
         rec_acuity->poly_count = rec_acuity->poly_count + 1
         rec_acuity->det_poly = CONCAT(rec_acuity->det_poly, "<div class='trigger-det-item'>&bull; <b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
     ENDIF
 
-    ; HIGH RISK MEDICATION FLAGS (Flagged regardless of PowerPlan/Fluid status)
     IF (FINDSTRING("TINZAPARIN", UNOM) > 0 OR FINDSTRING("HEPARIN", UNOM) > 0 OR FINDSTRING("ENOXAPARIN", UNOM) > 0)
         rec_acuity->flag_anticoag = 1
         rec_acuity->det_anticoag = CONCAT(rec_acuity->det_anticoag, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
@@ -503,25 +476,19 @@ HEAD O.ORDER_ID
     ENDIF
 WITH NOCOUNTER
 
-IF (rec_acuity->poly_count >= 10)
-    SET rec_acuity->flag_poly_severe = 1
-ELSEIF (rec_acuity->poly_count >= 5)
-    SET rec_acuity->flag_poly_mod = 1
+IF (rec_acuity->poly_count >= 10) SET rec_acuity->flag_poly_severe = 1
+ELSEIF (rec_acuity->poly_count >= 5) SET rec_acuity->flag_poly_mod = 1
 ENDIF
 
-; Step C: Check Clinical Events for EBL and Transfusions
+; Check Clinical Events
 SELECT INTO "NL:"
-    VAL = CE.RESULT_VAL,
-    TITLE = UAR_GET_CODE_DISPLAY(CE.EVENT_CD),
-    DT_STR = FORMAT(CE.PERFORMED_DT_TM, "DD/MM/YYYY HH:MM")
+    VAL = CE.RESULT_VAL, TITLE = UAR_GET_CODE_DISPLAY(CE.EVENT_CD), DT_STR = FORMAT(CE.PERFORMED_DT_TM, "DD/MM/YYYY HH:MM")
 FROM CLINICAL_EVENT CE
 PLAN CE WHERE CE.PERSON_ID = CNVTREAL($patient_id)
-    AND CE.EVENT_CD IN (15071366.00, 82546829.00, 15083551.00, 19995695.00) 
-    AND CE.VALID_UNTIL_DT_TM > SYSDATE
-    AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("7,D")
-    AND CE.RESULT_STATUS_CD IN (25, 34, 35)
+    AND CE.EVENT_CD IN (15071366.00, 82546829.00, 15083551.00, 19995695.00) AND CE.VALID_UNTIL_DT_TM > SYSDATE
+    AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("7,D") AND CE.RESULT_STATUS_CD IN (25, 34, 35)
 DETAIL
-    IF (CE.EVENT_CD = 15071366.00) ; Transfusion
+    IF (CE.EVENT_CD = 15071366.00)
         rec_acuity->flag_transfusion = 1
         rec_acuity->det_transfusion = CONCAT(rec_acuity->det_transfusion, "<div class='trigger-det-item'><b>", TRIM(TITLE), "</b>: ", TRIM(VAL), " (", DT_STR, ")</div>")
     ELSEIF (CE.EVENT_CD IN (82546829.00, 15083551.00, 19995695.00) AND CNVTREAL(VAL) > 1000.0)
@@ -530,7 +497,7 @@ DETAIL
     ENDIF
 WITH NOCOUNTER
 
-; Step D: Tally the Final Score & Populate Reasons Array
+; Tally Single Patient Final Score
 IF (rec_acuity->flag_transfusion = 1 OR rec_acuity->flag_ebl = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
@@ -539,7 +506,6 @@ IF (rec_acuity->flag_transfusion = 1 OR rec_acuity->flag_ebl = 1)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = CONCAT(rec_acuity->det_transfusion, rec_acuity->det_ebl)
 ENDIF
-
 IF (rec_acuity->flag_preeclampsia = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
@@ -548,7 +514,6 @@ IF (rec_acuity->flag_preeclampsia = 1)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_preeclampsia
 ENDIF
-
 IF (rec_acuity->flag_dvt = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
@@ -557,7 +522,6 @@ IF (rec_acuity->flag_dvt = 1)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_dvt
 ENDIF
-
 IF (rec_acuity->flag_epilepsy = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
@@ -566,7 +530,6 @@ IF (rec_acuity->flag_epilepsy = 1)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_epilepsy
 ENDIF
-
 IF (rec_acuity->flag_insulin = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
@@ -575,7 +538,6 @@ IF (rec_acuity->flag_insulin = 1)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_insulin
 ENDIF
-
 IF (rec_acuity->flag_antiepileptic = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
@@ -584,7 +546,6 @@ IF (rec_acuity->flag_antiepileptic = 1)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_antiepileptic
 ENDIF
-
 IF (rec_acuity->flag_poly_severe = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
@@ -593,7 +554,6 @@ IF (rec_acuity->flag_poly_severe = 1)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_poly
 ENDIF
-
 IF (rec_acuity->flag_anticoag = 1)
     SET rec_acuity->score = rec_acuity->score + 2
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
@@ -602,7 +562,6 @@ IF (rec_acuity->flag_anticoag = 1)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_anticoag
 ENDIF
-
 IF (rec_acuity->flag_antihypertensive = 1)
     SET rec_acuity->score = rec_acuity->score + 2
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
@@ -611,7 +570,6 @@ IF (rec_acuity->flag_antihypertensive = 1)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_antihypertensive
 ENDIF
-
 IF (rec_acuity->flag_neuraxial = 1)
     SET rec_acuity->score = rec_acuity->score + 1
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
@@ -620,7 +578,6 @@ IF (rec_acuity->flag_neuraxial = 1)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 1
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_neuraxial
 ENDIF
-
 IF (rec_acuity->flag_poly_mod = 1)
     SET rec_acuity->score = rec_acuity->score + 1
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
@@ -630,13 +587,226 @@ IF (rec_acuity->flag_poly_mod = 1)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_poly
 ENDIF
 
-IF (rec_acuity->score >= 3)
-    SET rec_acuity->color = "Red"
-ELSEIF (rec_acuity->score >= 1)
-    SET rec_acuity->color = "Amber"
-ELSE
-    SET rec_acuity->color = "Green"
+IF (rec_acuity->score >= 3) SET rec_acuity->color = "Red"
+ELSEIF (rec_acuity->score >= 1) SET rec_acuity->color = "Amber"
+ELSE SET rec_acuity->color = "Green"
 ENDIF
+
+; =============================================================================
+; 3.6 WARD-LEVEL TRIAGE LIST LOOP (Testing Module)
+; =============================================================================
+DECLARE curr_ward_cd = f8 WITH noconstant(0.0)
+DECLARE curr_ward_disp = vc WITH noconstant("")
+DECLARE v_ward_rows = vc WITH noconstant(""), maxlen=65534
+
+DECLARE pat_idx = i4 WITH noconstant(0)
+DECLARE curr_pid = f8 WITH noconstant(0.0)
+DECLARE t_score = i4 WITH noconstant(0)
+DECLARE t_poly_count = i4 WITH noconstant(0)
+DECLARE t_flag_ebl = i2 WITH noconstant(0)
+DECLARE t_flag_transfusion = i2 WITH noconstant(0)
+DECLARE t_flag_preeclampsia = i2 WITH noconstant(0)
+DECLARE t_flag_dvt = i2 WITH noconstant(0)
+DECLARE t_flag_epilepsy = i2 WITH noconstant(0)
+DECLARE t_flag_insulin = i2 WITH noconstant(0)
+DECLARE t_flag_antiepileptic = i2 WITH noconstant(0)
+DECLARE t_flag_anticoag = i2 WITH noconstant(0)
+DECLARE t_flag_antihypertensive = i2 WITH noconstant(0)
+DECLARE t_flag_neuraxial = i2 WITH noconstant(0)
+DECLARE t_flag_poly_severe = i2 WITH noconstant(0)
+DECLARE t_flag_poly_mod = i2 WITH noconstant(0)
+DECLARE t_triggers = vc WITH noconstant("")
+
+RECORD rec_cohort (
+    1 cnt = i4
+    1 list[*]
+        2 person_id = f8
+        2 encntr_id = f8
+        2 name = vc
+        2 room_bed = vc
+        2 score = i4
+        2 color = vc
+        2 summary = vc
+)
+
+; 1. Get Current Ward
+SELECT INTO "NL:"
+FROM ENCOUNTER E
+PLAN E WHERE E.ENCNTR_ID = CNVTREAL($encounter_id)
+DETAIL
+    curr_ward_cd = E.LOC_NURSE_UNIT_CD
+    curr_ward_disp = UAR_GET_CODE_DISPLAY(E.LOC_NURSE_UNIT_CD)
+WITH NOCOUNTER
+
+; 2. Populate Active Patients on this Ward
+SELECT INTO "NL:"
+FROM ENCOUNTER E, PERSON P
+PLAN E WHERE E.LOC_NURSE_UNIT_CD = curr_ward_cd AND E.ENCNTR_STATUS_CD = 854.00 AND E.ACTIVE_IND = 1 AND E.ENCNTR_TYPE_CLASS_CD = 398.00 
+JOIN P WHERE P.PERSON_ID = E.PERSON_ID AND P.ACTIVE_IND = 1
+ORDER BY E.LOC_ROOM_CD, E.LOC_BED_CD
+DETAIL
+    rec_cohort->cnt = rec_cohort->cnt + 1
+    stat = alterlist(rec_cohort->list, rec_cohort->cnt)
+    rec_cohort->list[rec_cohort->cnt].person_id = P.PERSON_ID
+    rec_cohort->list[rec_cohort->cnt].encntr_id = E.ENCNTR_ID
+    rec_cohort->list[rec_cohort->cnt].name = P.NAME_FULL_FORMATTED
+    rec_cohort->list[rec_cohort->cnt].room_bed = CONCAT(TRIM(UAR_GET_CODE_DISPLAY(E.LOC_ROOM_CD)), "-", TRIM(UAR_GET_CODE_DISPLAY(E.LOC_BED_CD)))
+WITH NOCOUNTER
+
+; 3. Calculate Acuity Score for entire Ward Cohort
+FOR (pat_idx = 1 TO rec_cohort->cnt)
+    SET curr_pid = rec_cohort->list[pat_idx].person_id
+    SET t_score = 0
+    SET t_poly_count = 0
+    SET t_flag_ebl = 0
+    SET t_flag_transfusion = 0
+    SET t_flag_preeclampsia = 0
+    SET t_flag_dvt = 0
+    SET t_flag_epilepsy = 0
+    SET t_flag_insulin = 0
+    SET t_flag_antiepileptic = 0
+    SET t_flag_anticoag = 0
+    SET t_flag_antihypertensive = 0
+    SET t_flag_neuraxial = 0
+    SET t_flag_poly_severe = 0
+    SET t_flag_poly_mod = 0
+    SET t_triggers = ""
+
+    SELECT INTO "NL:"
+        UNOM = CNVTUPPER(N.SOURCE_STRING)
+    FROM PROBLEM P, NOMENCLATURE N
+    PLAN P WHERE P.PERSON_ID = curr_pid AND P.ACTIVE_IND = 1 AND P.LIFE_CYCLE_STATUS_CD = 3301.00
+    JOIN N WHERE N.NOMENCLATURE_ID = P.NOMENCLATURE_ID
+    DETAIL
+        IF (FINDSTRING("PRE-ECLAMPSIA", UNOM) > 0 OR FINDSTRING("PREECLAMPSIA", UNOM) > 0) t_flag_preeclampsia = 1
+        ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", UNOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", UNOM) > 0 OR FINDSTRING("DVT", UNOM) > 0) t_flag_dvt = 1
+        ELSEIF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0) t_flag_epilepsy = 1
+        ENDIF
+    WITH NOCOUNTER
+
+    SELECT INTO "NL:"
+        UNOM = CNVTUPPER(N.SOURCE_STRING)
+    FROM DIAGNOSIS D, NOMENCLATURE N
+    PLAN D WHERE D.PERSON_ID = curr_pid AND D.ACTIVE_IND = 1
+    JOIN N WHERE N.NOMENCLATURE_ID = D.NOMENCLATURE_ID
+    DETAIL
+        IF (FINDSTRING("PRE-ECLAMPSIA", UNOM) > 0 OR FINDSTRING("PREECLAMPSIA", UNOM) > 0) t_flag_preeclampsia = 1
+        ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", UNOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", UNOM) > 0 OR FINDSTRING("DVT", UNOM) > 0) t_flag_dvt = 1
+        ELSEIF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0) t_flag_epilepsy = 1
+        ENDIF
+    WITH NOCOUNTER
+
+    SELECT INTO "NL:"
+        UNOM = CNVTUPPER(O.ORDER_MNEMONIC)
+    FROM ORDERS O, ACT_PW_COMP APC
+    PLAN O WHERE O.PERSON_ID = curr_pid AND O.ORDER_STATUS_CD = 2550.00 AND O.CATALOG_TYPE_CD = 2516.00 AND O.ORIG_ORD_AS_FLAG = 0 AND O.TEMPLATE_ORDER_ID = 0
+    JOIN APC WHERE APC.PARENT_ENTITY_ID = OUTERJOIN(O.ORDER_ID) AND APC.PARENT_ENTITY_NAME = OUTERJOIN("ORDERS") AND APC.ACTIVE_IND = OUTERJOIN(1)
+    ORDER BY O.ORDER_ID
+    HEAD O.ORDER_ID
+        IF ((APC.PATHWAY_ID > 0.0 AND (FINDSTRING("CHLORPHENAMINE", UNOM) > 0 OR FINDSTRING("CYCLIZINE", UNOM) > 0 OR FINDSTRING("LACTULOSE", UNOM) > 0 OR FINDSTRING("ONDANSETRON", UNOM) > 0))
+            OR FINDSTRING("SODIUM CHLORIDE", UNOM) > 0 OR FINDSTRING("LACTATE", UNOM) > 0 OR FINDSTRING("GLUCOSE", UNOM) > 0
+            OR FINDSTRING("MAINTELYTE", UNOM) > 0 OR FINDSTRING("WATER FOR INJECTION", UNOM) > 0)
+            stat = 1
+        ELSE
+            t_poly_count = t_poly_count + 1
+        ENDIF
+
+        IF (FINDSTRING("TINZAPARIN", UNOM) > 0 OR FINDSTRING("HEPARIN", UNOM) > 0 OR FINDSTRING("ENOXAPARIN", UNOM) > 0) t_flag_anticoag = 1
+        ELSEIF (FINDSTRING("INSULIN", UNOM) > 0) t_flag_insulin = 1
+        ELSEIF (FINDSTRING("LEVETIRACETAM", UNOM) > 0 OR FINDSTRING("LAMOTRIGINE", UNOM) > 0 OR FINDSTRING("VALPROATE", UNOM) > 0 OR FINDSTRING("CARBAMAZEPINE", UNOM) > 0) t_flag_antiepileptic = 1
+        ELSEIF (FINDSTRING("LABETALOL", UNOM) > 0 OR FINDSTRING("NIFEDIPINE", UNOM) > 0 OR FINDSTRING("METHYLDOPA", UNOM) > 0) t_flag_antihypertensive = 1
+        ELSEIF (FINDSTRING("BUPIVACAINE", UNOM) > 0 OR FINDSTRING("LEVOBUPIVACAINE", UNOM) > 0) t_flag_neuraxial = 1
+        ENDIF
+    WITH NOCOUNTER
+
+    IF (t_poly_count >= 10) SET t_flag_poly_severe = 1
+    ELSEIF (t_poly_count >= 5) SET t_flag_poly_mod = 1
+    ENDIF
+
+    SELECT INTO "NL:"
+        VAL = CE.RESULT_VAL
+    FROM CLINICAL_EVENT CE
+    PLAN CE WHERE CE.PERSON_ID = curr_pid AND CE.EVENT_CD IN (15071366.00, 82546829.00, 15083551.00, 19995695.00) 
+        AND CE.VALID_UNTIL_DT_TM > SYSDATE AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("7,D") AND CE.RESULT_STATUS_CD IN (25, 34, 35)
+    DETAIL
+        IF (CE.EVENT_CD = 15071366.00) t_flag_transfusion = 1
+        ELSEIF (CE.EVENT_CD IN (82546829.00, 15083551.00, 19995695.00) AND CNVTREAL(VAL) > 1000.0) t_flag_ebl = 1
+        ENDIF
+    WITH NOCOUNTER
+
+    IF (t_flag_transfusion = 1 OR t_flag_ebl = 1)
+        SET t_score = t_score + 3
+        SET t_triggers = CONCAT(t_triggers, "Haemorrhage/Transfusion; ")
+    ENDIF
+    IF (t_flag_preeclampsia = 1)
+        SET t_score = t_score + 3
+        SET t_triggers = CONCAT(t_triggers, "Pre-Eclampsia; ")
+    ENDIF
+    IF (t_flag_dvt = 1)
+        SET t_score = t_score + 3
+        SET t_triggers = CONCAT(t_triggers, "VTE/DVT; ")
+    ENDIF
+    IF (t_flag_epilepsy = 1)
+        SET t_score = t_score + 3
+        SET t_triggers = CONCAT(t_triggers, "Epilepsy; ")
+    ENDIF
+    IF (t_flag_insulin = 1)
+        SET t_score = t_score + 3
+        SET t_triggers = CONCAT(t_triggers, "Insulin; ")
+    ENDIF
+    IF (t_flag_antiepileptic = 1)
+        SET t_score = t_score + 3
+        SET t_triggers = CONCAT(t_triggers, "Antiepileptic; ")
+    ENDIF
+    IF (t_flag_poly_severe = 1)
+        SET t_score = t_score + 3
+        SET t_triggers = CONCAT(t_triggers, "Severe Polypharmacy; ")
+    ENDIF
+    IF (t_flag_anticoag = 1)
+        SET t_score = t_score + 2
+        SET t_triggers = CONCAT(t_triggers, "Anticoagulant; ")
+    ENDIF
+    IF (t_flag_antihypertensive = 1)
+        SET t_score = t_score + 2
+        SET t_triggers = CONCAT(t_triggers, "Antihypertensive; ")
+    ENDIF
+    IF (t_flag_neuraxial = 1)
+        SET t_score = t_score + 1
+        SET t_triggers = CONCAT(t_triggers, "Neuraxial Infusion; ")
+    ENDIF
+    IF (t_flag_poly_mod = 1)
+        SET t_score = t_score + 1
+        SET t_triggers = CONCAT(t_triggers, "Mod Polypharmacy; ")
+    ENDIF
+
+    SET rec_cohort->list[pat_idx].score = t_score
+    IF (t_score >= 3) SET rec_cohort->list[pat_idx].color = "Red"
+    ELSEIF (t_score >= 1) SET rec_cohort->list[pat_idx].color = "Amber"
+    ELSE SET rec_cohort->list[pat_idx].color = "Green"
+    ENDIF
+    
+    IF (TEXTLEN(t_triggers) > 0) SET rec_cohort->list[pat_idx].summary = SUBSTRING(1, TEXTLEN(t_triggers)-2, t_triggers)
+    ELSE SET rec_cohort->list[pat_idx].summary = "Routine (Low Risk)"
+    ENDIF
+ENDFOR
+
+; 4. Format Ward Output (Ordered by Score Descending)
+SELECT INTO "NL:"
+    PAT_SCORE = rec_cohort->list[D.SEQ].score
+FROM DUMMYT D
+PLAN D WHERE D.SEQ <= rec_cohort->cnt
+ORDER BY PAT_SCORE DESC, D.SEQ
+DETAIL
+    v_ward_rows = CONCAT(v_ward_rows, 
+        "<tr>",
+        "<td><b>", rec_cohort->list[D.SEQ].room_bed, "</b></td>",
+        "<td><a class='patient-link' href='javascript:APPLINK(0,^Powerchart.exe^,^/PERSONID=", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].person_id)), 
+        " /ENCNTRID=", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].encntr_id)), "^)'>", rec_cohort->list[D.SEQ].name, "</a></td>",
+        "<td><span class='badge-", rec_cohort->list[D.SEQ].color, "'>Score: ", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].score)), "</span></td>",
+        "<td>", rec_cohort->list[D.SEQ].summary, "</td>",
+        "</tr>"
+    )
+WITH NOCOUNTER
 
 ; =============================================================================
 ; 4. MAIN MEDICATION QUERY
@@ -693,7 +863,6 @@ HEAD REPORT
     ROW + 1 call print(^  var h = document.body.clientHeight - 90;^)
     ROW + 1 call print(^  if (h < 300) h = 300;^)
     
-    ; Legacy element resizing
     ROW + 1 call print(^  var side = document.getElementById('scroll-side');^)
     ROW + 1 call print(^  var main = document.getElementById('scroll-main');^)
     ROW + 1 call print(^  var table = document.getElementById('gp-table');^)
@@ -701,15 +870,14 @@ HEAD REPORT
     ROW + 1 call print(^  if(side) side.style.height = h + 'px';^)
     ROW + 1 call print(^  if(main) main.style.height = (h - 32) + 'px';^)
     
-    ; Fix for IE Quirks mode not supporting getElementsByClassName
     ROW + 1 call print(^  var medContainer = document.getElementById('med-container');^)
     ROW + 1 call print(^  if(medContainer) medContainer.style.height = h + 'px';^)
-    
     ROW + 1 call print(^  var dotView = document.getElementById('dot-view');^)
     ROW + 1 call print(^  if(dotView) dotView.style.height = h + 'px';^)
-    
     ROW + 1 call print(^  var acuityView = document.getElementById('acuity-view');^)
     ROW + 1 call print(^  if(acuityView) acuityView.style.height = h + 'px';^)
+    ROW + 1 call print(^  var wardView = document.getElementById('ward-view');^)
+    ROW + 1 call print(^  if(wardView) wardView.style.height = h + 'px';^)
     ROW + 1 call print(^}^)
     ROW + 1 call print(^window.onresize = resizeLayout;^)
 
@@ -725,115 +893,34 @@ HEAD REPORT
     ROW + 1 call print(^  }^)
     ROW + 1 call print(^  window.location.hash = 'blob-' + idx;^)
     ROW + 1 call print(^}^)
-    
     ROW + 1 call print(^function nextBlob() { goToBlob(currentBlob + 1); }^)
     ROW + 1 call print(^function prevBlob() { goToBlob(currentBlob - 1); }^)
     
-    ; Expander logic for the Triggers
     ROW + 1 call print(^function toggleTrigger(idx) {^)
     ROW + 1 call print(^  var det = document.getElementById('trig-det-' + idx);^)
     ROW + 1 call print(^  var icon = document.getElementById('trig-icon-' + idx);^)
-    ROW + 1 call print(^  if(det.style.display === 'block') {^)
-    ROW + 1 call print(^      det.style.display = 'none';^)
-    ROW + 1 call print(^      icon.innerHTML = '+';^)
-    ROW + 1 call print(^  } else {^)
-    ROW + 1 call print(^      det.style.display = 'block';^)
-    ROW + 1 call print(^      icon.innerHTML = '&minus;';^)
-    ROW + 1 call print(^  }^)
+    ROW + 1 call print(^  if(det.style.display === 'block') { det.style.display = 'none'; icon.innerHTML = '+'; }^)
+    ROW + 1 call print(^  else { det.style.display = 'block'; icon.innerHTML = '&minus;'; }^)
     ROW + 1 call print(^}^)
 
-    ROW + 1 call print(^function showRestricted() {^)
-    ROW + 1 call print(^  document.getElementById('med-list').className = 'list-view mode-restricted';^)
-    ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('dot-view').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('acuity-view').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('med-container').style.display = 'block';^)
-    ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn active';^)
-    ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn6').className = 'tab-btn';^)
-    ROW + 1 call print(^}^)
-
-    ROW + 1 call print(^function showAll() {^)
-    ROW + 1 call print(^  document.getElementById('med-list').className = 'list-view mode-all';^)
-    ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('dot-view').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('acuity-view').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('med-container').style.display = 'block';^)
-    ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn active';^)
-    ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn6').className = 'tab-btn';^)
-    ROW + 1 call print(^}^)
-
-    ROW + 1 call print(^function showInfusions() {^)
-    ROW + 1 call print(^  document.getElementById('med-list').className = 'list-view mode-infusion';^)
-    ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'block';^)
-    ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('dot-view').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('acuity-view').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('med-container').style.display = 'block';^)
-    ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn active';^)
-    ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn6').className = 'tab-btn';^)
-    ROW + 1 call print(^}^)
-
-    ROW + 1 call print(^function showGP() {^)
-    ROW + 1 call print(^  document.getElementById('med-list').className = 'list-view mode-hidden';^)
-    ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('med-container').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('dot-view').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('acuity-view').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'block';^)
-    ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn active';^)
-    ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn6').className = 'tab-btn';^)
-    ROW + 1 call print(^  resizeLayout();^)
-    ROW + 1 call print(^}^)
-
-    ROW + 1 call print(^function showHolder2() {^)
-    ROW + 1 call print(^  document.getElementById('med-list').className = 'list-view mode-hidden';^)
-    ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('med-container').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('acuity-view').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('dot-view').style.display = 'block';^)
-    ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn active';^)
-    ROW + 1 call print(^  document.getElementById('btn6').className = 'tab-btn';^)
-    ROW + 1 call print(^  resizeLayout();^)
-    ROW + 1 call print(^}^)
-
-    ROW + 1 call print(^function showAcuity() {^)
+    ROW + 1 call print(^function hideAllViews() {^)
     ROW + 1 call print(^  document.getElementById('med-list').className = 'list-view mode-hidden';^)
     ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('med-container').style.display = 'none';^)
     ROW + 1 call print(^  document.getElementById('dot-view').style.display = 'none';^)
-    ROW + 1 call print(^  document.getElementById('acuity-view').style.display = 'block';^)
-    ROW + 1 call print(^  document.getElementById('btn1').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn2').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn3').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn4').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn5').className = 'tab-btn';^)
-    ROW + 1 call print(^  document.getElementById('btn6').className = 'tab-btn active';^)
-    ROW + 1 call print(^  resizeLayout();^)
+    ROW + 1 call print(^  document.getElementById('acuity-view').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('ward-view').style.display = 'none';^)
+    ROW + 1 call print(^  for(var i=1; i<=7; i++) document.getElementById('btn'+i).className = 'tab-btn';^)
     ROW + 1 call print(^}^)
+
+    ROW + 1 call print(^function showRestricted() { hideAllViews(); document.getElementById('med-list').className = 'list-view mode-restricted'; document.getElementById('med-container').style.display = 'block'; document.getElementById('btn1').className = 'tab-btn active'; resizeLayout(); }^)
+    ROW + 1 call print(^function showAll() { hideAllViews(); document.getElementById('med-list').className = 'list-view mode-all'; document.getElementById('med-container').style.display = 'block'; document.getElementById('btn2').className = 'tab-btn active'; resizeLayout(); }^)
+    ROW + 1 call print(^function showInfusions() { hideAllViews(); document.getElementById('med-list').className = 'list-view mode-infusion'; document.getElementById('header-row-inf').style.display = 'block'; document.getElementById('med-container').style.display = 'block'; document.getElementById('btn3').className = 'tab-btn active'; resizeLayout(); }^)
+    ROW + 1 call print(^function showGP() { hideAllViews(); document.getElementById('gp-blob-view').style.display = 'block'; document.getElementById('btn4').className = 'tab-btn active'; resizeLayout(); }^)
+    ROW + 1 call print(^function showHolder2() { hideAllViews(); document.getElementById('dot-view').style.display = 'block'; document.getElementById('btn5').className = 'tab-btn active'; resizeLayout(); }^)
+    ROW + 1 call print(^function showAcuity() { hideAllViews(); document.getElementById('acuity-view').style.display = 'block'; document.getElementById('btn6').className = 'tab-btn active'; resizeLayout(); }^)
+    ROW + 1 call print(^function showWard() { hideAllViews(); document.getElementById('ward-view').style.display = 'block'; document.getElementById('btn7').className = 'tab-btn active'; resizeLayout(); }^)
     ROW + 1 call print(^</script>^)
 
     ROW + 1 call print(^<style>^)
@@ -856,7 +943,6 @@ HEAD REPORT
     ROW + 1 call print(^.print-link:hover { text-decoration: underline; }^)
     ROW + 1 call print(^.type-badge { font-size:10px; font-weight:bold; padding:3px 8px; color:white; }^)
     
-    ; GP PANE
     ROW + 1 call print(^.gp-sidebar { background: #f8f9fa; border-right: 1px solid #ddd; vertical-align: top; width: 130px; }^)
     ROW + 1 call print(^.gp-content { vertical-align: top; background: #fff; border: 1px solid #ddd; }^)
     ROW + 1 call print(^.gp-content-header { background: #f4f6f8; padding: 3px 8px; border-bottom: 1px solid #ddd; text-align: right; }^)
@@ -871,7 +957,6 @@ HEAD REPORT
     ROW + 1 call print(^.blob-meta { background: #f4f6f8; padding: 8px 12px; font-size: 12px; margin-bottom: 10px; font-weight: bold; color: #444; }^)
     ROW + 1 call print(^.blob-text { white-space: pre-wrap; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.6; color: #222; margin-top: 0; }^)
     
-    ; DOT
     ROW + 1 call print(^.wrap *, .wrap *:before, .wrap *:after{box-sizing:border-box}^)
     ROW + 1 call print(concat(^#dot-view {margin:0;font:^, v_font_size, ^/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;color:#111;background:#fff;padding:16px;}^))
     ROW + 1 call print(^.wrap{max-width:1200px;margin:0 auto;}^)
@@ -904,7 +989,6 @@ HEAD REPORT
     ROW + 1 call print(^.pill{display:inline-block;padding:2px 6px;border-radius:12px;background:#eef;color:#334;}^)
     ROW + 1 call print(^.summary-row td{border-top:1px solid #ccc;padding-top:4px;}^)
 
-    ; ACUITY UI CSS
     ROW + 1 call print(^.acuity-banner { padding: 15px; color: #fff; font-size: 22px; font-weight: bold; text-align: center; margin: 15px; border-radius: 5px; }^)
     ROW + 1 call print(^.acuity-Red { background-color: #dc3545; border-bottom: 4px solid #b02a37; }^)
     ROW + 1 call print(^.acuity-Amber { background-color: #ffc107; color: #333; border-bottom: 4px solid #d39e00; }^)
@@ -917,7 +1001,6 @@ HEAD REPORT
     ROW + 1 call print(^.tr-active.red-tier { background-color: #f8d7da !important; border-left: 5px solid #dc3545; font-weight: bold; }^)
     ROW + 1 call print(^.tr-active.amber-tier { background-color: #fff3cd !important; border-left: 5px solid #ffc107; font-weight: bold; }^)
     
-    ; Expander CSS
     ROW + 1 call print(^.trigger-list { list-style-type: none; padding: 0; }^)
     ROW + 1 call print(^.trigger-item-wrap { background: #f8f9fa; margin-bottom: 8px; border-left: 4px solid #0076a8; border-radius: 3px; }^)
     ROW + 1 call print(^.trigger-header { padding: 10px; font-size: 14px; cursor: pointer; }^)
@@ -933,6 +1016,17 @@ HEAD REPORT
     ROW + 1 call print(^.mode-infusion .is-restricted { display: none; }^)
     ROW + 1 call print(^.mode-infusion .is-normal { display: none; }^)
     ROW + 1 call print(^.mode-hidden { display: none; }^)
+    
+    ; Ward Table Specific CSS
+    ROW + 1 call print(^.ward-tbl { width: 98%; margin: 15px auto; border-collapse: collapse; font-size: 14px; background: #fff; border: 1px solid #ddd; }^)
+    ROW + 1 call print(^.ward-tbl th, .ward-tbl td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }^)
+    ROW + 1 call print(^.ward-tbl th { background: #f0f4f8; font-weight: bold; color: #333; }^)
+    ROW + 1 call print(^.ward-tbl tr:hover { background: #f9f9f9; }^)
+    ROW + 1 call print(^.badge-Red { background: #dc3545; color: white; padding: 4px 10px; border-radius: 12px; font-weight:bold; font-size:12px; display:inline-block; width:60px; text-align:center; }^)
+    ROW + 1 call print(^.badge-Amber { background: #ffc107; color: black; padding: 4px 10px; border-radius: 12px; font-weight:bold; font-size:12px; display:inline-block; width:60px; text-align:center; }^)
+    ROW + 1 call print(^.badge-Green { background: #28a745; color: white; padding: 4px 10px; border-radius: 12px; font-weight:bold; font-size:12px; display:inline-block; width:60px; text-align:center; }^)
+    ROW + 1 call print(^.patient-link { color: #0076a8; text-decoration: none; font-weight: bold; }^)
+    ROW + 1 call print(^.patient-link:hover { text-decoration: underline; }^)
 
     ROW + 1 call print(^</style>^)
     ROW + 1 call print(^</head>^)
@@ -951,19 +1045,30 @@ HEAD REPORT
     ROW + 1 call print(^<div id='btn3' class='tab-btn' onclick='showInfusions()'>Infusions &amp; Labels</div>^)
     ROW + 1 call print(^<div id='btn4' class='tab-btn' onclick='showGP()'>Medication Details (GP)</div>^)
     ROW + 1 call print(^<div id='btn5' class='tab-btn' onclick='showHolder2()'>Antimicrobial DOT</div>^)
-    ROW + 1 call print(^<div id='btn6' class='tab-btn' onclick='showAcuity()'>Maternity Acuity</div>^)
+    ROW + 1 call print(^<div id='btn6' class='tab-btn' onclick='showAcuity()'>Patient Acuity</div>^)
+    ROW + 1 call print(^<div id='btn7' class='tab-btn' onclick='showWard()'>Ward Triage List (Test)</div>^)
     ROW + 1 call print(^</div>^)
 
     ; =========================================================================
-    ; TAB 6: ACUITY VIEW 
+    ; TAB 7: WARD TRIAGE LIST VIEW
+    ; =========================================================================
+    ROW + 1 call print(^<div id='ward-view' class='content-box' style='display:none;'>^)
+    ROW + 1 call print(CONCAT(^<div class='acuity-banner' style='background:#0076a8; border-bottom:4px solid #005a80;'>Acuity Triage: ^, curr_ward_disp, ^</div>^))
+    
+    ROW + 1 call print(^<table class='ward-tbl'><thead><tr><th>Bed / Room</th><th>Patient Name</th><th>Acuity Score</th><th>Active Triggers</th></tr></thead><tbody>^)
+    ROW + 1 call print(v_ward_rows)
+    ROW + 1 call print(^</tbody></table>^)
+    ROW + 1 call print(^<div style="padding:15px; color:#666; font-size:12px;"><i>Clicking a patient's name will open their chart in PowerChart.<br/>Patients are automatically sorted by highest clinical risk.</i></div>^)
+    ROW + 1 call print(^<div style="height: 100px; width: 100%;"></div>^)
+    ROW + 1 call print(^</div>^)
+
+    ; =========================================================================
+    ; TAB 6: ACUITY VIEW (Single Patient)
     ; =========================================================================
     ROW + 1 call print(^<div id='acuity-view' class='content-box' style='display:none;'>^)
     ROW + 1 call print(CONCAT(^<div class='acuity-banner acuity-^, rec_acuity->color, ^'>Acuity Score: ^, TRIM(CNVTSTRING(rec_acuity->score)), ^ (Triage Tier: ^, CNVTUPPER(rec_acuity->color), ^)</div>^))
     
-    ; IE Quirks Mode Compatible Split Pane Layout
     ROW + 1 call print(^<table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-top:15px;"><tr>^)
-    
-    ; LEFT PANE: Active Triggers with Dynamic Expanding Rows
     ROW + 1 call print(^<td width="48%" valign="top" style="padding: 0 10px 15px 15px;">^)
     ROW + 1 call print(^<h3 class='panel-header'>Patient Specific Triggers</h3>^)
     
@@ -990,7 +1095,6 @@ HEAD REPORT
     ROW + 1 call print(^</div>^)
     ROW + 1 call print(^</td>^)
     
-    ; RIGHT PANE: Reference Matrix
     ROW + 1 call print(^<td width="52%" valign="top" style="padding: 0 15px 15px 10px;">^)
     ROW + 1 call print(^<h3 class='panel-header' style='margin-bottom: 2px;'>Scoring Reference Matrix</h3>^)
     ROW + 1 call print(^<div style='font-size:11px; color:#666; margin-bottom: 8px;'>Hover over a criteria row to view the exact database fields/strings being evaluated.<br>Criteria based on UKCPA Women's Health Group &amp; ISMP Guidelines. Lab parameters excluded.</div>^)
