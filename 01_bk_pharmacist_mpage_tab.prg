@@ -451,30 +451,33 @@ WITH NOCOUNTER
 SELECT INTO "NL:"
     MNEM = O.ORDER_MNEMONIC,
     UNOM = CNVTUPPER(O.ORDER_MNEMONIC),
-    DT_STR = FORMAT(O.CURRENT_START_DT_TM, "DD/MM/YYYY HH:MM")
+    DT_STR = FORMAT(O.CURRENT_START_DT_TM, "DD/MM/YYYY HH:MM"),
+    SDL = O.SIMPLIFIED_DISPLAY_LINE
 FROM ORDERS O
 PLAN O WHERE O.PERSON_ID = CNVTREAL($patient_id)
-    AND O.ORDER_STATUS_CD = 2550.00 ; Active
+    AND O.ORDER_STATUS_CD = 2550.00 ; Ordered (Active)
     AND O.CATALOG_TYPE_CD = 2516.00 ; Pharmacy
+    AND O.ORIG_ORD_AS_FLAG = 0      ; Normal order (exclude prescriptions and home meds)
+    AND O.TEMPLATE_ORDER_ID = 0     ; Exclude administration orders
 DETAIL
     rec_acuity->poly_count = rec_acuity->poly_count + 1
-    rec_acuity->det_poly = CONCAT(rec_acuity->det_poly, "<div class='trigger-det-item'>&bull; ", TRIM(MNEM), "</div>")
+    rec_acuity->det_poly = CONCAT(rec_acuity->det_poly, "<div class='trigger-det-item'>&bull; <b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
 
     IF (FINDSTRING("TINZAPARIN", UNOM) > 0 OR FINDSTRING("HEPARIN", UNOM) > 0 OR FINDSTRING("ENOXAPARIN", UNOM) > 0)
         rec_acuity->flag_anticoag = 1
-        rec_acuity->det_anticoag = CONCAT(rec_acuity->det_anticoag, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> (Started: ", DT_STR, ")</div>")
+        rec_acuity->det_anticoag = CONCAT(rec_acuity->det_anticoag, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
     ELSEIF (FINDSTRING("INSULIN", UNOM) > 0)
         rec_acuity->flag_insulin = 1
-        rec_acuity->det_insulin = CONCAT(rec_acuity->det_insulin, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> (Started: ", DT_STR, ")</div>")
+        rec_acuity->det_insulin = CONCAT(rec_acuity->det_insulin, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
     ELSEIF (FINDSTRING("LEVETIRACETAM", UNOM) > 0 OR FINDSTRING("LAMOTRIGINE", UNOM) > 0 OR FINDSTRING("VALPROATE", UNOM) > 0 OR FINDSTRING("CARBAMAZEPINE", UNOM) > 0)
         rec_acuity->flag_antiepileptic = 1
-        rec_acuity->det_antiepileptic = CONCAT(rec_acuity->det_antiepileptic, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> (Started: ", DT_STR, ")</div>")
+        rec_acuity->det_antiepileptic = CONCAT(rec_acuity->det_antiepileptic, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
     ELSEIF (FINDSTRING("LABETALOL", UNOM) > 0 OR FINDSTRING("NIFEDIPINE", UNOM) > 0 OR FINDSTRING("METHYLDOPA", UNOM) > 0)
         rec_acuity->flag_antihypertensive = 1
-        rec_acuity->det_antihypertensive = CONCAT(rec_acuity->det_antihypertensive, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> (Started: ", DT_STR, ")</div>")
+        rec_acuity->det_antihypertensive = CONCAT(rec_acuity->det_antihypertensive, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
     ELSEIF (FINDSTRING("BUPIVACAINE", UNOM) > 0 OR FINDSTRING("LEVOBUPIVACAINE", UNOM) > 0)
         rec_acuity->flag_neuraxial = 1
-        rec_acuity->det_neuraxial = CONCAT(rec_acuity->det_neuraxial, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> (Started: ", DT_STR, ")</div>")
+        rec_acuity->det_neuraxial = CONCAT(rec_acuity->det_neuraxial, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
     ENDIF
 WITH NOCOUNTER
 
