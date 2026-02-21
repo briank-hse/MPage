@@ -849,11 +849,26 @@ HEAD REPORT
     ROW + 1 call print(^  var h = document.body.clientHeight - 90;^)
     ROW + 1 call print(^  if (h < 300) h = 300;^)
     
-    ROW + 1 call print(^  var views = ['scroll-side', 'scroll-main', 'gp-table', 'med-container', 'dot-view', 'acuity-view', 'ward-view'];^)
-    ROW + 1 call print(^  for (var i = 0; i < views.length; i++) {^)
-    ROW + 1 call print(^    var el = document.getElementById(views[i]);^)
-    ROW + 1 call print(^    if (el) el.style.height = h + 'px';^)
-    ROW + 1 call print(^  }^)
+    ; Restored explicit, safe resizing for GP and DOT tabs
+    ROW + 1 call print(^  var side = document.getElementById('scroll-side');^)
+    ROW + 1 call print(^  var main = document.getElementById('scroll-main');^)
+    ROW + 1 call print(^  var table = document.getElementById('gp-table');^)
+    ROW + 1 call print(^  if(table) table.style.height = h + 'px';^)
+    ROW + 1 call print(^  if(side) side.style.height = h + 'px';^)
+    ROW + 1 call print(^  if(main) main.style.height = (h - 32) + 'px';^)
+    
+    ROW + 1 call print(^  var medContainer = document.getElementById('med-container');^)
+    ROW + 1 call print(^  if(medContainer) medContainer.style.height = h + 'px';^)
+    ROW + 1 call print(^  var dotView = document.getElementById('dot-view');^)
+    ROW + 1 call print(^  if(dotView) dotView.style.height = h + 'px';^)
+    ROW + 1 call print(^  var acuityView = document.getElementById('acuity-view');^)
+    ROW + 1 call print(^  if(acuityView) acuityView.style.height = h + 'px';^)
+    
+    ; Ward View specific sizing
+    ROW + 1 call print(^  var wardView = document.getElementById('ward-view');^)
+    ROW + 1 call print(^  if(wardView) wardView.style.height = h + 'px';^)
+    ROW + 1 call print(^  var wScroll = document.getElementById('ward-scroll');^)
+    ROW + 1 call print(^  if(wScroll) wScroll.style.height = (h - 110) + 'px';^)
     ROW + 1 call print(^}^)
     ROW + 1 call print(^window.onresize = resizeLayout;^)
 
@@ -869,6 +884,7 @@ HEAD REPORT
     ROW + 1 call print(^  }^)
     ROW + 1 call print(^  window.location.hash = 'blob-' + idx;^)
     ROW + 1 call print(^}^)
+    
     ROW + 1 call print(^function nextBlob() { goToBlob(currentBlob + 1); }^)
     ROW + 1 call print(^function prevBlob() { goToBlob(currentBlob - 1); }^)
     
@@ -880,20 +896,19 @@ HEAD REPORT
     ROW + 1 call print(^}^)
 
     ROW + 1 call print(^function hideAllViews() {^)
-    ROW + 1 call print(^  var views = ['med-list', 'header-row-inf', 'gp-blob-view', 'med-container', 'dot-view', 'acuity-view', 'ward-view'];^)
-    ROW + 1 call print(^  for (var i = 0; i < views.length; i++) {^)
-    ROW + 1 call print(^    var el = document.getElementById(views[i]);^)
-    ROW + 1 call print(^    if (el) el.style.display = 'none';^)
-    ROW + 1 call print(^  }^)
-    ROW + 1 call print(^  for (var j = 1; j <= 7; j++) {^)
-    ROW + 1 call print(^    var btn = document.getElementById('btn' + j);^)
-    ROW + 1 call print(^    if (btn) btn.className = 'tab-btn';^)
-    ROW + 1 call print(^  }^)
+    ROW + 1 call print(^  document.getElementById('med-list').className = 'list-view mode-hidden';^)
+    ROW + 1 call print(^  document.getElementById('header-row-inf').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('gp-blob-view').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('med-container').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('dot-view').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('acuity-view').style.display = 'none';^)
+    ROW + 1 call print(^  document.getElementById('ward-view').style.display = 'none';^)
+    ROW + 1 call print(^  for(var i=1; i<=7; i++) { var btn = document.getElementById('btn'+i); if(btn) btn.className = 'tab-btn'; }^)
     ROW + 1 call print(^}^)
 
-    ROW + 1 call print(^function showRestricted() { hideAllViews(); document.getElementById('med-list').className = 'list-view mode-restricted'; document.getElementById('med-list').style.display = 'block'; document.getElementById('med-container').style.display = 'block'; document.getElementById('btn1').className = 'tab-btn active'; resizeLayout(); }^)
-    ROW + 1 call print(^function showAll() { hideAllViews(); document.getElementById('med-list').className = 'list-view mode-all'; document.getElementById('med-list').style.display = 'block'; document.getElementById('med-container').style.display = 'block'; document.getElementById('btn2').className = 'tab-btn active'; resizeLayout(); }^)
-    ROW + 1 call print(^function showInfusions() { hideAllViews(); document.getElementById('med-list').className = 'list-view mode-infusion'; document.getElementById('med-list').style.display = 'block'; document.getElementById('header-row-inf').style.display = 'block'; document.getElementById('med-container').style.display = 'block'; document.getElementById('btn3').className = 'tab-btn active'; resizeLayout(); }^)
+    ROW + 1 call print(^function showRestricted() { hideAllViews(); document.getElementById('med-list').className = 'list-view mode-restricted'; document.getElementById('med-container').style.display = 'block'; document.getElementById('btn1').className = 'tab-btn active'; resizeLayout(); }^)
+    ROW + 1 call print(^function showAll() { hideAllViews(); document.getElementById('med-list').className = 'list-view mode-all'; document.getElementById('med-container').style.display = 'block'; document.getElementById('btn2').className = 'tab-btn active'; resizeLayout(); }^)
+    ROW + 1 call print(^function showInfusions() { hideAllViews(); document.getElementById('med-list').className = 'list-view mode-infusion'; document.getElementById('header-row-inf').style.display = 'block'; document.getElementById('med-container').style.display = 'block'; document.getElementById('btn3').className = 'tab-btn active'; resizeLayout(); }^)
     ROW + 1 call print(^function showGP() { hideAllViews(); document.getElementById('gp-blob-view').style.display = 'block'; document.getElementById('btn4').className = 'tab-btn active'; resizeLayout(); }^)
     ROW + 1 call print(^function showHolder2() { hideAllViews(); document.getElementById('dot-view').style.display = 'block'; document.getElementById('btn5').className = 'tab-btn active'; resizeLayout(); }^)
     ROW + 1 call print(^function showAcuity() { hideAllViews(); document.getElementById('acuity-view').style.display = 'block'; document.getElementById('btn6').className = 'tab-btn active'; resizeLayout(); }^)
@@ -935,7 +950,7 @@ HEAD REPORT
     ROW + 1 call print(^.blob-text { white-space: pre-wrap; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.6; color: #222; margin-top: 0; }^)
     
     ROW + 1 call print(^.wrap *, .wrap *:before, .wrap *:after{box-sizing:border-box}^)
-    ROW + 1 call print(concat(^#dot-view {margin:0;font:^, v_font_size, ^/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;color:#111;background:#fff;padding:16px; overflow-y:auto;}^))
+    ROW + 1 call print(concat(^#dot-view {margin:0;font:^, v_font_size, ^/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;color:#111;background:#fff;padding:16px;}^))
     ROW + 1 call print(^.wrap{max-width:1200px;margin:0 auto;}^)
     ROW + 1 call print(^.wrap h1{font-size:18px;margin:0 0 8px;}^)
     ROW + 1 call print(^.wrap h2{font-size:15px;margin:16px 0 8px;padding-top:0;}^)
@@ -994,9 +1009,9 @@ HEAD REPORT
     ROW + 1 call print(^.mode-infusion .is-normal { display: none; }^)
     ROW + 1 call print(^.mode-hidden { display: none; }^)
     
-    ; WARD TABLE CSS FIXES (Split Table Layout for IE Sticky Headers)
+    ; WARD TABLE CSS FIXES (Split Table for Sticky Headers)
     ROW + 1 call print(^.ward-tbl { width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; border: 1px solid #ddd; table-layout: fixed; }^)
-    ROW + 1 call print(^.ward-tbl th, .ward-tbl td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; vertical-align: top; line-height: 1.4; word-wrap: break-word; }^)
+    ROW + 1 call print(^.ward-tbl th, .ward-tbl td { padding: 10px 12px; border-bottom: 1px solid #eee; text-align: left; vertical-align: top; line-height: 1.4; word-wrap: break-word; }^)
     ROW + 1 call print(^.ward-tbl th { background: #f0f4f8; font-weight: bold; color: #333; border-bottom: 2px solid #ddd; }^)
     ROW + 1 call print(^.ward-tbl tbody tr:hover { background: #f9f9f9; }^)
     ROW + 1 call print(^.badge-Red { background: #dc3545; color: white; padding: 4px 10px; border-radius: 12px; font-weight:bold; font-size:12px; display:inline-block; min-width:60px; text-align:center; }^)
@@ -1027,20 +1042,20 @@ HEAD REPORT
     ROW + 1 call print(^</div>^)
 
     ; =========================================================================
-    ; TAB 7: WARD TRIAGE LIST VIEW (Absolute Position Fix for Sticky Headers)
+    ; TAB 7: WARD TRIAGE LIST VIEW (Split Block Layout)
     ; =========================================================================
-    ROW + 1 call print(^<div id='ward-view' class='content-box' style='display:none; position:relative; overflow:hidden;'>^)
+    ROW + 1 call print(^<div id='ward-view' class='content-box' style='display:none; overflow:hidden;'>^) 
     
-    ; --- STATIC HEADER AREA (Top 120px) ---
-    ROW + 1 call print(^<div style="position:absolute; top:0; left:0; right:0; height:120px; background:#fff; z-index:10; border-bottom:1px solid #ccc;">^)
+    ; Static Header Block (110px tall, padded right by 17px for scrollbar alignment)
+    ROW + 1 call print(^<div id='ward-header' style='height: 110px;'>^)
     ROW + 1 call print(CONCAT(^<div class='acuity-banner' style='background:#0076a8; border-bottom:4px solid #005a80; margin:10px 15px;'>Acuity Triage: ^, curr_ward_disp, ^</div>^))
-    ROW + 1 call print(^<div style="padding:0 15px; padding-right:32px;">^)
-    ROW + 1 call print(^<table class='ward-tbl' style='margin:0; border:none;'>^)
+    ROW + 1 call print(^<div style="padding: 0 15px; padding-right: 32px;">^)
+    ROW + 1 call print(^<table class='ward-tbl' style='margin-bottom:0; border-bottom:none;'>^)
     ROW + 1 call print(^<thead><tr><th width="15%">Bed / Room</th><th width="25%">Patient Name</th><th width="15%">Acuity Score</th><th width="45%">Active Triggers</th></tr></thead>^)
     ROW + 1 call print(^</table></div></div>^)
     
-    ; --- SCROLLING BODY AREA (From 120px down to bottom) ---
-    ROW + 1 call print(^<div style="position:absolute; top:120px; bottom:0; left:0; right:0; overflow-y:scroll; padding:0 15px;">^)
+    ; Scrolling Body Block (Resized by JS function above)
+    ROW + 1 call print(^<div id='ward-scroll' style='overflow-y:auto; padding: 0 15px;'>^)
     ROW + 1 call print(^<table class='ward-tbl' style='margin-top:0; border-top:none;'><tbody>^)
     ROW + 1 call print(v_ward_rows)
     ROW + 1 call print(^</tbody></table>^)
@@ -1050,7 +1065,7 @@ HEAD REPORT
     ; =========================================================================
     ; TAB 6: ACUITY VIEW (Single Patient)
     ; =========================================================================
-    ROW + 1 call print(^<div id='acuity-view' class='content-box' style='display:none; overflow-y:auto;'>^)
+    ROW + 1 call print(^<div id='acuity-view' class='content-box' style='display:none;'>^)
     ROW + 1 call print(CONCAT(^<div class='acuity-banner acuity-^, rec_acuity->color, ^'>Patient Acuity Score: ^, TRIM(CNVTSTRING(rec_acuity->score)), ^ (Triage Tier: ^, CNVTUPPER(rec_acuity->color), ^)</div>^))
     
     ROW + 1 call print(^<table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-top:15px;"><tr>^)
@@ -1102,7 +1117,7 @@ HEAD REPORT
     ; =========================================================================
     ; TAB 1, 2, 3: MEDICATION LIST
     ; =========================================================================
-    ROW + 1 call print(^<div id='med-container' class='content-box' style='display:none; overflow-y:auto;'>^)
+    ROW + 1 call print(^<div id='med-container' class='content-box'>^)
     ROW + 1 call print(^<div id='header-row-inf' class='inf-header'>^)
     ROW + 1 call print(^<div style='float:left; width:120px;'>Start Date</div>^)
     ROW + 1 call print(^<div style='float:left; width:250px;'>Infusion Name</div>^)
