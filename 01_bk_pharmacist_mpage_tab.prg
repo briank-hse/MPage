@@ -363,7 +363,7 @@ with nocounter
 
 
 ; =============================================================================
-; 3.5 MATERNITY ACUITY SCORE CALCULATION - EVIDENCE BASED
+; 3.5 MATERNITY ACUITY SCORE CALCULATION - EVIDENCE BASED WITH EXPAND
 ; =============================================================================
 RECORD rec_acuity (
     1 score = i4
@@ -382,66 +382,99 @@ RECORD rec_acuity (
     1 flag_neuraxial = i2
     1 flag_poly_severe = i2
     1 flag_poly_mod = i2
+    
+    ; Detail Strings for Expander Panels
+    1 det_ebl = vc
+    1 det_transfusion = vc
+    1 det_preeclampsia = vc
+    1 det_dvt = vc
+    1 det_epilepsy = vc
+    1 det_insulin = vc
+    1 det_antiepileptic = vc
+    1 det_anticoag = vc
+    1 det_antihypertensive = vc
+    1 det_neuraxial = vc
+    1 det_poly = vc
+
     1 reasons[*]
         2 text = vc
         2 points = i4
+        2 detail_html = vc
 )
 
 ; Step A1: Gather Active Problems
 SELECT INTO "NL:"
-    NOM = CNVTUPPER(N.SOURCE_STRING)
+    NOM = N.SOURCE_STRING,
+    UNOM = CNVTUPPER(N.SOURCE_STRING),
+    DT_STR = FORMAT(P.ONSET_DT_TM, "DD/MM/YYYY")
 FROM PROBLEM P, NOMENCLATURE N
 PLAN P WHERE P.PERSON_ID = CNVTREAL($patient_id)
     AND P.ACTIVE_IND = 1
     AND P.LIFE_CYCLE_STATUS_CD = 3301.00 ; Active Problem
 JOIN N WHERE N.NOMENCLATURE_ID = P.NOMENCLATURE_ID
 DETAIL
-    IF (FINDSTRING("PRE-ECLAMPSIA", NOM) > 0 OR FINDSTRING("PREECLAMPSIA", NOM) > 0)
+    IF (FINDSTRING("PRE-ECLAMPSIA", UNOM) > 0 OR FINDSTRING("PREECLAMPSIA", UNOM) > 0)
         rec_acuity->flag_preeclampsia = 1
-    ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", NOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", NOM) > 0 OR FINDSTRING("DVT", NOM) > 0)
+        rec_acuity->det_preeclampsia = CONCAT(rec_acuity->det_preeclampsia, "<div class='trigger-det-item'><b>", TRIM(NOM), "</b> (Onset: ", DT_STR, ")</div>")
+    ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", UNOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", UNOM) > 0 OR FINDSTRING("DVT", UNOM) > 0)
         rec_acuity->flag_dvt = 1
-    ELSEIF (FINDSTRING("EPILEPSY", NOM) > 0 OR FINDSTRING("SEIZURE", NOM) > 0)
+        rec_acuity->det_dvt = CONCAT(rec_acuity->det_dvt, "<div class='trigger-det-item'><b>", TRIM(NOM), "</b> (Onset: ", DT_STR, ")</div>")
+    ELSEIF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0)
         rec_acuity->flag_epilepsy = 1
+        rec_acuity->det_epilepsy = CONCAT(rec_acuity->det_epilepsy, "<div class='trigger-det-item'><b>", TRIM(NOM), "</b> (Onset: ", DT_STR, ")</div>")
     ENDIF
 WITH NOCOUNTER
 
 ; Step A2: Gather Active Diagnoses
 SELECT INTO "NL:"
-    NOM = CNVTUPPER(N.SOURCE_STRING)
+    NOM = N.SOURCE_STRING,
+    UNOM = CNVTUPPER(N.SOURCE_STRING),
+    DT_STR = FORMAT(D.DIAG_DT_TM, "DD/MM/YYYY")
 FROM DIAGNOSIS D, NOMENCLATURE N
 PLAN D WHERE D.PERSON_ID = CNVTREAL($patient_id)
     AND D.ACTIVE_IND = 1
 JOIN N WHERE N.NOMENCLATURE_ID = D.NOMENCLATURE_ID
 DETAIL
-    IF (FINDSTRING("PRE-ECLAMPSIA", NOM) > 0 OR FINDSTRING("PREECLAMPSIA", NOM) > 0)
+    IF (FINDSTRING("PRE-ECLAMPSIA", UNOM) > 0 OR FINDSTRING("PREECLAMPSIA", UNOM) > 0)
         rec_acuity->flag_preeclampsia = 1
-    ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", NOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", NOM) > 0 OR FINDSTRING("DVT", NOM) > 0)
+        rec_acuity->det_preeclampsia = CONCAT(rec_acuity->det_preeclampsia, "<div class='trigger-det-item'><b>", TRIM(NOM), "</b> (Diagnosed: ", DT_STR, ")</div>")
+    ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", UNOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", UNOM) > 0 OR FINDSTRING("DVT", UNOM) > 0)
         rec_acuity->flag_dvt = 1
-    ELSEIF (FINDSTRING("EPILEPSY", NOM) > 0 OR FINDSTRING("SEIZURE", NOM) > 0)
+        rec_acuity->det_dvt = CONCAT(rec_acuity->det_dvt, "<div class='trigger-det-item'><b>", TRIM(NOM), "</b> (Diagnosed: ", DT_STR, ")</div>")
+    ELSEIF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0)
         rec_acuity->flag_epilepsy = 1
+        rec_acuity->det_epilepsy = CONCAT(rec_acuity->det_epilepsy, "<div class='trigger-det-item'><b>", TRIM(NOM), "</b> (Diagnosed: ", DT_STR, ")</div>")
     ENDIF
 WITH NOCOUNTER
 
 ; Step B: Calculate Polypharmacy & High Risk Medications (Active Inpatient Only)
 SELECT INTO "NL:"
-    MNEM = CNVTUPPER(O.ORDER_MNEMONIC)
+    MNEM = O.ORDER_MNEMONIC,
+    UNOM = CNVTUPPER(O.ORDER_MNEMONIC),
+    DT_STR = FORMAT(O.CURRENT_START_DT_TM, "DD/MM/YYYY HH:MM")
 FROM ORDERS O
 PLAN O WHERE O.PERSON_ID = CNVTREAL($patient_id)
     AND O.ORDER_STATUS_CD = 2550.00 ; Active
     AND O.CATALOG_TYPE_CD = 2516.00 ; Pharmacy
 DETAIL
     rec_acuity->poly_count = rec_acuity->poly_count + 1
+    rec_acuity->det_poly = CONCAT(rec_acuity->det_poly, "<div class='trigger-det-item'>&bull; ", TRIM(MNEM), "</div>")
 
-    IF (FINDSTRING("TINZAPARIN", MNEM) > 0 OR FINDSTRING("HEPARIN", MNEM) > 0 OR FINDSTRING("ENOXAPARIN", MNEM) > 0)
+    IF (FINDSTRING("TINZAPARIN", UNOM) > 0 OR FINDSTRING("HEPARIN", UNOM) > 0 OR FINDSTRING("ENOXAPARIN", UNOM) > 0)
         rec_acuity->flag_anticoag = 1
-    ELSEIF (FINDSTRING("INSULIN", MNEM) > 0)
+        rec_acuity->det_anticoag = CONCAT(rec_acuity->det_anticoag, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> (Started: ", DT_STR, ")</div>")
+    ELSEIF (FINDSTRING("INSULIN", UNOM) > 0)
         rec_acuity->flag_insulin = 1
-    ELSEIF (FINDSTRING("LEVETIRACETAM", MNEM) > 0 OR FINDSTRING("LAMOTRIGINE", MNEM) > 0 OR FINDSTRING("VALPROATE", MNEM) > 0 OR FINDSTRING("CARBAMAZEPINE", MNEM) > 0)
+        rec_acuity->det_insulin = CONCAT(rec_acuity->det_insulin, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> (Started: ", DT_STR, ")</div>")
+    ELSEIF (FINDSTRING("LEVETIRACETAM", UNOM) > 0 OR FINDSTRING("LAMOTRIGINE", UNOM) > 0 OR FINDSTRING("VALPROATE", UNOM) > 0 OR FINDSTRING("CARBAMAZEPINE", UNOM) > 0)
         rec_acuity->flag_antiepileptic = 1
-    ELSEIF (FINDSTRING("LABETALOL", MNEM) > 0 OR FINDSTRING("NIFEDIPINE", MNEM) > 0 OR FINDSTRING("METHYLDOPA", MNEM) > 0)
+        rec_acuity->det_antiepileptic = CONCAT(rec_acuity->det_antiepileptic, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> (Started: ", DT_STR, ")</div>")
+    ELSEIF (FINDSTRING("LABETALOL", UNOM) > 0 OR FINDSTRING("NIFEDIPINE", UNOM) > 0 OR FINDSTRING("METHYLDOPA", UNOM) > 0)
         rec_acuity->flag_antihypertensive = 1
-    ELSEIF (FINDSTRING("BUPIVACAINE", MNEM) > 0 OR FINDSTRING("LEVOBUPIVACAINE", MNEM) > 0)
+        rec_acuity->det_antihypertensive = CONCAT(rec_acuity->det_antihypertensive, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> (Started: ", DT_STR, ")</div>")
+    ELSEIF (FINDSTRING("BUPIVACAINE", UNOM) > 0 OR FINDSTRING("LEVOBUPIVACAINE", UNOM) > 0)
         rec_acuity->flag_neuraxial = 1
+        rec_acuity->det_neuraxial = CONCAT(rec_acuity->det_neuraxial, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> (Started: ", DT_STR, ")</div>")
     ENDIF
 WITH NOCOUNTER
 
@@ -453,6 +486,9 @@ ENDIF
 
 ; Step C: Check Clinical Events for EBL and Transfusions
 SELECT INTO "NL:"
+    VAL = CE.RESULT_VAL,
+    TITLE = UAR_GET_CODE_DISPLAY(CE.EVENT_CD),
+    DT_STR = FORMAT(CE.PERFORMED_DT_TM, "DD/MM/YYYY HH:MM")
 FROM CLINICAL_EVENT CE
 PLAN CE WHERE CE.PERSON_ID = CNVTREAL($patient_id)
     AND CE.EVENT_CD IN (15071366.00, 82546829.00, 15083551.00, 19995695.00) 
@@ -462,8 +498,10 @@ PLAN CE WHERE CE.PERSON_ID = CNVTREAL($patient_id)
 DETAIL
     IF (CE.EVENT_CD = 15071366.00) ; Transfusion
         rec_acuity->flag_transfusion = 1
-    ELSEIF (CE.EVENT_CD IN (82546829.00, 15083551.00, 19995695.00) AND CNVTREAL(CE.RESULT_VAL) > 1000.0)
+        rec_acuity->det_transfusion = CONCAT(rec_acuity->det_transfusion, "<div class='trigger-det-item'><b>", TRIM(TITLE), "</b>: ", TRIM(VAL), " (", DT_STR, ")</div>")
+    ELSEIF (CE.EVENT_CD IN (82546829.00, 15083551.00, 19995695.00) AND CNVTREAL(VAL) > 1000.0)
         rec_acuity->flag_ebl = 1
+        rec_acuity->det_ebl = CONCAT(rec_acuity->det_ebl, "<div class='trigger-det-item'><b>", TRIM(TITLE), "</b>: ", TRIM(VAL), " ml (", DT_STR, ")</div>")
     ENDIF
 WITH NOCOUNTER
 
@@ -474,6 +512,7 @@ IF (rec_acuity->flag_transfusion = 1 OR rec_acuity->flag_ebl = 1)
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Massive Haemorrhage (>1000ml EBL) or Transfusion"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = CONCAT(rec_acuity->det_transfusion, rec_acuity->det_ebl)
 ENDIF
 
 IF (rec_acuity->flag_preeclampsia = 1)
@@ -482,6 +521,7 @@ IF (rec_acuity->flag_preeclampsia = 1)
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Active Diagnosis/Problem: Pre-Eclampsia"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_preeclampsia
 ENDIF
 
 IF (rec_acuity->flag_dvt = 1)
@@ -490,6 +530,7 @@ IF (rec_acuity->flag_dvt = 1)
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Active Diagnosis/Problem: DVT or Pulmonary Embolism"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_dvt
 ENDIF
 
 IF (rec_acuity->flag_epilepsy = 1)
@@ -498,6 +539,7 @@ IF (rec_acuity->flag_epilepsy = 1)
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Active Diagnosis/Problem: Epilepsy/Seizure Disorder"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_epilepsy
 ENDIF
 
 IF (rec_acuity->flag_insulin = 1)
@@ -506,6 +548,7 @@ IF (rec_acuity->flag_insulin = 1)
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "High Alert Med: Insulin"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_insulin
 ENDIF
 
 IF (rec_acuity->flag_antiepileptic = 1)
@@ -514,6 +557,7 @@ IF (rec_acuity->flag_antiepileptic = 1)
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "High Alert Med: Antiepileptic"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_antiepileptic
 ENDIF
 
 IF (rec_acuity->flag_poly_severe = 1)
@@ -522,6 +566,7 @@ IF (rec_acuity->flag_poly_severe = 1)
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].text = CONCAT("Severe Polypharmacy (", TRIM(CNVTSTRING(rec_acuity->poly_count)), " active meds)")
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_poly
 ENDIF
 
 IF (rec_acuity->flag_anticoag = 1)
@@ -530,6 +575,7 @@ IF (rec_acuity->flag_anticoag = 1)
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Targeted Med: Anticoagulant (LMWH/Heparin)"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_anticoag
 ENDIF
 
 IF (rec_acuity->flag_antihypertensive = 1)
@@ -538,6 +584,7 @@ IF (rec_acuity->flag_antihypertensive = 1)
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Targeted Med: Antihypertensive"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_antihypertensive
 ENDIF
 
 IF (rec_acuity->flag_neuraxial = 1)
@@ -546,6 +593,7 @@ IF (rec_acuity->flag_neuraxial = 1)
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Medication: Neuraxial/Epidural Infusion"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 1
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_neuraxial
 ENDIF
 
 IF (rec_acuity->flag_poly_mod = 1)
@@ -554,6 +602,7 @@ IF (rec_acuity->flag_poly_mod = 1)
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].text = CONCAT("Moderate Polypharmacy (", TRIM(CNVTSTRING(rec_acuity->poly_count)), " active meds)")
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 1
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_poly
 ENDIF
 
 IF (rec_acuity->score >= 3)
@@ -654,6 +703,19 @@ HEAD REPORT
     
     ROW + 1 call print(^function nextBlob() { goToBlob(currentBlob + 1); }^)
     ROW + 1 call print(^function prevBlob() { goToBlob(currentBlob - 1); }^)
+    
+    ; Expander logic for the Triggers
+    ROW + 1 call print(^function toggleTrigger(idx) {^)
+    ROW + 1 call print(^  var det = document.getElementById('trig-det-' + idx);^)
+    ROW + 1 call print(^  var icon = document.getElementById('trig-icon-' + idx);^)
+    ROW + 1 call print(^  if(det.style.display === 'block') {^)
+    ROW + 1 call print(^      det.style.display = 'none';^)
+    ROW + 1 call print(^      icon.innerHTML = '+';^)
+    ROW + 1 call print(^  } else {^)
+    ROW + 1 call print(^      det.style.display = 'block';^)
+    ROW + 1 call print(^      icon.innerHTML = '&minus;';^)
+    ROW + 1 call print(^  }^)
+    ROW + 1 call print(^}^)
 
     ROW + 1 call print(^function showRestricted() {^)
     ROW + 1 call print(^  document.getElementById('med-list').className = 'list-view mode-restricted';^)
@@ -829,8 +891,15 @@ HEAD REPORT
     ROW + 1 call print(^.ref-table th { background-color: #f0f4f8; font-weight: bold; color: #333; }^)
     ROW + 1 call print(^.tr-active.red-tier { background-color: #f8d7da !important; border-left: 5px solid #dc3545; font-weight: bold; }^)
     ROW + 1 call print(^.tr-active.amber-tier { background-color: #fff3cd !important; border-left: 5px solid #ffc107; font-weight: bold; }^)
+    
+    ; Expander CSS
     ROW + 1 call print(^.trigger-list { list-style-type: none; padding: 0; }^)
-    ROW + 1 call print(^.trigger-list li { background: #f8f9fa; margin-bottom: 8px; padding: 10px; border-left: 4px solid #0076a8; border-radius: 3px; font-size: 14px; }^)
+    ROW + 1 call print(^.trigger-item-wrap { background: #f8f9fa; margin-bottom: 8px; border-left: 4px solid #0076a8; border-radius: 3px; }^)
+    ROW + 1 call print(^.trigger-header { padding: 10px; font-size: 14px; cursor: pointer; }^)
+    ROW + 1 call print(^.trigger-header:hover { background: #e2e6ea; }^)
+    ROW + 1 call print(^.trigger-details { display: none; padding: 10px; border-top: 1px dashed #ccc; font-size: 12px; color: #444; background: #fff; margin-left: 10px; border-left: 1px solid #ccc; }^)
+    ROW + 1 call print(^.trigger-det-item { padding: 3px 0; }^)
+    ROW + 1 call print(^.exp-icon { float: right; font-weight: bold; color: #666; font-size: 16px; line-height: 1; }^)
     ROW + 1 call print(^.pts-badge { display: inline-block; background: #333; color: #fff; padding: 3px 8px; border-radius: 12px; font-size: 12px; margin-right: 10px; font-weight: bold; }^)
     
     ROW + 1 call print(^.mode-restricted .is-normal { display: none; }^)
@@ -869,18 +938,21 @@ HEAD REPORT
     ; IE Quirks Mode Compatible Split Pane Layout
     ROW + 1 call print(^<table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-top:15px;"><tr>^)
     
-    ; LEFT PANE: Active Triggers
+    ; LEFT PANE: Active Triggers with Dynamic Expanding Rows
     ROW + 1 call print(^<td width="48%" valign="top" style="padding: 0 10px 15px 15px;">^)
     ROW + 1 call print(^<h3 class='panel-header'>Patient Specific Triggers</h3>^)
-    ROW + 1 call print(^<ul class='trigger-list'>^)
+    
     IF (rec_acuity->reason_cnt > 0)
         FOR (x = 1 TO rec_acuity->reason_cnt)
-            ROW + 1 call print(CONCAT(^<li><span class='pts-badge'>+^, TRIM(CNVTSTRING(rec_acuity->reasons[x].points)), ^ Points</span> ^, rec_acuity->reasons[x].text, ^</li>^))
+            ROW + 1 call print(^<div class='trigger-item-wrap'>^)
+            ROW + 1 call print(CONCAT(^<div class='trigger-header' onclick='toggleTrigger(^, TRIM(CNVTSTRING(x)), ^)'><span class='pts-badge'>+^, TRIM(CNVTSTRING(rec_acuity->reasons[x].points)), ^ Points</span> ^, rec_acuity->reasons[x].text, ^<span class='exp-icon' id='trig-icon-^, TRIM(CNVTSTRING(x)), ^'>+</span></div>^))
+            ROW + 1 call print(CONCAT(^<div class='trigger-details' id='trig-det-^, TRIM(CNVTSTRING(x)), ^'>^, rec_acuity->reasons[x].detail_html, ^</div>^))
+            ROW + 1 call print(^</div>^)
         ENDFOR
     ELSE
-        ROW + 1 call print(^<li><span style='color:#666;'>No high-risk triggers detected. Patient remains Low Acuity (Routine Review).</span></li>^)
+        ROW + 1 call print(^<div style='background: #f8f9fa; padding: 10px; border-left: 4px solid #0076a8; border-radius: 3px; font-size: 14px; color:#666;'>No high-risk triggers detected. Patient remains Low Acuity (Routine Review).</div>^)
     ENDIF
-    ROW + 1 call print(^</ul>^)
+    
     ROW + 1 call print(^<div style='margin-top:20px; font-size:12px; color:#666; background:#f9f9f9; padding:10px; border:1px solid #ddd;'>^)
     ROW + 1 call print(^<b>Triage Action Plan:</b><br/>^)
     IF (rec_acuity->color = "Red")
