@@ -593,7 +593,7 @@ ELSE SET rec_acuity->color = "Green"
 ENDIF
 
 ; =============================================================================
-; 3.6 WARD-LEVEL TRIAGE LIST LOOP (EXPAND Macro Optimized)
+; 3.6 WARD-LEVEL TRIAGE LIST LOOP (Optimized with Exclusions)
 ; =============================================================================
 DECLARE curr_ward_cd = f8 WITH noconstant(0.0)
 DECLARE curr_ward_disp = vc WITH noconstant("")
@@ -602,7 +602,7 @@ DECLARE v_ward_rows = vc WITH noconstant(""), maxlen=65534
 DECLARE pat_idx = i4 WITH noconstant(0)
 DECLARE idx = i4 WITH noconstant(0)
 DECLARE t_score = i4 WITH noconstant(0)
-DECLARE t_triggers = vc WITH noconstant("")
+DECLARE t_triggers = vc WITH noconstant(""), maxlen=2000 ; Increased maxlen to prevent text cutoff
 DECLARE num_pats = i4 WITH noconstant(0)
 
 RECORD rec_cohort (
@@ -640,13 +640,16 @@ DETAIL
 WITH NOCOUNTER
 
 IF (curr_ward_cd > 0.0)
-    ; 2. Populate Active Patients on this Ward
+    ; 2. Populate Active Patients on this Ward (Excluding Babies and Test Patients)
     SELECT INTO "NL:"
     FROM ENCOUNTER E, PERSON P
     PLAN E WHERE E.LOC_NURSE_UNIT_CD = curr_ward_cd 
         AND E.ACTIVE_IND = 1 
         AND E.ENCNTR_STATUS_CD = 854.00 ; STRICTLY ACTIVE ONLY
-    JOIN P WHERE P.PERSON_ID = E.PERSON_ID AND P.ACTIVE_IND = 1
+    JOIN P WHERE P.PERSON_ID = E.PERSON_ID 
+        AND P.ACTIVE_IND = 1
+        AND P.BIRTH_DT_TM < CNVTLOOKBEHIND("10,Y") ; Exclude patients under 10 years old (Babies)
+        AND FINDSTRING("ZZZTEST", CNVTUPPER(P.NAME_FULL_FORMATTED)) = 0 ; Exclude test patients
     ORDER BY E.LOC_ROOM_CD, E.LOC_BED_CD
     DETAIL
         rec_cohort->cnt = rec_cohort->cnt + 1
@@ -694,7 +697,7 @@ IF (curr_ward_cd > 0.0)
             ENDIF
         WITH NOCOUNTER
 
-        ; 5. Bulk Evaluate Orders using EXPAND
+        ; 5. Bulk Evaluate Orders using EXPAND (With PowerPlan PRN Exclusions)
         SELECT INTO "NL:"
             UNOM = CNVTUPPER(O.ORDER_MNEMONIC)
         FROM ORDERS O, ACT_PW_COMP APC
@@ -766,7 +769,7 @@ IF (curr_ward_cd > 0.0)
             ELSE SET rec_cohort->list[pat_idx].summary = "Routine (Low Risk)" ENDIF
         ENDFOR
 
-    ; 8. Build HTML Rows (Ordered by Score Descending)
+        ; 8. Build HTML Rows (Ordered by Score Descending)
         SELECT INTO "NL:"
             PAT_SCORE = rec_cohort->list[D.SEQ].score
         FROM (DUMMYT D WITH SEQ = VALUE(num_pats))
@@ -784,7 +787,7 @@ IF (curr_ward_cd > 0.0)
             )
         WITH NOCOUNTER
     ELSE
-        SET v_ward_rows = "<tr><td colspan='4' style='text-align:center; padding: 20px;'>No active patients found on this ward.</td></tr>"
+        SET v_ward_rows = "<tr><td colspan='4' style='text-align:center; padding: 20px;'>No active maternity patients found on this ward.</td></tr>"
     ENDIF
 
 ELSE
@@ -904,7 +907,7 @@ HEAD REPORT
     ROW + 1 call print(^function showWard() { hideAllViews(); document.getElementById('ward-view').style.display = 'block'; document.getElementById('btn7').className = 'tab-btn active'; resizeLayout(); }^)
     ROW + 1 call print(^</script>^)
 
-    ROW + 1 call print(^<style>^)
+ ROW + 1 call print(^<style>^)
     ROW + 1 call print(^body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 6px 10px; color:#333; margin: 0; overflow: hidden; }^)
     ROW + 1 call print(^.pat-header { background: #fff; padding: 6px 10px; font-size: 14px; border: 1px solid #ddd; margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }^)
     ROW + 1 call print(^.wt-val { color: #0076a8; font-weight: bold; }^)
@@ -996,15 +999,16 @@ HEAD REPORT
     ROW + 1 call print(^.mode-all .is-infusion { display: none; }^)
     ROW + 1 call print(^.mode-infusion .is-restricted { display: none; }^)
     ROW + 1 call print(^.mode-infusion .is-normal { display: none; }^)
+    ROW + 1 call print(^.mode-hidden { display: none; }^)
     
-    ; Ward Table Specific CSS
+    ; WARD TABLE CSS FIXES (Sticky Header & Wrap)
     ROW + 1 call print(^.ward-tbl { width: 98%; margin: 15px auto; border-collapse: collapse; font-size: 14px; background: #fff; border: 1px solid #ddd; }^)
-    ROW + 1 call print(^.ward-tbl th, .ward-tbl td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }^)
-    ROW + 1 call print(^.ward-tbl th { background: #f0f4f8; font-weight: bold; color: #333; }^)
+    ROW + 1 call print(^.ward-tbl th, .ward-tbl td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; vertical-align: top; line-height: 1.4; }^)
+    ROW + 1 call print(^.ward-tbl th { background: #f0f4f8; font-weight: bold; color: #333; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid #ddd; box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1); }^)
     ROW + 1 call print(^.ward-tbl tr:hover { background: #f9f9f9; }^)
-    ROW + 1 call print(^.badge-Red { background: #dc3545; color: white; padding: 4px 10px; border-radius: 12px; font-weight:bold; font-size:12px; display:inline-block; min-width:60px; text-align:center; }^)
-    ROW + 1 call print(^.badge-Amber { background: #ffc107; color: black; padding: 4px 10px; border-radius: 12px; font-weight:bold; font-size:12px; display:inline-block; min-width:60px; text-align:center; }^)
-    ROW + 1 call print(^.badge-Green { background: #28a745; color: white; padding: 4px 10px; border-radius: 12px; font-weight:bold; font-size:12px; display:inline-block; min-width:60px; text-align:center; }^)
+    ROW + 1 call print(^.badge-Red { background: #dc3545; color: white; padding: 4px 10px; border-radius: 12px; font-weight:bold; font-size:12px; display:inline-block; width:60px; text-align:center; }^)
+    ROW + 1 call print(^.badge-Amber { background: #ffc107; color: black; padding: 4px 10px; border-radius: 12px; font-weight:bold; font-size:12px; display:inline-block; width:60px; text-align:center; }^)
+    ROW + 1 call print(^.badge-Green { background: #28a745; color: white; padding: 4px 10px; border-radius: 12px; font-weight:bold; font-size:12px; display:inline-block; width:60px; text-align:center; }^)
     ROW + 1 call print(^.patient-link { color: #0076a8; text-decoration: none; font-weight: bold; }^)
     ROW + 1 call print(^.patient-link:hover { text-decoration: underline; }^)
 
@@ -1029,23 +1033,13 @@ HEAD REPORT
     ROW + 1 call print(^<div id='btn7' class='tab-btn' onclick='showWard()'>Ward Triage List</div>^)
     ROW + 1 call print(^</div>^)
 
-; =========================================================================
-    ; TAB 7: WARD TRIAGE LIST VIEW (WITH DEBUGGER)
+    ; =========================================================================
+    ; TAB 7: WARD TRIAGE LIST VIEW
     ; =========================================================================
     ROW + 1 call print(^<div id='ward-view' class='content-box' style='display:none;'>^)
     ROW + 1 call print(CONCAT(^<div class='acuity-banner' style='background:#0076a8; border-bottom:4px solid #005a80;'>Acuity Triage: ^, curr_ward_disp, ^</div>^))
     
-    ; --- DEBUG BANNER ---
-    ROW + 1 call print(^<div style='margin:15px; padding:10px; background:#fff3cd; border:1px solid #ffeeba; color:#856404; font-family:monospace; font-size:13px;'>^)
-    ROW + 1 call print(^<b>--- DEBUG INFO ---</b><br/>^)
-    ROW + 1 call print(CONCAT(^<b>Prompt Encounter ID:</b> ^, TRIM(CNVTSTRING($encounter_id)), ^<br/>^))
-    ROW + 1 call print(CONCAT(^<b>Detected Ward Code:</b> ^, TRIM(CNVTSTRING(curr_ward_cd)), ^ (Disp: ^, curr_ward_disp, ^)<br/>^))
-    ROW + 1 call print(CONCAT(^<b>Patients Found in Cohort:</b> ^, TRIM(CNVTSTRING(rec_cohort->cnt)), ^<br/>^))
-    ROW + 1 call print(^<b>Filters applied:</b> ACTIVE_IND = 1, ENCNTR_STATUS_CD IN (854.00, 856.00, 858.00), MED_SERVICE_CD != 9031673.00<br/>^)
-    ROW + 1 call print(^</div>^)
-    ; --------------------
-
-    ROW + 1 call print(^<table class='ward-tbl'><thead><tr><th>Bed / Room</th><th>Patient Name</th><th>Acuity Score</th><th>Active Triggers</th></tr></thead><tbody>^)
+    ROW + 1 call print(^<table class='ward-tbl'><thead><tr><th width="15%">Bed / Room</th><th width="25%">Patient Name</th><th width="15%">Acuity Score</th><th width="45%">Active Triggers</th></tr></thead><tbody>^)
     ROW + 1 call print(v_ward_rows)
     ROW + 1 call print(^</tbody></table>^)
     ROW + 1 call print(^<div style="padding:15px; color:#666; font-size:12px;"><i>Clicking a patient's name will open their chart in PowerChart.<br/>Patients are automatically sorted by highest clinical risk.</i></div>^)
