@@ -854,10 +854,6 @@ HEAD REPORT
     ROW + 1 call print(^    var el = document.getElementById(views[i]);^)
     ROW + 1 call print(^    if (el) el.style.height = h + 'px';^)
     ROW + 1 call print(^  }^)
-    
-    ; Setup specific scroll height for the IE sticky-header fix
-    ROW + 1 call print(^  var wScroll = document.getElementById('ward-scroll');^)
-    ROW + 1 call print(^  if (wScroll) wScroll.style.height = (h - 130) + 'px';^)
     ROW + 1 call print(^}^)
     ROW + 1 call print(^window.onresize = resizeLayout;^)
 
@@ -913,7 +909,7 @@ HEAD REPORT
     ROW + 1 call print(^.tab-btn { float: left; padding: 6px 15px; margin-right: 5px; cursor: pointer; background: transparent; border: none; border-bottom: 3px solid transparent; color: #666; font-size: 13px; }^)
     ROW + 1 call print(^.tab-btn:hover { background: #e9ecef; color: #333; }^)
     ROW + 1 call print(^.tab-btn.active { border-bottom: 3px solid #0076a8; color: #000; font-weight: bold; background: transparent; }^)
-    ROW + 1 call print(^.content-box { clear: both; background: #fff; padding: 0; border: 1px solid #ddd; height: 500px; overflow-y: hidden; }^) ; <-- Changed to hidden to let internal divs scroll
+    ROW + 1 call print(^.content-box { clear: both; background: #fff; padding: 0; border: 1px solid #ddd; height: 500px; overflow-y: auto; }^)
     ROW + 1 call print(^.order-item { padding: 10px; border-bottom: 1px solid #eee; margin: 10px; }^)
     ROW + 1 call print(^.is-restricted { background-color: #fff0f0; border-left: 4px solid #dc3545; }^)
     ROW + 1 call print(^.is-normal { border-left: 4px solid #009668; }^)
@@ -998,7 +994,7 @@ HEAD REPORT
     ROW + 1 call print(^.mode-infusion .is-normal { display: none; }^)
     ROW + 1 call print(^.mode-hidden { display: none; }^)
     
-    ; WARD TABLE CSS FIXES (Split Table for IE Sticky Headers)
+    ; WARD TABLE CSS FIXES (Split Table Layout for IE Sticky Headers)
     ROW + 1 call print(^.ward-tbl { width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; border: 1px solid #ddd; table-layout: fixed; }^)
     ROW + 1 call print(^.ward-tbl th, .ward-tbl td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; vertical-align: top; line-height: 1.4; word-wrap: break-word; }^)
     ROW + 1 call print(^.ward-tbl th { background: #f0f4f8; font-weight: bold; color: #333; border-bottom: 2px solid #ddd; }^)
@@ -1031,24 +1027,24 @@ HEAD REPORT
     ROW + 1 call print(^</div>^)
 
     ; =========================================================================
-    ; TAB 7: WARD TRIAGE LIST VIEW (Split Table for IE Sticky Headers)
+    ; TAB 7: WARD TRIAGE LIST VIEW (Absolute Position Fix for Sticky Headers)
     ; =========================================================================
-    ROW + 1 call print(^<div id='ward-view' class='content-box' style='display:none;'>^)
-    ROW + 1 call print(CONCAT(^<div class='acuity-banner' style='background:#0076a8; border-bottom:4px solid #005a80;'>Acuity Triage: ^, curr_ward_disp, ^</div>^))
+    ROW + 1 call print(^<div id='ward-view' class='content-box' style='display:none; position:relative; overflow:hidden;'>^)
     
-    ; Static Header Table (Padded right by 17px to align with the scrollbar below)
-    ROW + 1 call print(^<div style="padding: 0 15px;">^)
-    ROW + 1 call print(^<div style="padding-right: 17px;">^)
-    ROW + 1 call print(^<table class='ward-tbl' style='margin-bottom:0; border-bottom:none;'>^)
+    ; --- STATIC HEADER AREA (Top 120px) ---
+    ROW + 1 call print(^<div style="position:absolute; top:0; left:0; right:0; height:120px; background:#fff; z-index:10; border-bottom:1px solid #ccc;">^)
+    ROW + 1 call print(CONCAT(^<div class='acuity-banner' style='background:#0076a8; border-bottom:4px solid #005a80; margin:10px 15px;'>Acuity Triage: ^, curr_ward_disp, ^</div>^))
+    ROW + 1 call print(^<div style="padding:0 15px; padding-right:32px;">^)
+    ROW + 1 call print(^<table class='ward-tbl' style='margin:0; border:none;'>^)
     ROW + 1 call print(^<thead><tr><th width="15%">Bed / Room</th><th width="25%">Patient Name</th><th width="15%">Acuity Score</th><th width="45%">Active Triggers</th></tr></thead>^)
-    ROW + 1 call print(^</table></div>^)
+    ROW + 1 call print(^</table></div></div>^)
     
-    ; Scrolling Body Table
-    ROW + 1 call print(^<div id='ward-scroll' style='overflow-y:auto; overflow-x:hidden;'>^)
+    ; --- SCROLLING BODY AREA (From 120px down to bottom) ---
+    ROW + 1 call print(^<div style="position:absolute; top:120px; bottom:0; left:0; right:0; overflow-y:scroll; padding:0 15px;">^)
     ROW + 1 call print(^<table class='ward-tbl' style='margin-top:0; border-top:none;'><tbody>^)
     ROW + 1 call print(v_ward_rows)
-    ROW + 1 call print(^</tbody></table></div>^)
-    ROW + 1 call print(^<div style="padding:15px; color:#666; font-size:12px;"><i>Clicking a patient's name will open their chart in PowerChart.<br/>Patients are automatically sorted by highest clinical risk.</i></div>^)
+    ROW + 1 call print(^</tbody></table>^)
+    ROW + 1 call print(^<div style="padding:15px; color:#666; font-size:12px; text-align:center;"><i>Clicking a patient's name will open their chart in PowerChart.<br/>Patients are automatically sorted by highest clinical risk.</i></div>^)
     ROW + 1 call print(^</div></div>^)
 
     ; =========================================================================
@@ -1104,7 +1100,7 @@ HEAD REPORT
     ROW + 1 call print(^</div>^)
 
     ; =========================================================================
-    ; TAB 1, 2, 3: MEDICATION LIST (Omitted details unchanged for brevity, use your existing script below this line)
+    ; TAB 1, 2, 3: MEDICATION LIST
     ; =========================================================================
     ROW + 1 call print(^<div id='med-container' class='content-box' style='display:none; overflow-y:auto;'>^)
     ROW + 1 call print(^<div id='header-row-inf' class='inf-header'>^)
