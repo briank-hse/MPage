@@ -45,13 +45,14 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             2 flag_poly_mod = i2
     )
 
-    ; 1. Populate Active Patients on this Ward
+    ; 1. Populate Active Patients on this Ward (Age Optimized)
     SELECT INTO "NL:"
     FROM ENCOUNTER E, PERSON P
     PLAN E WHERE E.LOC_NURSE_UNIT_CD = curr_ward_cd
         AND E.ACTIVE_IND = 1
         AND E.ENCNTR_STATUS_CD = 854.00
     JOIN P WHERE P.PERSON_ID = E.PERSON_ID AND P.ACTIVE_IND = 1
+        AND P.BIRTH_DT_TM < CNVTLOOKBEHIND("1,Y") ; EXCLUDES ANYONE UNDER 1 YEAR OLD
         AND CNVTUPPER(P.NAME_LAST_KEY) != "ZZZTEST"
         AND CNVTUPPER(P.NAME_LAST_KEY) != "BABY"
         AND CNVTUPPER(P.NAME_LAST_KEY) != "INFANT"
@@ -68,7 +69,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     SET num_pats = rec_cohort->cnt
 
     IF (num_pats > 0)
-        ; 2. Bulk Evaluate Problems (PERSON_ID)
+        ; 2. Bulk Evaluate Problems (Lifelong: PERSON_ID)
         SELECT INTO "NL:"
             UNOM = CNVTUPPER(N.SOURCE_STRING)
         FROM PROBLEM P, NOMENCLATURE N
@@ -85,15 +86,15 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ENDIF
         WITH NOCOUNTER
 
-        ; 3. Bulk Evaluate Diagnoses (PERSON_ID)
+        ; 3. Bulk Evaluate Diagnoses (Current Admission: ENCNTR_ID)
         SELECT INTO "NL:"
             UNOM = CNVTUPPER(N.SOURCE_STRING)
         FROM DIAGNOSIS D, NOMENCLATURE N
-        PLAN D WHERE EXPAND(pat_idx, 1, num_pats, D.PERSON_ID, rec_cohort->list[pat_idx].person_id)
+        PLAN D WHERE EXPAND(pat_idx, 1, num_pats, D.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             AND D.ACTIVE_IND = 1
         JOIN N WHERE N.NOMENCLATURE_ID = D.NOMENCLATURE_ID
         DETAIL
-            idx = LOCATEVAL(pat_idx, 1, num_pats, D.PERSON_ID, rec_cohort->list[pat_idx].person_id)
+            idx = LOCATEVAL(pat_idx, 1, num_pats, D.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             IF (idx > 0)
                 IF (FINDSTRING("PRE-ECLAMPSIA", UNOM) > 0 OR FINDSTRING("PREECLAMPSIA", UNOM) > 0) rec_cohort->list[idx].flag_preeclampsia = 1
                 ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", UNOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", UNOM) > 0 OR FINDSTRING("DVT", UNOM) > 0) rec_cohort->list[idx].flag_dvt = 1
@@ -102,16 +103,16 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ENDIF
         WITH NOCOUNTER
 
-        ; 4. Bulk Evaluate Orders (PERSON_ID)
+        ; 4. Bulk Evaluate Orders (Current Admission: ENCNTR_ID)
         SELECT INTO "NL:"
             UNOM = CNVTUPPER(O.ORDER_MNEMONIC)
         FROM ORDERS O, ACT_PW_COMP APC
-        PLAN O WHERE EXPAND(pat_idx, 1, num_pats, O.PERSON_ID, rec_cohort->list[pat_idx].person_id)
+        PLAN O WHERE EXPAND(pat_idx, 1, num_pats, O.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             AND O.ORDER_STATUS_CD = 2550.00 AND O.CATALOG_TYPE_CD = 2516.00 AND O.ORIG_ORD_AS_FLAG = 0 AND O.TEMPLATE_ORDER_ID = 0
         JOIN APC WHERE APC.PARENT_ENTITY_ID = OUTERJOIN(O.ORDER_ID) AND APC.PARENT_ENTITY_NAME = OUTERJOIN("ORDERS") AND APC.ACTIVE_IND = OUTERJOIN(1)
         ORDER BY O.ORDER_ID
         HEAD O.ORDER_ID
-            idx = LOCATEVAL(pat_idx, 1, num_pats, O.PERSON_ID, rec_cohort->list[pat_idx].person_id)
+            idx = LOCATEVAL(pat_idx, 1, num_pats, O.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             IF (idx > 0)
                 IF ((APC.PATHWAY_ID > 0.0 AND (FINDSTRING("CHLORPHENAMINE", UNOM)>0 OR FINDSTRING("CYCLIZINE", UNOM)>0 OR FINDSTRING("LACTULOSE", UNOM)>0 OR FINDSTRING("ONDANSETRON", UNOM)>0))
                     OR FINDSTRING("SODIUM CHLORIDE", UNOM)>0 OR FINDSTRING("LACTATE", UNOM)>0 OR FINDSTRING("GLUCOSE", UNOM)>0 OR FINDSTRING("MAINTELYTE", UNOM)>0 OR FINDSTRING("WATER FOR INJECTION", UNOM)>0)
@@ -129,14 +130,14 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ENDIF
         WITH NOCOUNTER
 
-        ; 5. Bulk Evaluate Clinical Events (PERSON_ID)
+        ; 5. Bulk Evaluate Clinical Events (Current Admission: ENCNTR_ID)
         SELECT INTO "NL:"
         FROM CLINICAL_EVENT CE
-        PLAN CE WHERE EXPAND(pat_idx, 1, num_pats, CE.PERSON_ID, rec_cohort->list[pat_idx].person_id)
+        PLAN CE WHERE EXPAND(pat_idx, 1, num_pats, CE.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             AND CE.EVENT_CD IN (15071366.00, 82546829.00, 15083551.00, 19995695.00)
             AND CE.VALID_UNTIL_DT_TM > SYSDATE AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("7,D") AND CE.RESULT_STATUS_CD IN (25, 34, 35)
         DETAIL
-            idx = LOCATEVAL(pat_idx, 1, num_pats, CE.PERSON_ID, rec_cohort->list[pat_idx].person_id)
+            idx = LOCATEVAL(pat_idx, 1, num_pats, CE.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             IF (idx > 0)
                 IF (CE.EVENT_CD = 15071366.00) rec_cohort->list[idx].flag_transfusion = 1
                 ELSEIF (CNVTREAL(CE.RESULT_VAL) > 1000.0) rec_cohort->list[idx].flag_ebl = 1
@@ -200,7 +201,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     FROM DUMMYT D
     PLAN D
     DETAIL
-        call print(CONCAT("<!-- DEBUG: WARD_CD=", CNVTSTRING($WARD_CD), " curr_ward_cd=", CNVTSTRING(curr_ward_cd), " num_pats=", CNVTSTRING(num_pats), " -->"))
+        call print(CONCAT(""))
         call print(v_ward_rows)
     WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING
 
