@@ -81,7 +81,21 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             2 flag_poly_severe = i2
             2 flag_poly_mod = i2
             2 flag_imews = i2
+            2 flag_bsbg = i2
             2 flag_high_alert_iv = i2
+            2 det_high_alert_iv = vc
+            2 det_transfusion = vc
+            2 det_ebl = vc
+            2 det_preeclampsia = vc
+            2 det_dvt = vc
+            2 det_epilepsy = vc
+            2 det_insulin = vc
+            2 det_antiepileptic = vc
+            2 det_anticoag = vc
+            2 det_antihypertensive = vc
+            2 det_neuraxial = vc
+            2 det_imews = vc
+            2 det_bsbg = vc
     )
 
     RECORD rec_ward_summary (
@@ -170,6 +184,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
         ; 2. Bulk Evaluate Problems (Lifelong: PERSON_ID)
         SELECT INTO "NL:"
             UNOM = CNVTUPPER(N.SOURCE_STRING)
+            , NOM = REPLACE(TRIM(N.SOURCE_STRING, 3), "'", "&#39;", 0)
         FROM PROBLEM P, NOMENCLATURE N
         PLAN P WHERE EXPAND(pat_idx, 1, num_pats, P.PERSON_ID, rec_cohort->list[pat_idx].person_id)
             AND P.ACTIVE_IND = 1 AND P.LIFE_CYCLE_STATUS_CD = 3301.00
@@ -177,9 +192,15 @@ IF (CNVTREAL($WARD_CD) > 0.0)
         DETAIL
             idx = LOCATEVAL(pat_idx, 1, num_pats, P.PERSON_ID, rec_cohort->list[pat_idx].person_id)
             IF (idx > 0)
-                IF (FINDSTRING("PRE-ECLAMPSIA", UNOM) > 0 OR FINDSTRING("PREECLAMPSIA", UNOM) > 0) rec_cohort->list[idx].flag_preeclampsia = 1
-                ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", UNOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", UNOM) > 0 OR FINDSTRING("DVT", UNOM) > 0) rec_cohort->list[idx].flag_dvt = 1
-                ELSEIF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0) rec_cohort->list[idx].flag_epilepsy = 1
+                IF (FINDSTRING("PRE-ECLAMPSIA", UNOM) > 0 OR FINDSTRING("PREECLAMPSIA", UNOM) > 0) 
+                    rec_cohort->list[idx].flag_preeclampsia = 1 
+                    rec_cohort->list[idx].det_preeclampsia = CONCAT(rec_cohort->list[idx].det_preeclampsia, NOM, "; ")
+                ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", UNOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", UNOM) > 0 OR FINDSTRING("DVT", UNOM) > 0) 
+                    rec_cohort->list[idx].flag_dvt = 1 
+                    rec_cohort->list[idx].det_dvt = CONCAT(rec_cohort->list[idx].det_dvt, NOM, "; ")
+                ELSEIF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0) 
+                    rec_cohort->list[idx].flag_epilepsy = 1 
+                    rec_cohort->list[idx].det_epilepsy = CONCAT(rec_cohort->list[idx].det_epilepsy, NOM, "; ")
                 ENDIF
             ENDIF
         WITH NOCOUNTER
@@ -187,6 +208,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
         ; 3. Bulk Evaluate Diagnoses (Current Admission: ENCNTR_ID)
         SELECT INTO "NL:"
             UNOM = CNVTUPPER(N.SOURCE_STRING)
+            , NOM = REPLACE(TRIM(N.SOURCE_STRING, 3), "'", "&#39;", 0)
         FROM DIAGNOSIS D, NOMENCLATURE N
         PLAN D WHERE EXPAND(pat_idx, 1, num_pats, D.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             AND D.ACTIVE_IND = 1
@@ -194,9 +216,15 @@ IF (CNVTREAL($WARD_CD) > 0.0)
         DETAIL
             idx = LOCATEVAL(pat_idx, 1, num_pats, D.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             IF (idx > 0)
-                IF (FINDSTRING("PRE-ECLAMPSIA", UNOM) > 0 OR FINDSTRING("PREECLAMPSIA", UNOM) > 0) rec_cohort->list[idx].flag_preeclampsia = 1
-                ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", UNOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", UNOM) > 0 OR FINDSTRING("DVT", UNOM) > 0) rec_cohort->list[idx].flag_dvt = 1
-                ELSEIF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0) rec_cohort->list[idx].flag_epilepsy = 1
+                IF (FINDSTRING("PRE-ECLAMPSIA", UNOM) > 0 OR FINDSTRING("PREECLAMPSIA", UNOM) > 0) 
+                    rec_cohort->list[idx].flag_preeclampsia = 1 
+                    rec_cohort->list[idx].det_preeclampsia = CONCAT(rec_cohort->list[idx].det_preeclampsia, NOM, "; ")
+                ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", UNOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", UNOM) > 0 OR FINDSTRING("DVT", UNOM) > 0) 
+                    rec_cohort->list[idx].flag_dvt = 1 
+                    rec_cohort->list[idx].det_dvt = CONCAT(rec_cohort->list[idx].det_dvt, NOM, "; ")
+                ELSEIF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0) 
+                    rec_cohort->list[idx].flag_epilepsy = 1 
+                    rec_cohort->list[idx].det_epilepsy = CONCAT(rec_cohort->list[idx].det_epilepsy, NOM, "; ")
                 ENDIF
             ENDIF
         WITH NOCOUNTER
@@ -204,6 +232,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
         ; 4. Bulk Evaluate Orders (Current Admission: ENCNTR_ID)
         SELECT INTO "NL:"
             UNOM = CNVTUPPER(O.ORDER_MNEMONIC)
+            , MNEM = REPLACE(TRIM(O.ORDER_MNEMONIC, 3), "'", "&#39;", 0)
         FROM ORDERS O, ACT_PW_COMP APC
         PLAN O WHERE EXPAND(pat_idx, 1, num_pats, O.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             AND O.ORDER_STATUS_CD = 2550.00 AND O.CATALOG_TYPE_CD = 2516.00 AND O.ORIG_ORD_AS_FLAG = 0 AND O.TEMPLATE_ORDER_ID = 0
@@ -219,35 +248,55 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                     rec_cohort->list[idx].poly_count = rec_cohort->list[idx].poly_count + 1
                 ENDIF
 
-                IF (FINDSTRING("TINZAPARIN", UNOM)>0 OR FINDSTRING("ENOXAPARIN", UNOM)>0 OR FINDSTRING("HEPARIN", UNOM)>0) rec_cohort->list[idx].flag_anticoag = 1
-                ELSEIF (FINDSTRING("INSULIN", UNOM)>0) rec_cohort->list[idx].flag_insulin = 1
-                ELSEIF (FINDSTRING("LEVETIRACETAM", UNOM)>0 OR FINDSTRING("LAMOTRIGINE", UNOM)>0 OR FINDSTRING("VALPROATE", UNOM)>0 OR FINDSTRING("CARBAMAZEPINE", UNOM)>0) rec_cohort->list[idx].flag_antiepileptic = 1
-                ELSEIF (FINDSTRING("LABETALOL", UNOM)>0 OR FINDSTRING("NIFEDIPINE", UNOM)>0 OR FINDSTRING("METHYLDOPA", UNOM)>0) rec_cohort->list[idx].flag_antihypertensive = 1
-                ELSEIF (FINDSTRING("BUPIVACAINE", UNOM)>0 OR FINDSTRING("LEVOBUPIVACAINE", UNOM)>0) rec_cohort->list[idx].flag_neuraxial = 1
-                ENDIF
-
-                ; Check for High-Alert Continuous Infusions via native IV_IND flag
                 IF (FINDSTRING("MAGNESIUM", UNOM) > 0 OR FINDSTRING("OXYTOCIN", UNOM) > 0 OR FINDSTRING("INSULIN", UNOM) > 0 OR FINDSTRING("LABETALOL", UNOM) > 0 OR FINDSTRING("HYDRALAZINE", UNOM) > 0)
                     IF (O.IV_IND = 1)
                         rec_cohort->list[idx].flag_high_alert_iv = 1
+                        rec_cohort->list[idx].det_high_alert_iv = CONCAT(rec_cohort->list[idx].det_high_alert_iv, MNEM, "; ")
                     ENDIF
+                ENDIF
+
+                IF (FINDSTRING("TINZAPARIN", UNOM)>0 OR FINDSTRING("ENOXAPARIN", UNOM)>0 OR FINDSTRING("HEPARIN", UNOM)>0) 
+                    rec_cohort->list[idx].flag_anticoag = 1
+                    rec_cohort->list[idx].det_anticoag = CONCAT(rec_cohort->list[idx].det_anticoag, MNEM, "; ")
+                ELSEIF (FINDSTRING("INSULIN", UNOM)>0) 
+                    rec_cohort->list[idx].flag_insulin = 1
+                    rec_cohort->list[idx].det_insulin = CONCAT(rec_cohort->list[idx].det_insulin, MNEM, "; ")
+                ELSEIF (FINDSTRING("LEVETIRACETAM", UNOM)>0 OR FINDSTRING("LAMOTRIGINE", UNOM)>0 OR FINDSTRING("VALPROATE", UNOM)>0 OR FINDSTRING("CARBAMAZEPINE", UNOM)>0) 
+                    rec_cohort->list[idx].flag_antiepileptic = 1
+                    rec_cohort->list[idx].det_antiepileptic = CONCAT(rec_cohort->list[idx].det_antiepileptic, MNEM, "; ")
+                ELSEIF (FINDSTRING("LABETALOL", UNOM)>0 OR FINDSTRING("NIFEDIPINE", UNOM)>0 OR FINDSTRING("METHYLDOPA", UNOM)>0) 
+                    rec_cohort->list[idx].flag_antihypertensive = 1
+                    rec_cohort->list[idx].det_antihypertensive = CONCAT(rec_cohort->list[idx].det_antihypertensive, MNEM, "; ")
+                ELSEIF (FINDSTRING("BUPIVACAINE", UNOM)>0 OR FINDSTRING("LEVOBUPIVACAINE", UNOM)>0) 
+                    rec_cohort->list[idx].flag_neuraxial = 1
+                    rec_cohort->list[idx].det_neuraxial = CONCAT(rec_cohort->list[idx].det_neuraxial, MNEM, "; ")
                 ENDIF
             ENDIF
         WITH NOCOUNTER
 
         ; 5. Bulk Evaluate Clinical Events (Current Admission: ENCNTR_ID)
         SELECT INTO "NL:"
+            VAL = REPLACE(TRIM(CE.RESULT_VAL, 3), "'", "&#39;", 0)
+            , TITLE = REPLACE(UAR_GET_CODE_DISPLAY(CE.EVENT_CD), "'", "&#39;", 0)
         FROM CLINICAL_EVENT CE
         PLAN CE WHERE EXPAND(pat_idx, 1, num_pats, CE.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
-            AND CE.EVENT_CD IN (15071366.00, 82546829.00, 15083551.00, 19995695.00, 15068265.00)
+            AND CE.EVENT_CD IN (15071366.00, 82546829.00, 15083551.00, 19995695.00, 15068265.00, 10933794.00)
             AND CE.VALID_UNTIL_DT_TM > SYSDATE AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("7,D") AND CE.RESULT_STATUS_CD IN (25, 34, 35)
         DETAIL
             idx = LOCATEVAL(pat_idx, 1, num_pats, CE.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             IF (idx > 0)
-                IF (CE.EVENT_CD = 15071366.00) rec_cohort->list[idx].flag_transfusion = 1
-                ELSEIF (CE.EVENT_CD IN (82546829.00, 15083551.00, 19995695.00) AND CNVTREAL(CE.RESULT_VAL) > 1000.0) rec_cohort->list[idx].flag_ebl = 1
+                IF (CE.EVENT_CD = 15071366.00) 
+                    rec_cohort->list[idx].flag_transfusion = 1
+                    rec_cohort->list[idx].det_transfusion = CONCAT(rec_cohort->list[idx].det_transfusion, TITLE, ": ", VAL, "; ")
+                ELSEIF (CE.EVENT_CD IN (82546829.00, 15083551.00, 19995695.00) AND CNVTREAL(CE.RESULT_VAL) > 1000.0) 
+                    rec_cohort->list[idx].flag_ebl = 1
+                    rec_cohort->list[idx].det_ebl = CONCAT(rec_cohort->list[idx].det_ebl, TITLE, ": ", VAL, "mL; ")
                 ELSEIF (CE.EVENT_CD = 15068265.00 AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("24,H") AND CNVTINT(CE.RESULT_VAL) >= 2) 
                     rec_cohort->list[idx].flag_imews = 1
+                    rec_cohort->list[idx].det_imews = CONCAT("Score: ", VAL)
+                ELSEIF (CE.EVENT_CD = 10933794.00 AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("24,H") AND CNVTREAL(CE.RESULT_VAL) > 11.1)
+                    rec_cohort->list[idx].flag_bsbg = 1
+                    rec_cohort->list[idx].det_bsbg = CONCAT("Value: ", VAL, " mmol/L")
                 ENDIF
             ENDIF
         WITH NOCOUNTER
@@ -261,19 +310,20 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ELSEIF (rec_cohort->list[pat_idx].poly_count >= 5) SET rec_cohort->list[pat_idx].flag_poly_mod = 1
             ENDIF
 
-            IF (rec_cohort->list[pat_idx].flag_high_alert_iv = 1) SET t_score = t_score + 5 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='Active continuous IV infusion of high-alert medication'>High-Alert IV</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_imews = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='Patient scored 2 or higher on the I-MEWS in the last 24 hours'>Physiological Instability (IMEWS)</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_transfusion = 1 OR rec_cohort->list[pat_idx].flag_ebl = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Blood Volume Infused or EBL > 1000ml in last 7 days'>Haemorrhage/Transfusion</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_preeclampsia = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active problem or diagnosis of Pre-Eclampsia'>Pre-Eclampsia</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_dvt = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active problem or diagnosis of DVT or Pulmonary Embolism'>VTE/DVT</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_epilepsy = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active problem or diagnosis of Epilepsy or Seizure'>Epilepsy</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_insulin = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active inpatient order for Insulin'>Insulin</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_antiepileptic = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active inpatient order for Levetiracetam, Lamotrigine, Valproate, or Carbamazepine'>Antiepileptic</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_poly_severe = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='10 or more active inpatient medications'>Severe Polypharmacy</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_anticoag = 1) SET t_score = t_score + 2 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active inpatient order for Tinzaparin, Heparin, or Enoxaparin'>Anticoagulant</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_antihypertensive = 1) SET t_score = t_score + 2 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active inpatient order for Labetalol, Nifedipine, or Methyldopa'>Antihypertensive</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_neuraxial = 1) SET t_score = t_score + 1 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active inpatient order for Bupivacaine or Levobupivacaine'>Neuraxial Infusion</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_poly_mod = 1) SET t_score = t_score + 1 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='5 to 9 active inpatient medications'>Mod Polypharmacy</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_high_alert_iv = 1) SET t_score = t_score + 5 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='", rec_cohort->list[pat_idx].det_high_alert_iv, "'>High-Alert IV</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_imews = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='I-MEWS ", rec_cohort->list[pat_idx].det_imews, "'>Physiological Instability (IMEWS)</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_transfusion = 1 OR rec_cohort->list[pat_idx].flag_ebl = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_transfusion, rec_cohort->list[pat_idx].det_ebl, "'>Haemorrhage/Transfusion</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_preeclampsia = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_preeclampsia, "'>Pre-Eclampsia</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_dvt = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_dvt, "'>VTE/DVT</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_epilepsy = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_epilepsy, "'>Epilepsy</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_insulin = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_insulin, "'>Insulin</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_antiepileptic = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_antiepileptic, "'>Antiepileptic</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_poly_severe = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(CNVTSTRING(rec_cohort->list[pat_idx].poly_count)), " active scheduled meds'>Severe Polypharmacy</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_anticoag = 1) SET t_score = t_score + 2 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_anticoag, "'>Anticoagulant</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_antihypertensive = 1) SET t_score = t_score + 2 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_antihypertensive, "'>Antihypertensive</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_bsbg = 1) SET t_score = t_score + 2 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_bsbg, "'>Uncontrolled Blood Glucose</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_neuraxial = 1) SET t_score = t_score + 1 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_neuraxial, "'>Neuraxial Infusion</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_poly_mod = 1) SET t_score = t_score + 1 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(CNVTSTRING(rec_cohort->list[pat_idx].poly_count)), " active scheduled meds'>Mod Polypharmacy</span>") ENDIF
 
             SET rec_cohort->list[pat_idx].score = t_score
             IF (t_score >= 3) SET rec_cohort->list[pat_idx].color = "Red"
@@ -316,11 +366,13 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<table class='ref-table'>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<thead><tr><th width='60%'>Clinical Criteria</th><th width='20%'>Category</th><th width='20%'>Points</th></tr></thead><tbody>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Continuous IV infusion of high-alert medication (e.g., MgSO4, Oxytocin)</td><td>Medication</td><td>+5</td></tr>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Physiological Instability (IMEWS Score &ge; 2)</td><td>Physiology</td><td>+3</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Massive Haemorrhage / Blood Transfusion</td><td>Clinical Event</td><td>+3</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>High Risk Diagnosis (Pre-eclampsia, VTE, Epilepsy)</td><td>Problem/Diagnosis</td><td>+3</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>High Alert Med (Insulin, Antiepileptics)</td><td>Medication</td><td>+3</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Severe Polypharmacy (&ge;10 active meds)</td><td>Medication</td><td>+3</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-amber'><td>Targeted Med (Anticoagulant, Antihypertensive)</td><td>Medication</td><td>+2</td></tr>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-amber'><td>Uncontrolled bedside blood glucose (> 11.1 mmol/L)</td><td>Laboratory</td><td>+2</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr><td>Moderate Polypharmacy (5-9 active meds)</td><td>Medication</td><td>+1</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr><td>Neuraxial / Epidural Infusion Active</td><td>Medication</td><td>+1</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "</tbody></table>")
