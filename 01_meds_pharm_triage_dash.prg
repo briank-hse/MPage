@@ -1,5 +1,5 @@
-DROP PROGRAM 01_meds_pharm_triage_dash GO
-CREATE PROGRAM 01_meds_pharm_triage_dash
+DROP PROGRAM 01_meds_pharm_triage_dash:group1 GO
+CREATE PROGRAM 01_meds_pharm_triage_dash:group1
 
 PROMPT
     "Output to File/Printer/MINE" = "MINE",
@@ -31,17 +31,19 @@ DETAIL
 WITH NOCOUNTER
 
 ; =============================================================================
-; 3. GET PATIENT LISTS (DCP_PATIENT_LIST Architecture)
+; 3. GET ACTIVE INPATIENT WARDS ("NURSEUNIT" / Nurses Hat Symbol)
 ; =============================================================================
 SELECT INTO "NL:"
-FROM DCP_PATIENT_LIST DPL
-PLAN DPL WHERE DPL.OWNER_PRSNL_ID = rec_data->prsnl_id
-ORDER BY DPL.NAME
+FROM CODE_VALUE CV
+PLAN CV WHERE CV.CODE_SET = 220
+    AND CV.ACTIVE_IND = 1
+    AND CV.CDF_MEANING = "NURSEUNIT"
+ORDER BY CV.DISPLAY
 DETAIL
     rec_data->list_cnt = rec_data->list_cnt + 1
     stat = ALTERLIST(rec_data->lists, rec_data->list_cnt)
-    rec_data->lists[rec_data->list_cnt].list_id = DPL.PATIENT_LIST_ID
-    rec_data->lists[rec_data->list_cnt].list_name = DPL.NAME
+    rec_data->lists[rec_data->list_cnt].list_id = CV.CODE_VALUE
+    rec_data->lists[rec_data->list_cnt].list_name = CV.DISPLAY
 WITH NOCOUNTER
 
 ; =============================================================================
@@ -66,27 +68,28 @@ HEAD REPORT
     ROW + 1 call print(^</style>^)
     ROW + 1 call print(^</head><body>^)
 
-    ROW + 1 call print(^<div class="dashboard-header">Pharmacist Acuity Dashboard - Architecture Test</div>^)
+    ROW + 1 call print(^<div class="dashboard-header">Pharmacist Acuity Dashboard - Architecture Test (Ward Level)</div>^)
     ROW + 1 call print(^<div class="dashboard-content">^)
 
     ROW + 1 call print(CONCAT(^<div class="info-box">^))
     ROW + 1 call print(CONCAT(^<b>Logged-in User:</b> ^, NULLVAL(rec_data->prsnl_name, "Unknown User"), ^<br/>^))
     ROW + 1 call print(CONCAT(^<b>User ID:</b> ^, TRIM(CNVTSTRING(rec_data->prsnl_id)), ^<br/>^))
-    ROW + 1 call print(CONCAT(^<b>Patient Lists Found:</b> ^, TRIM(CNVTSTRING(rec_data->list_cnt))))
+    ROW + 1 call print(CONCAT(^<b>Inpatient Wards Found:</b> ^, TRIM(CNVTSTRING(rec_data->list_cnt))))
     ROW + 1 call print(^</div>^)
 
-    ROW + 1 call print(^<h3>Select a Patient List to Triage</h3>^)
+    ROW + 1 call print(^<h3>Select an Inpatient Ward to Triage</h3>^)
     
     IF (rec_data->list_cnt > 0)
         ROW + 1 call print(^<select id="listSelector">^)
-        ROW + 1 call print(^<option value="0">-- Select a Patient List --</option>^)
+        ROW + 1 call print(^<option value="0">-- Select a Ward --</option>^)
         FOR (i = 1 TO rec_data->list_cnt)
             ROW + 1 call print(CONCAT(^<option value="^, TRIM(CNVTSTRING(rec_data->lists[i].list_id)), ^">^, rec_data->lists[i].list_name, ^</option>^))
         ENDFOR
         ROW + 1 call print(^</select>^)
-        ROW + 1 call print(^<button onclick="alert('In the final build, clicking this will execute the clinical EXPAND logic for the selected patients.')">Load Patients</button>^)
+        
+        ROW + 1 call print(^<button onclick="alert('In the next step, we will wire this to load the Acuity script for Ward Code Value: ' + document.getElementById('listSelector').value)">Load Patients</button>^)
     ELSE
-        ROW + 1 call print(^<p style="color: #dc3545;"><i>No lists found in DCP_PATIENT_LIST.</i></p>^)
+        ROW + 1 call print(^<p style="color: #dc3545;"><i>No active inpatient wards found.</i></p>^)
     ENDIF
 
     ROW + 1 call print(^</div>^)
