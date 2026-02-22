@@ -11,14 +11,18 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     ; =========================================================================
     ; DATA FETCH MODE (AJAX) - RUN CLINICAL RULES AND RETURN HTML ROWS ONLY
     ; =========================================================================
-    DECLARE curr_ward_cd = f8 WITH noconstant(CNVTREAL($WARD_CD))
-    DECLARE v_ward_rows = vc WITH noconstant(""), maxlen=65534
-    DECLARE pat_idx = i4 WITH noconstant(0)
-    DECLARE idx = i4 WITH noconstant(0)
-    DECLARE t_score = i4 WITH noconstant(0)
-    DECLARE t_triggers = vc WITH noconstant(""), maxlen=500
-    DECLARE num_pats = i4 WITH noconstant(0)
-    DECLARE stat = i4 WITH noconstant(0)
+    [cite_start]DECLARE curr_ward_cd = f8 WITH noconstant(CNVTREAL($WARD_CD)) [cite: 3]
+    [cite_start]DECLARE v_ward_rows = vc WITH noconstant(""), maxlen=65534 [cite: 3]
+    [cite_start]DECLARE pat_idx = i4 WITH noconstant(0) [cite: 3]
+    [cite_start]DECLARE idx = i4 WITH noconstant(0) [cite: 3]
+    [cite_start]DECLARE t_score = i4 WITH noconstant(0) [cite: 3]
+    [cite_start]DECLARE t_triggers = vc WITH noconstant(""), maxlen=500 [cite: 3]
+    [cite_start]DECLARE num_pats = i4 WITH noconstant(0) [cite: 3]
+    [cite_start]DECLARE stat = i4 WITH noconstant(0) [cite: 3]
+    
+    ; NEW DEBUG DECLARATIONS
+    DECLARE d_raw_len = i4 WITH noconstant(0)
+    DECLARE d_raw_str = vc WITH noconstant(""), maxlen=1000
 
     RECORD rec_cohort (
         1 cnt = i4
@@ -43,16 +47,18 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             2 flag_neuraxial = i2
             2 flag_poly_severe = i2
             2 flag_poly_mod = i2
-    )
+            ; NEW DEBUG FIELD
+            2 debug_info = vc 
+    [cite_start]) [cite: 4, 5, 6, 7]
 
-    ; 1. Populate Active Patients on this Ward (Age Optimized)
+    ; 1. Populate Active Patients on this Ward
     SELECT INTO "NL:"
     FROM ENCOUNTER E, PERSON P
     PLAN E WHERE E.LOC_NURSE_UNIT_CD = curr_ward_cd
         AND E.ACTIVE_IND = 1
         AND E.ENCNTR_STATUS_CD = 854.00
     JOIN P WHERE P.PERSON_ID = E.PERSON_ID AND P.ACTIVE_IND = 1
-        AND P.BIRTH_DT_TM < CNVTLOOKBEHIND("1,Y") ; EXCLUDES ANYONE UNDER 1 YEAR OLD
+        AND P.BIRTH_DT_TM < CNVTLOOKBEHIND("1,Y") 
         AND CNVTUPPER(P.NAME_LAST_KEY) != "ZZZTEST"
         AND CNVTUPPER(P.NAME_LAST_KEY) != "BABY"
         AND CNVTUPPER(P.NAME_LAST_KEY) != "INFANT"
@@ -64,12 +70,12 @@ IF (CNVTREAL($WARD_CD) > 0.0)
         rec_cohort->list[rec_cohort->cnt].encntr_id = E.ENCNTR_ID
         rec_cohort->list[rec_cohort->cnt].name = P.NAME_FULL_FORMATTED
         rec_cohort->list[rec_cohort->cnt].room_bed = CONCAT(TRIM(UAR_GET_CODE_DISPLAY(E.LOC_ROOM_CD)), "-", TRIM(UAR_GET_CODE_DISPLAY(E.LOC_BED_CD)))
-    WITH NOCOUNTER
+    [cite_start]WITH NOCOUNTER [cite: 7, 8, 9]
 
     SET num_pats = rec_cohort->cnt
 
     IF (num_pats > 0)
-        ; 2. Bulk Evaluate Problems (Lifelong: PERSON_ID)
+        ; 2. Bulk Evaluate Problems (Lifelong)
         SELECT INTO "NL:"
             UNOM = CNVTUPPER(N.SOURCE_STRING)
         FROM PROBLEM P, NOMENCLATURE N
@@ -84,9 +90,9 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                 ELSEIF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0) rec_cohort->list[idx].flag_epilepsy = 1
                 ENDIF
             ENDIF
-        WITH NOCOUNTER
+        [cite_start]WITH NOCOUNTER [cite: 10, 11, 12]
 
-        ; 3. Bulk Evaluate Diagnoses (Current Admission: ENCNTR_ID)
+        ; 3. Bulk Evaluate Diagnoses (Current Admission)
         SELECT INTO "NL:"
             UNOM = CNVTUPPER(N.SOURCE_STRING)
         FROM DIAGNOSIS D, NOMENCLATURE N
@@ -101,9 +107,9 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                 ELSEIF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0) rec_cohort->list[idx].flag_epilepsy = 1
                 ENDIF
             ENDIF
-        WITH NOCOUNTER
+        [cite_start]WITH NOCOUNTER [cite: 13, 14, 15]
 
-        ; 4. Bulk Evaluate Orders (Current Admission: ENCNTR_ID)
+        ; 4. Bulk Evaluate Orders
         SELECT INTO "NL:"
             UNOM = CNVTUPPER(O.ORDER_MNEMONIC)
         FROM ORDERS O, ACT_PW_COMP APC
@@ -115,7 +121,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             idx = LOCATEVAL(pat_idx, 1, num_pats, O.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             IF (idx > 0)
                 IF ((APC.PATHWAY_ID > 0.0 AND (FINDSTRING("CHLORPHENAMINE", UNOM)>0 OR FINDSTRING("CYCLIZINE", UNOM)>0 OR FINDSTRING("LACTULOSE", UNOM)>0 OR FINDSTRING("ONDANSETRON", UNOM)>0))
-                    OR FINDSTRING("SODIUM CHLORIDE", UNOM)>0 OR FINDSTRING("LACTATE", UNOM)>0 OR FINDSTRING("GLUCOSE", UNOM)>0 OR FINDSTRING("MAINTELYTE", UNOM)>0 OR FINDSTRING("WATER FOR INJECTION", UNOM)>0)
+                OR FINDSTRING("SODIUM CHLORIDE", UNOM)>0 OR FINDSTRING("LACTATE", UNOM)>0 OR FINDSTRING("GLUCOSE", UNOM)>0 OR FINDSTRING("MAINTELYTE", UNOM)>0 OR FINDSTRING("WATER FOR INJECTION", UNOM)>0)
                     stat = 1
                 ELSE
                     rec_cohort->list[idx].poly_count = rec_cohort->list[idx].poly_count + 1
@@ -128,9 +134,9 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                 ELSEIF (FINDSTRING("BUPIVACAINE", UNOM)>0 OR FINDSTRING("LEVOBUPIVACAINE", UNOM)>0) rec_cohort->list[idx].flag_neuraxial = 1
                 ENDIF
             ENDIF
-        WITH NOCOUNTER
+        [cite_start]WITH NOCOUNTER [cite: 16, 17, 18, 19, 20]
 
-        ; 5. Bulk Evaluate Clinical Events (Current Admission: ENCNTR_ID)
+        ; 5. Bulk Evaluate Clinical Events
         SELECT INTO "NL:"
         FROM CLINICAL_EVENT CE
         PLAN CE WHERE EXPAND(pat_idx, 1, num_pats, CE.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
@@ -143,7 +149,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                 ELSEIF (CNVTREAL(CE.RESULT_VAL) > 1000.0) rec_cohort->list[idx].flag_ebl = 1
                 ENDIF
             ENDIF
-        WITH NOCOUNTER
+        [cite_start]WITH NOCOUNTER [cite: 21, 22, 23]
 
         ; 6. Calculate Final Scores in Memory
         FOR (pat_idx = 1 TO num_pats)
@@ -166,14 +172,21 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             IF (rec_cohort->list[pat_idx].flag_neuraxial = 1) SET t_score = t_score + 1 SET t_triggers = CONCAT(t_triggers, "Neuraxial Infusion; ") ENDIF
             IF (rec_cohort->list[pat_idx].flag_poly_mod = 1) SET t_score = t_score + 1 SET t_triggers = CONCAT(t_triggers, "Mod Polypharmacy; ") ENDIF
 
+            ; CAPTURE DEBUG DATA BEFORE TRIMMING
+            SET d_raw_len = TEXTLEN(t_triggers)
+            SET rec_cohort->list[pat_idx].debug_info = CONCAT("RAW_LEN:", TRIM(CNVTSTRING(d_raw_len)), " STR:[", t_triggers, "]")
+
             SET rec_cohort->list[pat_idx].score = t_score
             IF (t_score >= 3) SET rec_cohort->list[pat_idx].color = "Red"
             ELSEIF (t_score >= 1) SET rec_cohort->list[pat_idx].color = "Amber"
             ELSE SET rec_cohort->list[pat_idx].color = "Green" ENDIF
 
-            IF (TEXTLEN(t_triggers) > 0) SET rec_cohort->list[pat_idx].summary = SUBSTRING(1, TEXTLEN(t_triggers) - 2, t_triggers)
-            ELSE SET rec_cohort->list[pat_idx].summary = "Routine (Low Risk)" ENDIF
-        ENDFOR
+            IF (TEXTLEN(t_triggers) > 0) 
+                 SET rec_cohort->list[pat_idx].summary = SUBSTRING(1, TEXTLEN(t_triggers)-2, t_triggers)
+            ELSE 
+                 SET rec_cohort->list[pat_idx].summary = "Routine (Low Risk)" 
+            ENDIF
+        [cite_start]ENDFOR [cite: 24, 25, 26, 27, 28, 29, 30]
 
         ; 7. Build HTML Rows (Ordered by Score Descending)
         SELECT INTO "NL:"
@@ -188,22 +201,24 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                 "<td><a class='patient-link' href='javascript:APPLINK(0,^Powerchart.exe^,^/PERSONID=", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].person_id)),
                 " /ENCNTRID=", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].encntr_id)), "^)'>", rec_cohort->list[D.SEQ].name, "</a></td>",
                 "<td><span class='badge-", rec_cohort->list[D.SEQ].color, "'>Score: ", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].score)), "</span></td>",
-                "<td>", rec_cohort->list[D.SEQ].summary, "</td>",
+                ; DEBUG OUTPUT INJECTED HERE
+                "<td><div style='font-size:10px; color:#999; border-bottom:1px dashed #ccc; margin-bottom:4px;'>", 
+                rec_cohort->list[D.SEQ].debug_info, "</div>", rec_cohort->list[D.SEQ].summary, "</td>",
                 "</tr>"
             )
-        WITH NOCOUNTER
+        [cite_start]WITH NOCOUNTER [cite: 30, 31, 32]
     ELSE
         SET v_ward_rows = "<tr><td colspan='4' style='text-align:center; padding: 20px;'>No active patients found on this ward.</td></tr>"
-    ENDIF
+    [cite_start]ENDIF [cite: 32, 33]
 
-    ; Return HTML rows plus debug info
+    ; Return HTML rows
     SELECT INTO $OUTDEV
     FROM DUMMYT D
     PLAN D
     DETAIL
         call print(CONCAT(""))
         call print(v_ward_rows)
-    WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING
+    [cite_start]WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING [cite: 33]
 
 ELSE
     ; =========================================================================
@@ -216,16 +231,16 @@ ELSE
         1 lists[*]
             2 list_id = f8
             2 list_name = vc
-    )
+    [cite_start]) [cite: 34]
 
-    SET rec_data->prsnl_id = CNVTREAL($PRSNL_ID)
+    [cite_start]SET rec_data->prsnl_id = CNVTREAL($PRSNL_ID) [cite: 34]
 
     SELECT INTO "NL:"
     FROM PRSNL P
     PLAN P WHERE P.PERSON_ID = rec_data->prsnl_id
     DETAIL
         rec_data->prsnl_name = P.NAME_FULL_FORMATTED
-    WITH NOCOUNTER
+    [cite_start]WITH NOCOUNTER [cite: 34, 35]
 
     SELECT INTO "NL:"
     FROM CODE_VALUE CV
@@ -238,7 +253,7 @@ ELSE
         stat = ALTERLIST(rec_data->lists, rec_data->list_cnt)
         rec_data->lists[rec_data->list_cnt].list_id = CV.CODE_VALUE
         rec_data->lists[rec_data->list_cnt].list_name = CV.DISPLAY
-    WITH NOCOUNTER
+    [cite_start]WITH NOCOUNTER [cite: 35, 36]
 
     SELECT INTO $OUTDEV
     FROM DUMMYT D
@@ -251,7 +266,6 @@ ELSE
         ROW + 1 call print(^<title>Pharmacist Acuity Dashboard</title>^)
 
         ROW + 1 call print(^<script>^)
-        ; Declare XMLCclRequest at top level so async callback retains reference
         ROW + 1 call print(^var xhr = new XMLCclRequest();^)
         ROW + 1 call print(^xhr.onreadystatechange = function() {^)
         ROW + 1 call print(^    if (xhr.readyState == 4) {^)
@@ -268,8 +282,6 @@ ELSE
         ROW + 1 call print(^    document.getElementById('debugWardCode').innerHTML = wardCode;^)
         ROW + 1 call print(^    document.getElementById('triageBody').innerHTML = "<tr><td colspan='4' style='text-align:center; padding: 20px;'><i>Running clinical acuity rules. This may take a few moments...</i></td></tr>";^)
         ROW + 1 call print(^    xhr.open('GET', '01_meds_pharm_triage_dash:group1', true);^)
-        ; OUTDEV=MINE (unquoted), PRSNL_ID=0.0 (f8 unquoted), WARD_CD=wardCode (f8 unquoted)
-        ; String params use ~tilde~ delimiters per CCL documentation
         ROW + 1 call print(^    xhr.send('"MINE", 0.0, ' + wardCode);^)
         ROW + 1 call print(^}^)
         ROW + 1 call print(^</script>^)
@@ -325,7 +337,7 @@ ELSE
 
         ROW + 1 call print(^</div>^)
         ROW + 1 call print(^</body></html>^)
-    WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING
+    [cite_start]WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING [cite: 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53]
 ENDIF
 
 END
