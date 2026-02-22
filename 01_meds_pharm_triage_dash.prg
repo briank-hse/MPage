@@ -80,6 +80,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             2 flag_neuraxial = i2
             2 flag_poly_severe = i2
             2 flag_poly_mod = i2
+            2 flag_imews = i2
             2 flag_high_alert_iv = i2
     )
 
@@ -238,13 +239,15 @@ IF (CNVTREAL($WARD_CD) > 0.0)
         SELECT INTO "NL:"
         FROM CLINICAL_EVENT CE
         PLAN CE WHERE EXPAND(pat_idx, 1, num_pats, CE.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
-            AND CE.EVENT_CD IN (15071366.00, 82546829.00, 15083551.00, 19995695.00)
+            AND CE.EVENT_CD IN (15071366.00, 82546829.00, 15083551.00, 19995695.00, 15068265.00)
             AND CE.VALID_UNTIL_DT_TM > SYSDATE AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("7,D") AND CE.RESULT_STATUS_CD IN (25, 34, 35)
         DETAIL
             idx = LOCATEVAL(pat_idx, 1, num_pats, CE.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             IF (idx > 0)
                 IF (CE.EVENT_CD = 15071366.00) rec_cohort->list[idx].flag_transfusion = 1
-                ELSEIF (CNVTREAL(CE.RESULT_VAL) > 1000.0) rec_cohort->list[idx].flag_ebl = 1
+                ELSEIF (CE.EVENT_CD IN (82546829.00, 15083551.00, 19995695.00) AND CNVTREAL(CE.RESULT_VAL) > 1000.0) rec_cohort->list[idx].flag_ebl = 1
+                ELSEIF (CE.EVENT_CD = 15068265.00 AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("24,H") AND CNVTINT(CE.RESULT_VAL) >= 2) 
+                    rec_cohort->list[idx].flag_imews = 1
                 ENDIF
             ENDIF
         WITH NOCOUNTER
@@ -259,6 +262,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ENDIF
 
             IF (rec_cohort->list[pat_idx].flag_high_alert_iv = 1) SET t_score = t_score + 5 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='Active continuous IV infusion of high-alert medication'>High-Alert IV</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_imews = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='Patient scored 2 or higher on the I-MEWS in the last 24 hours'>Physiological Instability (IMEWS)</span>") ENDIF
             IF (rec_cohort->list[pat_idx].flag_transfusion = 1 OR rec_cohort->list[pat_idx].flag_ebl = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Blood Volume Infused or EBL > 1000ml in last 7 days'>Haemorrhage/Transfusion</span>") ENDIF
             IF (rec_cohort->list[pat_idx].flag_preeclampsia = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active problem or diagnosis of Pre-Eclampsia'>Pre-Eclampsia</span>") ENDIF
             IF (rec_cohort->list[pat_idx].flag_dvt = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active problem or diagnosis of DVT or Pulmonary Embolism'>VTE/DVT</span>") ENDIF
