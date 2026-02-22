@@ -16,10 +16,11 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     
     DECLARE v_ward_rows = vc WITH noconstant(""), maxlen=65534
     DECLARE v_summary_rows = vc WITH noconstant(""), maxlen=65534
+    DECLARE v_matrix_rows = vc WITH noconstant(""), maxlen=65534
     DECLARE pat_idx = i4 WITH noconstant(0)
     DECLARE idx = i4 WITH noconstant(0)
     DECLARE t_score = i4 WITH noconstant(0)
-    DECLARE t_triggers = vc WITH noconstant(""), maxlen=500
+    DECLARE t_triggers = vc WITH noconstant(""), maxlen=2000
     DECLARE num_pats = i4 WITH noconstant(0)
     DECLARE stat = i4 WITH noconstant(0)
     DECLARE err_code = i4 WITH noconstant(0)
@@ -79,6 +80,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             2 flag_neuraxial = i2
             2 flag_poly_severe = i2
             2 flag_poly_mod = i2
+            2 flag_high_alert_iv = i2
     )
 
     RECORD rec_ward_summary (
@@ -222,6 +224,13 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                 ELSEIF (FINDSTRING("LABETALOL", UNOM)>0 OR FINDSTRING("NIFEDIPINE", UNOM)>0 OR FINDSTRING("METHYLDOPA", UNOM)>0) rec_cohort->list[idx].flag_antihypertensive = 1
                 ELSEIF (FINDSTRING("BUPIVACAINE", UNOM)>0 OR FINDSTRING("LEVOBUPIVACAINE", UNOM)>0) rec_cohort->list[idx].flag_neuraxial = 1
                 ENDIF
+
+                ; Check for High-Alert Continuous Infusions via native IV_IND flag
+                IF (FINDSTRING("MAGNESIUM", UNOM) > 0 OR FINDSTRING("OXYTOCIN", UNOM) > 0 OR FINDSTRING("INSULIN", UNOM) > 0 OR FINDSTRING("LABETALOL", UNOM) > 0 OR FINDSTRING("HYDRALAZINE", UNOM) > 0)
+                    IF (O.IV_IND = 1)
+                        rec_cohort->list[idx].flag_high_alert_iv = 1
+                    ENDIF
+                ENDIF
             ENDIF
         WITH NOCOUNTER
 
@@ -249,17 +258,18 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ELSEIF (rec_cohort->list[pat_idx].poly_count >= 5) SET rec_cohort->list[pat_idx].flag_poly_mod = 1
             ENDIF
 
-            IF (rec_cohort->list[pat_idx].flag_transfusion = 1 OR rec_cohort->list[pat_idx].flag_ebl = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "Haemorrhage/Transfusion; ") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_preeclampsia = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "Pre-Eclampsia; ") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_dvt = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "VTE/DVT; ") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_epilepsy = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "Epilepsy; ") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_insulin = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "Insulin; ") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_antiepileptic = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "Antiepileptic; ") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_poly_severe = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "Severe Polypharmacy; ") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_anticoag = 1) SET t_score = t_score + 2 SET t_triggers = CONCAT(t_triggers, "Anticoagulant; ") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_antihypertensive = 1) SET t_score = t_score + 2 SET t_triggers = CONCAT(t_triggers, "Antihypertensive; ") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_neuraxial = 1) SET t_score = t_score + 1 SET t_triggers = CONCAT(t_triggers, "Neuraxial Infusion; ") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_poly_mod = 1) SET t_score = t_score + 1 SET t_triggers = CONCAT(t_triggers, "Mod Polypharmacy; ") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_high_alert_iv = 1) SET t_score = t_score + 5 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='Active continuous IV infusion of high-alert medication'>High-Alert IV</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_transfusion = 1 OR rec_cohort->list[pat_idx].flag_ebl = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Blood Volume Infused or EBL > 1000ml in last 7 days'>Haemorrhage/Transfusion</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_preeclampsia = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active problem or diagnosis of Pre-Eclampsia'>Pre-Eclampsia</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_dvt = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active problem or diagnosis of DVT or Pulmonary Embolism'>VTE/DVT</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_epilepsy = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active problem or diagnosis of Epilepsy or Seizure'>Epilepsy</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_insulin = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active inpatient order for Insulin'>Insulin</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_antiepileptic = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active inpatient order for Levetiracetam, Lamotrigine, Valproate, or Carbamazepine'>Antiepileptic</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_poly_severe = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='10 or more active inpatient medications'>Severe Polypharmacy</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_anticoag = 1) SET t_score = t_score + 2 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active inpatient order for Tinzaparin, Heparin, or Enoxaparin'>Anticoagulant</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_antihypertensive = 1) SET t_score = t_score + 2 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active inpatient order for Labetalol, Nifedipine, or Methyldopa'>Antihypertensive</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_neuraxial = 1) SET t_score = t_score + 1 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='Active inpatient order for Bupivacaine or Levobupivacaine'>Neuraxial Infusion</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_poly_mod = 1) SET t_score = t_score + 1 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='5 to 9 active inpatient medications'>Mod Polypharmacy</span>") ENDIF
 
             SET rec_cohort->list[pat_idx].score = t_score
             IF (t_score >= 3) SET rec_cohort->list[pat_idx].color = "Red"
@@ -267,7 +277,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ELSE SET rec_cohort->list[pat_idx].color = "Green" ENDIF
 
             IF (TEXTLEN(t_triggers) > 0) 
-                 SET rec_cohort->list[pat_idx].summary = SUBSTRING(1, TEXTLEN(t_triggers)-1, t_triggers)
+                 SET rec_cohort->list[pat_idx].summary = t_triggers
             ELSE 
                  SET rec_cohort->list[pat_idx].summary = "Routine (Low Risk)" 
             ENDIF
@@ -293,6 +303,25 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     ELSE
         SET v_ward_rows = "<tr><td colspan='4' style='text-align:center; padding: 20px;'>No active patients found on this list.</td></tr>"
     ENDIF
+
+    ; 7a. Build scoring reference matrix row HTML
+    SET v_matrix_rows = ""
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr style='background:#fff;'><td colspan='4' style='padding:15px 10px 5px 10px;'>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<details class='ref-details'>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<summary>View Scoring Reference Matrix</summary>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<table class='ref-table'>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<thead><tr><th width='60%'>Clinical Criteria</th><th width='20%'>Category</th><th width='20%'>Points</th></tr></thead><tbody>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Continuous IV infusion of high-alert medication (e.g., MgSO4, Oxytocin)</td><td>Medication</td><td>+5</td></tr>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Massive Haemorrhage / Blood Transfusion</td><td>Clinical Event</td><td>+3</td></tr>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>High Risk Diagnosis (Pre-eclampsia, VTE, Epilepsy)</td><td>Problem/Diagnosis</td><td>+3</td></tr>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>High Alert Med (Insulin, Antiepileptics)</td><td>Medication</td><td>+3</td></tr>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Severe Polypharmacy (&ge;10 active meds)</td><td>Medication</td><td>+3</td></tr>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-amber'><td>Targeted Med (Anticoagulant, Antihypertensive)</td><td>Medication</td><td>+2</td></tr>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr><td>Moderate Polypharmacy (5-9 active meds)</td><td>Medication</td><td>+1</td></tr>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr><td>Neuraxial / Epidural Infusion Active</td><td>Medication</td><td>+1</td></tr>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "</tbody></table>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "</details>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "</td></tr>")
 
     ; 7a. Build summary HTML rows in-memory (sorted by ward name)
     IF (rec_ward_summary->cnt > 0)
@@ -342,6 +371,9 @@ IF (CNVTREAL($WARD_CD) > 0.0)
           "</tr>"
       ))
     FOOT REPORT
+        IF (TEXTLEN(v_matrix_rows) > 0)
+            call print(v_matrix_rows)
+        ENDIF
         IF (TEXTLEN(v_summary_rows) > 0)
             call print(v_summary_rows)
         ENDIF
@@ -440,6 +472,14 @@ ELSE
         ROW + 1 call print(^  .badge-Green { background: #008000; color: white; padding: 2px 6px; border-radius: 2px; font-weight:bold; font-size:11px; display:inline-block; min-width:50px; text-align:center; }^)
         ROW + 1 call print(^  .patient-link { color: #005A84; text-decoration: none; }^)
         ROW + 1 call print(^  .patient-link:hover { text-decoration: underline; color: #003a54; }^)
+        ROW + 1 call print(^  .trig-pill { display: inline-block; background: #e9ecef; border: 1px solid #ced4da; border-radius: 10px; padding: 2px 8px; margin: 2px 2px 2px 0; font-size: 11px; color: #495057; cursor: help; }^)
+        ROW + 1 call print(^  .ref-details { margin: 10px 0; background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }^)
+        ROW + 1 call print(^  .ref-details summary { font-weight: bold; color: #005A84; cursor: pointer; font-size: 13px; outline: none; }^)
+        ROW + 1 call print(^  .ref-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }^)
+        ROW + 1 call print(^  .ref-table th, .ref-table td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; }^)
+        ROW + 1 call print(^  .ref-table th { background-color: #f0f4f8; color: #333; }^)
+        ROW + 1 call print(^  .tr-red { background-color: #f8d7da; border-left: 4px solid #dc3545; }^)
+        ROW + 1 call print(^  .tr-amber { background-color: #fff3cd; border-left: 4px solid #ffc107; }^)
         ROW + 1 call print(^</style>^)
         ROW + 1 call print(^</head><body>^)
 
