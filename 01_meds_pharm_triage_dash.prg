@@ -11,14 +11,15 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     ; =========================================================================
     ; DATA FETCH MODE (AJAX) - RUN CLINICAL RULES AND RETURN HTML ROWS ONLY
     ; =========================================================================
-    [cite_start]DECLARE curr_ward_cd = f8 WITH noconstant(CNVTREAL($WARD_CD)) [cite: 3]
-    [cite_start]DECLARE v_ward_rows = vc WITH noconstant(""), maxlen=65534 [cite: 3]
-    [cite_start]DECLARE pat_idx = i4 WITH noconstant(0) [cite: 3]
-    [cite_start]DECLARE idx = i4 WITH noconstant(0) [cite: 3]
-    [cite_start]DECLARE t_score = i4 WITH noconstant(0) [cite: 3]
-    [cite_start]DECLARE t_triggers = vc WITH noconstant(""), maxlen=500 [cite: 3]
-    [cite_start]DECLARE num_pats = i4 WITH noconstant(0) [cite: 3]
-    [cite_start]DECLARE stat = i4 WITH noconstant(0) [cite: 3]
+    DECLARE curr_ward_cd = f8 WITH noconstant(0.0)
+    SET curr_ward_cd = CNVTREAL($WARD_CD)
+    DECLARE v_ward_rows = vc WITH noconstant(""), maxlen=65534
+    DECLARE pat_idx = i4 WITH noconstant(0)
+    DECLARE idx = i4 WITH noconstant(0)
+    DECLARE t_score = i4 WITH noconstant(0)
+    DECLARE t_triggers = vc WITH noconstant(""), maxlen=500
+    DECLARE num_pats = i4 WITH noconstant(0)
+    DECLARE stat = i4 WITH noconstant(0)
     
     ; NEW DEBUG DECLARATIONS
     DECLARE d_raw_len = i4 WITH noconstant(0)
@@ -49,7 +50,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             2 flag_poly_mod = i2
             ; NEW DEBUG FIELD
             2 debug_info = vc 
-    [cite_start]) [cite: 4, 5, 6, 7]
+    )
 
     ; 1. Populate Active Patients on this Ward
     SELECT INTO "NL:"
@@ -70,7 +71,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
         rec_cohort->list[rec_cohort->cnt].encntr_id = E.ENCNTR_ID
         rec_cohort->list[rec_cohort->cnt].name = P.NAME_FULL_FORMATTED
         rec_cohort->list[rec_cohort->cnt].room_bed = CONCAT(TRIM(UAR_GET_CODE_DISPLAY(E.LOC_ROOM_CD)), "-", TRIM(UAR_GET_CODE_DISPLAY(E.LOC_BED_CD)))
-    [cite_start]WITH NOCOUNTER [cite: 7, 8, 9]
+    WITH NOCOUNTER
 
     SET num_pats = rec_cohort->cnt
 
@@ -90,7 +91,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                 ELSEIF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0) rec_cohort->list[idx].flag_epilepsy = 1
                 ENDIF
             ENDIF
-        [cite_start]WITH NOCOUNTER [cite: 10, 11, 12]
+        WITH NOCOUNTER
 
         ; 3. Bulk Evaluate Diagnoses (Current Admission)
         SELECT INTO "NL:"
@@ -107,7 +108,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                 ELSEIF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0) rec_cohort->list[idx].flag_epilepsy = 1
                 ENDIF
             ENDIF
-        [cite_start]WITH NOCOUNTER [cite: 13, 14, 15]
+        WITH NOCOUNTER
 
         ; 4. Bulk Evaluate Orders
         SELECT INTO "NL:"
@@ -134,7 +135,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                 ELSEIF (FINDSTRING("BUPIVACAINE", UNOM)>0 OR FINDSTRING("LEVOBUPIVACAINE", UNOM)>0) rec_cohort->list[idx].flag_neuraxial = 1
                 ENDIF
             ENDIF
-        [cite_start]WITH NOCOUNTER [cite: 16, 17, 18, 19, 20]
+        WITH NOCOUNTER
 
         ; 5. Bulk Evaluate Clinical Events
         SELECT INTO "NL:"
@@ -149,7 +150,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                 ELSEIF (CNVTREAL(CE.RESULT_VAL) > 1000.0) rec_cohort->list[idx].flag_ebl = 1
                 ENDIF
             ENDIF
-        [cite_start]WITH NOCOUNTER [cite: 21, 22, 23]
+        WITH NOCOUNTER
 
         ; 6. Calculate Final Scores in Memory
         FOR (pat_idx = 1 TO num_pats)
@@ -182,11 +183,11 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ELSE SET rec_cohort->list[pat_idx].color = "Green" ENDIF
 
             IF (TEXTLEN(t_triggers) > 0) 
-                 SET rec_cohort->list[pat_idx].summary = SUBSTRING(1, TEXTLEN(t_triggers)-2, t_triggers)
+                 SET rec_cohort->list[pat_idx].summary = SUBSTRING(1, TEXTLEN(t_triggers)-1, t_triggers)
             ELSE 
                  SET rec_cohort->list[pat_idx].summary = "Routine (Low Risk)" 
             ENDIF
-        [cite_start]ENDFOR [cite: 24, 25, 26, 27, 28, 29, 30]
+        ENDFOR
 
         ; 7. Build HTML Rows (Ordered by Score Descending)
         SELECT INTO "NL:"
@@ -206,10 +207,10 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                 rec_cohort->list[D.SEQ].debug_info, "</div>", rec_cohort->list[D.SEQ].summary, "</td>",
                 "</tr>"
             )
-        [cite_start]WITH NOCOUNTER [cite: 30, 31, 32]
+        WITH NOCOUNTER
     ELSE
         SET v_ward_rows = "<tr><td colspan='4' style='text-align:center; padding: 20px;'>No active patients found on this ward.</td></tr>"
-    [cite_start]ENDIF [cite: 32, 33]
+    ENDIF
 
     ; Return HTML rows
     SELECT INTO $OUTDEV
@@ -218,7 +219,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     DETAIL
         call print(CONCAT(""))
         call print(v_ward_rows)
-    [cite_start]WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING [cite: 33]
+    WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING
 
 ELSE
     ; =========================================================================
@@ -231,16 +232,16 @@ ELSE
         1 lists[*]
             2 list_id = f8
             2 list_name = vc
-    [cite_start]) [cite: 34]
+    )
 
-    [cite_start]SET rec_data->prsnl_id = CNVTREAL($PRSNL_ID) [cite: 34]
+    SET rec_data->prsnl_id = CNVTREAL($PRSNL_ID)
 
     SELECT INTO "NL:"
     FROM PRSNL P
     PLAN P WHERE P.PERSON_ID = rec_data->prsnl_id
     DETAIL
         rec_data->prsnl_name = P.NAME_FULL_FORMATTED
-    [cite_start]WITH NOCOUNTER [cite: 34, 35]
+    WITH NOCOUNTER
 
     SELECT INTO "NL:"
     FROM CODE_VALUE CV
@@ -253,7 +254,7 @@ ELSE
         stat = ALTERLIST(rec_data->lists, rec_data->list_cnt)
         rec_data->lists[rec_data->list_cnt].list_id = CV.CODE_VALUE
         rec_data->lists[rec_data->list_cnt].list_name = CV.DISPLAY
-    [cite_start]WITH NOCOUNTER [cite: 35, 36]
+    WITH NOCOUNTER
 
     SELECT INTO $OUTDEV
     FROM DUMMYT D
@@ -337,7 +338,7 @@ ELSE
 
         ROW + 1 call print(^</div>^)
         ROW + 1 call print(^</body></html>^)
-    [cite_start]WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING [cite: 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53]
+    WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING
 ENDIF
 
 END
