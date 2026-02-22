@@ -23,6 +23,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     DECLARE stat = i4 WITH noconstant(0)
     DECLARE err_code = i4 WITH noconstant(0)
     DECLARE err_msg = c132 WITH noconstant("")
+    DECLARE summary_idx = i4 WITH noconstant(0)
 
     RECORD 600144_request (
         1 patient_list_id = f8
@@ -59,6 +60,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             2 person_id = f8
             2 encntr_id = f8
             2 name = vc
+            2 ward_name = vc
             2 room_bed = vc
             2 score = i4
             2 color = vc
@@ -76,6 +78,13 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             2 flag_neuraxial = i2
             2 flag_poly_severe = i2
             2 flag_poly_mod = i2
+    )
+
+    RECORD rec_ward_summary (
+        1 cnt = i4
+        1 list[*]
+            2 ward_name = vc
+            2 pat_count = i4
     )
 
     ; 1a. Execute Patient List Rules via API
@@ -137,6 +146,10 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             rec_cohort->list[rec_cohort->cnt].person_id = P.PERSON_ID
             rec_cohort->list[rec_cohort->cnt].encntr_id = E.ENCNTR_ID
             rec_cohort->list[rec_cohort->cnt].name = P.NAME_FULL_FORMATTED
+            rec_cohort->list[rec_cohort->cnt].ward_name = TRIM(UAR_GET_CODE_DISPLAY(E.LOC_NURSE_UNIT_CD))
+            IF (TEXTLEN(rec_cohort->list[rec_cohort->cnt].ward_name) = 0)
+                rec_cohort->list[rec_cohort->cnt].ward_name = "Unknown Ward"
+            ENDIF
             rec_cohort->list[rec_cohort->cnt].room_bed = CONCAT(TRIM(UAR_GET_CODE_DISPLAY(E.LOC_ROOM_CD)), "-", TRIM(UAR_GET_CODE_DISPLAY(E.LOC_BED_CD)))
         WITH NOCOUNTER
     ENDIF
@@ -259,6 +272,23 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ENDIF
         ENDFOR
 
+        ; 6b. Aggregate patient counts by ward for evaluated cohort
+        FOR (pat_idx = 1 TO num_pats)
+            IF (rec_ward_summary->cnt > 0)
+                SET summary_idx = LOCATEVAL(idx, 1, rec_ward_summary->cnt, rec_cohort->list[pat_idx].ward_name, rec_ward_summary->list[idx].ward_name)
+            ELSE
+                SET summary_idx = 0
+            ENDIF
+            IF (summary_idx > 0)
+                SET rec_ward_summary->list[summary_idx].pat_count = rec_ward_summary->list[summary_idx].pat_count + 1
+            ELSE
+                SET rec_ward_summary->cnt = rec_ward_summary->cnt + 1
+                SET stat = ALTERLIST(rec_ward_summary->list, rec_ward_summary->cnt)
+                SET rec_ward_summary->list[rec_ward_summary->cnt].ward_name = rec_cohort->list[pat_idx].ward_name
+                SET rec_ward_summary->list[rec_ward_summary->cnt].pat_count = 1
+            ENDIF
+        ENDFOR
+
     ELSE
         SET v_ward_rows = "<tr><td colspan='4' style='text-align:center; padding: 20px;'>No active patients found on this list.</td></tr>"
     ENDIF
@@ -291,6 +321,25 @@ IF (CNVTREAL($WARD_CD) > 0.0)
           "</tr>"
       ))
     WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING
+
+    ; 8. Build ward summary rows at bottom of dashboard table
+    IF (rec_ward_summary->cnt > 0)
+        SELECT INTO $OUTDEV
+            SORT_WARD = CNVTUPPER(rec_ward_summary->list[D.SEQ].ward_name)
+        FROM (DUMMYT D WITH SEQ = VALUE(rec_ward_summary->cnt))
+        PLAN D
+        ORDER BY SORT_WARD, D.SEQ
+        HEAD REPORT
+            call print("<tr style='background:#f0f4f8;'><td colspan='4' style='padding:10px; font-weight:bold; border-top:2px solid #005A84;'>Patient Distribution by Ward (Evaluated Cohort)</td></tr>")
+        DETAIL
+            call print(CONCAT(
+                "<tr>",
+                "<td colspan='2' style='font-weight:bold;'>", rec_ward_summary->list[D.SEQ].ward_name, "</td>",
+                "<td colspan='2'>Total Patients: ", TRIM(CNVTSTRING(rec_ward_summary->list[D.SEQ].pat_count)), "</td>",
+                "</tr>"
+            ))
+        WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING
+    ENDIF
 
 ELSE
     ; =========================================================================
