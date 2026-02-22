@@ -105,6 +105,9 @@ IF (CNVTREAL($WARD_CD) > 0.0)
         PLAN D
         JOIN E WHERE E.ENCNTR_ID = 600123_reply->patients[D.SEQ].encntr_id
             AND E.ACTIVE_IND = 1
+            AND E.ENCNTR_STATUS_CD = 854.00       ; Must be an Active encounter
+            AND E.LOC_NURSE_UNIT_CD > 0.0         ; Must be assigned to a valid nurse unit
+            AND E.ENCNTR_TYPE_CLASS_CD = 391.00   ; Must be an Inpatient
         JOIN P WHERE P.PERSON_ID = E.PERSON_ID AND P.ACTIVE_IND = 1
             AND P.BIRTH_DT_TM < CNVTLOOKBEHIND("1,Y")
             AND CNVTUPPER(P.NAME_LAST_KEY) != "ZZZTEST"
@@ -122,6 +125,12 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     ENDIF
 
     SET num_pats = rec_cohort->cnt
+    ; Prevent Oracle IN-clause crashes and severe server lag
+    DECLARE over_limit_flag = i2 WITH noconstant(0)
+    IF (num_pats > 300)
+        SET num_pats = 300
+        SET over_limit_flag = 1
+    ENDIF
 
     IF (num_pats > 0)
         ; 2. Bulk Evaluate Problems (Lifelong: PERSON_ID)
@@ -233,34 +242,37 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ENDIF
         ENDFOR
 
-        ; 7. Build HTML Rows (Ordered by Score Descending)
-        SELECT INTO "NL:"
-            PAT_SCORE = rec_cohort->list[D.SEQ].score
-        FROM (DUMMYT D WITH SEQ = VALUE(num_pats))
-        PLAN D
-        ORDER BY PAT_SCORE DESC, D.SEQ
-        DETAIL
-            v_ward_rows = CONCAT(v_ward_rows,
-                "<tr>",
-                "<td><b>", rec_cohort->list[D.SEQ].room_bed, "</b></td>",
-                "<td><a class='patient-link' href='javascript:APPLINK(0,^Powerchart.exe^,^/PERSONID=", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].person_id)),
-                " /ENCNTRID=", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].encntr_id)), "^)'>", rec_cohort->list[D.SEQ].name, "</a></td>",
-                "<td><span class='badge-", rec_cohort->list[D.SEQ].color, "'>Score: ", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].score)), "</span></td>",
-                "<td>", rec_cohort->list[D.SEQ].summary, "</td>",
-                "</tr>"
-            )
-        WITH NOCOUNTER
     ELSE
         SET v_ward_rows = "<tr><td colspan='4' style='text-align:center; padding: 20px;'>No active patients found on this list.</td></tr>"
     ENDIF
 
-    ; Return HTML rows plus debug info
+    ; 7. Build HTML Rows (Ordered by Score Descending)
     SELECT INTO $OUTDEV
-    FROM DUMMYT D
+        PAT_SCORE = rec_cohort->list[D.SEQ].score
+    FROM (DUMMYT D WITH SEQ = VALUE(num_pats))
     PLAN D
+    ORDER BY PAT_SCORE DESC, D.SEQ
+    HEAD REPORT
+        call print("") ; clear buffer
+        IF (num_pats = 0)
+            call print(v_ward_rows)
+        ENDIF
+        IF (over_limit_flag = 1)
+            call print("<tr><td colspan='4' style='background:#fff3cd; color:#856404; text-align:center; padding:10px;'><b>Warning:</b> List is too large. Only the first 300 patients have been evaluated.</td></tr>")
+        ENDIF
     DETAIL
-        call print(CONCAT(""))
-        call print(v_ward_rows)
+        call print(CONCAT(
+            "<tr>",
+            "<td><b>", rec_cohort->list[D.SEQ].room_bed, "</b></td>",
+            "<td><a class='patient-link' href='javascript:CCLLINK(^01_bk_pharmacist_mpage_tab:group1^, ^^MINE^,",
+            TRIM(CNVTSTRING(CNVTREAL($PRSNL_ID))), ",",
+            TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].person_id)), ",",
+            TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].encntr_id)), "^, 1)'>",
+            rec_cohort->list[D.SEQ].name, "</a></td>",
+            "<td><span class='badge-", rec_cohort->list[D.SEQ].color, "'>Score: ", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].score)), "</span></td>",
+            "<td>", rec_cohort->list[D.SEQ].summary, "</td>",
+            "</tr>"
+        ))
     WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING
 
 ELSE
