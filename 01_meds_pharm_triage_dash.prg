@@ -233,6 +233,19 @@ ELSE
     WITH NOCOUNTER
 
     SELECT INTO "NL:"
+        ORG_SORT = EVALUATE(L.ORGANIZATION_ID,
+            40024.0, 1,
+            46026.0, 2,
+            46024.0, 3,
+            46025.0, 4,
+            2170808.0, 5,
+            2170807.0, 6,
+            174982.0, 7,
+            130982.0, 8,
+            128982.0, 9,
+            174986.0, 10,
+            174984.0, 11,
+            99)
     FROM CODE_VALUE CV,
          LOCATION L
     PLAN CV WHERE CV.CODE_SET = 220
@@ -246,7 +259,7 @@ ELSE
             381374.0, 1064591.0, 84984.0, 1064570.0, 234982.0, 
             84992.0, 2401035.0, 2401034.0, 1064573.0
         )
-    ORDER BY CV.DISPLAY
+    ORDER BY ORG_SORT, CV.DISPLAY
     DETAIL
         rec_data->list_cnt = rec_data->list_cnt + 1
         stat = ALTERLIST(rec_data->lists, rec_data->list_cnt)
