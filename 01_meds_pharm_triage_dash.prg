@@ -282,24 +282,31 @@ ELSE
         ROW + 1 call print(^<title>Pharmacist Acuity Dashboard</title>^)
 
         ROW + 1 call print(^<script>^)
-        ; Declare XMLCclRequest at top level so async callback retains reference
-        ROW + 1 call print(^var xhr = new XMLCclRequest();^)
-        ROW + 1 call print(^xhr.onreadystatechange = function() {^)
-        ROW + 1 call print(^    if (xhr.readyState == 4) {^)
-        ROW + 1 call print(^        if (xhr.status == 200) {^)
-        ROW + 1 call print(^            document.getElementById('triageBody').innerHTML = xhr.responseText;^)
-        ROW + 1 call print(^        } else {^)
-        ROW + 1 call print(^            document.getElementById('triageBody').innerHTML = '<tr><td colspan="4" style="color:red;padding:20px;font-family:monospace;">DEBUG - Status: ' + xhr.status + '<br/>Response: ' + xhr.responseText + '</td></tr>';^)
-        ROW + 1 call print(^        }^)
-        ROW + 1 call print(^    }^)
-        ROW + 1 call print(^};^)
+        ; NEW LOGIC: Declare globally so the Discern browser doesn't garbage collect it
+        ROW + 1 call print(^var xhr = null;^)
+        
         ROW + 1 call print(^function loadPatients() {^)
         ROW + 1 call print(^    var wardCode = document.getElementById('listSelector').value;^)
         ROW + 1 call print(^    if (wardCode == "0") { alert("Please select a valid ward."); return; }^)
         ROW + 1 call print(^    document.getElementById('debugWardCode').innerHTML = wardCode;^)
         ROW + 1 call print(^    document.getElementById('triageBody').innerHTML = "<tr><td colspan='4' style='text-align:center; padding: 20px;'><i>Running clinical acuity rules. This may take a few moments...</i></td></tr>";^)
+        
+        ; NEW LOGIC: Abort any hanging previous request before starting a new one
+        ROW + 1 call print(^    if (xhr) { xhr.abort(); }^)
+        
+        ; NEW LOGIC: Re-initialize the request object into the global variable
+        ROW + 1 call print(^    xhr = new XMLCclRequest();^)
+        ROW + 1 call print(^    xhr.onreadystatechange = function() {^)
+        ROW + 1 call print(^        if (xhr.readyState == 4) {^)
+        ROW + 1 call print(^            if (xhr.status == 200) {^)
+        ROW + 1 call print(^                document.getElementById('triageBody').innerHTML = xhr.responseText;^)
+        ROW + 1 call print(^            } else {^)
+        ROW + 1 call print(^                document.getElementById('triageBody').innerHTML = '<tr><td colspan="4" style="color:red;padding:20px;font-family:monospace;">DEBUG - Status: ' + xhr.status + '<br/>Response: ' + xhr.responseText + '</td></tr>';^)
+        ROW + 1 call print(^            }^)
+        ROW + 1 call print(^        }^)
+        ROW + 1 call print(^    };^)
+        
         ROW + 1 call print(^    xhr.open('GET', '01_meds_pharm_triage_dash:group1', true);^)
-        ; String params use ~tilde~ delimiters per CCL documentation
         ROW + 1 call print(^    xhr.send('"MINE", 0.0, ' + wardCode);^)
         ROW + 1 call print(^}^)
         ROW + 1 call print(^</script>^)
