@@ -251,7 +251,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             )
         WITH NOCOUNTER
     ELSE
-        SET v_ward_rows = "<tr><td colspan='4' style='text-align:center; padding: 20px;'>No active patients found on this ward.</td></tr>"
+        SET v_ward_rows = "<tr><td colspan='4' style='text-align:center; padding: 20px;'>No active patients found on this list.</td></tr>"
     ENDIF
 
     ; Return HTML rows plus debug info
@@ -288,9 +288,6 @@ ELSE
     SELECT INTO "NL:"
     FROM DCP_PATIENT_LIST DPL
     PLAN DPL WHERE DPL.OWNER_PRSNL_ID = rec_data->prsnl_id
-        AND DPL.ACTIVE_IND = 1
-        AND DPL.BEG_EFFECTIVE_DT_TM <= CNVTDATETIME(CURDATE, CURTIME3)
-        AND DPL.END_EFFECTIVE_DT_TM >= CNVTDATETIME(CURDATE, CURTIME3)
     ORDER BY DPL.NAME
     DETAIL
         rec_data->list_cnt = rec_data->list_cnt + 1
@@ -335,7 +332,7 @@ ELSE
         ROW + 1 call print(^    };^)
         
         ROW + 1 call print(^    xhr.open('GET', '01_meds_pharm_triage_dash:group1', true);^)
-        ROW + 1 call print(^    xhr.send('"MINE", 0.0, ' + wardCode);^)
+        ROW + 1 call print(CONCAT(^    xhr.send('"MINE", ^, TRIM(CNVTSTRING(rec_data->prsnl_id)), ^, ' + wardCode);^))
         ROW + 1 call print(^}^)
         ROW + 1 call print(^</script>^)
 
