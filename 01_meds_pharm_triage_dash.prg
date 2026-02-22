@@ -278,18 +278,21 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             call print("<tr><td colspan='4' style='background:#fff3cd; color:#856404; text-align:center; padding:10px;'><b>Warning:</b> List is too large. Only the first 300 patients have been evaluated.</td></tr>")
         ENDIF
     DETAIL
-        call print(CONCAT(
-            "<tr>",
-            "<td><b>", rec_cohort->list[D.SEQ].room_bed, "</b></td>",
-            "<td><a class='patient-link' href='javascript:CCLLINK(^01_bk_pharmacist_mpage_tab:group1^, ^^MINE^,",
-            TRIM(CNVTSTRING(CNVTREAL($PRSNL_ID))), ",",
-            TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].person_id)), ",",
-            TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].encntr_id)), "^, 1)'>",
-            rec_cohort->list[D.SEQ].name, "</a></td>",
-            "<td><span class='badge-", rec_cohort->list[D.SEQ].color, "'>Score: ", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].score)), "</span></td>",
-            "<td>", rec_cohort->list[D.SEQ].summary, "</td>",
-            "</tr>"
-        ))
+      call print(CONCAT(
+          "<tr>",
+          "<td><b>", rec_cohort->list[D.SEQ].room_bed, "</b></td>",
+          "<td><a class='patient-link' href='javascript:CCLLINK(",
+          CHAR(34), "01_bk_pharmacist_mpage_tab:group1", CHAR(34), ", ",
+          CHAR(34), "^MINE^,",
+          TRIM(CNVTSTRING(CNVTREAL($PRSNL_ID))), ",",
+          TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].person_id)), ",",
+          TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].encntr_id)),
+          CHAR(34), ", 1)'>", 
+          rec_cohort->list[D.SEQ].name, "</a></td>",
+          "<td><span class='badge-", rec_cohort->list[D.SEQ].color, "'>Score: ", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].score)), "</span></td>",
+          "<td>", rec_cohort->list[D.SEQ].summary, "</td>",
+          "</tr>"
+      ))
     WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING
 
 ELSE
@@ -355,7 +358,7 @@ ELSE
         ROW + 1 call print(^            if (xhr.status == 200) {^)
         ROW + 1 call print(^                document.getElementById('triageBody').innerHTML = xhr.responseText;^)
         ROW + 1 call print(^            } else if (xhr.status == 492) {^)
-        ROW + 1 call print(^                document.getElementById('triageBody').innerHTML = "<tr><td colspan='4' style='color:#721c24; background-color:#f8d7da; padding:20px; border:1px solid #f5c6cb;'><b>Fatal Server Error (492):</b> Cerner violently terminated the script. The selected patient list is too massive, causing a memory overflow or exceeding the web timeout limit before the script could finish evaluating it. Please try a smaller, more specific list.</td></tr>";^)
+        ROW + 1 call print(^                document.getElementById('triageBody').innerHTML = "<tr><td colspan='4' style='color:#856404; background-color:#fff3cd; padding:20px; border:1px solid #ffeeba; text-align:center;'><b>List Too Large:</b> The selected patient list contains too many records to load efficiently. Please select a smaller, more specific list to view acuity scores.</td></tr>";^)
         ROW + 1 call print(^            } else {^)
         ROW + 1 call print(^                document.getElementById('triageBody').innerHTML = '<tr><td colspan="4" style="color:red;padding:20px;font-family:monospace;">DEBUG - Status: ' + xhr.status + '<br/>Response: ' + xhr.responseText + '</td></tr>';^)
         ROW + 1 call print(^            }^)
