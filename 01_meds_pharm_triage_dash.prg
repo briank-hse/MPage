@@ -22,6 +22,35 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     DECLARE num_pats = i4 WITH noconstant(0)
     DECLARE stat = i4 WITH noconstant(0)
 
+    RECORD 600144_request (
+        1 patient_list_id = f8
+        1 prsnl_id = f8
+        1 definition_version = i4
+    )
+    RECORD 600144_reply (
+        1 arguments[*]
+            2 argument_name = vc
+            2 argument_value = vc
+            2 parent_entity_name = vc
+            2 parent_entity_id = f8
+    )
+    RECORD 600123_request (
+        1 patient_list_id = f8
+        1 patient_list_type_cd = f8
+        1 mv_flag = i2
+        1 rmv_pl_rows_flag = i2
+        1 arguments[*]
+            2 argument_name = vc
+            2 argument_value = vc
+            2 parent_entity_name = vc
+            2 parent_entity_id = f8
+    )
+    RECORD 600123_reply (
+        1 patients[*]
+            2 person_id = f8
+            2 encntr_id = f8
+    )
+
     RECORD rec_cohort (
         1 cnt = i4
         1 list[*]
@@ -47,26 +76,50 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             2 flag_poly_mod = i2
     )
 
-    ; 1. Populate Active Patients on this Ward (Age Optimized)
+    ; 1a. Execute Patient List Rules via API
+    DECLARE curr_list_id = f8 WITH noconstant(curr_ward_cd)
+
+    SET 600144_request->patient_list_id = curr_list_id
+    SET 600144_request->prsnl_id = CNVTREAL($PRSNL_ID)
+    SET 600144_request->definition_version = 1
+
+    SET stat = tdbexecute(600005, 600024, 600144, "REC", 600144_request, "REC", 600144_reply)
+
     SELECT INTO "NL:"
-    FROM ENCOUNTER E, PERSON P
-    PLAN E WHERE E.LOC_NURSE_UNIT_CD = curr_ward_cd
-        AND E.ACTIVE_IND = 1
-        AND E.ENCNTR_STATUS_CD = 854.00
-    JOIN P WHERE P.PERSON_ID = E.PERSON_ID AND P.ACTIVE_IND = 1
-        AND P.BIRTH_DT_TM < CNVTLOOKBEHIND("1,Y") 
-        AND CNVTUPPER(P.NAME_LAST_KEY) != "ZZZTEST"
-        AND CNVTUPPER(P.NAME_LAST_KEY) != "BABY"
-        AND CNVTUPPER(P.NAME_LAST_KEY) != "INFANT"
-    ORDER BY E.LOC_ROOM_CD, E.LOC_BED_CD
-    DETAIL
-        rec_cohort->cnt = rec_cohort->cnt + 1
-        stat = alterlist(rec_cohort->list, rec_cohort->cnt)
-        rec_cohort->list[rec_cohort->cnt].person_id = P.PERSON_ID
-        rec_cohort->list[rec_cohort->cnt].encntr_id = E.ENCNTR_ID
-        rec_cohort->list[rec_cohort->cnt].name = P.NAME_FULL_FORMATTED
-        rec_cohort->list[rec_cohort->cnt].room_bed = CONCAT(TRIM(UAR_GET_CODE_DISPLAY(E.LOC_ROOM_CD)), "-", TRIM(UAR_GET_CODE_DISPLAY(E.LOC_BED_CD)))
+    FROM DCP_PATIENT_LIST DPL
+    PLAN DPL WHERE DPL.PATIENT_LIST_ID = curr_list_id
+    DETAIL 600123_request->patient_list_type_cd = DPL.PATIENT_LIST_TYPE_CD
     WITH NOCOUNTER
+
+    SET 600123_request->patient_list_id = curr_list_id
+    SET stat = moverec(600144_reply->arguments, 600123_request->arguments)
+    SET 600123_request->mv_flag = -1
+    SET 600123_request->rmv_pl_rows_flag = 0
+
+    SET stat = tdbexecute(600005, 600024, 600123, "REC", 600123_request, "REC", 600123_reply)
+
+    ; 1b. Populate Cohort from API Results
+    IF (SIZE(600123_reply->patients, 5) > 0)
+        SELECT INTO "NL:"
+        FROM (DUMMYT D WITH SEQ=SIZE(600123_reply->patients, 5)), ENCOUNTER E, PERSON P
+        PLAN D
+        JOIN E WHERE E.ENCNTR_ID = 600123_reply->patients[D.SEQ].encntr_id
+            AND E.ACTIVE_IND = 1
+        JOIN P WHERE P.PERSON_ID = E.PERSON_ID AND P.ACTIVE_IND = 1
+            AND P.BIRTH_DT_TM < CNVTLOOKBEHIND("1,Y")
+            AND CNVTUPPER(P.NAME_LAST_KEY) != "ZZZTEST"
+            AND CNVTUPPER(P.NAME_LAST_KEY) != "BABY"
+            AND CNVTUPPER(P.NAME_LAST_KEY) != "INFANT"
+        ORDER BY E.LOC_ROOM_CD, E.LOC_BED_CD
+        DETAIL
+            rec_cohort->cnt = rec_cohort->cnt + 1
+            stat = alterlist(rec_cohort->list, rec_cohort->cnt)
+            rec_cohort->list[rec_cohort->cnt].person_id = P.PERSON_ID
+            rec_cohort->list[rec_cohort->cnt].encntr_id = E.ENCNTR_ID
+            rec_cohort->list[rec_cohort->cnt].name = P.NAME_FULL_FORMATTED
+            rec_cohort->list[rec_cohort->cnt].room_bed = CONCAT(TRIM(UAR_GET_CODE_DISPLAY(E.LOC_ROOM_CD)), "-", TRIM(UAR_GET_CODE_DISPLAY(E.LOC_BED_CD)))
+        WITH NOCOUNTER
+    ENDIF
 
     SET num_pats = rec_cohort->cnt
 
@@ -233,42 +286,17 @@ ELSE
     WITH NOCOUNTER
 
     SELECT INTO "NL:"
-        ORG_SORT = EVALUATE(L.ORGANIZATION_ID,
-            40024.0, 1,
-            46024.0, 2,
-            46025.0, 3,
-            2170808.0, 4,
-            46026.0, 5,
-            2170807.0, 6,
-            174982.0, 7,
-            130982.0, 8,
-            128982.0, 9,
-            174986.0, 10,
-            174984.0, 11,
-            99)
-    FROM CODE_VALUE CV,
-         LOCATION L
-    PLAN CV WHERE CV.CODE_SET = 220
-        AND CV.ACTIVE_IND = 1
-        AND CV.CDF_MEANING = "NURSEUNIT"
-        AND CV.CODE_VALUE NOT IN (
-            15069415.0, 15069523.0, 28019463.0, 222549567.0,
-            222555231.0, 14433846.0, 9027973.0
-        )
-    JOIN L WHERE L.LOCATION_CD = CV.CODE_VALUE
-        AND L.ACTIVE_IND = 1
-        AND L.ORGANIZATION_ID NOT IN (
-            84988.0, 108983.0, 1064544.0, 170983.0, 120984.0, 
-            84986.0, 120982.0, 381376.0, 381378.0, 381380.0, 
-            381374.0, 1064591.0, 84984.0, 1064570.0, 234982.0, 
-            84992.0, 2401035.0, 2401034.0, 1064573.0
-        )
-    ORDER BY ORG_SORT, CV.DISPLAY
+    FROM DCP_PATIENT_LIST DPL
+    PLAN DPL WHERE DPL.OWNER_PRSNL_ID = rec_data->prsnl_id
+        AND DPL.ACTIVE_IND = 1
+        AND DPL.BEG_EFFECTIVE_DT_TM <= CNVTDATETIME(CURDATE, CURTIME3)
+        AND DPL.END_EFFECTIVE_DT_TM >= CNVTDATETIME(CURDATE, CURTIME3)
+    ORDER BY DPL.NAME
     DETAIL
         rec_data->list_cnt = rec_data->list_cnt + 1
         stat = ALTERLIST(rec_data->lists, rec_data->list_cnt)
-        rec_data->lists[rec_data->list_cnt].list_id = CV.CODE_VALUE
-        rec_data->lists[rec_data->list_cnt].list_name = CV.DISPLAY
+        rec_data->lists[rec_data->list_cnt].list_id = DPL.PATIENT_LIST_ID
+        rec_data->lists[rec_data->list_cnt].list_name = DPL.NAME
     WITH NOCOUNTER
 
     SELECT INTO $OUTDEV
@@ -287,7 +315,7 @@ ELSE
         
         ROW + 1 call print(^function loadPatients() {^)
         ROW + 1 call print(^    var wardCode = document.getElementById('listSelector').value;^)
-        ROW + 1 call print(^    if (wardCode == "0") { alert("Please select a valid ward."); return; }^)
+        ROW + 1 call print(^    if (wardCode == "0") { alert("Please select a valid patient list."); return; }^)
         ROW + 1 call print(^    document.getElementById('debugWardCode').innerHTML = wardCode;^)
         ROW + 1 call print(^    document.getElementById('triageBody').innerHTML = "<tr><td colspan='4' style='text-align:center; padding: 20px;'><i>Running clinical acuity rules. This may take a few moments...</i></td></tr>";^)
         
@@ -336,28 +364,28 @@ ELSE
 
         ROW + 1 call print(CONCAT(^<div class="info-box">^))
         ROW + 1 call print(CONCAT(^<b>Logged-in User:</b> ^, NULLVAL(rec_data->prsnl_name, "Unknown User"), ^ (PRSNL_ID: ^, TRIM(CNVTSTRING(rec_data->prsnl_id)), ^)<br/>^))
-        ROW + 1 call print(CONCAT(^<b>Inpatient Wards Available:</b> ^, CNVTSTRING(rec_data->list_cnt), ^<br/>^))
-        ROW + 1 call print(^<b>Selected Ward Code:</b> <span id="debugWardCode">none selected</span>^)
+        ROW + 1 call print(CONCAT(^<b>Patient Lists Available:</b> ^, CNVTSTRING(rec_data->list_cnt), ^<br/>^))
+        ROW + 1 call print(^<b>Selected Patient List ID:</b> <span id="debugWardCode">none selected</span>^)
         ROW + 1 call print(^</div>^)
 
-        ROW + 1 call print(^<h3>Select an Inpatient Ward to Triage</h3>^)
+        ROW + 1 call print(^<h3>Select a Patient List to Triage</h3>^)
 
         IF (rec_data->list_cnt > 0)
             ROW + 1 call print(^<select id="listSelector">^)
-            ROW + 1 call print(^<option value="0">-- Select a Ward --</option>^)
+            ROW + 1 call print(^<option value="0">-- Select a Patient List --</option>^)
             FOR (i = 1 TO rec_data->list_cnt)
                 ROW + 1 call print(CONCAT(^<option value="^, TRIM(CNVTSTRING(rec_data->lists[i].list_id)), ^">^, rec_data->lists[i].list_name, ^</option>^))
             ENDFOR
             ROW + 1 call print(^</select>^)
             ROW + 1 call print(^<button onclick="loadPatients()">Load Patients</button>^)
         ELSE
-            ROW + 1 call print(^<p style="color: #dc3545;"><i>No active inpatient wards found.</i></p>^)
+            ROW + 1 call print(^<p style="color: #dc3545;"><i>No active patient lists found.</i></p>^)
         ENDIF
 
         ROW + 1 call print(^<table class='ward-tbl'>^)
         ROW + 1 call print(^<thead><tr><th>Bed / Room</th><th>Patient Name</th><th>Acuity Score</th><th>Active Triggers</th></tr></thead>^)
         ROW + 1 call print(^<tbody id='triageBody'>^)
-        ROW + 1 call print(^<tr><td colspan='4' style='text-align:center; padding: 20px; color:#666;'>Select a ward and click "Load Patients" to generate the triage list.</td></tr>^)
+        ROW + 1 call print(^<tr><td colspan='4' style='text-align:center; padding: 20px; color:#666;'>Select a patient list and click "Load Patients" to generate the triage list.</td></tr>^)
         ROW + 1 call print(^</tbody></table>^)
 
         ROW + 1 call print(^</div>^)
