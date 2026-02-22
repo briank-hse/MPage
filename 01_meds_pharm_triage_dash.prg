@@ -171,7 +171,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ELSEIF (t_score >= 1) SET rec_cohort->list[pat_idx].color = "Amber"
             ELSE SET rec_cohort->list[pat_idx].color = "Green" ENDIF
 
-            IF (TEXTLEN(t_triggers) > 0) SET rec_cohort->list[pat_idx].summary = SUBSTRING(1, TEXTLEN(t_triggers)-2, t_triggers)
+            IF (TEXTLEN(t_triggers) > 2) SET rec_cohort->list[pat_idx].summary = SUBSTRING(1, TEXTLEN(t_triggers) - 2, t_triggers)
             ELSE SET rec_cohort->list[pat_idx].summary = "Routine (Low Risk)" ENDIF
         ENDFOR
 
