@@ -15,6 +15,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     SET curr_ward_cd = CNVTREAL($WARD_CD)
     
     DECLARE v_ward_rows = vc WITH noconstant(""), maxlen=65534
+    DECLARE v_summary_rows = vc WITH noconstant(""), maxlen=65534
     DECLARE pat_idx = i4 WITH noconstant(0)
     DECLARE idx = i4 WITH noconstant(0)
     DECLARE t_score = i4 WITH noconstant(0)
@@ -293,7 +294,27 @@ IF (CNVTREAL($WARD_CD) > 0.0)
         SET v_ward_rows = "<tr><td colspan='4' style='text-align:center; padding: 20px;'>No active patients found on this list.</td></tr>"
     ENDIF
 
-    ; 7. Build HTML Rows (Ordered by Score Descending)
+    ; 7a. Build summary HTML rows in-memory (sorted by ward name)
+    IF (rec_ward_summary->cnt > 0)
+        SET v_summary_rows = ""
+        SELECT INTO "NL:"
+            SORT_WARD = CNVTUPPER(rec_ward_summary->list[D.SEQ].ward_name)
+        FROM (DUMMYT D WITH SEQ = VALUE(rec_ward_summary->cnt))
+        PLAN D
+        ORDER BY SORT_WARD, D.SEQ
+        HEAD REPORT
+            v_summary_rows = CONCAT(v_summary_rows, "<tr style='background:#f0f4f8;'><td colspan='4' style='padding:10px; font-weight:bold; border-top:2px solid #005A84;'>Patient Distribution by Ward (Evaluated Cohort)</td></tr>")
+        DETAIL
+            v_summary_rows = CONCAT(v_summary_rows,
+                "<tr>",
+                "<td colspan='2' style='font-weight:bold; border-right:1px solid #e0e0e0;'>", rec_ward_summary->list[D.SEQ].ward_name, "</td>",
+                "<td colspan='2'>Total Patients: ", TRIM(CNVTSTRING(rec_ward_summary->list[D.SEQ].pat_count)), "</td>",
+                "</tr>"
+            )
+        WITH NOCOUNTER
+    ENDIF
+
+    ; 7b. Build HTML Rows (Ordered by Score Descending)
     SELECT INTO $OUTDEV
         PAT_SCORE = rec_cohort->list[D.SEQ].score
     FROM (DUMMYT D WITH SEQ = VALUE(num_pats))
@@ -320,26 +341,11 @@ IF (CNVTREAL($WARD_CD) > 0.0)
           "<td>", rec_cohort->list[D.SEQ].summary, "</td>",
           "</tr>"
       ))
+    FOOT REPORT
+        IF (TEXTLEN(v_summary_rows) > 0)
+            call print(v_summary_rows)
+        ENDIF
     WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING
-
-    ; 8. Build ward summary rows at bottom of dashboard table
-    IF (rec_ward_summary->cnt > 0)
-        SELECT INTO $OUTDEV
-            SORT_WARD = CNVTUPPER(rec_ward_summary->list[D.SEQ].ward_name)
-        FROM (DUMMYT D WITH SEQ = VALUE(rec_ward_summary->cnt))
-        PLAN D
-        ORDER BY SORT_WARD, D.SEQ
-        HEAD REPORT
-            call print("<tr style='background:#f0f4f8;'><td colspan='4' style='padding:10px; font-weight:bold; border-top:2px solid #005A84;'>Patient Distribution by Ward (Evaluated Cohort)</td></tr>")
-        DETAIL
-            call print(CONCAT(
-                "<tr>",
-                "<td colspan='2' style='font-weight:bold;'>", rec_ward_summary->list[D.SEQ].ward_name, "</td>",
-                "<td colspan='2'>Total Patients: ", TRIM(CNVTSTRING(rec_ward_summary->list[D.SEQ].pat_count)), "</td>",
-                "</tr>"
-            ))
-        WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING
-    ENDIF
 
 ELSE
     ; =========================================================================
