@@ -114,8 +114,11 @@ DETAIL
         vCleanText = REPLACE(vCleanText, concat(CHAR(13), CHAR(10)), "<br />", 0)
         vCleanText = REPLACE(vCleanText, CHAR(13), "<br />", 0)
         vCleanText = REPLACE(vCleanText, CHAR(10), "<br />", 0)
+        vCleanText = REPLACE(vCleanText, CHAR(11), "<br />", 0)
         vCleanText = REPLACE(vCleanText, "<br /><br /><br /><br /><br /><br />", "<br /><br />", 0)
+        vCleanText = REPLACE(vCleanText, "<br /><br /><br /><br /><br />", "<br /><br />", 0)
         vCleanText = REPLACE(vCleanText, "<br /><br /><br /><br />", "<br /><br />", 0)
+        vCleanText = REPLACE(vCleanText, "<br /><br /><br />", "<br /><br />", 0)
         vCleanText = TRIM(vCleanText, 3)
     ENDIF
 
