@@ -190,11 +190,8 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             v_ward_rows = CONCAT(v_ward_rows,
                 "<tr>",
                 "<td><b>", rec_cohort->list[D.SEQ].room_bed, "</b></td>",
-                "<td><a class='patient-link' href='javascript:CCLLINK(^01_bk_pharmacist_mpage_tab:group1^, ^^MINE^,",
-                TRIM(CNVTSTRING(CNVTREAL($PRSNL_ID))), ",",
-                TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].person_id)), ",",
-                TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].encntr_id)), "^, 1)'>",
-                rec_cohort->list[D.SEQ].name, "</a></td>",
+                "<td><a class='patient-link' href='javascript:APPLINK(0,^Powerchart.exe^,^/PERSONID=", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].person_id)),
+                " /ENCNTRID=", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].encntr_id)), "^)'>", rec_cohort->list[D.SEQ].name, "</a></td>",
                 "<td><span class='badge-", rec_cohort->list[D.SEQ].color, "'>Score: ", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].score)), "</span></td>",
                 "<td>", rec_cohort->list[D.SEQ].summary, "</td>",
                 "</tr>"
@@ -236,9 +233,21 @@ ELSE
     WITH NOCOUNTER
 
     SELECT INTO "NL:"
+        ORG_SORT = EVALUATE(L.ORGANIZATION_ID,
+            40024.0, 1,
+            46024.0, 2,
+            46025.0, 3,
+            2170808.0, 4,
+            46026.0, 5,
+            2170807.0, 6,
+            174982.0, 7,
+            130982.0, 8,
+            128982.0, 9,
+            174986.0, 10,
+            174984.0, 11,
+            99)
     FROM CODE_VALUE CV,
-         LOCATION L,
-         ORGANIZATION O
+         LOCATION L
     PLAN CV WHERE CV.CODE_SET = 220
         AND CV.ACTIVE_IND = 1
         AND CV.CDF_MEANING = "NURSEUNIT"
@@ -254,9 +263,7 @@ ELSE
             381374.0, 1064591.0, 84984.0, 1064570.0, 234982.0, 
             84992.0, 2401035.0, 2401034.0, 1064573.0
         )
-    JOIN O WHERE O.ORGANIZATION_ID = L.ORGANIZATION_ID
-        AND O.ACTIVE_IND = 1
-    ORDER BY O.ORG_NAME, CV.DISPLAY
+    ORDER BY ORG_SORT, CV.DISPLAY
     DETAIL
         rec_data->list_cnt = rec_data->list_cnt + 1
         stat = ALTERLIST(rec_data->lists, rec_data->list_cnt)
@@ -275,22 +282,24 @@ ELSE
         ROW + 1 call print(^<title>Pharmacist Acuity Dashboard</title>^)
 
         ROW + 1 call print(^<script>^)
+        ; Declare XMLCclRequest at top level so async callback retains reference
+        ROW + 1 call print(^var xhr = new XMLCclRequest();^)
+        ROW + 1 call print(^xhr.onreadystatechange = function() {^)
+        ROW + 1 call print(^    if (xhr.readyState == 4) {^)
+        ROW + 1 call print(^        if (xhr.status == 200) {^)
+        ROW + 1 call print(^            document.getElementById('triageBody').innerHTML = xhr.responseText;^)
+        ROW + 1 call print(^        } else {^)
+        ROW + 1 call print(^            document.getElementById('triageBody').innerHTML = '<tr><td colspan="4" style="color:red;padding:20px;font-family:monospace;">DEBUG - Status: ' + xhr.status + '<br/>Response: ' + xhr.responseText + '</td></tr>';^)
+        ROW + 1 call print(^        }^)
+        ROW + 1 call print(^    }^)
+        ROW + 1 call print(^};^)
         ROW + 1 call print(^function loadPatients() {^)
         ROW + 1 call print(^    var wardCode = document.getElementById('listSelector').value;^)
         ROW + 1 call print(^    if (wardCode == "0") { alert("Please select a valid ward."); return; }^)
         ROW + 1 call print(^    document.getElementById('debugWardCode').innerHTML = wardCode;^)
         ROW + 1 call print(^    document.getElementById('triageBody').innerHTML = "<tr><td colspan='4' style='text-align:center; padding: 20px;'><i>Running clinical acuity rules. This may take a few moments...</i></td></tr>";^)
-        ROW + 1 call print(^    var xhr = new XMLCclRequest();^)
-        ROW + 1 call print(^    xhr.onreadystatechange = function() {^)
-        ROW + 1 call print(^        if (xhr.readyState == 4) {^)
-        ROW + 1 call print(^            if (xhr.status == 200) {^)
-        ROW + 1 call print(^                document.getElementById('triageBody').innerHTML = xhr.responseText;^)
-        ROW + 1 call print(^            } else {^)
-        ROW + 1 call print(^                document.getElementById('triageBody').innerHTML = '<tr><td colspan="4" style="color:red;padding:20px;font-family:monospace;">DEBUG - Status: ' + xhr.status + '<br/>Response: ' + xhr.responseText + '</td></tr>';^)
-        ROW + 1 call print(^            }^)
-        ROW + 1 call print(^        }^)
-        ROW + 1 call print(^    };^)
         ROW + 1 call print(^    xhr.open('GET', '01_meds_pharm_triage_dash:group1', true);^)
+        ; String params use ~tilde~ delimiters per CCL documentation
         ROW + 1 call print(^    xhr.send('"MINE", 0.0, ' + wardCode);^)
         ROW + 1 call print(^}^)
         ROW + 1 call print(^</script>^)
