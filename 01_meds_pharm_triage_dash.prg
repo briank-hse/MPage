@@ -16,7 +16,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     DECLARE pat_idx = i4 WITH noconstant(0)
     DECLARE idx = i4 WITH noconstant(0)
     DECLARE t_score = i4 WITH noconstant(0)
-    DECLARE t_triggers = vc WITH noconstant("")
+    DECLARE t_triggers = vc WITH noconstant(""), maxlen=500
     DECLARE num_pats = i4 WITH noconstant(0)
     DECLARE stat = i4 WITH noconstant(0)
 
@@ -52,6 +52,9 @@ IF (CNVTREAL($WARD_CD) > 0.0)
         AND E.ACTIVE_IND = 1
         AND E.ENCNTR_STATUS_CD = 854.00
     JOIN P WHERE P.PERSON_ID = E.PERSON_ID AND P.ACTIVE_IND = 1
+        AND CNVTUPPER(P.NAME_LAST_KEY) != "ZZZTEST"
+        AND CNVTUPPER(P.NAME_LAST_KEY) != "BABY"
+        AND CNVTUPPER(P.NAME_LAST_KEY) != "INFANT"
     ORDER BY E.LOC_ROOM_CD, E.LOC_BED_CD
     DETAIL
         rec_cohort->cnt = rec_cohort->cnt + 1
@@ -279,7 +282,7 @@ ELSE
         ROW + 1 call print(^  button { padding: 8px 15px; background: #28a745; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; margin-left: 10px; font-weight: bold; }^)
         ROW + 1 call print(^  button:hover { background: #218838; }^)
         ROW + 1 call print(^  .ward-tbl { width: 100%; margin-top: 20px; border-collapse: collapse; font-size: 14px; background: #fff; border: 1px solid #ddd; }^)
-        ROW + 1 call print(^  .ward-tbl th, .ward-tbl td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }^)
+        ROW + 1 call print(^  .ward-tbl th, .ward-tbl td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; }^)
         ROW + 1 call print(^  .ward-tbl th { background: #f0f4f8; font-weight: bold; color: #333; }^)
         ROW + 1 call print(^  .ward-tbl tr:hover { background: #f9f9f9; }^)
         ROW + 1 call print(^  .badge-Red { background: #dc3545; color: white; padding: 4px 10px; border-radius: 12px; font-weight:bold; font-size:12px; display:inline-block; min-width:60px; text-align:center; }^)
@@ -314,7 +317,7 @@ ELSE
         ENDIF
 
         ROW + 1 call print(^<table class='ward-tbl'>^)
-        ROW + 1 call print(^<thead><tr><th width='15%'>Bed / Room</th><th width='25%'>Patient Name</th><th width='15%'>Acuity Score</th><th width='45%'>Active Triggers</th></tr></thead>^)
+        ROW + 1 call print(^<thead><tr><th>Bed / Room</th><th>Patient Name</th><th>Acuity Score</th><th>Active Triggers</th></tr></thead>^)
         ROW + 1 call print(^<tbody id='triageBody'>^)
         ROW + 1 call print(^<tr><td colspan='4' style='text-align:center; padding: 20px; color:#666;'>Select a ward and click "Load Patients" to generate the triage list.</td></tr>^)
         ROW + 1 call print(^</tbody></table>^)
