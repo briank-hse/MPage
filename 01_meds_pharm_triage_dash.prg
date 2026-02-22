@@ -83,7 +83,10 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             2 flag_imews = i2
             2 flag_bsbg = i2
             2 flag_high_alert_iv = i2
+            2 flag_oxytocin_iv = i2
+            2 flag_delivered = i2
             2 det_high_alert_iv = vc
+            2 det_oxytocin = vc
             2 det_transfusion = vc
             2 det_ebl = vc
             2 det_preeclampsia = vc
@@ -248,11 +251,14 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                     rec_cohort->list[idx].poly_count = rec_cohort->list[idx].poly_count + 1
                 ENDIF
 
-                IF (FINDSTRING("MAGNESIUM", UNOM) > 0 OR FINDSTRING("OXYTOCIN", UNOM) > 0 OR FINDSTRING("INSULIN", UNOM) > 0 OR FINDSTRING("LABETALOL", UNOM) > 0 OR FINDSTRING("HYDRALAZINE", UNOM) > 0)
+                IF (FINDSTRING("MAGNESIUM", UNOM) > 0 OR FINDSTRING("INSULIN", UNOM) > 0 OR FINDSTRING("LABETALOL", UNOM) > 0 OR FINDSTRING("HYDRALAZINE", UNOM) > 0 OR FINDSTRING("VASOPRESSIN", UNOM) > 0 OR FINDSTRING("NORADRENALINE", UNOM) > 0)
                     IF (O.IV_IND = 1)
                         rec_cohort->list[idx].flag_high_alert_iv = 1
                         rec_cohort->list[idx].det_high_alert_iv = CONCAT(rec_cohort->list[idx].det_high_alert_iv, MNEM, "; ")
                     ENDIF
+                ELSEIF (FINDSTRING("OXYTOCIN", UNOM) > 0 AND O.IV_IND = 1)
+                    rec_cohort->list[idx].flag_oxytocin_iv = 1
+                    rec_cohort->list[idx].det_oxytocin = CONCAT(rec_cohort->list[idx].det_oxytocin, MNEM, "; ")
                 ENDIF
 
                 IF (FINDSTRING("TINZAPARIN", UNOM)>0 OR FINDSTRING("ENOXAPARIN", UNOM)>0 OR FINDSTRING("HEPARIN", UNOM)>0) 
@@ -280,7 +286,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             , TITLE = REPLACE(UAR_GET_CODE_DISPLAY(CE.EVENT_CD), "'", "&#39;", 0)
         FROM CLINICAL_EVENT CE
         PLAN CE WHERE EXPAND(pat_idx, 1, num_pats, CE.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
-            AND CE.EVENT_CD IN (15071366.00, 82546829.00, 15083551.00, 19995695.00, 15068265.00, 10933794.00)
+            AND CE.EVENT_CD IN (15071366.00, 82546829.00, 15083551.00, 19995695.00, 15068265.00, 10933794.00, 28082563.00, 15068250.00)
             AND CE.VALID_UNTIL_DT_TM > SYSDATE AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("7,D") AND CE.RESULT_STATUS_CD IN (25, 34, 35)
         DETAIL
             idx = LOCATEVAL(pat_idx, 1, num_pats, CE.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
@@ -297,6 +303,8 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                 ELSEIF (CE.EVENT_CD = 10933794.00 AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("24,H") AND CNVTREAL(CE.RESULT_VAL) > 11.1)
                     rec_cohort->list[idx].flag_bsbg = 1
                     rec_cohort->list[idx].det_bsbg = CONCAT("Value: ", VAL, " mmol/L")
+                ELSEIF (CE.EVENT_CD IN (28082563.00, 15068250.00))
+                    rec_cohort->list[idx].flag_delivered = 1
                 ENDIF
             ENDIF
         WITH NOCOUNTER
@@ -311,6 +319,14 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ENDIF
 
             IF (rec_cohort->list[pat_idx].flag_high_alert_iv = 1) SET t_score = t_score + 5 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='", rec_cohort->list[pat_idx].det_high_alert_iv, "'>High-Alert IV</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_oxytocin_iv = 1)
+                IF (rec_cohort->list[pat_idx].flag_delivered = 1)
+                    SET t_score = t_score + 5
+                    SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='", rec_cohort->list[pat_idx].det_oxytocin, " (Postpartum)'>Oxytocin (PPH)</span>")
+                ELSE
+                    SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_oxytocin, " (Antepartum)'>Oxytocin (Induction)</span>")
+                ENDIF
+            ENDIF
             IF (rec_cohort->list[pat_idx].flag_imews = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='I-MEWS ", rec_cohort->list[pat_idx].det_imews, "'>Physiological Instability (IMEWS)</span>") ENDIF
             IF (rec_cohort->list[pat_idx].flag_transfusion = 1 OR rec_cohort->list[pat_idx].flag_ebl = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_transfusion, rec_cohort->list[pat_idx].det_ebl, "'>Haemorrhage/Transfusion</span>") ENDIF
             IF (rec_cohort->list[pat_idx].flag_preeclampsia = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_preeclampsia, "'>Pre-Eclampsia</span>") ENDIF
@@ -365,7 +381,8 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<summary>View Scoring Reference Matrix</summary>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<table class='ref-table'>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<thead><tr><th width='60%'>Clinical Criteria</th><th width='20%'>Category</th><th width='20%'>Points</th></tr></thead><tbody>")
-    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Continuous IV infusion of high-alert medication (e.g., MgSO4, Oxytocin)</td><td>Medication</td><td>+5</td></tr>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Continuous IV infusion of high-alert medication (e.g., MgSO4)</td><td>Medication</td><td>+5</td></tr>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Postpartum Oxytocin Infusion (PPH Management)</td><td>Medication</td><td>+5</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Physiological Instability (IMEWS Score &ge; 2)</td><td>Physiology</td><td>+3</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Massive Haemorrhage / Blood Transfusion</td><td>Clinical Event</td><td>+3</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>High Risk Diagnosis (Pre-eclampsia, VTE, Epilepsy)</td><td>Problem/Diagnosis</td><td>+3</td></tr>")
