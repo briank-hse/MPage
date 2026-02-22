@@ -79,7 +79,8 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     )
 
     ; 1a. Execute Patient List Rules via API
-    DECLARE curr_list_id = f8 WITH noconstant(curr_ward_cd)
+    DECLARE curr_list_id = f8 WITH noconstant(0.0)
+    SET curr_list_id = curr_ward_cd
 
     SET 600144_request->patient_list_id = curr_list_id
     SET 600144_request->prsnl_id = CNVTREAL($PRSNL_ID)
@@ -110,7 +111,8 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     ENDIF
 
     ; 1b. Populate Cohort from API Results
-    DECLARE api_pats = i4 WITH noconstant(SIZE(600123_reply->patients, 5))
+    DECLARE api_pats = i4 WITH noconstant(0)
+    SET api_pats = SIZE(600123_reply->patients, 5)
     IF (api_pats > 0)
         ; Hard cap to prevent Oracle DUMMYT query timeouts
         IF (api_pats > 800) SET api_pats = 800 ENDIF
@@ -352,6 +354,8 @@ ELSE
         ROW + 1 call print(^        if (xhr.readyState == 4) {^)
         ROW + 1 call print(^            if (xhr.status == 200) {^)
         ROW + 1 call print(^                document.getElementById('triageBody').innerHTML = xhr.responseText;^)
+        ROW + 1 call print(^            } else if (xhr.status == 492) {^)
+        ROW + 1 call print(^                document.getElementById('triageBody').innerHTML = "<tr><td colspan='4' style='color:#721c24; background-color:#f8d7da; padding:20px; border:1px solid #f5c6cb;'><b>Fatal Server Error (492):</b> Cerner violently terminated the script. The selected patient list is too massive, causing a memory overflow or exceeding the web timeout limit before the script could finish evaluating it. Please try a smaller, more specific list.</td></tr>";^)
         ROW + 1 call print(^            } else {^)
         ROW + 1 call print(^                document.getElementById('triageBody').innerHTML = '<tr><td colspan="4" style="color:red;padding:20px;font-family:monospace;">DEBUG - Status: ' + xhr.status + '<br/>Response: ' + xhr.responseText + '</td></tr>';^)
         ROW + 1 call print(^            }^)
