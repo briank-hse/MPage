@@ -244,10 +244,20 @@ ELSE
     WITH NOCOUNTER
 
     SELECT INTO "NL:"
-    FROM CODE_VALUE CV
+    FROM CODE_VALUE CV,
+         LOCATION L
     PLAN CV WHERE CV.CODE_SET = 220
         AND CV.ACTIVE_IND = 1
         AND CV.CDF_MEANING = "NURSEUNIT"
+    JOIN L WHERE L.LOCATION_CD = CV.CODE_VALUE
+        AND L.ACTIVE_IND = 1
+        ; Exclude the specified virtual hospitals, extended care, and external facilities
+        AND L.ORGANIZATION_ID NOT IN (
+            84988.0, 108983.0, 1064544.0, 170983.0, 120984.0, 
+            84986.0, 120982.0, 381376.0, 381378.0, 381380.0, 
+            381374.0, 1064591.0, 84984.0, 1064570.0, 234982.0, 
+            84992.0, 2401035.0, 2401034.0, 1064573.0
+        )
     ORDER BY CV.DISPLAY
     DETAIL
         rec_data->list_cnt = rec_data->list_cnt + 1
