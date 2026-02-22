@@ -21,6 +21,8 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     DECLARE t_triggers = vc WITH noconstant(""), maxlen=500
     DECLARE num_pats = i4 WITH noconstant(0)
     DECLARE stat = i4 WITH noconstant(0)
+    DECLARE err_code = i4 WITH noconstant(0)
+    DECLARE err_msg = c132 WITH noconstant("")
 
     RECORD 600144_request (
         1 patient_list_id = f8
@@ -97,11 +99,24 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     SET 600123_request->rmv_pl_rows_flag = 0
 
     SET stat = tdbexecute(600005, 600024, 600123, "REC", 600123_request, "REC", 600123_reply)
+    ; Check if the Cerner API crashed due to list size/memory
+    SET err_code = ERROR(err_msg, 1)
+    IF (err_code != 0)
+        SELECT INTO $OUTDEV
+        FROM DUMMYT D
+        DETAIL call print(CONCAT("<tr><td colspan='4' style='color:red; padding:20px;'><b>API Execution Failed (List too large or invalid):</b> ", TRIM(err_msg), "</td></tr>"))
+        WITH NOCOUNTER
+        GO TO exit_script
+    ENDIF
 
     ; 1b. Populate Cohort from API Results
-    IF (SIZE(600123_reply->patients, 5) > 0)
+    DECLARE api_pats = i4 WITH noconstant(SIZE(600123_reply->patients, 5))
+    IF (api_pats > 0)
+        ; Hard cap to prevent Oracle DUMMYT query timeouts
+        IF (api_pats > 800) SET api_pats = 800 ENDIF
+
         SELECT INTO "NL:"
-        FROM (DUMMYT D WITH SEQ=SIZE(600123_reply->patients, 5)), ENCOUNTER E, PERSON P
+        FROM (DUMMYT D WITH SEQ = VALUE(api_pats)), ENCOUNTER E, PERSON P
         PLAN D
         JOIN E WHERE E.ENCNTR_ID = 600123_reply->patients[D.SEQ].encntr_id
             AND E.ACTIVE_IND = 1
@@ -402,5 +417,6 @@ ELSE
     WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING
 ENDIF
 
+#exit_script
 END
 GO
