@@ -20,7 +20,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     DECLARE pat_idx = i4 WITH noconstant(0)
     DECLARE idx = i4 WITH noconstant(0)
     DECLARE t_score = i4 WITH noconstant(0)
-    DECLARE t_triggers = vc WITH noconstant(""), maxlen=32000
+    DECLARE t_triggers = vc WITH noconstant(""), maxlen=32767
     DECLARE num_pats = i4 WITH noconstant(0)
     DECLARE stat = i4 WITH noconstant(0)
     DECLARE err_code = i4 WITH noconstant(0)
@@ -66,7 +66,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             2 room_bed = vc
             2 score = i4
             2 color = vc
-            2 summary = vc
+            2 summary = c32767
             2 poly_count = i4
             2 flag_ebl = i2
             2 flag_transfusion = i2
@@ -85,20 +85,20 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             2 flag_high_alert_iv = i2
             2 flag_oxytocin_iv = i2
             2 flag_delivered = i2
-            2 det_high_alert_iv = vc
-            2 det_oxytocin = vc
-            2 det_transfusion = vc
-            2 det_ebl = vc
-            2 det_preeclampsia = vc
-            2 det_dvt = vc
-            2 det_epilepsy = vc
-            2 det_insulin = vc
-            2 det_antiepileptic = vc
-            2 det_anticoag = vc
-            2 det_antihypertensive = vc
-            2 det_neuraxial = vc
-            2 det_imews = vc
-            2 det_bsbg = vc
+            2 det_high_alert_iv = c500
+            2 det_oxytocin = c500
+            2 det_transfusion = c500
+            2 det_ebl = c500
+            2 det_preeclampsia = c500
+            2 det_dvt = c500
+            2 det_epilepsy = c500
+            2 det_insulin = c500
+            2 det_antiepileptic = c500
+            2 det_anticoag = c500
+            2 det_antihypertensive = c500
+            2 det_neuraxial = c500
+            2 det_imews = c500
+            2 det_bsbg = c500
     )
 
     RECORD rec_ward_summary (
