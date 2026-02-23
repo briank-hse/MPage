@@ -251,14 +251,12 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                     rec_cohort->list[idx].poly_count = rec_cohort->list[idx].poly_count + 1
                 ENDIF
 
+                ; Check for High-Alert Continuous Infusions via native IV_IND flag (Oxytocin temporarily disabled)
                 IF (FINDSTRING("MAGNESIUM", UNOM) > 0 OR FINDSTRING("INSULIN", UNOM) > 0 OR FINDSTRING("LABETALOL", UNOM) > 0 OR FINDSTRING("HYDRALAZINE", UNOM) > 0 OR FINDSTRING("VASOPRESSIN", UNOM) > 0 OR FINDSTRING("NORADRENALINE", UNOM) > 0)
                     IF (O.IV_IND = 1)
                         rec_cohort->list[idx].flag_high_alert_iv = 1
                         rec_cohort->list[idx].det_high_alert_iv = CONCAT(rec_cohort->list[idx].det_high_alert_iv, MNEM, "; ")
                     ENDIF
-                ELSEIF (FINDSTRING("OXYTOCIN", UNOM) > 0 AND O.IV_IND = 1)
-                    rec_cohort->list[idx].flag_oxytocin_iv = 1
-                    rec_cohort->list[idx].det_oxytocin = CONCAT(rec_cohort->list[idx].det_oxytocin, MNEM, "; ")
                 ENDIF
 
                 IF (FINDSTRING("TINZAPARIN", UNOM)>0 OR FINDSTRING("ENOXAPARIN", UNOM)>0 OR FINDSTRING("HEPARIN", UNOM)>0) 
@@ -319,14 +317,6 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ENDIF
 
             IF (rec_cohort->list[pat_idx].flag_high_alert_iv = 1) SET t_score = t_score + 5 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='", rec_cohort->list[pat_idx].det_high_alert_iv, "'>High-Alert IV</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_oxytocin_iv = 1)
-                IF (rec_cohort->list[pat_idx].flag_delivered = 1)
-                    SET t_score = t_score + 5
-                    SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='", rec_cohort->list[pat_idx].det_oxytocin, " (Postpartum)'>Oxytocin (PPH)</span>")
-                ELSE
-                    SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_oxytocin, " (Antepartum)'>Oxytocin (Induction)</span>")
-                ENDIF
-            ENDIF
             IF (rec_cohort->list[pat_idx].flag_imews = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='I-MEWS ", rec_cohort->list[pat_idx].det_imews, "'>Physiological Instability (IMEWS)</span>") ENDIF
             IF (rec_cohort->list[pat_idx].flag_transfusion = 1 OR rec_cohort->list[pat_idx].flag_ebl = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_transfusion, rec_cohort->list[pat_idx].det_ebl, "'>Haemorrhage/Transfusion</span>") ENDIF
             IF (rec_cohort->list[pat_idx].flag_preeclampsia = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_preeclampsia, "'>Pre-Eclampsia</span>") ENDIF
