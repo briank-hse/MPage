@@ -460,6 +460,14 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                 "</tr>"
             )
         WITH NOCOUNTER
+
+        ; Append Grand Total Row
+        SET v_summary_rows = CONCAT(v_summary_rows,
+            "<tr style='background:#e8f4f8;'>",
+            "<td colspan='2' style='font-weight:bold; border-right:1px solid #e0e0e0; text-align:right;'>Grand Total Evaluated:</td>",
+            "<td colspan='2' style='font-weight:bold;'>", TRIM(CNVTSTRING(num_pats)), "</td>",
+            "</tr>"
+        )
     ENDIF
 
     ; 7b. Build HTML Rows (Ordered by Score Descending)
@@ -561,7 +569,9 @@ ELSE
         ROW + 1 call print(^            if (xhr.status == 200) {^)
         ROW + 1 call print(^                document.getElementById('triageBody').innerHTML = xhr.responseText;^)
         ROW + 1 call print(^            } else if (xhr.status == 492) {^)
-        ROW + 1 call print(^                document.getElementById('triageBody').innerHTML = "<tr><td colspan='4' style='color:#856404; background-color:#fff3cd; padding:20px; border:1px solid #ffeeba; text-align:center;'><b>List Too Large:</b> The selected patient list contains too many records to load efficiently. Please select a smaller, more specific list to view acuity scores.</td></tr>";^)
+        ROW + 1 call print(^                var respLen = xhr.responseText ? xhr.responseText.length : 0;^)
+        ROW + 1 call print(^                var respSnippet = xhr.responseText ? xhr.responseText.substring(Math.max(0, respLen - 1000)).replace(/</g, "&lt;") : "NULL";^)
+        ROW + 1 call print(^                document.getElementById('triageBody').innerHTML = "<tr><td colspan='4' style='color:#721c24; background-color:#f8d7da; padding:15px; font-family:monospace; font-size:11px;'><b>DEBUG (Status 492 - Output Aborted):</b><br/>The CCL script crashed or hit a WebSphere buffer limit.<br/><b>Bytes Received: </b>" + respLen + "<br/><b>Trailing 1000 Chars:</b><br/>" + respSnippet + "</td></tr>";^)
         ROW + 1 call print(^            } else {^)
         ROW + 1 call print(^                document.getElementById('triageBody').innerHTML = '<tr><td colspan="4" style="color:red;padding:20px;font-family:monospace;">DEBUG - Status: ' + xhr.status + '<br/>Response: ' + xhr.responseText + '</td></tr>';^)
         ROW + 1 call print(^            }^)
