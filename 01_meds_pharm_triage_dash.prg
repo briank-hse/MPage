@@ -149,8 +149,17 @@ IF (CNVTREAL($WARD_CD) > 0.0)
         ; Hard cap to prevent Oracle DUMMYT query timeouts
         IF (api_pats > 800) SET api_pats = 800 ENDIF
 
+        ; Pre-evaluate Code Set 34 (Medical Services) Exclusions
         DECLARE cv_neonatology = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Neonatology"))
         DECLARE cv_newborn = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Newborn"))
+        DECLARE cv_paed_rad = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Paediatric Radiology"))
+        DECLARE cv_paediatrics = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Paediatrics"))
+        DECLARE cv_clin_nutr = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Clinical Nutrition"))
+        DECLARE cv_physio = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Physiotherapy"))
+        DECLARE cv_psychiatry = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Psychiatry"))
+        DECLARE cv_radiology = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Radiology"))
+
+        ; Pre-evaluate Code Set 71 (Encounter Types) Exclusions
         DECLARE cv_en_ed_nb = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "ED-Newborn"))
         DECLARE cv_en_nb = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Newborn"))
         DECLARE cv_en_nb_ip_pri = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Newborn (IP-Private)"))
@@ -173,6 +182,12 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             AND E.ENCNTR_TYPE_CLASS_CD = 391.00   ; Must be an Inpatient
             AND E.MED_SERVICE_CD != cv_neonatology
             AND E.MED_SERVICE_CD != cv_newborn
+            AND E.MED_SERVICE_CD != cv_paed_rad
+            AND E.MED_SERVICE_CD != cv_paediatrics
+            AND E.MED_SERVICE_CD != cv_clin_nutr
+            AND E.MED_SERVICE_CD != cv_physio
+            AND E.MED_SERVICE_CD != cv_psychiatry
+            AND E.MED_SERVICE_CD != cv_radiology
             AND E.ENCNTR_TYPE_CD != cv_en_ed_nb
             AND E.ENCNTR_TYPE_CD != cv_en_nb
             AND E.ENCNTR_TYPE_CD != cv_en_nb_ip_pri
@@ -185,6 +200,8 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             AND E.ENCNTR_TYPE_CD != cv_en_wa_nb_pub
             AND E.ENCNTR_TYPE_CD != cv_en_wa_nb_semi
         JOIN P WHERE P.PERSON_ID = E.PERSON_ID AND P.ACTIVE_IND = 1
+            AND P.DECEASED_CD IN (0.0, 10862554.00)
+            AND P.BIRTH_DT_TM > CNVTDATETIME("01-JAN-1900")
             AND P.BIRTH_DT_TM < CNVTLOOKBEHIND("1,Y")
             AND CNVTUPPER(P.NAME_LAST_KEY) != "ZZZTEST*"
             AND CNVTUPPER(P.NAME_FIRST_KEY) != "*BOY"
