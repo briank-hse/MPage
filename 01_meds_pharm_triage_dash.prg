@@ -151,6 +151,17 @@ IF (CNVTREAL($WARD_CD) > 0.0)
 
         DECLARE cv_neonatology = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Neonatology"))
         DECLARE cv_newborn = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Newborn"))
+        DECLARE cv_en_ed_nb = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "ED-Newborn"))
+        DECLARE cv_en_nb = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Newborn"))
+        DECLARE cv_en_nb_ip_pri = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Newborn (IP-Private)"))
+        DECLARE cv_en_nb_ip_pub = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Newborn (IP-Public)"))
+        DECLARE cv_en_nb_ip_semi = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Newborn (IP-Semi Priv)"))
+        DECLARE cv_en_nb_op_pri = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Newborn (OP-Private)"))
+        DECLARE cv_en_nb_op_pub = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Newborn (OP-Public)"))
+        DECLARE cv_en_nb_op_semi = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Newborn (OP-Semi Priv)"))
+        DECLARE cv_en_wa_nb_pri = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Ward Attender (Newborn-Priv)"))
+        DECLARE cv_en_wa_nb_pub = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Ward Attender (Newborn-Pub)"))
+        DECLARE cv_en_wa_nb_semi = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Ward Attender (Newborn-Semi Priv)"))
 
         SELECT INTO "NL:"
         FROM (DUMMYT D WITH SEQ = VALUE(api_pats)), ENCOUNTER E, PERSON P
@@ -162,11 +173,23 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             AND E.ENCNTR_TYPE_CLASS_CD = 391.00   ; Must be an Inpatient
             AND E.MED_SERVICE_CD != cv_neonatology
             AND E.MED_SERVICE_CD != cv_newborn
+            AND E.ENCNTR_TYPE_CD != cv_en_ed_nb
+            AND E.ENCNTR_TYPE_CD != cv_en_nb
+            AND E.ENCNTR_TYPE_CD != cv_en_nb_ip_pri
+            AND E.ENCNTR_TYPE_CD != cv_en_nb_ip_pub
+            AND E.ENCNTR_TYPE_CD != cv_en_nb_ip_semi
+            AND E.ENCNTR_TYPE_CD != cv_en_nb_op_pri
+            AND E.ENCNTR_TYPE_CD != cv_en_nb_op_pub
+            AND E.ENCNTR_TYPE_CD != cv_en_nb_op_semi
+            AND E.ENCNTR_TYPE_CD != cv_en_wa_nb_pri
+            AND E.ENCNTR_TYPE_CD != cv_en_wa_nb_pub
+            AND E.ENCNTR_TYPE_CD != cv_en_wa_nb_semi
         JOIN P WHERE P.PERSON_ID = E.PERSON_ID AND P.ACTIVE_IND = 1
             AND P.BIRTH_DT_TM < CNVTLOOKBEHIND("1,Y")
-            AND CNVTUPPER(P.NAME_LAST_KEY) != "ZZZTEST"
-            AND CNVTUPPER(P.NAME_LAST_KEY) != "BABY"
-            AND CNVTUPPER(P.NAME_LAST_KEY) != "INFANT"
+            AND CNVTUPPER(P.NAME_LAST_KEY) != "ZZZTEST*"
+            AND CNVTUPPER(P.NAME_FIRST_KEY) != "*BOY"
+            AND CNVTUPPER(P.NAME_FIRST_KEY) != "*GIRL"
+            AND CNVTUPPER(P.NAME_FIRST_KEY) != "BABY*"
         ORDER BY E.LOC_ROOM_CD, E.LOC_BED_CD
         DETAIL
             rec_cohort->cnt = rec_cohort->cnt + 1
