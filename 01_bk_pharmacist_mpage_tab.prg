@@ -538,7 +538,7 @@ IF (rec_acuity->flag_high_alert_iv = 1)
     SET rec_acuity->score = rec_acuity->score + 5
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Continuous IV infusion of high-alert medication"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "High-Alert IV"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 5
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_high_alert_iv
 ENDIF
@@ -546,7 +546,7 @@ IF (rec_acuity->flag_imews = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Physiological Instability (IMEWS Score &ge;2)"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Physiological Instability (IMEWS)"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_imews
 ENDIF
@@ -554,7 +554,7 @@ IF (rec_acuity->flag_transfusion = 1 OR rec_acuity->flag_ebl = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Massive Haemorrhage (>1000ml EBL) or Transfusion"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Haemorrhage/Transfusion"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = CONCAT(rec_acuity->det_transfusion, rec_acuity->det_ebl)
 ENDIF
@@ -562,7 +562,7 @@ IF (rec_acuity->flag_preeclampsia = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Active Diagnosis/Problem: Pre-Eclampsia"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Pre-Eclampsia"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_preeclampsia
 ENDIF
@@ -570,7 +570,7 @@ IF (rec_acuity->flag_dvt = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Active Diagnosis/Problem: DVT or Pulmonary Embolism"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "VTE/DVT"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_dvt
 ENDIF
@@ -578,7 +578,7 @@ IF (rec_acuity->flag_epilepsy = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Active Diagnosis/Problem: Epilepsy/Seizure Disorder"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Epilepsy"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_epilepsy
 ENDIF
@@ -586,7 +586,7 @@ IF (rec_acuity->flag_insulin = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "High Alert Med: Insulin"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Insulin"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_insulin
 ENDIF
@@ -594,7 +594,7 @@ IF (rec_acuity->flag_antiepileptic = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "High Alert Med: Antiepileptic"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Antiepileptic"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_antiepileptic
 ENDIF
@@ -602,7 +602,7 @@ IF (rec_acuity->flag_poly_severe = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = CONCAT("Severe Polypharmacy (", TRIM(CNVTSTRING(rec_acuity->poly_count)), " active meds)")
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Severe Polypharmacy"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_poly
 ENDIF
@@ -610,7 +610,7 @@ IF (rec_acuity->flag_anticoag = 1)
     SET rec_acuity->score = rec_acuity->score + 2
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Targeted Med: Anticoagulant (LMWH/Heparin)"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Anticoagulant"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_anticoag
 ENDIF
@@ -618,7 +618,7 @@ IF (rec_acuity->flag_antihypertensive = 1)
     SET rec_acuity->score = rec_acuity->score + 2
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Targeted Med: Antihypertensive"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Antihypertensive"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_antihypertensive
 ENDIF
@@ -626,7 +626,7 @@ IF (rec_acuity->flag_bsbg = 1)
     SET rec_acuity->score = rec_acuity->score + 2
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Uncontrolled bedside blood glucose (> 11.1 mmol/L)"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Uncontrolled Blood Glucose"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_bsbg
 ENDIF
@@ -634,7 +634,7 @@ IF (rec_acuity->flag_neuraxial = 1)
     SET rec_acuity->score = rec_acuity->score + 1
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Medication: Neuraxial/Epidural Infusion"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Neuraxial Infusion"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 1
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_neuraxial
 ENDIF
@@ -642,7 +642,7 @@ IF (rec_acuity->flag_poly_mod = 1)
     SET rec_acuity->score = rec_acuity->score + 1
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
     SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
-    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = CONCAT("Moderate Polypharmacy (", TRIM(CNVTSTRING(rec_acuity->poly_count)), " active meds)")
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Mod Polypharmacy"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 1
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_poly
 ENDIF
@@ -919,16 +919,16 @@ HEAD REPORT
     ROW + 1 call print(^<table class='ref-table'>^)
     ROW + 1 call print(^<thead><tr><th width='60%'>Clinical Criteria</th><th width='20%'>Category</th><th width='20%'>Points</th></tr></thead><tbody>^)
     
-    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_high_alert_iv = 1) "tr-active red-tier" ELSE "" ENDIF, ^' title='Continuous IV infusion of high-alert medication (e.g., MgSO4)'><td>Continuous IV infusion of high-alert medication (e.g., MgSO4)</td><td>Medication</td><td>+5</td></tr>^))
-    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_imews = 1) "tr-active red-tier" ELSE "" ENDIF, ^' title='Physiological Instability (IMEWS Score &ge;2)'><td>Physiological Instability (IMEWS Score &ge;2)</td><td>Physiology</td><td>+3</td></tr>^))
-    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_ebl = 1 OR rec_acuity->flag_transfusion = 1) "tr-active red-tier" ELSE "" ENDIF, ^' title='Checks CLINICAL_EVENT for last 7 days. Looks for Blood Volume Infused (15071366) OR Delivery/Intraop/Total EBL > 1000ml.'><td>Massive Haemorrhage / Blood Transfusion</td><td>Clinical Event</td><td>+3</td></tr>^))
-    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_preeclampsia = 1 OR rec_acuity->flag_dvt = 1 OR rec_acuity->flag_epilepsy = 1) "tr-active red-tier" ELSE "" ENDIF, ^' title='Checks both ACTIVE PROBLEM and ACTIVE DIAGNOSIS lists for nomenclature strings containing: PRE-ECLAMPSIA, DVT, PULMONARY EMBOLISM, or EPILEPSY/SEIZURE.'><td>High Risk Diagnosis (Pre-eclampsia, VTE, Epilepsy)</td><td>Problem/Diagnosis</td><td>+3</td></tr>^))
-    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_insulin = 1 OR rec_acuity->flag_antiepileptic = 1) "tr-active red-tier" ELSE "" ENDIF, ^' title='Checks active inpatient pharmacy orders for mnemonics containing: INSULIN, LEVETIRACETAM, LAMOTRIGINE, VALPROATE, or CARBAMAZEPINE.'><td>High Alert Med (Insulin, Antiepileptics)</td><td>Medication</td><td>+3</td></tr>^))
-    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_poly_severe = 1) "tr-active red-tier" ELSE "" ENDIF, ^' title='Checks if patient has greater than or equal to 10 active inpatient pharmacy orders. (Excludes standard IV fluids and Care Plan PRNs)'><td>Severe Polypharmacy (&ge;10 active meds)</td><td>Medication</td><td>+3</td></tr>^))
-    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_anticoag = 1 OR rec_acuity->flag_antihypertensive = 1) "tr-active amber-tier" ELSE "" ENDIF, ^' title='Checks active inpatient pharmacy orders for mnemonics containing: TINZAPARIN, HEPARIN, ENOXAPARIN, LABETALOL, NIFEDIPINE, or METHYLDOPA.'><td>Targeted Med (Anticoagulant, Antihypertensive)</td><td>Medication</td><td>+2</td></tr>^))
-    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_bsbg = 1) "tr-active amber-tier" ELSE "" ENDIF, ^' title='Uncontrolled bedside blood glucose (> 11.1 mmol/L)'><td>Uncontrolled bedside blood glucose (> 11.1 mmol/L)</td><td>Laboratory</td><td>+2</td></tr>^))
-    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_poly_mod = 1) "tr-active amber-tier" ELSE "" ENDIF, ^' title='Checks if patient has between 5 and 9 active inpatient pharmacy orders. (Excludes standard IV fluids and Care Plan PRNs)'><td>Moderate Polypharmacy (5-9 active meds)</td><td>Medication</td><td>+1</td></tr>^))
-    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_neuraxial = 1) "tr-active amber-tier" ELSE "" ENDIF, ^' title='Checks active inpatient pharmacy orders for mnemonics containing: BUPIVACAINE or LEVOBUPIVACAINE.'><td>Neuraxial / Epidural Infusion Active</td><td>Medication</td><td>+1</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_high_alert_iv = 1) "tr-active red-tier" ELSE "" ENDIF, ^'><td>Continuous IV infusion of high-alert medication (e.g., MgSO4)</td><td>Medication</td><td>+5</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_imews = 1) "tr-active red-tier" ELSE "" ENDIF, ^'><td>Physiological Instability (IMEWS Score &ge;2)</td><td>Physiology</td><td>+3</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_ebl = 1 OR rec_acuity->flag_transfusion = 1) "tr-active red-tier" ELSE "" ENDIF, ^'><td>Massive Haemorrhage / Blood Transfusion</td><td>Clinical Event</td><td>+3</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_preeclampsia = 1 OR rec_acuity->flag_dvt = 1 OR rec_acuity->flag_epilepsy = 1) "tr-active red-tier" ELSE "" ENDIF, ^'><td>High Risk Diagnosis (Pre-eclampsia, VTE, Epilepsy)</td><td>Problem/Diagnosis</td><td>+3</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_insulin = 1 OR rec_acuity->flag_antiepileptic = 1) "tr-active red-tier" ELSE "" ENDIF, ^'><td>High Alert Med (Insulin, Antiepileptics)</td><td>Medication</td><td>+3</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_poly_severe = 1) "tr-active red-tier" ELSE "" ENDIF, ^'><td>Severe Polypharmacy (&ge;10 active meds)</td><td>Medication</td><td>+3</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_anticoag = 1 OR rec_acuity->flag_antihypertensive = 1) "tr-active amber-tier" ELSE "" ENDIF, ^'><td>Targeted Med (Anticoagulant, Antihypertensive)</td><td>Medication</td><td>+2</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_bsbg = 1) "tr-active amber-tier" ELSE "" ENDIF, ^'><td>Uncontrolled bedside blood glucose (> 11.1 mmol/L)</td><td>Laboratory</td><td>+2</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_poly_mod = 1) "tr-active amber-tier" ELSE "" ENDIF, ^'><td>Moderate Polypharmacy (5-9 active meds)</td><td>Medication</td><td>+1</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_neuraxial = 1) "tr-active amber-tier" ELSE "" ENDIF, ^'><td>Neuraxial / Epidural Infusion Active</td><td>Medication</td><td>+1</td></tr>^))
     ROW + 1 call print(^<tr style='background:#f9f9f9; color:#999;'><td>Postpartum Oxytocin Infusion (PPH Management) - Temporarily Disabled</td><td>Medication</td><td>+0</td></tr>^)
     
     ROW + 1 call print(^</tbody></table>^)
