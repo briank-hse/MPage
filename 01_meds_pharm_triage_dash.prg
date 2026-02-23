@@ -20,7 +20,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     DECLARE pat_idx = i4 WITH noconstant(0)
     DECLARE idx = i4 WITH noconstant(0)
     DECLARE t_score = i4 WITH noconstant(0)
-    DECLARE t_triggers = vc WITH noconstant(""), maxlen=2000
+    DECLARE t_triggers = vc WITH noconstant(""), maxlen=32000
     DECLARE num_pats = i4 WITH noconstant(0)
     DECLARE stat = i4 WITH noconstant(0)
     DECLARE err_code = i4 WITH noconstant(0)
@@ -496,7 +496,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
         IF (TEXTLEN(v_summary_rows) > 0)
             call print(v_summary_rows)
         ENDIF
-    WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING
+    WITH NOCOUNTER, MAXCOL=65534, FORMAT=VARIABLE, NOHEADING
 
 ELSE
     ; =========================================================================
@@ -633,7 +633,7 @@ ELSE
 
         ROW + 1 call print(^</div>^)
         ROW + 1 call print(^</body></html>^)
-    WITH NOCOUNTER, MAXCOL=32000, FORMAT=VARIABLE, NOHEADING
+    WITH NOCOUNTER, MAXCOL=65534, FORMAT=VARIABLE, NOHEADING
 ENDIF
 
 #exit_script
