@@ -197,13 +197,25 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             IF (idx > 0)
                 IF (FINDSTRING("PRE-ECLAMPSIA", UNOM) > 0 OR FINDSTRING("PREECLAMPSIA", UNOM) > 0) 
                     rec_cohort->list[idx].flag_preeclampsia = 1 
-                    rec_cohort->list[idx].det_preeclampsia = CONCAT(rec_cohort->list[idx].det_preeclampsia, NOM, "; ")
+                    IF (rec_cohort->list[idx].det_preeclampsia > "")
+                        rec_cohort->list[idx].det_preeclampsia = CONCAT(rec_cohort->list[idx].det_preeclampsia, ", ", NOM)
+                    ELSE
+                        rec_cohort->list[idx].det_preeclampsia = NOM
+                    ENDIF
                 ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", UNOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", UNOM) > 0 OR FINDSTRING("DVT", UNOM) > 0) 
                     rec_cohort->list[idx].flag_dvt = 1 
-                    rec_cohort->list[idx].det_dvt = CONCAT(rec_cohort->list[idx].det_dvt, NOM, "; ")
+                    IF (rec_cohort->list[idx].det_dvt > "")
+                        rec_cohort->list[idx].det_dvt = CONCAT(rec_cohort->list[idx].det_dvt, ", ", NOM)
+                    ELSE
+                        rec_cohort->list[idx].det_dvt = NOM
+                    ENDIF
                 ELSEIF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0) 
                     rec_cohort->list[idx].flag_epilepsy = 1 
-                    rec_cohort->list[idx].det_epilepsy = CONCAT(rec_cohort->list[idx].det_epilepsy, NOM, "; ")
+                    IF (rec_cohort->list[idx].det_epilepsy > "")
+                        rec_cohort->list[idx].det_epilepsy = CONCAT(rec_cohort->list[idx].det_epilepsy, ", ", NOM)
+                    ELSE
+                        rec_cohort->list[idx].det_epilepsy = NOM
+                    ENDIF
                 ENDIF
             ENDIF
         WITH NOCOUNTER
@@ -221,13 +233,25 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             IF (idx > 0)
                 IF (FINDSTRING("PRE-ECLAMPSIA", UNOM) > 0 OR FINDSTRING("PREECLAMPSIA", UNOM) > 0) 
                     rec_cohort->list[idx].flag_preeclampsia = 1 
-                    rec_cohort->list[idx].det_preeclampsia = CONCAT(rec_cohort->list[idx].det_preeclampsia, NOM, "; ")
+                    IF (rec_cohort->list[idx].det_preeclampsia > "")
+                        rec_cohort->list[idx].det_preeclampsia = CONCAT(rec_cohort->list[idx].det_preeclampsia, ", ", NOM)
+                    ELSE
+                        rec_cohort->list[idx].det_preeclampsia = NOM
+                    ENDIF
                 ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", UNOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", UNOM) > 0 OR FINDSTRING("DVT", UNOM) > 0) 
                     rec_cohort->list[idx].flag_dvt = 1 
-                    rec_cohort->list[idx].det_dvt = CONCAT(rec_cohort->list[idx].det_dvt, NOM, "; ")
+                    IF (rec_cohort->list[idx].det_dvt > "")
+                        rec_cohort->list[idx].det_dvt = CONCAT(rec_cohort->list[idx].det_dvt, ", ", NOM)
+                    ELSE
+                        rec_cohort->list[idx].det_dvt = NOM
+                    ENDIF
                 ELSEIF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0) 
                     rec_cohort->list[idx].flag_epilepsy = 1 
-                    rec_cohort->list[idx].det_epilepsy = CONCAT(rec_cohort->list[idx].det_epilepsy, NOM, "; ")
+                    IF (rec_cohort->list[idx].det_epilepsy > "")
+                        rec_cohort->list[idx].det_epilepsy = CONCAT(rec_cohort->list[idx].det_epilepsy, ", ", NOM)
+                    ELSE
+                        rec_cohort->list[idx].det_epilepsy = NOM
+                    ENDIF
                 ENDIF
             ENDIF
         WITH NOCOUNTER
@@ -255,25 +279,49 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                 IF (FINDSTRING("MAGNESIUM", UNOM) > 0 OR FINDSTRING("INSULIN", UNOM) > 0 OR FINDSTRING("LABETALOL", UNOM) > 0 OR FINDSTRING("HYDRALAZINE", UNOM) > 0 OR FINDSTRING("VASOPRESSIN", UNOM) > 0 OR FINDSTRING("NORADRENALINE", UNOM) > 0)
                     IF (O.IV_IND = 1)
                         rec_cohort->list[idx].flag_high_alert_iv = 1
-                        rec_cohort->list[idx].det_high_alert_iv = CONCAT(rec_cohort->list[idx].det_high_alert_iv, MNEM, "; ")
+                        IF (rec_cohort->list[idx].det_high_alert_iv > "")
+                            rec_cohort->list[idx].det_high_alert_iv = CONCAT(rec_cohort->list[idx].det_high_alert_iv, ", ", MNEM)
+                        ELSE
+                            rec_cohort->list[idx].det_high_alert_iv = MNEM
+                        ENDIF
                     ENDIF
                 ENDIF
 
                 IF (FINDSTRING("TINZAPARIN", UNOM)>0 OR FINDSTRING("ENOXAPARIN", UNOM)>0 OR FINDSTRING("HEPARIN", UNOM)>0) 
                     rec_cohort->list[idx].flag_anticoag = 1
-                    rec_cohort->list[idx].det_anticoag = CONCAT(rec_cohort->list[idx].det_anticoag, MNEM, "; ")
+                    IF (rec_cohort->list[idx].det_anticoag > "")
+                        rec_cohort->list[idx].det_anticoag = CONCAT(rec_cohort->list[idx].det_anticoag, ", ", MNEM)
+                    ELSE
+                        rec_cohort->list[idx].det_anticoag = MNEM
+                    ENDIF
                 ELSEIF (FINDSTRING("INSULIN", UNOM)>0) 
                     rec_cohort->list[idx].flag_insulin = 1
-                    rec_cohort->list[idx].det_insulin = CONCAT(rec_cohort->list[idx].det_insulin, MNEM, "; ")
+                    IF (rec_cohort->list[idx].det_insulin > "")
+                        rec_cohort->list[idx].det_insulin = CONCAT(rec_cohort->list[idx].det_insulin, ", ", MNEM)
+                    ELSE
+                        rec_cohort->list[idx].det_insulin = MNEM
+                    ENDIF
                 ELSEIF (FINDSTRING("LEVETIRACETAM", UNOM)>0 OR FINDSTRING("LAMOTRIGINE", UNOM)>0 OR FINDSTRING("VALPROATE", UNOM)>0 OR FINDSTRING("CARBAMAZEPINE", UNOM)>0) 
                     rec_cohort->list[idx].flag_antiepileptic = 1
-                    rec_cohort->list[idx].det_antiepileptic = CONCAT(rec_cohort->list[idx].det_antiepileptic, MNEM, "; ")
+                    IF (rec_cohort->list[idx].det_antiepileptic > "")
+                        rec_cohort->list[idx].det_antiepileptic = CONCAT(rec_cohort->list[idx].det_antiepileptic, ", ", MNEM)
+                    ELSE
+                        rec_cohort->list[idx].det_antiepileptic = MNEM
+                    ENDIF
                 ELSEIF (FINDSTRING("LABETALOL", UNOM)>0 OR FINDSTRING("NIFEDIPINE", UNOM)>0 OR FINDSTRING("METHYLDOPA", UNOM)>0) 
                     rec_cohort->list[idx].flag_antihypertensive = 1
-                    rec_cohort->list[idx].det_antihypertensive = CONCAT(rec_cohort->list[idx].det_antihypertensive, MNEM, "; ")
+                    IF (rec_cohort->list[idx].det_antihypertensive > "")
+                        rec_cohort->list[idx].det_antihypertensive = CONCAT(rec_cohort->list[idx].det_antihypertensive, ", ", MNEM)
+                    ELSE
+                        rec_cohort->list[idx].det_antihypertensive = MNEM
+                    ENDIF
                 ELSEIF (FINDSTRING("BUPIVACAINE", UNOM)>0 OR FINDSTRING("LEVOBUPIVACAINE", UNOM)>0) 
                     rec_cohort->list[idx].flag_neuraxial = 1
-                    rec_cohort->list[idx].det_neuraxial = CONCAT(rec_cohort->list[idx].det_neuraxial, MNEM, "; ")
+                    IF (rec_cohort->list[idx].det_neuraxial > "")
+                        rec_cohort->list[idx].det_neuraxial = CONCAT(rec_cohort->list[idx].det_neuraxial, ", ", MNEM)
+                    ELSE
+                        rec_cohort->list[idx].det_neuraxial = MNEM
+                    ENDIF
                 ENDIF
             ENDIF
         WITH NOCOUNTER
@@ -291,10 +339,18 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             IF (idx > 0)
                 IF (CE.EVENT_CD = 15071366.00) 
                     rec_cohort->list[idx].flag_transfusion = 1
-                    rec_cohort->list[idx].det_transfusion = CONCAT(rec_cohort->list[idx].det_transfusion, TITLE, ": ", VAL, "; ")
+                    IF (rec_cohort->list[idx].det_transfusion > "")
+                        rec_cohort->list[idx].det_transfusion = CONCAT(rec_cohort->list[idx].det_transfusion, ", ", TITLE, ": ", VAL)
+                    ELSE
+                        rec_cohort->list[idx].det_transfusion = CONCAT(TITLE, ": ", VAL)
+                    ENDIF
                 ELSEIF (CE.EVENT_CD IN (82546829.00, 15083551.00, 19995695.00) AND CNVTREAL(CE.RESULT_VAL) > 1000.0) 
                     rec_cohort->list[idx].flag_ebl = 1
-                    rec_cohort->list[idx].det_ebl = CONCAT(rec_cohort->list[idx].det_ebl, TITLE, ": ", VAL, "mL; ")
+                    IF (rec_cohort->list[idx].det_ebl > "")
+                        rec_cohort->list[idx].det_ebl = CONCAT(rec_cohort->list[idx].det_ebl, ", ", TITLE, ": ", VAL, "mL")
+                    ELSE
+                        rec_cohort->list[idx].det_ebl = CONCAT(TITLE, ": ", VAL, "mL")
+                    ENDIF
                 ELSEIF (CE.EVENT_CD = 15068265.00 AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("24,H") AND CNVTINT(CE.RESULT_VAL) >= 2) 
                     rec_cohort->list[idx].flag_imews = 1
                     rec_cohort->list[idx].det_imews = CONCAT("Score: ", VAL)
@@ -316,19 +372,19 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ELSEIF (rec_cohort->list[pat_idx].poly_count >= 5) SET rec_cohort->list[pat_idx].flag_poly_mod = 1
             ENDIF
 
-            IF (rec_cohort->list[pat_idx].flag_high_alert_iv = 1) SET t_score = t_score + 5 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='", rec_cohort->list[pat_idx].det_high_alert_iv, "'>High-Alert IV</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_imews = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='I-MEWS ", rec_cohort->list[pat_idx].det_imews, "'>Physiological Instability (IMEWS)</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_transfusion = 1 OR rec_cohort->list[pat_idx].flag_ebl = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_transfusion, rec_cohort->list[pat_idx].det_ebl, "'>Haemorrhage/Transfusion</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_preeclampsia = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_preeclampsia, "'>Pre-Eclampsia</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_dvt = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_dvt, "'>VTE/DVT</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_epilepsy = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_epilepsy, "'>Epilepsy</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_insulin = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_insulin, "'>Insulin</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_antiepileptic = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_antiepileptic, "'>Antiepileptic</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_high_alert_iv = 1) SET t_score = t_score + 5 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='", TRIM(rec_cohort->list[pat_idx].det_high_alert_iv, 3), "'>High-Alert IV</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_imews = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='I-MEWS ", TRIM(rec_cohort->list[pat_idx].det_imews, 3), "'>Physiological Instability (IMEWS)</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_transfusion = 1 OR rec_cohort->list[pat_idx].flag_ebl = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(CONCAT(rec_cohort->list[pat_idx].det_transfusion, " ", rec_cohort->list[pat_idx].det_ebl), 3), "'>Haemorrhage/Transfusion</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_preeclampsia = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[pat_idx].det_preeclampsia, 3), "'>Pre-Eclampsia</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_dvt = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[pat_idx].det_dvt, 3), "'>VTE/DVT</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_epilepsy = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[pat_idx].det_epilepsy, 3), "'>Epilepsy</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_insulin = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[pat_idx].det_insulin, 3), "'>Insulin</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_antiepileptic = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[pat_idx].det_antiepileptic, 3), "'>Antiepileptic</span>") ENDIF
             IF (rec_cohort->list[pat_idx].flag_poly_severe = 1) SET t_score = t_score + 3 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(CNVTSTRING(rec_cohort->list[pat_idx].poly_count)), " active scheduled meds'>Severe Polypharmacy</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_anticoag = 1) SET t_score = t_score + 2 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_anticoag, "'>Anticoagulant</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_antihypertensive = 1) SET t_score = t_score + 2 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_antihypertensive, "'>Antihypertensive</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_bsbg = 1) SET t_score = t_score + 2 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_bsbg, "'>Uncontrolled Blood Glucose</span>") ENDIF
-            IF (rec_cohort->list[pat_idx].flag_neuraxial = 1) SET t_score = t_score + 1 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", rec_cohort->list[pat_idx].det_neuraxial, "'>Neuraxial Infusion</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_anticoag = 1) SET t_score = t_score + 2 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[pat_idx].det_anticoag, 3), "'>Anticoagulant</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_antihypertensive = 1) SET t_score = t_score + 2 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[pat_idx].det_antihypertensive, 3), "'>Antihypertensive</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_bsbg = 1) SET t_score = t_score + 2 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[pat_idx].det_bsbg, 3), "'>Uncontrolled Blood Glucose</span>") ENDIF
+            IF (rec_cohort->list[pat_idx].flag_neuraxial = 1) SET t_score = t_score + 1 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[pat_idx].det_neuraxial, 3), "'>Neuraxial Infusion</span>") ENDIF
             IF (rec_cohort->list[pat_idx].flag_poly_mod = 1) SET t_score = t_score + 1 SET t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(CNVTSTRING(rec_cohort->list[pat_idx].poly_count)), " active scheduled meds'>Mod Polypharmacy</span>") ENDIF
 
             SET rec_cohort->list[pat_idx].score = t_score
