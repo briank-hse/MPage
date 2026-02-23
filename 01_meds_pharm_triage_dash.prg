@@ -14,9 +14,9 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     DECLARE curr_ward_cd = f8 WITH noconstant(0.0)
     SET curr_ward_cd = CNVTREAL($WARD_CD)
     
-    DECLARE v_ward_rows = vc WITH noconstant(""), maxlen=65534
-    DECLARE v_summary_rows = vc WITH noconstant(""), maxlen=65534
-    DECLARE v_matrix_rows = vc WITH noconstant(""), maxlen=65534
+    DECLARE v_ward_rows = vc WITH noconstant(""), maxlen=32767
+    DECLARE v_summary_rows = vc WITH noconstant(""), maxlen=32767
+    DECLARE v_matrix_rows = vc WITH noconstant(""), maxlen=32767
     DECLARE pat_idx = i4 WITH noconstant(0)
     DECLARE idx = i4 WITH noconstant(0)
     DECLARE t_score = i4 WITH noconstant(0)
