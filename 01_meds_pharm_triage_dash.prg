@@ -68,7 +68,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             2 room_bed = vc
             2 score = i4
             2 color = vc
-            2 summary = c32767
+            2 summary = vc
             2 poly_count = i4
             2 flag_ebl = i2
             2 flag_transfusion = i2
@@ -87,20 +87,20 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             2 flag_high_alert_iv = i2
             2 flag_oxytocin_iv = i2
             2 flag_delivered = i2
-            2 det_high_alert_iv = c500
-            2 det_oxytocin = c500
-            2 det_transfusion = c500
-            2 det_ebl = c500
-            2 det_preeclampsia = c500
-            2 det_dvt = c500
-            2 det_epilepsy = c500
-            2 det_insulin = c500
-            2 det_antiepileptic = c500
-            2 det_anticoag = c500
-            2 det_antihypertensive = c500
-            2 det_neuraxial = c500
-            2 det_imews = c500
-            2 det_bsbg = c500
+            2 det_high_alert_iv = vc
+            2 det_oxytocin = vc
+            2 det_transfusion = vc
+            2 det_ebl = vc
+            2 det_preeclampsia = vc
+            2 det_dvt = vc
+            2 det_epilepsy = vc
+            2 det_insulin = vc
+            2 det_antiepileptic = vc
+            2 det_anticoag = vc
+            2 det_antihypertensive = vc
+            2 det_neuraxial = vc
+            2 det_imews = vc
+            2 det_bsbg = vc
     )
 
     RECORD rec_ward_summary (
@@ -135,92 +135,93 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     ; Check if the Cerner API crashed due to list size/memory
     SET err_code = ERROR(err_msg, 1)
     IF (err_code != 0)
-        SELECT INTO $OUTDEV
-        FROM DUMMYT D
-        DETAIL call print(CONCAT("<tr><td colspan='4' style='color:red; padding:20px;'><b>API Execution Failed (List too large or invalid):</b> ", TRIM(err_msg), "</td></tr>"))
-        WITH NOCOUNTER
-        GO TO exit_script
-    ENDIF
+        SET _memory_reply_string = CONCAT("<tr><td colspan='4' style='color:red; padding:20px;'><b>API Execution Failed:</b> ", TRIM(err_msg), "</td></tr>")
+    ELSE
+        ; 1b. Populate Cohort from API Results
+        DECLARE api_pats = i4 WITH noconstant(0)
+        SET api_pats = SIZE(600123_reply->patients, 5)
 
-    ; 1b. Populate Cohort from API Results
-    DECLARE api_pats = i4 WITH noconstant(0)
-    SET api_pats = SIZE(600123_reply->patients, 5)
-    IF (api_pats > 0)
-        ; Hard cap to prevent Oracle DUMMYT query timeouts
-        IF (api_pats > 800) SET api_pats = 800 ENDIF
+        ; Dynamic Exclusion Records
+        RECORD rec_excl_svc (
+            1 cnt = i4
+            1 cd[*] = f8
+        )
+        RECORD rec_excl_encntr (
+            1 cnt = i4
+            1 cd[*] = f8
+        )
 
-        ; Pre-evaluate Code Set 34 (Medical Services) Exclusions
-        DECLARE cv_neonatology = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Neonatology"))
-        DECLARE cv_newborn = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Newborn"))
-        DECLARE cv_paed_rad = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Paediatric Radiology"))
-        DECLARE cv_paediatrics = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Paediatrics"))
-        DECLARE cv_clin_nutr = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Clinical Nutrition"))
-        DECLARE cv_physio = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Physiotherapy"))
-        DECLARE cv_psychiatry = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Psychiatry"))
-        DECLARE cv_radiology = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Radiology"))
-
-        ; Pre-evaluate Code Set 71 (Encounter Types) Exclusions
-        DECLARE cv_en_ed_nb = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "ED-Newborn"))
-        DECLARE cv_en_nb = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Newborn"))
-        DECLARE cv_en_nb_ip_pri = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Newborn (IP-Private)"))
-        DECLARE cv_en_nb_ip_pub = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Newborn (IP-Public)"))
-        DECLARE cv_en_nb_ip_semi = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Newborn (IP-Semi Priv)"))
-        DECLARE cv_en_nb_op_pri = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Newborn (OP-Private)"))
-        DECLARE cv_en_nb_op_pub = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Newborn (OP-Public)"))
-        DECLARE cv_en_nb_op_semi = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Newborn (OP-Semi Priv)"))
-        DECLARE cv_en_wa_nb_pri = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Ward Attender (Newborn-Priv)"))
-        DECLARE cv_en_wa_nb_pub = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Ward Attender (Newborn-Pub)"))
-        DECLARE cv_en_wa_nb_semi = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 71, "Ward Attender (Newborn-Semi Priv)"))
-
+        ; Populate medical service exclusions directly
         SELECT INTO "NL:"
-        FROM (DUMMYT D WITH SEQ = VALUE(api_pats)), ENCOUNTER E, PERSON P
-        PLAN D
-        JOIN E WHERE E.ENCNTR_ID = 600123_reply->patients[D.SEQ].encntr_id
-            AND E.ACTIVE_IND = 1
-            AND E.ENCNTR_STATUS_CD = 854.00       ; Must be an Active encounter
-            AND E.LOC_NURSE_UNIT_CD > 0.0         ; Must be assigned to a valid nurse unit
-            AND E.ENCNTR_TYPE_CLASS_CD = 391.00   ; Must be an Inpatient
-            AND E.MED_SERVICE_CD != cv_neonatology
-            AND E.MED_SERVICE_CD != cv_newborn
-            AND E.MED_SERVICE_CD != cv_paed_rad
-            AND E.MED_SERVICE_CD != cv_paediatrics
-            AND E.MED_SERVICE_CD != cv_clin_nutr
-            AND E.MED_SERVICE_CD != cv_physio
-            AND E.MED_SERVICE_CD != cv_psychiatry
-            AND E.MED_SERVICE_CD != cv_radiology
-            AND E.ENCNTR_TYPE_CD != cv_en_ed_nb
-            AND E.ENCNTR_TYPE_CD != cv_en_nb
-            AND E.ENCNTR_TYPE_CD != cv_en_nb_ip_pri
-            AND E.ENCNTR_TYPE_CD != cv_en_nb_ip_pub
-            AND E.ENCNTR_TYPE_CD != cv_en_nb_ip_semi
-            AND E.ENCNTR_TYPE_CD != cv_en_nb_op_pri
-            AND E.ENCNTR_TYPE_CD != cv_en_nb_op_pub
-            AND E.ENCNTR_TYPE_CD != cv_en_nb_op_semi
-            AND E.ENCNTR_TYPE_CD != cv_en_wa_nb_pri
-            AND E.ENCNTR_TYPE_CD != cv_en_wa_nb_pub
-            AND E.ENCNTR_TYPE_CD != cv_en_wa_nb_semi
-        JOIN P WHERE P.PERSON_ID = E.PERSON_ID AND P.ACTIVE_IND = 1
-            AND P.DECEASED_CD IN (0.0, 10862554.00)
-            AND P.BIRTH_DT_TM > CNVTDATETIME("01-JAN-1900")
-            AND P.BIRTH_DT_TM < CNVTLOOKBEHIND("1,Y")
-            AND CNVTUPPER(P.NAME_LAST_KEY) != "ZZZTEST*"
-            AND CNVTUPPER(P.NAME_FIRST_KEY) != "*BOY"
-            AND CNVTUPPER(P.NAME_FIRST_KEY) != "*GIRL"
-            AND CNVTUPPER(P.NAME_FIRST_KEY) != "BABY*"
-        ORDER BY E.LOC_ROOM_CD, E.LOC_BED_CD
+        FROM CODE_VALUE CV
+        PLAN CV WHERE CV.CODE_SET = 34
+            AND CV.ACTIVE_IND = 1
+            AND (
+                FINDSTRING("NEONAT",   CNVTUPPER(CV.DISPLAY)) > 0 OR
+                FINDSTRING("NEWBORN",  CNVTUPPER(CV.DISPLAY)) > 0 OR
+                FINDSTRING("PAEDIAT",  CNVTUPPER(CV.DISPLAY)) > 0 OR
+                FINDSTRING("PEDIATR",  CNVTUPPER(CV.DISPLAY)) > 0 OR
+                FINDSTRING("PHYSIOTH", CNVTUPPER(CV.DISPLAY)) > 0 OR
+                FINDSTRING("RADIOLOG", CNVTUPPER(CV.DISPLAY)) > 0 OR
+                FINDSTRING("PSYCHIAT", CNVTUPPER(CV.DISPLAY)) > 0 OR
+                FINDSTRING("NUTRITIO", CNVTUPPER(CV.DISPLAY)) > 0
+            )
         DETAIL
-            rec_cohort->cnt = rec_cohort->cnt + 1
-            stat = alterlist(rec_cohort->list, rec_cohort->cnt)
-            rec_cohort->list[rec_cohort->cnt].person_id = P.PERSON_ID
-            rec_cohort->list[rec_cohort->cnt].encntr_id = E.ENCNTR_ID
-            rec_cohort->list[rec_cohort->cnt].name = P.NAME_FULL_FORMATTED
-            rec_cohort->list[rec_cohort->cnt].ward_name = TRIM(UAR_GET_CODE_DISPLAY(E.LOC_NURSE_UNIT_CD))
-            IF (TEXTLEN(rec_cohort->list[rec_cohort->cnt].ward_name) = 0)
-                rec_cohort->list[rec_cohort->cnt].ward_name = "Unknown Ward"
-            ENDIF
-            rec_cohort->list[rec_cohort->cnt].room_bed = CONCAT(TRIM(UAR_GET_CODE_DISPLAY(E.LOC_ROOM_CD)), "-", TRIM(UAR_GET_CODE_DISPLAY(E.LOC_BED_CD)))
+            rec_excl_svc->cnt = rec_excl_svc->cnt + 1
+            stat = ALTERLIST(rec_excl_svc->cd, rec_excl_svc->cnt)
+            rec_excl_svc->cd[rec_excl_svc->cnt] = CV.CODE_VALUE
         WITH NOCOUNTER
-    ENDIF
+
+        ; Populate encounter type exclusions containing "NEWBORN"
+        SELECT INTO "NL:"
+        FROM CODE_VALUE CV
+        PLAN CV WHERE CV.CODE_SET = 71
+            AND CV.ACTIVE_IND = 1
+            AND FINDSTRING("NEWBORN", CNVTUPPER(CV.DISPLAY)) > 0
+        DETAIL
+            rec_excl_encntr->cnt = rec_excl_encntr->cnt + 1
+            stat = ALTERLIST(rec_excl_encntr->cd, rec_excl_encntr->cnt)
+            rec_excl_encntr->cd[rec_excl_encntr->cnt] = CV.CODE_VALUE
+        WITH NOCOUNTER
+
+        DECLARE excl_idx = i4 WITH noconstant(0)
+
+        IF (api_pats > 0)
+            ; Hard cap to prevent Oracle DUMMYT query timeouts
+            IF (api_pats > 800) SET api_pats = 800 ENDIF
+
+            SELECT INTO "NL:"
+            FROM (DUMMYT D WITH SEQ = VALUE(api_pats)), ENCOUNTER E, PERSON P
+            PLAN D
+            JOIN E WHERE E.ENCNTR_ID = 600123_reply->patients[D.SEQ].encntr_id
+                AND E.ACTIVE_IND = 1
+                AND E.ENCNTR_STATUS_CD = 854.00
+                AND E.LOC_NURSE_UNIT_CD > 0.0
+                AND E.ENCNTR_TYPE_CLASS_CD = 391.00
+                AND NOT EXPAND(excl_idx, 1, rec_excl_svc->cnt, E.MED_SERVICE_CD, rec_excl_svc->cd[excl_idx])
+                AND NOT EXPAND(excl_idx, 1, rec_excl_encntr->cnt, E.ENCNTR_TYPE_CD, rec_excl_encntr->cd[excl_idx])
+            JOIN P WHERE P.PERSON_ID = E.PERSON_ID AND P.ACTIVE_IND = 1
+                AND (P.DECEASED_CD = 0.0 OR P.DECEASED_CD = 10862554.00)
+                AND P.BIRTH_DT_TM > CNVTLOOKBEHIND("100,Y")
+                AND P.BIRTH_DT_TM < CNVTLOOKBEHIND("1,Y")
+                AND CNVTUPPER(P.NAME_LAST_KEY) != "ZZZTEST*"
+                AND CNVTUPPER(P.NAME_FIRST_KEY) != "*BOY"
+                AND CNVTUPPER(P.NAME_FIRST_KEY) != "*GIRL"
+                AND CNVTUPPER(P.NAME_FIRST_KEY) != "BABY*"
+            ORDER BY E.LOC_ROOM_CD, E.LOC_BED_CD
+            DETAIL
+                rec_cohort->cnt = rec_cohort->cnt + 1
+                stat = alterlist(rec_cohort->list, rec_cohort->cnt)
+                rec_cohort->list[rec_cohort->cnt].person_id = P.PERSON_ID
+                rec_cohort->list[rec_cohort->cnt].encntr_id = E.ENCNTR_ID
+                rec_cohort->list[rec_cohort->cnt].name = P.NAME_FULL_FORMATTED
+                rec_cohort->list[rec_cohort->cnt].ward_name = TRIM(UAR_GET_CODE_DISPLAY(E.LOC_NURSE_UNIT_CD))
+                IF (TEXTLEN(rec_cohort->list[rec_cohort->cnt].ward_name) = 0)
+                    rec_cohort->list[rec_cohort->cnt].ward_name = "Unknown Ward"
+                ENDIF
+                rec_cohort->list[rec_cohort->cnt].room_bed = CONCAT(TRIM(UAR_GET_CODE_DISPLAY(E.LOC_ROOM_CD)), "-", TRIM(UAR_GET_CODE_DISPLAY(E.LOC_BED_CD)))
+            WITH NOCOUNTER
+        ENDIF
 
     SET num_pats = rec_cohort->cnt
     ; Prevent Oracle IN-clause crashes and severe server lag
@@ -572,6 +573,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     WITH NOCOUNTER
 
     SET _memory_reply_string = v_output
+    ENDIF
 
 ELSE
     ; =========================================================================
@@ -585,6 +587,8 @@ ELSE
             2 list_id = f8
             2 list_name = vc
     )
+    DECLARE i = i4 WITH noconstant(0)
+    DECLARE stat = i4 WITH noconstant(0)
 
     SET rec_data->prsnl_id = CNVTREAL($PRSNL_ID)
 
