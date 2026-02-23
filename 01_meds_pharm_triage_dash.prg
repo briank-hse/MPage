@@ -328,8 +328,8 @@ IF (CNVTREAL($WARD_CD) > 0.0)
 
         ; 5. Bulk Evaluate Clinical Events (Current Admission: ENCNTR_ID)
         SELECT INTO "NL:"
-            VAL = REPLACE(REPLACE(REPLACE(TRIM(CE.RESULT_VAL, 3), CHAR(13), "", 0), CHAR(10), "", 0), "'", "&#39;", 0)
-            , TITLE = TRIM(REPLACE(REPLACE(UAR_GET_CODE_DISPLAY(CE.EVENT_CD), "'", "&#39;", 0), ":", "", 0), 3)
+            VAL = REPLACE(TRIM(CE.RESULT_VAL, 3), "'", "&#39;", 0)
+            , TITLE = REPLACE(REPLACE(TRIM(UAR_GET_CODE_DISPLAY(CE.EVENT_CD), 3), ":", "", 0), "'", "&#39;", 0)
         FROM CLINICAL_EVENT CE
         PLAN CE WHERE EXPAND(pat_idx, 1, num_pats, CE.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             AND CE.EVENT_CD IN (15071366.00, 82546829.00, 15083551.00, 19995695.00, 15068265.00, 10933794.00, 28082563.00, 15068250.00)
@@ -340,23 +340,23 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                 IF (CE.EVENT_CD = 15071366.00) 
                     rec_cohort->list[idx].flag_transfusion = 1
                     IF (rec_cohort->list[idx].det_transfusion > "")
-                        rec_cohort->list[idx].det_transfusion = CONCAT(rec_cohort->list[idx].det_transfusion, ", ", TITLE, ": ", VAL, " mL")
+                        rec_cohort->list[idx].det_transfusion = CONCAT(rec_cohort->list[idx].det_transfusion, ", ", TRIM(TITLE, 3), ": ", TRIM(VAL, 3), " mL")
                     ELSE
-                        rec_cohort->list[idx].det_transfusion = CONCAT(TITLE, ": ", VAL, " mL")
+                        rec_cohort->list[idx].det_transfusion = CONCAT(TRIM(TITLE, 3), ": ", TRIM(VAL, 3), " mL")
                     ENDIF
                 ELSEIF (CE.EVENT_CD IN (82546829.00, 15083551.00, 19995695.00) AND CNVTREAL(CE.RESULT_VAL) > 1000.0) 
                     rec_cohort->list[idx].flag_ebl = 1
                     IF (rec_cohort->list[idx].det_ebl > "")
-                        rec_cohort->list[idx].det_ebl = CONCAT(rec_cohort->list[idx].det_ebl, ", ", TITLE, ": ", VAL, "mL")
+                        rec_cohort->list[idx].det_ebl = CONCAT(rec_cohort->list[idx].det_ebl, ", ", TRIM(TITLE, 3), ": ", TRIM(VAL, 3), " mL")
                     ELSE
-                        rec_cohort->list[idx].det_ebl = CONCAT(TITLE, ": ", VAL, "mL")
+                        rec_cohort->list[idx].det_ebl = CONCAT(TRIM(TITLE, 3), ": ", TRIM(VAL, 3), " mL")
                     ENDIF
                 ELSEIF (CE.EVENT_CD = 15068265.00 AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("24,H") AND CNVTINT(CE.RESULT_VAL) >= 2) 
                     rec_cohort->list[idx].flag_imews = 1
-                    rec_cohort->list[idx].det_imews = CONCAT("Score: ", VAL)
+                    rec_cohort->list[idx].det_imews = CONCAT("Score: ", TRIM(VAL, 3))
                 ELSEIF (CE.EVENT_CD = 10933794.00 AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("24,H") AND CNVTREAL(CE.RESULT_VAL) > 11.1)
                     rec_cohort->list[idx].flag_bsbg = 1
-                    rec_cohort->list[idx].det_bsbg = CONCAT("Value: ", VAL, " mmol/L")
+                    rec_cohort->list[idx].det_bsbg = CONCAT("Value: ", TRIM(VAL, 3), " mmol/L")
                 ELSEIF (CE.EVENT_CD IN (28082563.00, 15068250.00))
                     rec_cohort->list[idx].flag_delivered = 1
                 ENDIF
