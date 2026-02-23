@@ -385,6 +385,11 @@ RECORD rec_acuity (
     1 flag_neuraxial = i2
     1 flag_poly_severe = i2
     1 flag_poly_mod = i2
+    1 flag_imews = i2
+    1 flag_bsbg = i2
+    1 flag_high_alert_iv = i2
+    1 flag_oxytocin_iv = i2
+    1 flag_delivered = i2
     
     1 det_ebl = vc
     1 det_transfusion = vc
@@ -397,6 +402,10 @@ RECORD rec_acuity (
     1 det_antihypertensive = vc
     1 det_neuraxial = vc
     1 det_poly = vc
+    1 det_imews = vc
+    1 det_bsbg = vc
+    1 det_high_alert_iv = vc
+    1 det_oxytocin = vc
 
     1 reasons[*]
         2 text = vc
@@ -461,6 +470,13 @@ HEAD O.ORDER_ID
         rec_acuity->det_poly = CONCAT(rec_acuity->det_poly, "<div class='trigger-det-item'>&bull; <b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
     ENDIF
 
+    IF (FINDSTRING("MAGNESIUM", UNOM) > 0 OR FINDSTRING("INSULIN", UNOM) > 0 OR FINDSTRING("LABETALOL", UNOM) > 0 OR FINDSTRING("HYDRALAZINE", UNOM) > 0 OR FINDSTRING("VASOPRESSIN", UNOM) > 0 OR FINDSTRING("NORADRENALINE", UNOM) > 0)
+        IF (O.IV_IND = 1)
+            rec_acuity->flag_high_alert_iv = 1
+            rec_acuity->det_high_alert_iv = CONCAT(rec_acuity->det_high_alert_iv, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
+        ENDIF
+    ENDIF
+
     IF (FINDSTRING("TINZAPARIN", UNOM) > 0 OR FINDSTRING("HEPARIN", UNOM) > 0 OR FINDSTRING("ENOXAPARIN", UNOM) > 0)
         rec_acuity->flag_anticoag = 1
         rec_acuity->det_anticoag = CONCAT(rec_acuity->det_anticoag, "<div class='trigger-det-item'><b>", TRIM(MNEM), "</b> ", TRIM(SDL), " (Started: ", DT_STR, ")</div>")
@@ -488,19 +504,52 @@ SELECT INTO "NL:"
     VAL = CE.RESULT_VAL, TITLE = UAR_GET_CODE_DISPLAY(CE.EVENT_CD), DT_STR = FORMAT(CE.PERFORMED_DT_TM, "DD/MM/YYYY HH:MM")
 FROM CLINICAL_EVENT CE
 PLAN CE WHERE CE.PERSON_ID = CNVTREAL($patient_id)
-    AND CE.EVENT_CD IN (15071366.00, 82546829.00, 15083551.00, 19995695.00) AND CE.VALID_UNTIL_DT_TM > SYSDATE
+    AND CE.EVENT_CD IN (15071366.00, 82546829.00, 15083551.00, 19995695.00, 15068265.00, 10933794.00, 28082563.00, 15068250.00) AND CE.VALID_UNTIL_DT_TM > SYSDATE
     AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("7,D") AND CE.RESULT_STATUS_CD IN (25, 34, 35)
+ORDER BY CE.EVENT_CD, CE.PERFORMED_DT_TM DESC
+HEAD CE.EVENT_CD
+    ; Only evaluate the most recent score for thresholds
+    IF (CE.EVENT_CD = 15068265.00) 
+        IF (CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("24,H") AND CNVTINT(CE.RESULT_VAL) >= 2)
+            rec_acuity->flag_imews = 1
+            rec_acuity->det_imews = CONCAT("<div class='trigger-det-item'><b>Score: ", TRIM(VAL, 3), "</b> (", DT_STR, ")</div>")
+        ENDIF
+    ELSEIF (CE.EVENT_CD = 10933794.00)
+        IF (CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("24,H") AND CNVTREAL(CE.RESULT_VAL) > 11.1)
+            rec_acuity->flag_bsbg = 1
+            rec_acuity->det_bsbg = CONCAT("<div class='trigger-det-item'><b>Value: ", TRIM(VAL, 3), " mmol/L</b> (", DT_STR, ")</div>")
+        ENDIF
+    ENDIF
 DETAIL
+    ; Accumulate lifetime event occurrences across the 7 day window
     IF (CE.EVENT_CD = 15071366.00)
         rec_acuity->flag_transfusion = 1
         rec_acuity->det_transfusion = CONCAT(rec_acuity->det_transfusion, "<div class='trigger-det-item'><b>", TRIM(TITLE), "</b>: ", TRIM(VAL), " (", DT_STR, ")</div>")
     ELSEIF (CE.EVENT_CD IN (82546829.00, 15083551.00, 19995695.00) AND CNVTREAL(VAL) > 1000.0)
         rec_acuity->flag_ebl = 1
         rec_acuity->det_ebl = CONCAT(rec_acuity->det_ebl, "<div class='trigger-det-item'><b>", TRIM(TITLE), "</b>: ", TRIM(VAL), " ml (", DT_STR, ")</div>")
+    ELSEIF (CE.EVENT_CD IN (28082563.00, 15068250.00))
+        rec_acuity->flag_delivered = 1
     ENDIF
 WITH NOCOUNTER
 
 ; Tally Single Patient Final Score
+IF (rec_acuity->flag_high_alert_iv = 1)
+    SET rec_acuity->score = rec_acuity->score + 5
+    SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+    SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Continuous IV infusion of high-alert medication"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 5
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_high_alert_iv
+ENDIF
+IF (rec_acuity->flag_imews = 1)
+    SET rec_acuity->score = rec_acuity->score + 3
+    SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+    SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Physiological Instability (IMEWS Score &ge;2)"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 3
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_imews
+ENDIF
 IF (rec_acuity->flag_transfusion = 1 OR rec_acuity->flag_ebl = 1)
     SET rec_acuity->score = rec_acuity->score + 3
     SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
@@ -572,6 +621,14 @@ IF (rec_acuity->flag_antihypertensive = 1)
     SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Targeted Med: Antihypertensive"
     SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
     SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_antihypertensive
+ENDIF
+IF (rec_acuity->flag_bsbg = 1)
+    SET rec_acuity->score = rec_acuity->score + 2
+    SET rec_acuity->reason_cnt = rec_acuity->reason_cnt + 1
+    SET stat = alterlist(rec_acuity->reasons, rec_acuity->reason_cnt)
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].text = "Uncontrolled bedside blood glucose (> 11.1 mmol/L)"
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].points = 2
+    SET rec_acuity->reasons[rec_acuity->reason_cnt].detail_html = rec_acuity->det_bsbg
 ENDIF
 IF (rec_acuity->flag_neuraxial = 1)
     SET rec_acuity->score = rec_acuity->score + 1
@@ -862,13 +919,17 @@ HEAD REPORT
     ROW + 1 call print(^<table class='ref-table'>^)
     ROW + 1 call print(^<thead><tr><th width='60%'>Clinical Criteria</th><th width='20%'>Category</th><th width='20%'>Points</th></tr></thead><tbody>^)
     
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_high_alert_iv = 1) "tr-active red-tier" ELSE "" ENDIF, ^' title='Continuous IV infusion of high-alert medication (e.g., MgSO4)'><td>Continuous IV infusion of high-alert medication (e.g., MgSO4)</td><td>Medication</td><td>+5</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_imews = 1) "tr-active red-tier" ELSE "" ENDIF, ^' title='Physiological Instability (IMEWS Score &ge;2)'><td>Physiological Instability (IMEWS Score &ge;2)</td><td>Physiology</td><td>+3</td></tr>^))
     ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_ebl = 1 OR rec_acuity->flag_transfusion = 1) "tr-active red-tier" ELSE "" ENDIF, ^' title='Checks CLINICAL_EVENT for last 7 days. Looks for Blood Volume Infused (15071366) OR Delivery/Intraop/Total EBL > 1000ml.'><td>Massive Haemorrhage / Blood Transfusion</td><td>Clinical Event</td><td>+3</td></tr>^))
     ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_preeclampsia = 1 OR rec_acuity->flag_dvt = 1 OR rec_acuity->flag_epilepsy = 1) "tr-active red-tier" ELSE "" ENDIF, ^' title='Checks both ACTIVE PROBLEM and ACTIVE DIAGNOSIS lists for nomenclature strings containing: PRE-ECLAMPSIA, DVT, PULMONARY EMBOLISM, or EPILEPSY/SEIZURE.'><td>High Risk Diagnosis (Pre-eclampsia, VTE, Epilepsy)</td><td>Problem/Diagnosis</td><td>+3</td></tr>^))
     ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_insulin = 1 OR rec_acuity->flag_antiepileptic = 1) "tr-active red-tier" ELSE "" ENDIF, ^' title='Checks active inpatient pharmacy orders for mnemonics containing: INSULIN, LEVETIRACETAM, LAMOTRIGINE, VALPROATE, or CARBAMAZEPINE.'><td>High Alert Med (Insulin, Antiepileptics)</td><td>Medication</td><td>+3</td></tr>^))
     ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_poly_severe = 1) "tr-active red-tier" ELSE "" ENDIF, ^' title='Checks if patient has greater than or equal to 10 active inpatient pharmacy orders. (Excludes standard IV fluids and Care Plan PRNs)'><td>Severe Polypharmacy (&ge;10 active meds)</td><td>Medication</td><td>+3</td></tr>^))
     ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_anticoag = 1 OR rec_acuity->flag_antihypertensive = 1) "tr-active amber-tier" ELSE "" ENDIF, ^' title='Checks active inpatient pharmacy orders for mnemonics containing: TINZAPARIN, HEPARIN, ENOXAPARIN, LABETALOL, NIFEDIPINE, or METHYLDOPA.'><td>Targeted Med (Anticoagulant, Antihypertensive)</td><td>Medication</td><td>+2</td></tr>^))
+    ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_bsbg = 1) "tr-active amber-tier" ELSE "" ENDIF, ^' title='Uncontrolled bedside blood glucose (> 11.1 mmol/L)'><td>Uncontrolled bedside blood glucose (> 11.1 mmol/L)</td><td>Laboratory</td><td>+2</td></tr>^))
     ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_poly_mod = 1) "tr-active amber-tier" ELSE "" ENDIF, ^' title='Checks if patient has between 5 and 9 active inpatient pharmacy orders. (Excludes standard IV fluids and Care Plan PRNs)'><td>Moderate Polypharmacy (5-9 active meds)</td><td>Medication</td><td>+1</td></tr>^))
     ROW + 1 call print(CONCAT(^<tr class='^, IF(rec_acuity->flag_neuraxial = 1) "tr-active amber-tier" ELSE "" ENDIF, ^' title='Checks active inpatient pharmacy orders for mnemonics containing: BUPIVACAINE or LEVOBUPIVACAINE.'><td>Neuraxial / Epidural Infusion Active</td><td>Medication</td><td>+1</td></tr>^))
+    ROW + 1 call print(^<tr style='background:#f9f9f9; color:#999;'><td>Postpartum Oxytocin Infusion (PPH Management) - Temporarily Disabled</td><td>Medication</td><td>+0</td></tr>^)
     
     ROW + 1 call print(^</tbody></table>^)
     ROW + 1 call print(^</td></tr></table>^)
