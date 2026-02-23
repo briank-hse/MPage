@@ -157,6 +157,10 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             AND E.ENCNTR_STATUS_CD = 854.00       ; Must be an Active encounter
             AND E.LOC_NURSE_UNIT_CD > 0.0         ; Must be assigned to a valid nurse unit
             AND E.ENCNTR_TYPE_CLASS_CD = 391.00   ; Must be an Inpatient
+            AND E.MED_SERVICE_CD NOT IN (
+                UAR_GET_CODE_BY("DISPLAY", 34, "Neonatology"),
+                UAR_GET_CODE_BY("DISPLAY", 34, "Newborn")
+            )
         JOIN P WHERE P.PERSON_ID = E.PERSON_ID AND P.ACTIVE_IND = 1
             AND P.BIRTH_DT_TM < CNVTLOOKBEHIND("1,Y")
             AND CNVTUPPER(P.NAME_LAST_KEY) != "ZZZTEST"
