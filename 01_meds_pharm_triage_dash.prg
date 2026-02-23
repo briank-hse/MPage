@@ -13,16 +13,19 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     ; =========================================================================
     DECLARE curr_ward_cd = f8 WITH noconstant(0.0)
     SET curr_ward_cd = CNVTREAL($WARD_CD)
+    
+    ; Expand memory headroom to 256MB to prevent string truncation
     SET MODIFY MAXVARLEN 268435456
     DECLARE v_output = vc WITH noconstant("")
     
-    DECLARE v_ward_rows = vc WITH noconstant(""), maxlen=32767
-    DECLARE v_summary_rows = vc WITH noconstant(""), maxlen=32767
-    DECLARE v_matrix_rows = vc WITH noconstant(""), maxlen=32767
+    ; Removed fixed maxlen to allow dynamic sizing up to MAXVARLEN
+    DECLARE v_ward_rows = vc WITH noconstant("")
+    DECLARE v_summary_rows = vc WITH noconstant("")
+    DECLARE v_matrix_rows = vc WITH noconstant("")
     DECLARE pat_idx = i4 WITH noconstant(0)
     DECLARE idx = i4 WITH noconstant(0)
     DECLARE t_score = i4 WITH noconstant(0)
-    DECLARE t_triggers = vc WITH noconstant(""), maxlen=32767
+    DECLARE t_triggers = vc WITH noconstant("")
     DECLARE num_pats = i4 WITH noconstant(0)
     DECLARE stat = i4 WITH noconstant(0)
     DECLARE err_code = i4 WITH noconstant(0)
@@ -58,6 +61,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             2 encntr_id = f8
     )
 
+    ; Refactored memory allocations to vc to prevent ALTERLIST buffer crash
     RECORD rec_cohort (
         1 cnt = i4
         1 list[*]
@@ -132,99 +136,56 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     SET 600123_request->rmv_pl_rows_flag = 0
 
     SET stat = tdbexecute(600005, 600024, 600123, "REC", 600123_request, "REC", 600123_reply)
-    ; Check if the Cerner API crashed due to list size/memory
+    
+    ; Check if the Cerner API crashed
     SET err_code = ERROR(err_msg, 1)
     IF (err_code != 0)
         SET _memory_reply_string = CONCAT("<tr><td colspan='4' style='color:red; padding:20px;'><b>API Execution Failed:</b> ", TRIM(err_msg), "</td></tr>")
-    ELSE
-        ; 1b. Populate Cohort from API Results
-        DECLARE api_pats = i4 WITH noconstant(0)
-        SET api_pats = SIZE(600123_reply->patients, 5)
+        GO TO exit_script
+    ENDIF
 
-        ; Dynamic Exclusion Records
-        RECORD rec_excl_svc (
-            1 cnt = i4
-            1 cd[*] = f8
-        )
-        RECORD rec_excl_encntr (
-            1 cnt = i4
-            1 cd[*] = f8
-        )
+    ; 1b. Populate Cohort from API Results
+    DECLARE api_pats = i4 WITH noconstant(0)
+    SET api_pats = SIZE(600123_reply->patients, 5)
+    IF (api_pats > 0)
+        ; Expanded to 2000 to search through large raw lists for active inpatients
+        IF (api_pats > 2000) SET api_pats = 2000 ENDIF
 
-        ; Populate medical service exclusions directly
+        DECLARE cv_neonatology = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Neonatology"))
+        DECLARE cv_newborn = f8 WITH CONSTANT(UAR_GET_CODE_BY("DISPLAY", 34, "Newborn"))
+
         SELECT INTO "NL:"
-        FROM CODE_VALUE CV
-        PLAN CV WHERE CV.CODE_SET = 34
-            AND CV.ACTIVE_IND = 1
-            AND (
-                FINDSTRING("NEONAT",   CNVTUPPER(CV.DISPLAY)) > 0 OR
-                FINDSTRING("NEWBORN",  CNVTUPPER(CV.DISPLAY)) > 0 OR
-                FINDSTRING("PAEDIAT",  CNVTUPPER(CV.DISPLAY)) > 0 OR
-                FINDSTRING("PEDIATR",  CNVTUPPER(CV.DISPLAY)) > 0 OR
-                FINDSTRING("PHYSIOTH", CNVTUPPER(CV.DISPLAY)) > 0 OR
-                FINDSTRING("RADIOLOG", CNVTUPPER(CV.DISPLAY)) > 0 OR
-                FINDSTRING("PSYCHIAT", CNVTUPPER(CV.DISPLAY)) > 0 OR
-                FINDSTRING("NUTRITIO", CNVTUPPER(CV.DISPLAY)) > 0
-            )
+        FROM (DUMMYT D WITH SEQ = VALUE(api_pats)), ENCOUNTER E, PERSON P
+        PLAN D
+        JOIN E WHERE E.ENCNTR_ID = 600123_reply->patients[D.SEQ].encntr_id
+            AND E.ACTIVE_IND = 1
+            AND E.ENCNTR_STATUS_CD = 854.00       ; Must be an Active encounter
+            AND E.LOC_NURSE_UNIT_CD > 0.0         ; Must be assigned to a valid nurse unit
+            AND E.ENCNTR_TYPE_CLASS_CD = 391.00   ; Filter Non-Inpatient early
+            AND E.MED_SERVICE_CD != cv_neonatology
+            AND E.MED_SERVICE_CD != cv_newborn
+        JOIN P WHERE P.PERSON_ID = E.PERSON_ID AND P.ACTIVE_IND = 1
+            AND P.BIRTH_DT_TM < CNVTLOOKBEHIND("1,Y")
+            AND CNVTUPPER(P.NAME_LAST_KEY) != "ZZZTEST*"
+            AND CNVTUPPER(P.NAME_FIRST_KEY) != "*BOY"
+            AND CNVTUPPER(P.NAME_FIRST_KEY) != "*GIRL"
+            AND CNVTUPPER(P.NAME_FIRST_KEY) != "BABY*"
+        ORDER BY E.LOC_ROOM_CD, E.LOC_BED_CD
         DETAIL
-            rec_excl_svc->cnt = rec_excl_svc->cnt + 1
-            stat = ALTERLIST(rec_excl_svc->cd, rec_excl_svc->cnt)
-            rec_excl_svc->cd[rec_excl_svc->cnt] = CV.CODE_VALUE
+            rec_cohort->cnt = rec_cohort->cnt + 1
+            stat = alterlist(rec_cohort->list, rec_cohort->cnt)
+            rec_cohort->list[rec_cohort->cnt].person_id = P.PERSON_ID
+            rec_cohort->list[rec_cohort->cnt].encntr_id = E.ENCNTR_ID
+            rec_cohort->list[rec_cohort->cnt].name = P.NAME_FULL_FORMATTED
+            rec_cohort->list[rec_cohort->cnt].ward_name = TRIM(UAR_GET_CODE_DISPLAY(E.LOC_NURSE_UNIT_CD))
+            IF (TEXTLEN(rec_cohort->list[rec_cohort->cnt].ward_name) = 0)
+                rec_cohort->list[rec_cohort->cnt].ward_name = "Unknown Ward"
+            ENDIF
+            rec_cohort->list[rec_cohort->cnt].room_bed = CONCAT(TRIM(UAR_GET_CODE_DISPLAY(E.LOC_ROOM_CD)), "-", TRIM(UAR_GET_CODE_DISPLAY(E.LOC_BED_CD)))
         WITH NOCOUNTER
-
-        ; Populate encounter type exclusions containing "NEWBORN"
-        SELECT INTO "NL:"
-        FROM CODE_VALUE CV
-        PLAN CV WHERE CV.CODE_SET = 71
-            AND CV.ACTIVE_IND = 1
-            AND FINDSTRING("NEWBORN", CNVTUPPER(CV.DISPLAY)) > 0
-        DETAIL
-            rec_excl_encntr->cnt = rec_excl_encntr->cnt + 1
-            stat = ALTERLIST(rec_excl_encntr->cd, rec_excl_encntr->cnt)
-            rec_excl_encntr->cd[rec_excl_encntr->cnt] = CV.CODE_VALUE
-        WITH NOCOUNTER
-
-        DECLARE excl_idx = i4 WITH noconstant(0)
-
-        IF (api_pats > 0)
-            ; Hard cap to prevent Oracle DUMMYT query timeouts
-            IF (api_pats > 800) SET api_pats = 800 ENDIF
-
-            SELECT INTO "NL:"
-            FROM (DUMMYT D WITH SEQ = VALUE(api_pats)), ENCOUNTER E, PERSON P
-            PLAN D
-            JOIN E WHERE E.ENCNTR_ID = 600123_reply->patients[D.SEQ].encntr_id
-                AND E.ACTIVE_IND = 1
-                AND E.ENCNTR_STATUS_CD = 854.00
-                AND E.LOC_NURSE_UNIT_CD > 0.0
-                AND E.ENCNTR_TYPE_CLASS_CD = 391.00
-                AND NOT EXPAND(excl_idx, 1, rec_excl_svc->cnt, E.MED_SERVICE_CD, rec_excl_svc->cd[excl_idx])
-                AND NOT EXPAND(excl_idx, 1, rec_excl_encntr->cnt, E.ENCNTR_TYPE_CD, rec_excl_encntr->cd[excl_idx])
-            JOIN P WHERE P.PERSON_ID = E.PERSON_ID AND P.ACTIVE_IND = 1
-                AND (P.DECEASED_CD = 0.0 OR P.DECEASED_CD = 10862554.00)
-                AND P.BIRTH_DT_TM > CNVTLOOKBEHIND("100,Y")
-                AND P.BIRTH_DT_TM < CNVTLOOKBEHIND("1,Y")
-                AND CNVTUPPER(P.NAME_LAST_KEY) != "ZZZTEST*"
-                AND CNVTUPPER(P.NAME_FIRST_KEY) != "*BOY"
-                AND CNVTUPPER(P.NAME_FIRST_KEY) != "*GIRL"
-                AND CNVTUPPER(P.NAME_FIRST_KEY) != "BABY*"
-            ORDER BY E.LOC_ROOM_CD, E.LOC_BED_CD
-            DETAIL
-                rec_cohort->cnt = rec_cohort->cnt + 1
-                stat = alterlist(rec_cohort->list, rec_cohort->cnt)
-                rec_cohort->list[rec_cohort->cnt].person_id = P.PERSON_ID
-                rec_cohort->list[rec_cohort->cnt].encntr_id = E.ENCNTR_ID
-                rec_cohort->list[rec_cohort->cnt].name = P.NAME_FULL_FORMATTED
-                rec_cohort->list[rec_cohort->cnt].ward_name = TRIM(UAR_GET_CODE_DISPLAY(E.LOC_NURSE_UNIT_CD))
-                IF (TEXTLEN(rec_cohort->list[rec_cohort->cnt].ward_name) = 0)
-                    rec_cohort->list[rec_cohort->cnt].ward_name = "Unknown Ward"
-                ENDIF
-                rec_cohort->list[rec_cohort->cnt].room_bed = CONCAT(TRIM(UAR_GET_CODE_DISPLAY(E.LOC_ROOM_CD)), "-", TRIM(UAR_GET_CODE_DISPLAY(E.LOC_BED_CD)))
-            WITH NOCOUNTER
-        ENDIF
+    ENDIF
 
     SET num_pats = rec_cohort->cnt
-    ; Prevent Oracle IN-clause crashes and severe server lag
     DECLARE over_limit_flag = i2 WITH noconstant(0)
     IF (num_pats > 300)
         SET num_pats = 300
@@ -232,10 +193,10 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     ENDIF
 
     IF (num_pats > 0)
-        ; 2. Bulk Evaluate Problems (Lifelong: PERSON_ID)
+        ; 2. Bulk Evaluate Problems (Lifelong: PERSON_ID) - Fixed mutual exclusion
         SELECT INTO "NL:"
             UNOM = CNVTUPPER(N.SOURCE_STRING)
-            , NOM = REPLACE(TRIM(N.SOURCE_STRING, 3), "'", "&#39;", 0)
+            , NOM = REPLACE(REPLACE(REPLACE(TRIM(N.SOURCE_STRING, 3), "&", "&amp;", 0), "<", "&lt;", 0), "'", "&#39;", 0)
         FROM PROBLEM P, NOMENCLATURE N
         PLAN P WHERE EXPAND(pat_idx, 1, num_pats, P.PERSON_ID, rec_cohort->list[pat_idx].person_id)
             AND P.ACTIVE_IND = 1 AND P.LIFE_CYCLE_STATUS_CD = 3301.00
@@ -250,14 +211,18 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                     ELSE
                         rec_cohort->list[idx].det_preeclampsia = NOM
                     ENDIF
-                ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", UNOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", UNOM) > 0 OR FINDSTRING("DVT", UNOM) > 0) 
+                ENDIF
+                
+                IF (FINDSTRING("DEEP VEIN THROMBOSIS", UNOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", UNOM) > 0 OR FINDSTRING("DVT", UNOM) > 0) 
                     rec_cohort->list[idx].flag_dvt = 1 
                     IF (rec_cohort->list[idx].det_dvt > "")
                         rec_cohort->list[idx].det_dvt = CONCAT(rec_cohort->list[idx].det_dvt, ", ", NOM)
                     ELSE
                         rec_cohort->list[idx].det_dvt = NOM
                     ENDIF
-                ELSEIF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0) 
+                ENDIF
+                
+                IF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0) 
                     rec_cohort->list[idx].flag_epilepsy = 1 
                     IF (rec_cohort->list[idx].det_epilepsy > "")
                         rec_cohort->list[idx].det_epilepsy = CONCAT(rec_cohort->list[idx].det_epilepsy, ", ", NOM)
@@ -268,10 +233,10 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ENDIF
         WITH NOCOUNTER
 
-        ; 3. Bulk Evaluate Diagnoses (Current Admission: ENCNTR_ID)
+        ; 3. Bulk Evaluate Diagnoses (Current Admission: ENCNTR_ID) - Fixed mutual exclusion
         SELECT INTO "NL:"
             UNOM = CNVTUPPER(N.SOURCE_STRING)
-            , NOM = REPLACE(TRIM(N.SOURCE_STRING, 3), "'", "&#39;", 0)
+            , NOM = REPLACE(REPLACE(REPLACE(TRIM(N.SOURCE_STRING, 3), "&", "&amp;", 0), "<", "&lt;", 0), "'", "&#39;", 0)
         FROM DIAGNOSIS D, NOMENCLATURE N
         PLAN D WHERE EXPAND(pat_idx, 1, num_pats, D.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             AND D.ACTIVE_IND = 1
@@ -286,14 +251,18 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                     ELSE
                         rec_cohort->list[idx].det_preeclampsia = NOM
                     ENDIF
-                ELSEIF (FINDSTRING("DEEP VEIN THROMBOSIS", UNOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", UNOM) > 0 OR FINDSTRING("DVT", UNOM) > 0) 
+                ENDIF
+                
+                IF (FINDSTRING("DEEP VEIN THROMBOSIS", UNOM) > 0 OR FINDSTRING("PULMONARY EMBOLISM", UNOM) > 0 OR FINDSTRING("DVT", UNOM) > 0) 
                     rec_cohort->list[idx].flag_dvt = 1 
                     IF (rec_cohort->list[idx].det_dvt > "")
                         rec_cohort->list[idx].det_dvt = CONCAT(rec_cohort->list[idx].det_dvt, ", ", NOM)
                     ELSE
                         rec_cohort->list[idx].det_dvt = NOM
                     ENDIF
-                ELSEIF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0) 
+                ENDIF
+                
+                IF (FINDSTRING("EPILEPSY", UNOM) > 0 OR FINDSTRING("SEIZURE", UNOM) > 0) 
                     rec_cohort->list[idx].flag_epilepsy = 1 
                     IF (rec_cohort->list[idx].det_epilepsy > "")
                         rec_cohort->list[idx].det_epilepsy = CONCAT(rec_cohort->list[idx].det_epilepsy, ", ", NOM)
@@ -304,10 +273,10 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ENDIF
         WITH NOCOUNTER
 
-        ; 4. Bulk Evaluate Orders (Current Admission: ENCNTR_ID)
+        ; 4. Bulk Evaluate Orders - Fixed mutual exclusion
         SELECT INTO "NL:"
             UNOM = CNVTUPPER(O.ORDER_MNEMONIC)
-            , MNEM = REPLACE(TRIM(O.ORDER_MNEMONIC, 3), "'", "&#39;", 0)
+            , MNEM = REPLACE(REPLACE(REPLACE(TRIM(O.ORDER_MNEMONIC, 3), "&", "&amp;", 0), "<", "&lt;", 0), "'", "&#39;", 0)
         FROM ORDERS O, ACT_PW_COMP APC
         PLAN O WHERE EXPAND(pat_idx, 1, num_pats, O.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             AND O.ORDER_STATUS_CD = 2550.00 AND O.CATALOG_TYPE_CD = 2516.00 AND O.ORIG_ORD_AS_FLAG = 0 AND O.TEMPLATE_ORDER_ID = 0
@@ -316,6 +285,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
         HEAD O.ORDER_ID
             idx = LOCATEVAL(pat_idx, 1, num_pats, O.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             IF (idx > 0)
+                ; Polypharmacy Check 
                 IF ((APC.PATHWAY_ID > 0.0 AND (FINDSTRING("CHLORPHENAMINE", UNOM)>0 OR FINDSTRING("CYCLIZINE", UNOM)>0 OR FINDSTRING("LACTULOSE", UNOM)>0 OR FINDSTRING("ONDANSETRON", UNOM)>0))
                 OR FINDSTRING("SODIUM CHLORIDE", UNOM)>0 OR FINDSTRING("LACTATE", UNOM)>0 OR FINDSTRING("GLUCOSE", UNOM)>0 OR FINDSTRING("MAINTELYTE", UNOM)>0 OR FINDSTRING("WATER FOR INJECTION", UNOM)>0)
                     stat = 1
@@ -323,7 +293,6 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                     rec_cohort->list[idx].poly_count = rec_cohort->list[idx].poly_count + 1
                 ENDIF
 
-                ; Check for High-Alert Continuous Infusions via native IV_IND flag (Oxytocin temporarily disabled)
                 IF (FINDSTRING("MAGNESIUM", UNOM) > 0 OR FINDSTRING("INSULIN", UNOM) > 0 OR FINDSTRING("LABETALOL", UNOM) > 0 OR FINDSTRING("HYDRALAZINE", UNOM) > 0 OR FINDSTRING("VASOPRESSIN", UNOM) > 0 OR FINDSTRING("NORADRENALINE", UNOM) > 0)
                     IF (O.IV_IND = 1)
                         rec_cohort->list[idx].flag_high_alert_iv = 1
@@ -342,28 +311,36 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                     ELSE
                         rec_cohort->list[idx].det_anticoag = MNEM
                     ENDIF
-                ELSEIF (FINDSTRING("INSULIN", UNOM)>0) 
+                ENDIF
+                
+                IF (FINDSTRING("INSULIN", UNOM)>0) 
                     rec_cohort->list[idx].flag_insulin = 1
                     IF (rec_cohort->list[idx].det_insulin > "")
                         rec_cohort->list[idx].det_insulin = CONCAT(rec_cohort->list[idx].det_insulin, ", ", MNEM)
                     ELSE
                         rec_cohort->list[idx].det_insulin = MNEM
                     ENDIF
-                ELSEIF (FINDSTRING("LEVETIRACETAM", UNOM)>0 OR FINDSTRING("LAMOTRIGINE", UNOM)>0 OR FINDSTRING("VALPROATE", UNOM)>0 OR FINDSTRING("CARBAMAZEPINE", UNOM)>0) 
+                ENDIF
+                
+                IF (FINDSTRING("LEVETIRACETAM", UNOM)>0 OR FINDSTRING("LAMOTRIGINE", UNOM)>0 OR FINDSTRING("VALPROATE", UNOM)>0 OR FINDSTRING("CARBAMAZEPINE", UNOM)>0) 
                     rec_cohort->list[idx].flag_antiepileptic = 1
                     IF (rec_cohort->list[idx].det_antiepileptic > "")
                         rec_cohort->list[idx].det_antiepileptic = CONCAT(rec_cohort->list[idx].det_antiepileptic, ", ", MNEM)
                     ELSE
                         rec_cohort->list[idx].det_antiepileptic = MNEM
                     ENDIF
-                ELSEIF (FINDSTRING("LABETALOL", UNOM)>0 OR FINDSTRING("NIFEDIPINE", UNOM)>0 OR FINDSTRING("METHYLDOPA", UNOM)>0) 
+                ENDIF
+                
+                IF (FINDSTRING("LABETALOL", UNOM)>0 OR FINDSTRING("NIFEDIPINE", UNOM)>0 OR FINDSTRING("METHYLDOPA", UNOM)>0) 
                     rec_cohort->list[idx].flag_antihypertensive = 1
                     IF (rec_cohort->list[idx].det_antihypertensive > "")
                         rec_cohort->list[idx].det_antihypertensive = CONCAT(rec_cohort->list[idx].det_antihypertensive, ", ", MNEM)
                     ELSE
                         rec_cohort->list[idx].det_antihypertensive = MNEM
                     ENDIF
-                ELSEIF (FINDSTRING("BUPIVACAINE", UNOM)>0 OR FINDSTRING("LEVOBUPIVACAINE", UNOM)>0) 
+                ENDIF
+                
+                IF (FINDSTRING("BUPIVACAINE", UNOM)>0 OR FINDSTRING("LEVOBUPIVACAINE", UNOM)>0) 
                     rec_cohort->list[idx].flag_neuraxial = 1
                     IF (rec_cohort->list[idx].det_neuraxial > "")
                         rec_cohort->list[idx].det_neuraxial = CONCAT(rec_cohort->list[idx].det_neuraxial, ", ", MNEM)
@@ -374,17 +351,35 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             ENDIF
         WITH NOCOUNTER
 
-        ; 5. Bulk Evaluate Clinical Events (Current Admission: ENCNTR_ID)
+        ; 5. Bulk Evaluate Clinical Events - Ordered by Date to capture most recent
         SELECT INTO "NL:"
-            VAL = REPLACE(TRIM(CE.RESULT_VAL, 3), "'", "&#39;", 0)
-            , TITLE = REPLACE(REPLACE(TRIM(UAR_GET_CODE_DISPLAY(CE.EVENT_CD), 3), ":", "", 0), "'", "&#39;", 0)
+            VAL = REPLACE(REPLACE(REPLACE(TRIM(CE.RESULT_VAL, 3), "&", "&amp;", 0), "<", "&lt;", 0), "'", "&#39;", 0)
+            , TITLE = REPLACE(REPLACE(REPLACE(TRIM(UAR_GET_CODE_DISPLAY(CE.EVENT_CD), 3), ":", "", 0), "'", "&#39;", 0), "<", "&lt;", 0)
         FROM CLINICAL_EVENT CE
         PLAN CE WHERE EXPAND(pat_idx, 1, num_pats, CE.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             AND CE.EVENT_CD IN (15071366.00, 82546829.00, 15083551.00, 19995695.00, 15068265.00, 10933794.00, 28082563.00, 15068250.00)
             AND CE.VALID_UNTIL_DT_TM > SYSDATE AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("7,D") AND CE.RESULT_STATUS_CD IN (25, 34, 35)
+        ORDER BY CE.ENCNTR_ID, CE.EVENT_CD, CE.PERFORMED_DT_TM DESC
+        HEAD CE.EVENT_CD
+            idx = LOCATEVAL(pat_idx, 1, num_pats, CE.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
+            IF (idx > 0)
+                ; Only evaluate the most recent score for thresholds
+                IF (CE.EVENT_CD = 15068265.00) 
+                    IF (CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("24,H") AND CNVTINT(CE.RESULT_VAL) >= 2)
+                        rec_cohort->list[idx].flag_imews = 1
+                        rec_cohort->list[idx].det_imews = CONCAT("Score: ", TRIM(VAL, 3))
+                    ENDIF
+                ELSEIF (CE.EVENT_CD = 10933794.00)
+                    IF (CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("24,H") AND CNVTREAL(CE.RESULT_VAL) > 11.1)
+                        rec_cohort->list[idx].flag_bsbg = 1
+                        rec_cohort->list[idx].det_bsbg = CONCAT("Value: ", TRIM(VAL, 3), " mmol/L")
+                    ENDIF
+                ENDIF
+            ENDIF
         DETAIL
             idx = LOCATEVAL(pat_idx, 1, num_pats, CE.ENCNTR_ID, rec_cohort->list[pat_idx].encntr_id)
             IF (idx > 0)
+                ; Accumulate lifetime event occurrences across the 7 day window
                 IF (CE.EVENT_CD = 15071366.00) 
                     rec_cohort->list[idx].flag_transfusion = 1
                     IF (rec_cohort->list[idx].det_transfusion > "")
@@ -399,12 +394,6 @@ IF (CNVTREAL($WARD_CD) > 0.0)
                     ELSE
                         rec_cohort->list[idx].det_ebl = CONCAT(TRIM(TITLE, 3), ": ", TRIM(VAL, 3), " mL")
                     ENDIF
-                ELSEIF (CE.EVENT_CD = 15068265.00 AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("24,H") AND CNVTINT(CE.RESULT_VAL) >= 2) 
-                    rec_cohort->list[idx].flag_imews = 1
-                    rec_cohort->list[idx].det_imews = CONCAT("Score: ", TRIM(VAL, 3))
-                ELSEIF (CE.EVENT_CD = 10933794.00 AND CE.PERFORMED_DT_TM > CNVTLOOKBEHIND("24,H") AND CNVTREAL(CE.RESULT_VAL) > 11.1)
-                    rec_cohort->list[idx].flag_bsbg = 1
-                    rec_cohort->list[idx].det_bsbg = CONCAT("Value: ", TRIM(VAL, 3), " mmol/L")
                 ELSEIF (CE.EVENT_CD IN (28082563.00, 15068250.00))
                     rec_cohort->list[idx].flag_delivered = 1
                 ENDIF
@@ -468,7 +457,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
         SET v_ward_rows = "<tr><td colspan='4' style='text-align:center; padding: 20px;'>No active patients found on this list.</td></tr>"
     ENDIF
 
-    ; 7a. Build scoring reference matrix row HTML
+    ; 7a. Build scoring reference matrix HTML
     SET v_matrix_rows = ""
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr style='background:#fff;'><td colspan='4' style='padding:15px 10px 5px 10px;'>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<details class='ref-details'>")
@@ -476,8 +465,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<table class='ref-table'>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<thead><tr><th width='60%'>Clinical Criteria</th><th width='20%'>Category</th><th width='20%'>Points</th></tr></thead><tbody>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Continuous IV infusion of high-alert medication (e.g., MgSO4)</td><td>Medication</td><td>+5</td></tr>")
-    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Postpartum Oxytocin Infusion (PPH Management)</td><td>Medication</td><td>+5</td></tr>")
-    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Physiological Instability (IMEWS Score &ge; 2)</td><td>Physiology</td><td>+3</td></tr>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Physiological Instability (IMEWS Score &ge;2)</td><td>Physiology</td><td>+3</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>Massive Haemorrhage / Blood Transfusion</td><td>Clinical Event</td><td>+3</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>High Risk Diagnosis (Pre-eclampsia, VTE, Epilepsy)</td><td>Problem/Diagnosis</td><td>+3</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-red'><td>High Alert Med (Insulin, Antiepileptics)</td><td>Medication</td><td>+3</td></tr>")
@@ -486,11 +474,12 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr class='tr-amber'><td>Uncontrolled bedside blood glucose (> 11.1 mmol/L)</td><td>Laboratory</td><td>+2</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr><td>Moderate Polypharmacy (5-9 active meds)</td><td>Medication</td><td>+1</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr><td>Neuraxial / Epidural Infusion Active</td><td>Medication</td><td>+1</td></tr>")
+    SET v_matrix_rows = CONCAT(v_matrix_rows, "<tr style='background:#f9f9f9; color:#999;'><td>Postpartum Oxytocin Infusion (PPH Management) - Temporarily Disabled</td><td>Medication</td><td>+0</td></tr>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "</tbody></table>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "</details>")
     SET v_matrix_rows = CONCAT(v_matrix_rows, "</td></tr>")
 
-    ; 7a. Build summary HTML rows in-memory (sorted by ward name)
+    ; 7a. Build summary HTML rows in-memory
     IF (rec_ward_summary->cnt > 0)
         SET v_summary_rows = ""
         SELECT INTO "NL:"
@@ -509,7 +498,6 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             )
         WITH NOCOUNTER
 
-        ; Append Grand Total Row
         SET v_summary_rows = CONCAT(v_summary_rows,
             "<tr style='background:#e8f4f8;'>",
             "<td colspan='2' style='font-weight:bold; border-right:1px solid #e0e0e0; text-align:right;'>Grand Total Evaluated:</td>",
@@ -518,7 +506,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
         )
     ENDIF
 
-    ; 7b. Build HTML Rows (Ordered by Score Descending)
+    ; 7b. Build final output variable (Memory Buffered)
     SELECT INTO "NL:"
         PAT_SCORE = rec_cohort->list[D.SEQ].score
     FROM (DUMMYT D WITH SEQ = VALUE(num_pats))
@@ -529,28 +517,9 @@ IF (CNVTREAL($WARD_CD) > 0.0)
             v_output = CONCAT(v_output, v_ward_rows)
         ENDIF
         IF (over_limit_flag = 1)
-            v_output = CONCAT(v_output, "<tr><td colspan='4' style='background:#fff3cd; color:#856404; text-align:center; padding:10px;'><b>Warning:</b> List is too large. Only the first 300 patients have been evaluated.</td></tr>")
+            v_output = CONCAT(v_output, "<tr><td colspan='4' style='background:#fff3cd; color:#856404; text-align:center; padding:10px;'><b>Warning:</b> List is too large. Only the first 300 active inpatients have been evaluated.</td></tr>")
         ENDIF
     DETAIL
-        ; Inline trigger build
-        t_triggers = ""
-        IF (rec_cohort->list[D.SEQ].flag_high_alert_iv = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='", TRIM(rec_cohort->list[D.SEQ].det_high_alert_iv, 3), "'>High-Alert IV</span>") ENDIF
-        IF (rec_cohort->list[D.SEQ].flag_imews = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='I-MEWS ", TRIM(rec_cohort->list[D.SEQ].det_imews, 3), "'>Physiological Instability (IMEWS)</span>") ENDIF
-        IF (rec_cohort->list[D.SEQ].flag_transfusion = 1 OR rec_cohort->list[D.SEQ].flag_ebl = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(CONCAT(TRIM(rec_cohort->list[D.SEQ].det_transfusion, 3), " ", TRIM(rec_cohort->list[D.SEQ].det_ebl, 3)), 3), "'>Haemorrhage/Transfusion</span>") ENDIF
-        IF (rec_cohort->list[D.SEQ].flag_preeclampsia = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_preeclampsia, 3), "'>Pre-Eclampsia</span>") ENDIF
-        IF (rec_cohort->list[D.SEQ].flag_dvt = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_dvt, 3), "'>VTE/DVT</span>") ENDIF
-        IF (rec_cohort->list[D.SEQ].flag_epilepsy = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_epilepsy, 3), "'>Epilepsy</span>") ENDIF
-        IF (rec_cohort->list[D.SEQ].flag_insulin = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_insulin, 3), "'>Insulin</span>") ENDIF
-        IF (rec_cohort->list[D.SEQ].flag_antiepileptic = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_antiepileptic, 3), "'>Antiepileptic</span>") ENDIF
-        IF (rec_cohort->list[D.SEQ].flag_poly_severe = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].poly_count)), " active scheduled meds'>Severe Polypharmacy</span>") ENDIF
-        IF (rec_cohort->list[D.SEQ].flag_anticoag = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_anticoag, 3), "'>Anticoagulant</span>") ENDIF
-        IF (rec_cohort->list[D.SEQ].flag_antihypertensive = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_antihypertensive, 3), "'>Antihypertensive</span>") ENDIF
-        IF (rec_cohort->list[D.SEQ].flag_bsbg = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_bsbg, 3), "'>Uncontrolled Blood Glucose</span>") ENDIF
-        IF (rec_cohort->list[D.SEQ].flag_neuraxial = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_neuraxial, 3), "'>Neuraxial Infusion</span>") ENDIF
-        IF (rec_cohort->list[D.SEQ].flag_poly_mod = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].poly_count)), " active scheduled meds'>Mod Polypharmacy</span>") ENDIF
-
-        IF (TEXTLEN(t_triggers) = 0) t_triggers = "Routine (Low Risk)" ENDIF
-
         v_output = CONCAT(v_output,
           "<tr>",
           "<td><b>", rec_cohort->list[D.SEQ].room_bed, "</b></td>",
@@ -560,7 +529,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
           " /FIRSTTAB=", CHAR(34), "Pharmacist MPage - New", CHAR(34), "^)'>",
           rec_cohort->list[D.SEQ].name, "</a></td>",
           "<td><span class='badge-", rec_cohort->list[D.SEQ].color, "'>Score: ", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].score)), "</span></td>",
-          "<td>", t_triggers, "</td>",
+          "<td>", rec_cohort->list[D.SEQ].summary, "</td>",
           "</tr>"
         )
     FOOT REPORT
@@ -573,7 +542,6 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     WITH NOCOUNTER
 
     SET _memory_reply_string = v_output
-    ENDIF
 
 ELSE
     ; =========================================================================
@@ -587,6 +555,7 @@ ELSE
             2 list_id = f8
             2 list_name = vc
     )
+
     DECLARE i = i4 WITH noconstant(0)
     DECLARE stat = i4 WITH noconstant(0)
 
@@ -621,7 +590,6 @@ ELSE
         ROW + 1 call print(^<title>Pharmacist Acuity Dashboard</title>^)
 
         ROW + 1 call print(^<script>^)
-        ; NEW LOGIC: Declare globally so the Discern browser doesn't garbage collect it
         ROW + 1 call print(^var xhr = null;^)
         
         ROW + 1 call print(^function loadPatients() {^)
@@ -630,10 +598,7 @@ ELSE
         ROW + 1 call print(^    document.getElementById('debugWardCode').innerHTML = wardCode;^)
         ROW + 1 call print(^    document.getElementById('triageBody').innerHTML = "<tr><td colspan='4' style='text-align:center; padding: 20px;'><i>Running clinical acuity rules. This may take a few moments...</i></td></tr>";^)
         
-        ; NEW LOGIC: Abort any hanging previous request before starting a new one
         ROW + 1 call print(^    if (xhr) { xhr.abort(); }^)
-        
-        ; NEW LOGIC: Re-initialize the request object into the global variable
         ROW + 1 call print(^    xhr = new XMLCclRequest();^)
         ROW + 1 call print(^    xhr.onreadystatechange = function() {^)
         ROW + 1 call print(^        if (xhr.readyState == 4) {^)
