@@ -13,6 +13,8 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     ; =========================================================================
     DECLARE curr_ward_cd = f8 WITH noconstant(0.0)
     SET curr_ward_cd = CNVTREAL($WARD_CD)
+    SET MODIFY MAXVARLEN 268435456
+    DECLARE v_output = vc WITH noconstant("")
     
     DECLARE v_ward_rows = vc WITH noconstant(""), maxlen=32767
     DECLARE v_summary_rows = vc WITH noconstant(""), maxlen=32767
@@ -471,21 +473,39 @@ IF (CNVTREAL($WARD_CD) > 0.0)
     ENDIF
 
     ; 7b. Build HTML Rows (Ordered by Score Descending)
-    SELECT INTO $OUTDEV
+    SELECT INTO "NL:"
         PAT_SCORE = rec_cohort->list[D.SEQ].score
     FROM (DUMMYT D WITH SEQ = VALUE(num_pats))
     PLAN D
     ORDER BY PAT_SCORE DESC, D.SEQ
     HEAD REPORT
-        call print("") ; clear buffer
         IF (num_pats = 0)
-            call print(v_ward_rows)
+            v_output = CONCAT(v_output, v_ward_rows)
         ENDIF
         IF (over_limit_flag = 1)
-            call print("<tr><td colspan='4' style='background:#fff3cd; color:#856404; text-align:center; padding:10px;'><b>Warning:</b> List is too large. Only the first 300 patients have been evaluated.</td></tr>")
+            v_output = CONCAT(v_output, "<tr><td colspan='4' style='background:#fff3cd; color:#856404; text-align:center; padding:10px;'><b>Warning:</b> List is too large. Only the first 300 patients have been evaluated.</td></tr>")
         ENDIF
     DETAIL
-      call print(CONCAT(
+        ; Inline trigger build
+        t_triggers = ""
+        IF (rec_cohort->list[D.SEQ].flag_high_alert_iv = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='", TRIM(rec_cohort->list[D.SEQ].det_high_alert_iv, 3), "'>High-Alert IV</span>") ENDIF
+        IF (rec_cohort->list[D.SEQ].flag_imews = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' style='background:#f8d7da; border-color:#f5c6cb; color:#721c24; font-weight:bold;' title='I-MEWS ", TRIM(rec_cohort->list[D.SEQ].det_imews, 3), "'>Physiological Instability (IMEWS)</span>") ENDIF
+        IF (rec_cohort->list[D.SEQ].flag_transfusion = 1 OR rec_cohort->list[D.SEQ].flag_ebl = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(CONCAT(TRIM(rec_cohort->list[D.SEQ].det_transfusion, 3), " ", TRIM(rec_cohort->list[D.SEQ].det_ebl, 3)), 3), "'>Haemorrhage/Transfusion</span>") ENDIF
+        IF (rec_cohort->list[D.SEQ].flag_preeclampsia = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_preeclampsia, 3), "'>Pre-Eclampsia</span>") ENDIF
+        IF (rec_cohort->list[D.SEQ].flag_dvt = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_dvt, 3), "'>VTE/DVT</span>") ENDIF
+        IF (rec_cohort->list[D.SEQ].flag_epilepsy = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_epilepsy, 3), "'>Epilepsy</span>") ENDIF
+        IF (rec_cohort->list[D.SEQ].flag_insulin = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_insulin, 3), "'>Insulin</span>") ENDIF
+        IF (rec_cohort->list[D.SEQ].flag_antiepileptic = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_antiepileptic, 3), "'>Antiepileptic</span>") ENDIF
+        IF (rec_cohort->list[D.SEQ].flag_poly_severe = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].poly_count)), " active scheduled meds'>Severe Polypharmacy</span>") ENDIF
+        IF (rec_cohort->list[D.SEQ].flag_anticoag = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_anticoag, 3), "'>Anticoagulant</span>") ENDIF
+        IF (rec_cohort->list[D.SEQ].flag_antihypertensive = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_antihypertensive, 3), "'>Antihypertensive</span>") ENDIF
+        IF (rec_cohort->list[D.SEQ].flag_bsbg = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_bsbg, 3), "'>Uncontrolled Blood Glucose</span>") ENDIF
+        IF (rec_cohort->list[D.SEQ].flag_neuraxial = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(rec_cohort->list[D.SEQ].det_neuraxial, 3), "'>Neuraxial Infusion</span>") ENDIF
+        IF (rec_cohort->list[D.SEQ].flag_poly_mod = 1) t_triggers = CONCAT(t_triggers, "<span class='trig-pill' title='", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].poly_count)), " active scheduled meds'>Mod Polypharmacy</span>") ENDIF
+
+        IF (TEXTLEN(t_triggers) = 0) t_triggers = "Routine (Low Risk)" ENDIF
+
+        v_output = CONCAT(v_output,
           "<tr>",
           "<td><b>", rec_cohort->list[D.SEQ].room_bed, "</b></td>",
           "<td><a class='patient-link' href='javascript:APPLINK(0,^Powerchart.exe^,^/PERSONID=",
@@ -494,17 +514,19 @@ IF (CNVTREAL($WARD_CD) > 0.0)
           " /FIRSTTAB=", CHAR(34), "Pharmacist MPage - New", CHAR(34), "^)'>",
           rec_cohort->list[D.SEQ].name, "</a></td>",
           "<td><span class='badge-", rec_cohort->list[D.SEQ].color, "'>Score: ", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].score)), "</span></td>",
-          "<td>", TRIM(rec_cohort->list[D.SEQ].summary, 3), "</td>",
+          "<td>", t_triggers, "</td>",
           "</tr>"
-      ))
+        )
     FOOT REPORT
         IF (TEXTLEN(v_matrix_rows) > 0)
-            call print(v_matrix_rows)
+            v_output = CONCAT(v_output, v_matrix_rows)
         ENDIF
         IF (TEXTLEN(v_summary_rows) > 0)
-            call print(v_summary_rows)
+            v_output = CONCAT(v_output, v_summary_rows)
         ENDIF
-    WITH NOCOUNTER, MAXCOL=65534, FORMAT=VARIABLE, NOHEADING
+    WITH NOCOUNTER
+
+    SET _memory_reply_string = v_output
 
 ELSE
     ; =========================================================================
