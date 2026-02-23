@@ -494,7 +494,7 @@ IF (CNVTREAL($WARD_CD) > 0.0)
           " /FIRSTTAB=", CHAR(34), "Pharmacist MPage - New", CHAR(34), "^)'>",
           rec_cohort->list[D.SEQ].name, "</a></td>",
           "<td><span class='badge-", rec_cohort->list[D.SEQ].color, "'>Score: ", TRIM(CNVTSTRING(rec_cohort->list[D.SEQ].score)), "</span></td>",
-          "<td>", rec_cohort->list[D.SEQ].summary, "</td>",
+          "<td>", TRIM(rec_cohort->list[D.SEQ].summary, 3), "</td>",
           "</tr>"
       ))
     FOOT REPORT
