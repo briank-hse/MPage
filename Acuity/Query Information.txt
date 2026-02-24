@@ -1,0 +1,219 @@
+Gemini said
+Based on the file contents provided, the Individual Medications.txt query contains a substantial amount of commented-out code that acts as a fantastic dictionary for your specific PowerChart build. Because these codes are explicitly mapped to Irish maternity and neonatal hospitals (likely the MN-CMS domain), they are highly relevant to how you will construct your acuity score and patient cohort selection.
+
+Here is a breakdown of the specific code_value identifiers hardcoded in your repository:
+
+1. Facility Codes (loc_facility_cd)
+These values are crucial if you plan to filter your Pharmacist MPage acuity list by specific hospital sites.
+
+14437846: CUMH (Cork University Maternity Hospital)
+
+14504356: UHK (University Hospital Kerry)
+
+14504354: ROH (Rotunda Hospital)
+
+14504352: NMH (National Maternity Hospital)
+
+2. Medical Record Number (MRN) Alias Pools (alias_pool_cd)
+When querying for patients across the 6 different sites, the system distinguishes between the local MRNs using these pool codes.
+
+18991198.00: SOUTHMRN
+
+14504365.00: ROT MRN (Rotunda)
+
+14504359.00: NMH MRN (National Maternity Hospital)
+
+3. Nursing Unit Locations (loc_nurse_unit_cd)
+There is a highly specific ward/clinic code mapped in the Individual Medications.txt file. You can use these values if you want to implement the "Workstation Location (WTS)" approach to filter patient lists on the MPage.
+
+21119843.00: CUMH-Dr Orfhlaith Sullivan AN Clinic
+
+Other location-based IDs noted without explicit descriptions include: 20972939 (AAKPCUHK), 19784165 (CRKCL), 19808786 (CRKFC), 20765105 (MCMPR), 20972761 (PHPCUHK), and 20972769 (SCOTIA).
+
+4. Order Entry Field (OEF) Meanings (oe_field_meaning_id)
+If your acuity score requires querying specific details about an active medication order (e.g., checking if an order is an infusion or a specific strength), you must use these specific OEF identifiers to join the orders table to the order_detail table.
+
+15: INDICATION
+
+18: PERFORMLOC
+
+1103.00: DISCHARGE_INSTRUCTIONS
+
+2011: RXFREQ (Frequency)
+
+2050: RXROUTE
+
+2056: OD_STRENGTH_DOSE
+
+2057: OD_STRENGTH_DOSEUNIT
+
+2058: OD_VOLUME_DOSE
+
+2059: OD_VOLUME_DOSEUNIT
+
+2094: FREQSCHEDID (Frequency Schedule Id)
+
+9000.00: ORDER_INSTRUCTIONS
+
+5. Standard Encounter & Order Configuration Codes
+1077.00: This is your encntr_alias_type_cd for FIN (Financial Identification Number / Encounter Number).
+
+10.00: This is your person_alias_type_cd for standard MRNs.
+
+705: This is the activity_type_cd used to isolate specific pharmacy/medication prescriptions.
+
+2516: This is the catalog_type_cd used to isolate medication orders.
+
+When writing the backend CCL to calculate the Maternity Acuity Score, these exact facility and OEF codes must be preserved to ensure the script accurately pulls polypharmacy counts and high-risk medications without breaking existing logic across the different sites.
+
+Here are the core CCL excerpts and hardcoded Cerner mappings extracted directly from the repository. These queries detail the exact joins and CODE_VALUEs required to build the backend logic for your acuity triage system without disturbing the existing production dictionaries.
+
+1. Pregnancy Information & Gestation (EDD & EGA)
+To flag high-risk maternity patients based on their gestational age or to filter out non-pregnant patients, utilize the PREGNANCY_INSTANCE and PREGNANCY_ESTIMATE tables.
+
+SQL
+
+SELECT
+	PATIENT_NAME = P.NAME_FULL_FORMATTED
+	, EGA = DATETIMEDIFF(CNVTDATETIME(CURDATE,CURTIME3),DATETIMEADD(PE.EST_DELIVERY_DT_TM,(-280)))/7
+	, PE.EST_DELIVERY_DT_TM "DD/MM/YYYY"
+    , PI.ORGANIZATION_ID
+FROM
+	PREGNANCY_INSTANCE   PI
+	, PREGNANCY_ESTIMATE   PE
+	, PERSON   P
+PLAN PI WHERE PI.HISTORICAL_IND = 0
+    AND PI.ACTIVE_IND = 1
+    AND PI.PREG_END_DT_TM >= CNVTDATETIME(CNVTDATE2("12/31/2100","MM/DD/YYYY"),000000)
+JOIN PE WHERE PE.PREGNANCY_ID = PI.PREGNANCY_ID
+    AND PE.ACTIVE_IND = 1
+JOIN P WHERE P.PERSON_ID = PI.PERSON_ID
+Note on Site Filtering: The organization_id field in the PREGNANCY_INSTANCE table uses the following IDs to map to your 6 sites: 40024 (CUMH), 46026 (UHK), 46024 (NMH), and 46025 (Rotunda).
+
+2. Medical Comorbidities (Problems & Diagnoses)
+For acuity scoring based on existing high-risk conditions (like pre-eclampsia or DVT), the system joins the PROBLEM or DIAGNOSIS tables to the NOMENCLATURE table. You use wildcard strings on the SOURCE_STRING to capture SNOMED data.
+
+Pre-Eclampsia Diagnosis Example:
+
+SQL
+
+JOIN D WHERE D.PERSON_ID = P.PERSON_ID 
+JOIN N WHERE D.NOMENCLATURE_ID = N.NOMENCLATURE_ID 
+	AND CNVTUPPER(N.SOURCE_STRING) in ("*PRE-ECLAMPSIA*","*PREECLAMPSIA*") 
+DVT/PE Problem Example:
+
+SQL
+
+JOIN PB WHERE PB.PERSON_ID = P.PERSON_ID 
+JOIN N WHERE PB.NOMENCLATURE_ID = N.NOMENCLATURE_ID  
+	AND CNVTUPPER(N.SOURCE_STRING) in ("*DVT*", "*DEEP VEIN THROMBO*") 
+	OR CNVTUPPER(N.SOURCE_STRING) in ("*PULMONARY EMBOL*", "*THROMBOEMBOL*") 
+3. Vitals & Weight Data
+When assessing patients for high acuity based on weight parameters (such as extreme BMI), query the CLINICAL_EVENT table. The following EVENT_CD values are hardcoded in your domain:
+
+10933831.00: Body Mass Index Measured
+
+14516898.00: Weight Dosing
+
+10933816.00: Weight Measured
+
+14516784.00: Pre-Pregnancy Weight
+
+SQL
+
+SELECT
+	ce.event_title_text
+	, ce.result_val
+FROM
+	clinical_event   ce
+plan ce where ce.EVENT_CD = 10933831.00 ;BODY MASS INDEX MEASURED
+4. Severe Allergies
+If complex allergies contribute to the "Amber" or "Red" status, you must isolate active and verified allergies using the ACTIVE_STATUS_CD and REACTION_STATUS_CD.
+
+SQL
+
+JOIN A WHERE P.person_id = a.person_id 
+	AND A.ACTIVE_IND = 1  
+	AND A.ACTIVE_STATUS_CD =  188.00 ;188.00 Active, 192.00 Inactive
+	AND A.REACTION_STATUS_CD =  3299.00	;3299.00 Active, 3300.00 Cancelled, 27964.00 Resolved
+JOIN N WHERE a.substance_nom_id = n.nomenclature_id   
+5. Delivery Mode (Transitions of Care)
+Patients who have undergone complex deliveries (e.g., C-Sections) may automatically trigger higher acuity. This is also found in the CLINICAL_EVENT table using these specific codes:
+
+14507000 / 60777353.00: Delivery Type
+
+15083239: Caesarean Section Level
+
+SQL
+
+PLAN C WHERE C.EVENT_CD IN (14507000, 60777353.00) ;Delivery Type
+	AND C.RESULT_VAL = "C-Section"
+6. Social History (Smoking / Substance Use)
+To pull maternal smoking or substance use risk factors, join the SHX_ACTIVITY table to the SHX_RESPONSE and SHX_CATEGORY_DEF tables. The task assay code is essential here:
+
+15052324.00: SHX - TOBACCO USE
+
+SQL
+
+JOIN S WHERE P.PERSON_ID = S.PERSON_ID
+JOIN SC WHERE S.SHX_CATEGORY_REF_ID = SC.SHX_CATEGORY_REF_ID
+JOIN SCD WHERE SC.SHX_CATEGORY_REF_ID = SCD.SHX_CATEGORY_REF_ID 
+JOIN SE WHERE SCD.SHX_CATEGORY_DEF_ID = SE.SHX_CATEGORY_DEF_ID
+	AND SE.TASK_ASSAY_CD = 15052324.00 ;SHX - TOBACCO USE
+
+
+Based on the new code files you provided, there is a treasure trove of hardcoded `CODE_VALUE`s and `EVENT_CD`s directly related to Maternity, Gynaecology, and High-Risk clinical scenarios. 
+
+These values will save you a massive amount of time when writing the CCL logic for your Acuity Score, especially for automatically flagging patients who have had severe interventions (like major blood loss or epidurals).
+
+Here are the most important identifiers extracted from the queries:
+
+### 1. Maternal Haemorrhage & Vitals (`EVENT_CD`)
+Postpartum Haemorrhage (PPH) is a major driver of high acuity. You can automatically flag patients as "Red" or "Amber" if they trigger these event codes from the `CLINICAL_EVENT` table:
+* **82546829.00**: Total EBL (Estimated Blood Loss)
+* **15083551**: Delivery EBL
+* **19995695**: Intraoperative EBL
+* **15071366**: Blood Volume Infused (Indicates they required a transfusion)
+* **15212701**: Fetomaternal Haemorrhage Estimation
+* **18871145.00**: Flow cytometric estimation of FMH
+* **9096691.00**: Diastolic Blood Pressure
+* **14530764.00**: Urine Voided
+
+### 2. High-Risk Obstetric Medications (`EVENT_CD` & `ORDER_MNEMONIC`)
+In the `Oxycodone and EBL.txt` file, specific medications have been mapped to their exact clinical event codes. This is incredibly useful for counting high-risk medication administration:
+* **17421538**: Mifepristone (Medical management of miscarriage / induction)
+* **17431095**: Betamethasone (Fetal lung maturation)
+* **17290932**: Dexamethasone
+* **44723671**: Oxycodone 
+* **44723597**: Oxycontin
+* **Neuraxial/Epidural Anaesthesia:** * `18730072` (Bupivacaine 0.5%)
+    * `18730069` (Bupivacaine 0.25%)
+    * `19862303` (Levobupivacaine 25mg/10mL)
+    * `43951445` (Levobupivacaine 50mg/10mL)
+
+*To track specific continuous high-risk IVs, the `Labetalol Infusions.txt` query explicitly looks for:*
+* `O.ORDER_MNEMONIC = "Labetalol*"` combined with the Order Form "infusion".
+
+### 3. Separating Maternity from Gynae (`MED_SERVICE_CD`)
+You mentioned needing to create 3 different lists (Maternity, Gynae, Neonatal). The `All Inpatient Encounters.txt` query reveals the exact code used to isolate/exclude Gynaecology encounters on your domain:
+* **9031673.00**: Gynaecology Medical Service
+    * *CCL Use:* `E.MED_SERVICE_CD != 9031673.00 ;Exclude Gynaecology`
+
+### 4. Order Detail & Pharmacy Catalog Codes
+To query the `ORDERS` and `ORDER_CATALOG` tables accurately without pulling in lab orders or dietary orders, these standard configuration codes are documented:
+* **2516.00**: Pharmacy Catalog Type (`CATALOG_TYPE_CD`)
+* **2534.00**: Order Action Type (`ACTION_TYPE_CD`)
+* **2050**: `OE_FIELD_MEANING_ID` for **RXROUTE** (Allows you to filter for IVs vs PO meds).
+* **2014**: `OE_FIELD_MEANING_ID` for **FORM** (Allows you to filter for "infusion").
+
+### 5. Order Mnemonic Types (`MNEMONIC_TYPE_CD`)
+When querying `ORDER_CATALOG_SYNONYM` to map active medications, your domain uses these specific codes to organize drug names:
+* **2583**: Primary Name
+* **2580**: Brand Name
+* **26841**: Generic Name
+* **26840**: IV Fluids and Nicknames
+
+### Summary of how to use this for your Acuity MPage:
+When building the backend CCL script (Script 2 mentioned previously) that returns the JSON payload for your MPage, you can write conditional logic (e.g., `IF / ELSEIF`) based directly on these IDs. 
+
+For instance: *If a patient on the selected list has an active `CLINICAL_EVENT` where `EVENT_CD = 15071366` (Blood Transfusion), immediately assign them an Acuity Score of 3 (Red) and push them to the top of the Pharmacist's triage list.*
