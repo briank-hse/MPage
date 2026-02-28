@@ -7,6 +7,7 @@ create program 01_meds_DOT_by_date_comb_html3
   - Implemented Unified Record Structure (admin_rec) to merge PowerChart (MAE)
     and SN Anesthesia (SA) administrations safely.
   - Retained all legacy variables, styling, and chunking logic.
+  - Applied IE-quirks wrapper fix for fixed-width chart columns.
 ******************************************************************************/
 
 prompt
@@ -20,7 +21,7 @@ with OUTDEV, PAT_PersonId, LOOKBACK
 /* ========================================================================== */
 
 /* --- Set Font Size --- */
-declare v_font_size     = vc with noconstant("13px")
+declare v_font_size      = vc with noconstant("13px")
 declare v_med_font_size = vc with noconstant("14px")
 
 /* --- Meta and Header Variables --- */
@@ -197,7 +198,7 @@ head report
   v_begin_dt_str = format((curdate-$LOOKBACK),"DD/MM/YYYY;;d")
   v_end_dt_str   = format(curdate,"DD/MM/YYYY;;d")
   v_debug_info = concat("Query Range Start: ", format(cnvtdate(curdate - $LOOKBACK), "DD-MMM-YYYY;;D"), 
-                        " | Patient_ID: ", cnvtstring($PAT_PersonId), " | Total Admins: ", cnvtstring(admin_rec->cnt))
+                       " | Patient_ID: ", cnvtstring($PAT_PersonId), " | Total Admins: ", cnvtstring(admin_rec->cnt))
 with nocounter
 
 /* Dynamically find min/max dates from populated memory record */
@@ -213,6 +214,7 @@ if (admin_rec->cnt > 0)
     set v_i = v_i + 1
   endwhile
   if (v_max_dt < v_today) set v_max_dt = v_today endif
+  
   /* Count PC vs SN */
   set v_pc_cnt = 0
   set v_sn_cnt = 0
@@ -270,6 +272,7 @@ set v_table_meta = concat(v_table_meta, " &nbsp; <b>Lookback:</b> ", v_lookback,
 /* PASS 2: Build Chart Rows (Driven from Record Structure)                    */
 /* ========================================================================== */
 set v_chart_rows = ""
+if (admin_rec->cnt > 0)
 select into "nl:"
   med_name = trim(oc.primary_mnemonic)
 , mdy = format(admin_rec->qual[d.seq].admin_dt_tm, "YYYYMMDD;;D")
@@ -328,6 +331,7 @@ foot med_name
     v_row_cnt = v_row_cnt + 1
     v_strip = ""
     v_i = 0
+   
     while (v_i < v_days)
       v_key8 = format(v_min_dt + v_i, "YYYYMMDD;;D")
 
@@ -377,9 +381,9 @@ foot med_name
     
     v_chart_rows = concat(v_chart_rows, 
       '<tr', if(mod(v_row_cnt, 2) = 0) ' class="even"' else '' endif, '>',
-      '<td class="label medname sticky-med">', v_curr_med, '</td>',
-      '<td class="label dot-val sticky-doses"><span class="pill" title="', v_curr_med, ' - Total Doses: ', trim(cnvtstring(v_med_dose_total)), '">', cnvtstring(v_med_dose_total), '</span></td>',
-      '<td class="label dot-val sticky-dot"><span class="pill" title="', v_curr_med, ' - Total Days of Therapy: ', trim(cnvtstring(v_med_dot_total)), '">', cnvtstring(v_med_dot_total), '</span></td>',
+      '<td width="180" class="label medname sticky-med"><div style="width:180px; word-wrap:break-word; white-space:normal;">', v_curr_med, '</div></td>',
+      '<td width="46" class="label dot-val sticky-doses"><div style="width:46px; text-align:center;"><span class="pill" title="', v_curr_med, ' - Total Doses: ', trim(cnvtstring(v_med_dose_total)), '">', cnvtstring(v_med_dose_total), '</span></div></td>',
+      '<td width="46" class="label dot-val sticky-dot"><div style="width:46px; text-align:center;"><span class="pill" title="', v_curr_med, ' - Total Days of Therapy: ', trim(cnvtstring(v_med_dot_total)), '">', cnvtstring(v_med_dot_total), '</span></div></td>',
       '<td><div class="strip">', v_strip, '</div></td>',
       '</tr>')
   endif
@@ -392,7 +396,7 @@ foot report
       while (v_i < v_days)
           v_key8 = format(v_min_dt + v_i, "YYYYMMDD;;D")
           if (findstring(concat("~", v_key8, "~"), v_all_days_list) > 0)
-              v_sum_strip = concat(v_sum_strip, '<span class="cell sum-yes" title="Antimicrobial Administered"></span>')
+             v_sum_strip = concat(v_sum_strip, '<span class="cell sum-yes" title="Antimicrobial Administered"></span>')
           else
               v_sum_strip = concat(v_sum_strip, '<span class="cell sum-no" title="No Antimicrobials"></span>')
           endif
@@ -403,19 +407,21 @@ foot report
         
       v_chart_rows = concat(v_chart_rows,
           '<tr class="summary-row">',
-            '<td class="label sticky-med">Antimicrobial Summary</td>',
-            '<td class="label sticky-doses"></td>',
-            '<td class="label sticky-dot"></td>',
+            '<td width="180" class="label sticky-med"><div style="width:180px; white-space:normal;">Antimicrobial Summary</div></td>',
+            '<td width="46" class="label sticky-doses"><div style="width:46px;"></div></td>',
+            '<td width="46" class="label sticky-dot"><div style="width:46px;"></div></td>',
             '<td><div class="strip">', v_sum_strip, '</div></td>',
           '</tr>')
   endif
 
 with nocounter
+endif ; admin_rec->cnt > 0 (Pass 2)
 
 /* ========================================================================== */
 /* PASS 3: Build Table Rows (Driven from Record Structure)                    */
 /* ========================================================================== */
 set v_table_rows = ""
+if (admin_rec->cnt > 0)
 select into "nl:"
   med_name = trim(oc.primary_mnemonic)
 , admin_src = admin_rec->qual[d.seq].src
@@ -474,7 +480,11 @@ foot o.order_id
   v_stat  = o_order_status_disp
   v_sdt   = format(o.status_dt_tm,"DD/MM/YYYY;;d")
   if (v_dose > 0)
-    v_dose_str = concat(trim(format(v_dose,"########.##")), " ", v_unit)
+    if (mod(v_dose, 1) = 0)
+      v_dose_str = concat(trim(format(v_dose,"########")), " ", v_unit)
+    else
+      v_dose_str = concat(trim(format(v_dose,"########.##")), " ", v_unit)
+    endif
   else
     v_dose_str = ""
   endif
@@ -483,11 +493,11 @@ foot o.order_id
   
   v_table_rows = concat(v_table_rows,
     '<tr', if(mod(v_row_cnt, 2) = 0) ' class="even"' else '' endif, '>',
-      '<td>', v_drug,
+      '<td width="180">', v_drug,
         if(v_order_src = "SN") ' <span style="color:#888;font-size:10px;">(Anes)</span>' else '' endif,
       '</td>',
-      '<td class="dot-val"><span class="pill">', cnvtstring(v_doses), '</span></td>',
-      '<td class="dot-val"><span class="pill">', cnvtstring(v_dot), '</span></td>',
+      '<td width="46" class="dot-val"><span class="pill">', cnvtstring(v_doses), '</span></td>',
+      '<td width="46" class="dot-val"><span class="pill">', cnvtstring(v_dot), '</span></td>',
       "<td>", v_dose_str, "</td>",
       "<td>", v_ind, "</td>",
       "<td>", v_start, "</td>",
@@ -497,6 +507,7 @@ foot o.order_id
     "</tr>"
   )
 with nocounter
+endif ; admin_rec->cnt > 0 (Pass 3)
 
 if (textlen(v_table_rows) = 0)
   set v_table_rows = '<tr><td colspan="8">No antimicrobial orders found in the selected window.</td></tr>'
@@ -523,8 +534,8 @@ head report
   row +1 '.axisbar{display:flex;justify-content:space-between;margin:10px 0 8px calc(260px + 46px + 4px);color:#333;font-size:12px;}'
     
   row +1 '.chart-wrap{overflow-x:auto;border:1px solid #ddd;background:#fff;margin-bottom:12px;}'
-  row +1 'table.chart-tbl{border-collapse:collapse;border-spacing:0;width:100%;}'
-  row +1 'col.med{width:260px}'
+  row +1 'table.chart-tbl{border-collapse:collapse;border-spacing:0;}'
+  row +1 'col.med{width:180px}'
   row +1 'col.doses{width:46px}'
   row +1 'col.dot{width:46px}'
   row +1 'table.chart-tbl th, table.chart-tbl td{vertical-align:top;padding:0px 4px;text-align:left;font-size:12px;}'
@@ -565,7 +576,7 @@ head report
   row +1 '.dot-val, table.data-tbl td.dot-val, table.chart-tbl td.dot-val{text-align:center !important;vertical-align:middle !important;}'
   row +1 'table.chart-tbl tbody td.dot-val{background:#fff;}'
     
-  row +1 'table.chart-tbl tbody th.sticky-med, table.chart-tbl tbody td.sticky-med {position:sticky;left:0;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;padding-left:8px;width:260px;}'
+  row +1 'table.chart-tbl tbody th.sticky-med, table.chart-tbl tbody td.sticky-med {position:sticky;left:0;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;padding-left:8px;width:180px;}'
   row +1 'table.chart-tbl tbody th.sticky-doses, table.chart-tbl tbody td.sticky-doses {position:sticky;left:260px;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;width:46px;}'
   row +1 'table.chart-tbl tbody th.sticky-dot, table.chart-tbl tbody td.sticky-dot {position:sticky;left:306px;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;width:46px;}'
   
@@ -578,7 +589,8 @@ head report
   row +1 'table.chart-tbl thead th.sticky-doses {position:sticky;left:260px;z-index:15;}'
   row +1 'table.chart-tbl thead th.sticky-dot {position:sticky;left:306px;z-index:15;}'
     
-  row +1 'table.data-tbl{border-collapse:collapse;width:100%;margin-top:12px;font-size:12px;border:1px solid #b5b5b5;border-bottom:2px solid #a0a0a0;}'
+  row +1 'table.data-tbl{border-collapse:collapse;margin-top:12px;font-size:12px;border:1px solid #b5b5b5;border-bottom:2px solid #a0a0a0;}'
+  row +1 'table.data-tbl td{border:1px solid #d6d9dd;padding:4px 6px;text-align:left;background:#fff;}'
   row +1 'table.data-tbl td{border:1px solid #d6d9dd;padding:4px 6px;text-align:left;background:#fff;}'
   
   row +1 'table.data-tbl tbody tr:last-child td{border-bottom:2px solid #a0a0a0;}'
@@ -608,8 +620,8 @@ head report
   row +1 call print(v_axis_html)
     
   row +1 '<div class="chart-wrap">'
-  row +1 '<table class="chart-tbl"><colgroup><col class="med"><col class="doses"><col class="dot"><col></colgroup><thead>'
-  row +1 '<tr><th class="label sticky-med">Medication</th><th class="label sticky-doses">Doses</th><th class="label sticky-dot">DOT</th><th class="label">Days</th></tr>'
+  row +1 '<table width="100%" class="chart-tbl"><colgroup><col width="260" class="med"><col width="46" class="doses"><col width="46" class="dot"><col></colgroup><thead>'
+  row +1 '<tr><th width="260" class="label sticky-med"><div style="width:180px; text-align:left;">Medication</div></th><th width="46" class="label sticky-doses"><div style="width:46px; text-align:center;">Doses</div></th><th width="46" class="label sticky-dot"><div style="width:46px; text-align:center;">DOT</div></th><th class="label">Days</th></tr>'
   if (textlen(v_header_html) > 0)
     row +1 '<tr class="ticks"><th class="sticky-med"></th><th class="sticky-doses"></th><th class="sticky-dot"></th><th><div class="strip">'
     row +1 call print(v_header_html)
@@ -633,10 +645,10 @@ head report
 
   /* --- TABLE SECTION --- */
   row +1 '<h2>Antimicrobial Order Details</h2>'
-  row +1 '<table class="data-tbl">'
-  row +1 '<colgroup><col class="med"><col class="doses"><col class="dot"></colgroup>'
+  row +1 '<table width="100%" class="data-tbl">'
+  row +1 '<colgroup><col width="260" class="med"><col width="46" class="doses"><col width="46" class="dot"></colgroup>'
   row +1 '<thead><tr>'
-  row +1 '<th>Medication</th><th>Doses</th><th>DOT</th><th>Target Dose</th><th>Indication</th>'
+  row +1 '<th>Medication</th><th style="text-align:center;">Doses</th><th style="text-align:center;">DOT</th><th>Target Dose</th><th>Indication</th>'
   row +1 '<th>Start Date</th><th>Latest Status</th><th>Status Date</th><th>Order ID</th>'
   row +1 '</tr></thead>'
   row +1 '<tbody>'
