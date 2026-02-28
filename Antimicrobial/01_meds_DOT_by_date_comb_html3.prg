@@ -7,7 +7,8 @@ create program 01_meds_DOT_by_date_comb_html3
   - Implemented Unified Record Structure (admin_rec) to merge PowerChart (MAE)
     and SN Anesthesia (SA) administrations safely.
   - Retained all legacy variables, styling, and chunking logic.
-  - Applied IE-quirks wrapper fix for fixed-width chart columns.
+  - Applied IE-quirks wrapper fix for fixed-width chart columns (180px).
+  - Added mathematical grand totals for DOT to the summary row.
 ******************************************************************************/
 
 prompt
@@ -59,6 +60,9 @@ declare v_row_cnt     = i4 with noconstant(0)
 declare v_all_days_list = vc with noconstant(""), maxlen=65534
 declare v_sum_strip     = vc with noconstant(""), maxlen=65534
 declare v_spacer_strip  = vc with noconstant(""), maxlen=65534
+declare v_total_summary_dot = i4 with noconstant(0)
+declare v_grand_total_dot   = i4 with noconstant(0)
+declare v_grand_total_doses = i4 with noconstant(0)
 
 /* --- Chart Parsing Variables --- */
 declare v_findpos          = i4 with noconstant(0)
@@ -302,6 +306,7 @@ head report
   v_details_kv = ""
   v_all_days_list = ""
   v_row_cnt = 0
+  v_grand_total_dot = 0
 
 head med_name
   v_curr_med = med_name
@@ -329,6 +334,9 @@ foot mdy
 foot med_name
   if (v_days > 0)
     v_row_cnt = v_row_cnt + 1
+    
+    v_grand_total_dot = v_grand_total_dot + v_med_dot_total
+    
     v_strip = ""
     v_i = 0
    
@@ -409,7 +417,7 @@ foot report
           '<tr class="summary-row">',
             '<td width="180" class="label sticky-med"><div style="width:180px; white-space:normal;">Antimicrobial Summary</div></td>',
             '<td width="46" class="label sticky-doses"><div style="width:46px;"></div></td>',
-            '<td width="46" class="label sticky-dot"><div style="width:46px;"></div></td>',
+            '<td width="46" class="label dot-val sticky-dot"><div style="width:46px; text-align:center;"><span class="pill" title="Total Summary Days of Therapy: ', cnvtstring(v_grand_total_dot), '">', cnvtstring(v_grand_total_dot), '</span></div></td>',
             '<td><div class="strip">', v_sum_strip, '</div></td>',
           '</tr>')
   endif
@@ -531,7 +539,7 @@ head report
   row +1 'h2{font-size:15px;margin:16px 0 8px;padding-top:0;}'
   row +1 '.sub{color:#444;margin:4px 0 16px;}'
   row +1 '.legend{margin-top:6px;color:#555;font-size:12px}'
-  row +1 '.axisbar{display:flex;justify-content:space-between;margin:10px 0 8px calc(260px + 46px + 4px);color:#333;font-size:12px;}'
+  row +1 '.axisbar{display:flex;justify-content:space-between;margin:10px 0 8px calc(180px + 46px + 4px);color:#333;font-size:12px;}'
     
   row +1 '.chart-wrap{overflow-x:auto;border:1px solid #ddd;background:#fff;margin-bottom:12px;}'
   row +1 'table.chart-tbl{border-collapse:collapse;border-spacing:0;}'
@@ -577,8 +585,8 @@ head report
   row +1 'table.chart-tbl tbody td.dot-val{background:#fff;}'
     
   row +1 'table.chart-tbl tbody th.sticky-med, table.chart-tbl tbody td.sticky-med {position:sticky;left:0;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;padding-left:8px;width:180px;}'
-  row +1 'table.chart-tbl tbody th.sticky-doses, table.chart-tbl tbody td.sticky-doses {position:sticky;left:260px;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;width:46px;}'
-  row +1 'table.chart-tbl tbody th.sticky-dot, table.chart-tbl tbody td.sticky-dot {position:sticky;left:306px;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;width:46px;}'
+  row +1 'table.chart-tbl tbody th.sticky-doses, table.chart-tbl tbody td.sticky-doses {position:sticky;left:180px;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;width:46px;}'
+  row +1 'table.chart-tbl tbody th.sticky-dot, table.chart-tbl tbody td.sticky-dot {position:sticky;left:226px;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;width:46px;}'
   
   row +1 'tr.even td.sticky-med, tr.even td.sticky-doses, tr.even td.sticky-dot { background: #f5f5f5 !important;}'
   row +1 'tr.even td.dot-val { background: #f5f5f5 !important;}'
@@ -586,8 +594,8 @@ head report
 
   row +1 'table.chart-tbl tbody th.label{z-index:11;}'
   row +1 'table.chart-tbl thead th.sticky-med {position:sticky;left:0;z-index:15;}'
-  row +1 'table.chart-tbl thead th.sticky-doses {position:sticky;left:260px;z-index:15;}'
-  row +1 'table.chart-tbl thead th.sticky-dot {position:sticky;left:306px;z-index:15;}'
+  row +1 'table.chart-tbl thead th.sticky-doses {position:sticky;left:180px;z-index:15;}'
+  row +1 'table.chart-tbl thead th.sticky-dot {position:sticky;left:226px;z-index:15;}'
     
   row +1 'table.data-tbl{border-collapse:collapse;margin-top:12px;font-size:12px;border:1px solid #b5b5b5;border-bottom:2px solid #a0a0a0;}'
   row +1 'table.data-tbl td{border:1px solid #d6d9dd;padding:4px 6px;text-align:left;background:#fff;}'
@@ -620,8 +628,8 @@ head report
   row +1 call print(v_axis_html)
     
   row +1 '<div class="chart-wrap">'
-  row +1 '<table width="100%" class="chart-tbl"><colgroup><col width="260" class="med"><col width="46" class="doses"><col width="46" class="dot"><col></colgroup><thead>'
-  row +1 '<tr><th width="260" class="label sticky-med"><div style="width:180px; text-align:left;">Medication</div></th><th width="46" class="label sticky-doses"><div style="width:46px; text-align:center;">Doses</div></th><th width="46" class="label sticky-dot"><div style="width:46px; text-align:center;">DOT</div></th><th class="label">Days</th></tr>'
+  row +1 '<table width="100%" class="chart-tbl"><colgroup><col width="180" class="med"><col width="46" class="doses"><col width="46" class="dot"><col></colgroup><thead>'
+  row +1 '<tr><th width="180" class="label sticky-med"><div style="width:180px; text-align:left;">Medication</div></th><th width="46" class="label sticky-doses"><div style="width:46px; text-align:center;">Doses</div></th><th width="46" class="label sticky-dot"><div style="width:46px; text-align:center;">DOT</div></th><th class="label">Days</th></tr>'
   if (textlen(v_header_html) > 0)
     row +1 '<tr class="ticks"><th class="sticky-med"></th><th class="sticky-doses"></th><th class="sticky-dot"></th><th><div class="strip">'
     row +1 call print(v_header_html)
@@ -646,7 +654,7 @@ head report
   /* --- TABLE SECTION --- */
   row +1 '<h2>Antimicrobial Order Details</h2>'
   row +1 '<table width="100%" class="data-tbl">'
-  row +1 '<colgroup><col width="260" class="med"><col width="46" class="doses"><col width="46" class="dot"></colgroup>'
+  row +1 '<colgroup><col width="180" class="med"><col width="46" class="doses"><col width="46" class="dot"></colgroup>'
   row +1 '<thead><tr>'
   row +1 '<th>Medication</th><th style="text-align:center;">Doses</th><th style="text-align:center;">DOT</th><th>Target Dose</th><th>Indication</th>'
   row +1 '<th>Start Date</th><th>Latest Status</th><th>Status Date</th><th>Order ID</th>'
