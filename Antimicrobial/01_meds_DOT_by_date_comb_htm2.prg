@@ -610,7 +610,7 @@ head report
   row +1 '</style></head><body><div class="wrap">'
 
   /* --- CHART SECTION --- */
-  row +1 '<h1>Antimicrobial Administrations by Date</h1>'
+  row +1 '<h1>Antimicrobial Administrations by Date - incl Date Fix (Retrospective Admin post Midnight)</h1>'
   row +1 '<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given.</div>'
   row +1 call print(v_axis_html)
     
