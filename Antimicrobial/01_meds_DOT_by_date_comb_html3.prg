@@ -11,7 +11,6 @@ create program 01_meds_DOT_by_date_comb_html3
   - Added mathematical grand totals for DOT to the summary row.
   - Added new 'Dose' column splitting Target Dose space, powered by 
     ORDER_DETAIL STRENGTH (2056) and STRENGTHUNIT (2057).
-  - Fixed hidden whitespace in Cerner OEF fields dropping volume-only doses.
 ******************************************************************************/
 
 prompt
@@ -97,11 +96,13 @@ declare v_end_dt_str  = vc with noconstant("")
 declare v_today       = dq8 with noconstant(0)
 declare v_debug_info  = vc with noconstant(""), maxlen=2000
 declare v_local_dt    = dq8 with noconstant(0)
-declare v_dose_str    = vc with noconstant("")
+declare v_dose_str        = vc with noconstant("")
 declare v_actual_dose_str = vc with noconstant("")
-declare v_s           = vc with noconstant("")
-declare v_v           = vc with noconstant("")
-declare v_order_src   = vc with noconstant("")
+declare v_s               = vc with noconstant("")
+declare v_v               = vc with noconstant("")
+declare v_order_src       = vc with noconstant("")
+declare v_disp            = vc with noconstant("")
+declare v_fin             = vc with noconstant("")
 
 /* --- Debug Count Variables --- */
 declare v_pc_cnt      = i4 with noconstant(0)
@@ -446,11 +447,12 @@ select into "nl:"
 , indication = substring(1,60,trim(od_indication.oe_field_display_value))
 , ordered_target_dose = oi.ordered_dose
 , ordered_target_dose_unit = uar_get_code_display(oi.ordered_dose_unit_cd)
-  /* NOTE: Added trim flag 3 here to completely strip hidden Cerner whitespace */
-, strength_val = substring(1,60,trim(od_strength.oe_field_display_value, 3))
-, strength_unit  = substring(1,60,trim(od_strengthunit.oe_field_display_value, 3))
-, volume_val     = substring(1,60,trim(od_volume.oe_field_display_value, 3))
-, volume_unit    = substring(1,60,trim(od_volumeunit.oe_field_display_value, 3))
+, strength_val = substring(1,60,trim(od_strength.oe_field_display_value))
+, strength_unit  = substring(1,60,trim(od_strengthunit.oe_field_display_value))
+, volume_val     = substring(1,60,trim(od_volume.oe_field_display_value))
+, volume_unit    = substring(1,60,trim(od_volumeunit.oe_field_display_value))
+, simplified_disp = trim(o.simplified_display_line)
+, fin_alias = trim(ea.alias)
 , o.order_id
 from
   (dummyt d with seq = admin_rec->cnt)
@@ -462,6 +464,7 @@ from
 , order_detail od_strengthunit
 , order_detail od_volume
 , order_detail od_volumeunit
+, encntr_alias ea
 plan d
 join o where o.order_id = admin_rec->qual[d.seq].order_id
 join oc where oc.catalog_cd = o.catalog_cd
@@ -477,6 +480,8 @@ join od_volume where od_volume.order_id = outerjoin(o.order_id)
   and od_volume.oe_field_meaning_id = outerjoin(2058)
 join od_volumeunit where od_volumeunit.order_id = outerjoin(o.order_id)
   and od_volumeunit.oe_field_meaning_id = outerjoin(2059)
+join ea where ea.encntr_id = outerjoin(o.encntr_id)
+  and ea.encntr_alias_type_cd = outerjoin(1077.00)
 
 order by o.order_id, cnvtupper(trim(oc.primary_mnemonic)), day_key
 
@@ -490,6 +495,8 @@ head o.order_id
   v_dose  = 0.0
   v_unit  = ""
   v_ind   = ""
+  v_disp  = ""
+  v_fin   = ""
   v_start = ""
   v_stat  = ""
   v_sdt   = ""
@@ -507,6 +514,8 @@ foot o.order_id
   v_dose  = ordered_target_dose
   v_unit  = ordered_target_dose_unit
   v_ind   = indication
+  v_disp  = simplified_disp
+  v_fin   = fin_alias
   v_start = format(o.current_start_dt_tm,"DD/MM/YYYY;;d")
   v_stat  = o_order_status_disp
   v_sdt   = format(o.status_dt_tm,"DD/MM/YYYY;;d")
@@ -530,29 +539,30 @@ foot o.order_id
   v_actual_dose_str = ""
   v_s = ""
   v_v = ""
-  
-  if (textlen(strength_val) > 0)
-    v_s = strength_val
-    if (textlen(strength_unit) > 0)
-      v_s = concat(v_s, " ", strength_unit)
+  if (textlen(trim(strength_val)) > 0)
+    v_s = trim(strength_val)
+    if (textlen(trim(strength_unit)) > 0)
+      v_s = concat(v_s, " ")
+      v_s = concat(v_s, trim(strength_unit))
     endif
   endif
-  
-  if (textlen(volume_val) > 0)
-    v_v = volume_val
-    if (textlen(volume_unit) > 0)
-      v_v = concat(v_v, " ", volume_unit)
+  if (textlen(trim(volume_val)) > 0)
+    v_v = trim(volume_val)
+    if (textlen(trim(volume_unit)) > 0)
+      v_v = concat(v_v, " ")
+      v_v = concat(v_v, trim(volume_unit))
     endif
   endif
-  
-  if (textlen(v_s) > 0 and textlen(v_v) > 0)
-    v_actual_dose_str = concat(v_s, " / ", v_v)
-  elseif (textlen(v_s) > 0)
+  if (textlen(v_s) > 0)
     v_actual_dose_str = v_s
-  elseif (textlen(v_v) > 0)
+  endif
+  if (textlen(v_v) > 0 and textlen(v_s) = 0)
     v_actual_dose_str = v_v
   endif
-  
+  ; Fallback: if order_detail fields empty, use order_ingredient dose (same as Target Dose)
+  if (textlen(v_actual_dose_str) = 0 and textlen(v_dose_str) > 0)
+    v_actual_dose_str = v_dose_str
+  endif
   ; Fallback: if order_detail fields empty, use order_ingredient dose (same as Target Dose)
   if (textlen(v_actual_dose_str) = 0 and textlen(v_dose_str) > 0)
     v_actual_dose_str = v_dose_str
@@ -569,18 +579,20 @@ foot o.order_id
       '<td width="46" class="dot-val"><span class="pill">', cnvtstring(v_dot), '</span></td>',
       "<td>", v_dose_str, "</td>",
       "<td>", v_actual_dose_str, "</td>",
+      "<td>", v_disp, "</td>",
       "<td>", v_ind, "</td>",
       "<td>", v_start, "</td>",
       "<td>", v_stat, "</td>",
       "<td>", v_sdt, "</td>",
       "<td>", v_oid, "</td>",
+      "<td>", v_fin, "</td>",
     "</tr>"
   )
 with nocounter
 endif ; admin_rec->cnt > 0 (Pass 3)
 
 if (textlen(v_table_rows) = 0)
-  set v_table_rows = '<tr><td colspan="9">No antimicrobial orders found in the selected window.</td></tr>'
+  set v_table_rows = '<tr><td colspan="11">No antimicrobial orders found in the selected window.</td></tr>'
 endif
 
 /* ========================================================================== */
@@ -718,8 +730,8 @@ head report
   row +1 '<table width="100%" class="data-tbl">'
   row +1 '<colgroup><col width="180" class="med"><col width="46" class="doses"><col width="46" class="dot"><col style="width:12%;"><col style="width:12%;"></colgroup>'
   row +1 '<thead><tr>'
-  row +1 '<th>Medication</th><th style="text-align:center;">Doses</th><th style="text-align:center;">DOT</th><th>Target Dose</th><th>Dose</th><th>Indication</th>'
-  row +1 '<th>Start Date</th><th>Latest Status</th><th>Status Date</th><th>Order ID</th>'
+  row +1 '<th>Medication</th><th style="text-align:center;">Doses</th><th style="text-align:center;">DOT</th><th>Target Dose</th><th>Dose</th><th>Order Detail</th><th>Indication</th>'
+  row +1 '<th>Start Date</th><th>Latest Status</th><th>Status Date</th><th>Order ID</th><th>FIN</th>'
   row +1 '</tr></thead>'
   row +1 '<tbody>'
 
