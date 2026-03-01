@@ -103,6 +103,7 @@ declare v_v               = vc with noconstant("")
 declare v_order_src       = vc with noconstant("")
 declare v_disp            = vc with noconstant("")
 declare v_fin             = vc with noconstant("")
+declare v_encntr_id       = vc with noconstant("")
 
 /* --- Debug Count Variables --- */
 declare v_pc_cnt      = i4 with noconstant(0)
@@ -453,6 +454,7 @@ select into "nl:"
 , volume_unit    = substring(1,60,trim(od_volumeunit.oe_field_display_value))
 , simplified_disp = trim(o.simplified_display_line)
 , fin_alias = trim(ea.alias)
+, encntr_id_val = o.encntr_id
 , o.order_id
 from
   (dummyt d with seq = admin_rec->cnt)
@@ -497,6 +499,7 @@ head o.order_id
   v_ind   = ""
   v_disp  = ""
   v_fin   = ""
+  v_encntr_id = ""
   v_start = ""
   v_stat  = ""
   v_sdt   = ""
@@ -516,6 +519,7 @@ foot o.order_id
   v_ind   = indication
   v_disp  = simplified_disp
   v_fin   = fin_alias
+  v_encntr_id = trim(cnvtstring(encntr_id_val, 20, 0))
   v_start = format(o.current_start_dt_tm,"DD/MM/YYYY;;d")
   v_stat  = o_order_status_disp
   v_sdt   = format(o.status_dt_tm,"DD/MM/YYYY;;d")
@@ -568,8 +572,13 @@ foot o.order_id
     v_actual_dose_str = v_dose_str
   endif
   
+/* Fallback so you always have text to click even if the FIN is missing */
+  if (trim(v_fin) = "")
+    v_fin = "--"
+  endif
+
   v_row_cnt = v_row_cnt + 1
-  
+
   v_table_rows = concat(v_table_rows,
     '<tr', if(mod(v_row_cnt, 2) = 0) ' class="even"' else '' endif, '>',
       '<td width="180">', v_drug,
@@ -578,14 +587,18 @@ foot o.order_id
       '<td width="46" class="dot-val"><span class="pill">', cnvtstring(v_doses), '</span></td>',
       '<td width="46" class="dot-val"><span class="pill">', cnvtstring(v_dot), '</span></td>',
       "<td>", v_dose_str, "</td>",
-      "<td>", v_actual_dose_str, "</td>",
+      '<td style="display:none;">', v_actual_dose_str, '</td>',
       "<td>", v_disp, "</td>",
       "<td>", v_ind, "</td>",
       "<td>", v_start, "</td>",
       "<td>", v_stat, "</td>",
       "<td>", v_sdt, "</td>",
       "<td>", v_oid, "</td>",
-      "<td>", v_fin, "</td>",
+      concat("<td><a href='javascript:APPLINK(0,", char(94), "Powerchart.exe", char(94), ",", char(94), "/PERSONID=",
+      trim(cnvtstring($PAT_PersonId, 20, 0)),
+      " /ENCNTRID=", v_encntr_id,
+      " /FIRSTTAB=", char(34), "Pharmacist MPage", char(34),
+      char(94), ")'>", v_fin, "</a></td>"),
     "</tr>"
   )
 with nocounter
@@ -728,9 +741,9 @@ head report
   /* --- TABLE SECTION --- */
   row +1 '<h2>Antimicrobial Order Details</h2>'
   row +1 '<table width="100%" class="data-tbl">'
-  row +1 '<colgroup><col width="180" class="med"><col width="46" class="doses"><col width="46" class="dot"><col style="width:12%;"><col style="width:12%;"></colgroup>'
+  row +1 '<colgroup><col width="180" class="med"><col width="46" class="doses"><col width="46" class="dot"><col style="width:6%;"><col style="width:0;"><col style="width:24%;"></colgroup>'
   row +1 '<thead><tr>'
-  row +1 '<th>Medication</th><th style="text-align:center;">Doses</th><th style="text-align:center;">DOT</th><th>Target Dose</th><th>Dose</th><th>Order Detail</th><th>Indication</th>'
+  row +1 '<th>Medication</th><th style="text-align:center;">Doses</th><th style="text-align:center;">DOT</th><th>Target Dose</th><th style="display:none;">Dose</th><th>Order Detail</th><th>Indication</th>'
   row +1 '<th>Start Date</th><th>Latest Status</th><th>Status Date</th><th>Order ID</th><th>FIN</th>'
   row +1 '</tr></thead>'
   row +1 '<tbody>'
