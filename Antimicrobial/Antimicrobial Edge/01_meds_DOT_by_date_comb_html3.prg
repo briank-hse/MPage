@@ -612,8 +612,8 @@ head report
   row +1 '<title>Antimicrobial Days of Therapy - By Date</title>'
   row +1 '<style>'
   row +1 '*,*:before,*:after{box-sizing:border-box}'
-  row +1 call print(concat('body{margin:0;font:', v_font_size, '/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;color:#111;background:#fff;padding:16px;}'))
-  row +1 '.wrap{max-width:1200px;margin:0 auto;}'
+  row +1 call print(concat('body{margin:0;font:', v_font_size, '/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;color:#111;background:#fff;padding:0;}'))
+  row +1 '.wrap{width:100%; max-width:100%; margin:0; padding:0; box-sizing:border-box;}'
   row +1 'h1{font-size:18px;margin:0 0 8px;}'
   row +1 'h2{font-size:15px;margin:16px 0 8px;padding-top:0;}'
   row +1 '.sub{color:#444;margin:4px 0 16px;}'
