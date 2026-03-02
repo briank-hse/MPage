@@ -280,10 +280,7 @@ if (v_first = 1)
   set v_header_html = ""
 else
   set v_days = (datetimediff(v_max_dt, v_min_dt, 7)) + 1
-  set v_axis_html = concat(
-    '<div class="axisbar"><div>Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"),
-    ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), '</div></div>'
-  )
+  set v_axis_html = concat(' <span style="font-weight:normal; font-size:11px; color:#555;">(Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ')</span>')
   set v_header_html = ''
   set v_i = 0
   while (v_i < v_days)
@@ -833,12 +830,11 @@ head report
   row +1 '.sub{color:#444;margin:4px 0 16px;}'
   row +1 '.meta-flex { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }'
   row +1 '.legend{margin-top:6px;color:#555;font-size:12px}'
-  row +1 '.axisbar{display:flex;justify-content:space-between;margin:10px 0 8px calc(180px + 46px + 4px);color:#333;font-size:12px;}'
 
   row +1 '.chart-wrap{overflow-x:auto;border:1px solid var(--border-color);background:var(--bg-main);margin-bottom:12px;}'
   
   /* Edge HTML Update: Enforce fixed layout for robust edge rendering without nested divs */
-  row +1 'table.chart-tbl{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;}'
+  row +1 'table.chart-tbl{min-width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;}'
   
   row +1 'table.chart-tbl th, table.chart-tbl td{vertical-align:top;padding:0px 4px;text-align:left;font-size:12px;}'
   row +1 'table.chart-tbl thead th{vertical-align:middle;}'
@@ -876,11 +872,11 @@ head report
   row +1 'table.chart-tbl thead tr.ticks th{background:transparent;border:0;padding:0;color:#555;}'
   
   /* Edge CSS Update: Shifted explicit width logic from inline DOM divs directly into the sticky classes */
-  row +1 'table.chart-tbl th.sticky-med, table.chart-tbl td.sticky-med { position:sticky; left:0; background:var(--sticky-bg); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); z-index:10; border-right:1px solid var(--border-dark); border-bottom:1px solid var(--border-color); padding-left:8px; width:220px; min-width:220px; max-width:220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }'
-  row +1 'table.chart-tbl th.sticky-doses, table.chart-tbl td.sticky-doses { position:sticky; left:180px; background:var(--sticky-bg); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); z-index:10; border-right:1px solid var(--border-dark); border-bottom:1px solid var(--border-color); width:46px; min-width:46px; max-width:46px; text-align:center; }'
-  row +1 'table.chart-tbl th.sticky-dot, table.chart-tbl td.sticky-dot { position:sticky; left:226px; background:var(--sticky-bg); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); z-index:10; border-right:none; box-shadow: 2px 0 5px -2px rgba(0,0,0,0.2); border-bottom:1px solid var(--border-color); width:46px; min-width:46px; max-width:46px; text-align:center; }'
+  row +1 'table.chart-tbl th.sticky-med, table.chart-tbl td.sticky-med { position:sticky; left:0; background:var(--sticky-bg); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); z-index:10; border-right:1px solid var(--border-dark); border-bottom:1px solid var(--border-color); padding-left:8px; width:150px; min-width:150px; max-width:150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }'
+  row +1 'table.chart-tbl th.sticky-doses, table.chart-tbl td.sticky-doses { position:sticky; left:150px; background:var(--sticky-bg); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); z-index:10; border-right:1px solid var(--border-dark); border-bottom:1px solid var(--border-color); width:32px; min-width:32px; max-width:32px; text-align:center; }'
+  row +1 'table.chart-tbl th.sticky-dot, table.chart-tbl td.sticky-dot { position:sticky; left:182px; background:var(--sticky-bg); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); z-index:10; border-right:none; box-shadow: 2px 0 5px -2px rgba(0,0,0,0.2); border-bottom:1px solid var(--border-color); width:32px; min-width:32px; max-width:32px; text-align:center; }'
   
-  row +1 'table.chart-tbl thead tr.ticks th.sticky-med, table.chart-tbl thead tr.ticks th.sticky-doses, table.chart-tbl thead tr.ticks th.sticky-dot {background: var(--bg-main) !important; z-index: 30; border-bottom:1px solid var(--border-dark);}'
+  row +1 'table.chart-tbl thead tr.ticks th.sticky-med, table.chart-tbl thead tr.ticks th.sticky-doses, table.chart-tbl thead tr.ticks th.sticky-dot {background: var(--bg-main) !important; z-index: 30; border-bottom:1px solid var(--border-dark); overflow:hidden;}'
 
   row +1 call print(concat('table.chart-tbl td.medname{font-size:', v_med_font_size, ' !important;vertical-align:middle;padding:2px 6px;}'))
   row +1 'table.chart-tbl tbody td.label{vertical-align:middle;padding:2px 6px;}'
@@ -933,15 +929,16 @@ head report
   /* --- CHART SECTION --- */
   row +1 '<h1>Antimicrobial Administrations by Date</h1>'
   row +1 '<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given.</div>'
-  row +1 call print(v_axis_html)
 
   row +1 '<div class="chart-wrap">'
   
   /* Edge HTML Update: Removed <div> wrapper tags */
   row +1 '<table class="chart-tbl"><colgroup>'
-  row +1 '<col style="width:220px"><col style="width:46px"><col style="width:46px"><col>'
+  row +1 '<col style="width:150px"><col style="width:32px"><col style="width:32px"><col>'
   row +1 '</colgroup><thead>'
-  row +1 '<tr><th class="label sticky-med">Medication</th><th class="label sticky-doses">Doses</th><th class="label sticky-dot">DOT</th><th class="label">Days</th></tr>'
+  row +1 '<tr><th class="label sticky-med">Medication</th><th class="label sticky-doses">Doses</th><th class="label sticky-dot">DOT</th><th class="label">Days'
+  row +1 call print(v_axis_html)
+  row +1 '</th></tr>'
   if (textlen(v_header_html) > 0)
     row +1 '<tr class="ticks"><th class="sticky-med"></th><th class="sticky-doses"></th><th class="sticky-dot"></th><th><div class="strip">'
     row +1 call print(v_header_html)
@@ -1010,4 +1007,7 @@ with NOFORMAT, maxcol = 35000, time = 60
 
 end
 go
+
+
+
 
