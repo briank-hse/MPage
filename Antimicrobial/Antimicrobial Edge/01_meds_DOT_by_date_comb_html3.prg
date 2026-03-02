@@ -587,7 +587,9 @@ foot o.order_id
       "<td>", v_stat, "</td>",
       "<td>", v_sdt, "</td>",
       "<td>", v_oid, "</td>",
-      build2(~<td><a href="javascript:APPLINK(0,'^Powerchart.exe^','^/PERSONID=~, trim(cnvtstring($PAT_PersonId, 20, 0)), ~ /ENCNTRID=~, v_encntr_id, ~ /FIRSTTAB=~, char(34), ~Pharmacist MPage~, char(34), ~^')">~, v_fin, ~</a></td>~),
+      build2(~<td><a href="javascript:APPLINK(0,'^Powerchart.exe^','^/PERSONID=~, trim(cnvtstring($PAT_PersonId, 20, 0)),
+        ~ /ENCNTRID=~, v_encntr_id,
+        ~ /FIRSTTAB=&quot;Pharmacist MPage&quot;^')">~, v_fin, ~</a></td>~),
     "</tr>"
   )
 with nocounter
