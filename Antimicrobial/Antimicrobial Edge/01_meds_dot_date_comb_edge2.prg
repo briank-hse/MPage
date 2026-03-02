@@ -306,7 +306,7 @@ else
   set v_colgroup_html = '<colgroup><col style="width:150px"><col style="width:32px"><col style="width:32px">'
   set v_i = 0
   while (v_i < v_days)
-    set v_colgroup_html = concat(v_colgroup_html, '<col style="width:14px">')
+    set v_colgroup_html = concat(v_colgroup_html, '<col style="width:20px">')
     set v_i = v_i + 1
   endwhile
   set v_colgroup_html = concat(v_colgroup_html, '</colgroup>')
@@ -848,7 +848,8 @@ head report
   row +1 '.chart-wrap{overflow-x:auto;border:1px solid var(--border-color);background:var(--bg-main);margin-bottom:12px;}'
   
   /* EDGE REWRITE: Native Table Grids */
-  row +1 'table.chart-tbl{width:max-content;min-width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;}'
+  /* FIX: Removed min-width:100% so short charts do not stretch out the squares */
+  row +1 'table.chart-tbl{width:max-content !important; border-collapse:separate; border-spacing:0; table-layout:fixed;}'
   row +1 'table.chart-tbl th, table.chart-tbl td{vertical-align:top;padding:0;text-align:left;font-size:12px;}'
   row +1 'table.chart-tbl thead th{vertical-align:middle;}'
 
@@ -913,9 +914,15 @@ head report
 
   row +1 'table.data-tbl tbody tr:last-child td{border-bottom:2px solid #a0a0a0;}'
 
-  /* Clean, native table cell rendering */
-  row +1 '.cell, .tick { width:14px; min-width:14px; max-width:14px; height:18px; text-align:center; font-size:10px; vertical-align:middle; padding:0 !important; box-sizing:border-box; }'
-  row +1 '.tick { color:#555; position:relative; height:30px; vertical-align:bottom; padding-bottom:2px !important; border:none; }'
+  /* EDGE REWRITE: Converting flex units to native grid cells directly on <td> */
+  /* FIX: Force strictly equal widths for headers and squares */
+  row +1 '.cell, .tick { width:20px !important; min-width:20px !important; max-width:20px !important; text-align:center !important; padding:0 !important; box-sizing:border-box !important; }'
+  
+  /* FIX: Force the squares to be perfectly 20x20 */
+  row +1 '.cell { height:20px !important; vertical-align:middle !important; }'
+
+  /* Overflow visible explicitly permits the Month (DEC) label to display cleanly */
+  row +1 '.tick { color:#555; border:none; border-bottom:1px solid var(--border-dark); position:relative; height:30px !important; vertical-align:bottom !important; padding-bottom:2px !important; overflow:visible !important; }'
   row +1 '.tick .mo { position:absolute; top:-12px; left:50%; transform:translateX(-50%); font-size:10px; color:#555; white-space:nowrap; pointer-events:none; z-index:1; }'
   
   /* Apply borders and backgrounds directly to the cell */
