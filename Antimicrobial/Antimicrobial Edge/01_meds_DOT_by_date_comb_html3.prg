@@ -271,13 +271,13 @@ endif
 
 /* --- Build Meta Strings --- */
 set v_chart_meta = concat('')
-set v_table_meta = '<div class="sub"><b>MRN:</b> '
-set v_table_meta = concat(v_table_meta, v_mrn)
-set v_table_meta = concat(v_table_meta, " &nbsp; <b>Begin:</b> ", v_begin_dt_str)
-set v_table_meta = concat(v_table_meta, " &nbsp;  End:</b> ", v_end_dt_str)
-set v_table_meta = concat(v_table_meta, " &nbsp; <b>Admission:</b> ", v_admit_dt)
-set v_table_meta = concat(v_table_meta, " &nbsp; <b>LOS:</b> ", v_los, " days")
-set v_table_meta = concat(v_table_meta, " &nbsp; <b>Lookback:</b> ", v_lookback, " days</div>")
+set v_table_meta = '<div class="sub meta-flex"><span><b>MRN:</b> '
+set v_table_meta = concat(v_table_meta, v_mrn, "</span>")
+set v_table_meta = concat(v_table_meta, "<span><b>Begin:</b> ", v_begin_dt_str, "</span>")
+set v_table_meta = concat(v_table_meta, "<span><b>End:</b> ", v_end_dt_str, "</span>")
+set v_table_meta = concat(v_table_meta, "<span><b>Admission:</b> ", v_admit_dt, "</span>")
+set v_table_meta = concat(v_table_meta, "<span><b>LOS:</b> ", v_los, " days</span>")
+set v_table_meta = concat(v_table_meta, "<span><b>Lookback:</b> ", v_lookback, " days</span></div>")
 
 /* ========================================================================== */
 /* PASS 2: Build Chart Rows (Driven from Record Structure)                    */
@@ -617,13 +617,14 @@ head report
   row +1 'h1{font-size:18px;margin:0 0 8px;}'
   row +1 'h2{font-size:15px;margin:16px 0 8px;padding-top:0;}'
   row +1 '.sub{color:#444;margin:4px 0 16px;}'
+  row +1 '.meta-flex { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }'
   row +1 '.legend{margin-top:6px;color:#555;font-size:12px}'
   row +1 '.axisbar{display:flex;justify-content:space-between;margin:10px 0 8px calc(180px + 46px + 4px);color:#333;font-size:12px;}'
 
   row +1 '.chart-wrap{overflow-x:auto;border:1px solid #ddd;background:#fff;margin-bottom:12px;}'
   
   /* Edge HTML Update: Enforce fixed layout for robust edge rendering without nested divs */
-  row +1 'table.chart-tbl{border-collapse:separate;border-spacing:0;table-layout:fixed;}'
+  row +1 'table.chart-tbl{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;}'
   
   row +1 'table.chart-tbl th, table.chart-tbl td{vertical-align:top;padding:0px 4px;text-align:left;font-size:12px;}'
   row +1 'table.chart-tbl thead th{vertical-align:middle;}'
@@ -657,7 +658,7 @@ head report
   row +1 'table.chart-tbl thead tr.ticks th{background:transparent;border:0;padding:0;color:#555;}'
   
   /* Edge CSS Update: Shifted explicit width logic from inline DOM divs directly into the sticky classes */
-  row +1 'table.chart-tbl th.sticky-med, table.chart-tbl td.sticky-med { position:sticky; left:0; background:#fff; z-index:10; border-right:1px solid #ccc; border-bottom:1px solid #d6d9dd; padding-left:8px; width:180px; min-width:180px; max-width:180px; word-wrap:break-word; white-space:normal; }'
+  row +1 'table.chart-tbl th.sticky-med, table.chart-tbl td.sticky-med { position:sticky; left:0; background:#fff; z-index:10; border-right:1px solid #ccc; border-bottom:1px solid #d6d9dd; padding-left:8px; width:180px; min-width:180px; max-width:180px; overflow-wrap: break-word; word-break: break-word; white-space:normal; }'
   row +1 'table.chart-tbl th.sticky-doses, table.chart-tbl td.sticky-doses { position:sticky; left:180px; background:#fff; z-index:10; border-right:1px solid #ccc; border-bottom:1px solid #d6d9dd; width:46px; min-width:46px; max-width:46px; text-align:center; }'
   row +1 'table.chart-tbl th.sticky-dot, table.chart-tbl td.sticky-dot { position:sticky; left:226px; background:#fff; z-index:10; border-right:none; box-shadow: 2px 0 5px -2px rgba(0,0,0,0.2); border-bottom:1px solid #d6d9dd; width:46px; min-width:46px; max-width:46px; text-align:center; }'
   
@@ -678,7 +679,7 @@ head report
   row +1 'table.chart-tbl thead th.sticky-doses {z-index:20;}'
   row +1 'table.chart-tbl thead th.sticky-dot {z-index:20;}'
 
-  row +1 'table.data-tbl{border-collapse:collapse;margin-top:12px;font-size:12px;border:1px solid #b5b5b5;border-bottom:2px solid #a0a0a0;}'
+  row +1 'table.data-tbl{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;border:1px solid #b5b5b5;border-bottom:2px solid #a0a0a0;}'
   row +1 'table.data-tbl td{border:1px solid #d6d9dd;padding:4px 6px;text-align:left;background:#fff;}'
 
   row +1 'table.data-tbl tbody tr:last-child td{border-bottom:2px solid #a0a0a0;}'
@@ -710,7 +711,7 @@ head report
   row +1 '<div class="chart-wrap">'
   
   /* Edge HTML Update: Removed <div> wrapper tags */
-  row +1 '<table width="100%" class="chart-tbl"><thead>'
+  row +1 '<table class="chart-tbl"><thead>'
   row +1 '<tr><th class="label sticky-med">Medication</th><th class="label sticky-doses">Doses</th><th class="label sticky-dot">DOT</th><th class="label">Days</th></tr>'
   if (textlen(v_header_html) > 0)
     row +1 '<tr class="ticks"><th class="sticky-med"></th><th class="sticky-doses"></th><th class="sticky-dot"></th><th><div class="strip">'
@@ -735,7 +736,7 @@ head report
 
   /* --- TABLE SECTION --- */
   row +1 '<h2>Antimicrobial Order Details</h2>'
-  row +1 '<table width="100%" class="data-tbl">'
+  row +1 '<table class="data-tbl">'
   row +1 '<thead><tr>'
   row +1 '<th>Medication</th><th style="text-align:center;">Doses</th><th style="text-align:center;">DOT</th><th>Target Dose</th><th style="display:none;">Dose</th><th>Order Detail</th><th>Indication</th>'
   row +1 '<th>Start Date</th><th>Latest Status</th><th>Status Date</th><th>Order ID</th><th>FIN</th>'
