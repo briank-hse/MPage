@@ -1,16 +1,15 @@
-drop program 01_meds_dot_date_comb_edge2:Group1 go
-create program 01_meds_dot_date_comb_edge2:Group1
+drop program 01_meds_dot_date_comb_edge3:Group1 go
+create program 01_meds_dot_date_comb_edge3:Group1
 
 /*****************************************************************************
-  Antimicrobial Days of Therapy - Combined Chart and Table View (EDGE VERSION)
-  Based on: 01_meds_DOT_by_date_comb_html3
+  Antimicrobial Days of Therapy - Combined Chart and Table View (EDGE 3 VERSION)
   Changes from base:
-  - meta discern updated to CCLLINK only (no APPLINK) for Edge MPage context
   - DOCTYPE and charset meta added for Edge rendering
-  - Program name updated throughout
-  - EDGE REWRITE: Replaced <table> entirely with pure CSS Grid matrix for perfect alignment
-  - EDGE FIX: Implemented Safe-HTML index chunking to prevent Cerner buffer limits and freezes
-  - EDGE FIX: Stripped fluid percentages from Data Table to lock 180px/40px columns
+  - EDGE 3 REWRITE: Introduced Javascript Interactive "Focus Mode"
+  - EDGE 3 REWRITE: Synchronized CSS Grid and Data Table data attributes
+  - EDGE 3 FIX: Column widths locked to 180px, 40px, 40px globally
+  - EDGE 3 FIX: Audited and corrected all strict CCL 'set' keyword constraints
+  - EDGE OPTIMIZATION: Hardened APPLINK execution via build2()
 ******************************************************************************/
 
 prompt
@@ -57,6 +56,7 @@ declare v_med_dot_total   = i4 with noconstant(0)
 declare v_med_dose_total  = i4 with noconstant(0)
 declare v_doses           = i4 with noconstant(0)
 declare v_row_cnt     = i4 with noconstant(0)
+declare v_med_attr    = vc with noconstant("")
 
 /* --- Summary Row Variables --- */
 declare v_all_days_list = vc with noconstant(""), maxlen=65534
@@ -245,7 +245,6 @@ head report
                        " | Patient_ID: ", cnvtstring($PAT_PersonId), " | Total Admins: ", cnvtstring(admin_rec->cnt))
 with nocounter
 
-/* Dynamically find min/max dates from populated memory record */
 if (admin_rec->cnt > 0)
   set v_first = 0
   set v_min_dt = cnvtdate(admin_rec->qual[1].admin_dt_tm)
@@ -259,7 +258,6 @@ if (admin_rec->cnt > 0)
   endwhile
   if (v_max_dt < v_today) set v_max_dt = v_today endif
 
-  /* Count PC vs SN */
   set v_pc_cnt = 0
   set v_sn_cnt = 0
   set v_i = 1
@@ -271,7 +269,6 @@ if (admin_rec->cnt > 0)
   endwhile
 endif
 
-/* --- Build Chart Axis and Header HTML --- */
 if (v_first = 1)
   set v_days = 0
   set v_axis_html = ""
@@ -283,7 +280,6 @@ else
   set v_header_html = ''
   set v_i = 0
   
-  /* GRID REWRITE: Generating standalone cells instead of wrapped headers */
   while (v_i < v_days)
     if (v_i = 0 or format(v_min_dt + v_i,"MM;;D") != format(v_min_dt + v_i - 1,"MM;;D"))
       set v_header_html = concat(v_header_html,
@@ -301,18 +297,8 @@ else
   endwhile
 endif
 
-/* --- Build Meta Strings --- */
-set v_chart_meta = concat('')
-set v_table_meta = '<div class="sub meta-flex"><span><b>MRN:</b> '
-set v_table_meta = concat(v_table_meta, v_mrn, "</span>")
-set v_table_meta = concat(v_table_meta, "<span><b>Begin:</b> ", v_begin_dt_str, "</span>")
-set v_table_meta = concat(v_table_meta, "<span><b>End:</b> ", v_end_dt_str, "</span>")
-set v_table_meta = concat(v_table_meta, "<span><b>Admission:</b> ", v_admit_dt, "</span>")
-set v_table_meta = concat(v_table_meta, "<span><b>LOS:</b> ", v_los, " days</span>")
-set v_table_meta = concat(v_table_meta, "<span><b>Lookback:</b> ", v_lookback, " days</span></div>")
-
 /* ========================================================================== */
-/* PASS 2: Build Chart Rows (Driven from Record Structure)                    */
+/* PASS 2: Build Chart Rows                                                   */
 /* ========================================================================== */
 set v_chart_rows = ""
 if (admin_rec->cnt > 0)
@@ -373,17 +359,15 @@ foot mdy
 foot med_name
   if (v_days > 0)
     v_row_cnt = v_row_cnt + 1
-
     v_grand_total_dot = v_grand_total_dot + v_med_dot_total
-
     v_strip = ""
     v_i = 0
     v_cell_bg = if(mod(v_row_cnt, 2) = 0) ' even-cell' else '' endif
+    
+    v_med_attr = concat(' data-med="', v_curr_med, '"')
 
-    /* GRID REWRITE: generating raw Grid Divs per day */
     while (v_i < v_days)
       v_key8 = format(v_min_dt + v_i, "YYYYMMDD;;D")
-
       v_findpos = findstring(concat("~", v_key8, ":"), v_dates_kv)
       if (v_findpos > 0)
         v_after  = substring(v_findpos + 10, textlen(v_dates_kv) - (v_findpos + 9), v_dates_kv)
@@ -421,18 +405,17 @@ foot med_name
                           if(v_count_i = 1) " admin" else " admins" endif,
                           "&#10;Indication: ", v_indication,
                           "&#10;Discontinue Reason: ", v_discontinue_rsn)
-        v_strip = concat(v_strip, '<div class="grid-cell cell on', v_cell_bg, '" title="', v_title, '">', trim(v_count_str), '</div>')
+        v_strip = concat(v_strip, '<div class="grid-cell cell on dimmable', v_cell_bg, '"', v_med_attr, ' title="', v_title, '">', trim(v_count_str), '</div>')
       else
-        v_strip = concat(v_strip, '<div class="grid-cell cell', v_cell_bg, '" title="', format(v_min_dt + v_i,"DD/MM/YYYY;;D"), '"></div>')
+        v_strip = concat(v_strip, '<div class="grid-cell cell dimmable', v_cell_bg, '"', v_med_attr, ' title="', format(v_min_dt + v_i,"DD/MM/YYYY;;D"), '"></div>')
       endif
       v_i = v_i + 1
     endwhile
 
-    /* GRID REWRITE: Appending to the flat matrix directly */
     v_chart_rows = concat(v_chart_rows,
-      '<div class="grid-cell label medname sticky-med', v_cell_bg, '">', v_curr_med, '</div>',
-      '<div class="grid-cell dot-val sticky-doses', v_cell_bg, '"><span class="pill" title="', v_curr_med, ' - Total Doses: ', trim(cnvtstring(v_med_dose_total), 3), '">', trim(cnvtstring(v_med_dose_total), 3), '</span></div>',
-      '<div class="grid-cell dot-val sticky-dot', v_cell_bg, '"><span class="pill" title="', v_curr_med, ' - Total Days of Therapy: ', trim(cnvtstring(v_med_dot_total), 3), '">', trim(cnvtstring(v_med_dot_total), 3), '</span></div>',
+      '<div class="grid-cell label medname sticky-med med-trigger dimmable', v_cell_bg, '"', v_med_attr, ' title="Click to filter by ', v_curr_med, '">', v_curr_med, ' <span class="filter-icon">&#x25BC;</span></div>',
+      '<div class="grid-cell dot-val sticky-doses dimmable', v_cell_bg, '"', v_med_attr, '><span class="pill" title="', v_curr_med, ' - Total Doses: ', trim(cnvtstring(v_med_dose_total), 3), '">', trim(cnvtstring(v_med_dose_total), 3), '</span></div>',
+      '<div class="grid-cell dot-val sticky-dot dimmable', v_cell_bg, '"', v_med_attr, '><span class="pill" title="', v_curr_med, ' - Total Days of Therapy: ', trim(cnvtstring(v_med_dot_total), 3), '">', trim(cnvtstring(v_med_dot_total), 3), '</span></div>',
       v_strip)
   endif
 
@@ -452,9 +435,9 @@ foot report
       endwhile
 
       v_chart_rows = concat(v_chart_rows,
-          '<div class="grid-cell label sticky-med sum-border">Antimicrobial Summary</div>',
-          '<div class="grid-cell label sticky-doses sum-border"></div>',
-          '<div class="grid-cell label dot-val sticky-dot sum-border"><span class="pill" title="Total Summary Days of Therapy: ', trim(cnvtstring(v_grand_total_dot), 3), '">', trim(cnvtstring(v_grand_total_dot), 3), '</span></div>',
+          '<div class="grid-cell label sticky-med sum-border always-on">Antimicrobial Summary</div>',
+          '<div class="grid-cell label sticky-doses sum-border always-on"></div>',
+          '<div class="grid-cell label dot-val sticky-dot sum-border always-on"><span class="pill" title="Total Summary Days of Therapy: ', trim(cnvtstring(v_grand_total_dot), 3), '">', trim(cnvtstring(v_grand_total_dot), 3), '</span></div>',
           v_sum_strip)
   endif
 
@@ -462,7 +445,7 @@ with nocounter
 endif ; admin_rec->cnt > 0 (Pass 2)
 
 /* ========================================================================== */
-/* PASS 2.5: Encounter Tracks (WITH START/STOP MARKERS)                       */
+/* PASS 2.5: Encounter Tracks                                                 */
 /* ========================================================================== */
 if (admin_rec->cnt > 0 and v_days > 0)
 
@@ -490,7 +473,6 @@ if (admin_rec->cnt > 0 and v_days > 0)
     enc_rec->qual[enc_rec->cnt].disch_dt  = e.disch_dt_tm
   with nocounter
 
-  /* Calculate start/end indices. */
   if (enc_rec->cnt > 0)
     for (v_e = 1 to enc_rec->cnt)
       if (enc_rec->qual[v_e].arrive_dt = null or enc_rec->qual[v_e].arrive_dt = 0)
@@ -522,7 +504,6 @@ if (admin_rec->cnt > 0 and v_days > 0)
     endfor
   endif
 
-  /* Sort by start index */
   select into "nl:"
     s_idx = enc_rec->qual[d.seq].start_idx
   from (dummyt d with seq = enc_rec->cnt)
@@ -537,7 +518,6 @@ if (admin_rec->cnt > 0 and v_days > 0)
     enc_sort_rec->qual[enc_sort_rec->cnt].end_idx   = enc_rec->qual[d.seq].end_idx
   with nocounter
 
-  /* Greedy Interval Partitioning */
   for (v_t = 1 to 50)
     set track_ends[v_t] = -1
   endfor
@@ -561,17 +541,14 @@ if (admin_rec->cnt > 0 and v_days > 0)
     endfor
   endif
 
-  /* Generate HTML - one row per track. */
   if (v_max_track > 0)
     for (v_t = 1 to v_max_track)
-      
       set v_enc_label = ""
       for (v_e = 1 to enc_rec->cnt)
         if (enc_rec->qual[v_e].track = v_t)
           if (v_enc_label != "")
             set v_enc_label = concat(v_enc_label, ", ")
           endif
-          
           set v_enc_label = build2(v_enc_label,
             ~<a href="javascript:APPLINK(0,'Powerchart.exe','/PERSONID=~, trim(cnvtstring($PAT_PersonId, 20, 0), 3),
             ~ /ENCNTRID=~, trim(cnvtstring(enc_rec->qual[v_e].encntr_id, 20, 0), 3), ~')">~, trim(enc_rec->qual[v_e].fin), ~</a>~)
@@ -588,15 +565,12 @@ if (admin_rec->cnt > 0 and v_days > 0)
         for (v_e = 1 to enc_rec->cnt)
           if (enc_rec->qual[v_e].track = v_t)
             if (v_i >= enc_rec->qual[v_e].start_idx and v_i <= enc_rec->qual[v_e].end_idx)
-              
               set v_color_idx = mod(v_e, 4) + 1
               set v_cell_class = concat("enc-c", trim(cnvtstring(v_color_idx), 3))
-              
               set v_cell_title = concat("FIN: ", trim(enc_rec->qual[v_e].fin))
 
               if (enc_rec->qual[v_e].arrive_dt != null and enc_rec->qual[v_e].arrive_dt != 0)
                  set v_cell_title = concat(v_cell_title, " | Arrive: ", format(enc_rec->qual[v_e].arrive_dt, "DD/MM/YYYY;;d"))
-                 
                  if (v_i = enc_rec->qual[v_e].start_idx)
                     set v_cell_text = "A"
                  endif
@@ -608,7 +582,6 @@ if (admin_rec->cnt > 0 and v_days > 0)
                 set v_cell_title = concat(v_cell_title, " | Active")
               else
                 set v_cell_title = concat(v_cell_title, " | DC: ", format(enc_rec->qual[v_e].disch_dt, "DD/MM/YYYY;;d"))
-                
                 if (v_i = enc_rec->qual[v_e].end_idx)
                    if (v_cell_text = "A")
                       set v_cell_text = "A/D"
@@ -617,27 +590,25 @@ if (admin_rec->cnt > 0 and v_days > 0)
                    endif
                 endif
               endif
-
             endif
           endif
         endfor
         
-        /* GRID REWRITE: Raw cell generation */
         set v_strip = concat(v_strip, '<div class="grid-cell cell enc-border ', v_cell_class, '" title="', v_cell_title, '"><span class="enc-cell-text">', v_cell_text, '</span></div>')
         set v_i = v_i + 1
       endwhile
 
       set v_chart_rows = concat(v_chart_rows,
-        '<div class="grid-cell label enc-label-cell sticky-med enc-border">', v_enc_label, '</div>',
-        '<div class="grid-cell sticky-doses enc-border"></div>',
-        '<div class="grid-cell sticky-dot enc-border"></div>',
+        '<div class="grid-cell label enc-label-cell sticky-med enc-border always-on">', v_enc_label, '</div>',
+        '<div class="grid-cell sticky-doses enc-border always-on"></div>',
+        '<div class="grid-cell sticky-dot enc-border always-on"></div>',
         v_strip)
     endfor
   endif
 endif
 
 /* ========================================================================== */
-/* PASS 3: Build Table Rows (Driven from Record Structure)                    */
+/* PASS 3: Build Table Rows                                                   */
 /* ========================================================================== */
 set v_table_rows = ""
 if (admin_rec->cnt > 0)
@@ -774,7 +745,7 @@ foot o.order_id
   v_row_cnt = v_row_cnt + 1
 
   v_table_rows = concat(v_table_rows,
-    '<tr', if(mod(v_row_cnt, 2) = 0) ' class="even"' else '' endif, '>',
+    '<tr class="dimmable', if(mod(v_row_cnt, 2) = 0) ' even' else '' endif, '" data-med="', v_drug, '">',
       '<td>', v_drug,
         if(v_order_src = "SN") ' <span style="color:#888;font-size:10px;">(Anes)</span>' else '' endif,
       '</td>',
@@ -826,7 +797,6 @@ head report
   
   row +1 '.chart-grid {'
   row +1 '  display: grid;'
-  /* Dynamic grid-template-columns injected inline in HTML to bypass variable parsing errors */
   row +1 '  background: var(--bg-main);'
   row +1 '  width: max-content;'
   row +1 '  border-top: 1px solid var(--border-dark);'
@@ -841,7 +811,7 @@ head report
   row +1 '  padding: 0;'
   row +1 '  display: flex;'
   row +1 '  align-items: center;'
-  row +1 '  min-width: 0; /* CRITICAL FIX: Stops text from forcing grid columns to expand */'
+  row +1 '  min-width: 0; '
   row +1 '}'
   
   /* Shared Data Table & Grid Header styling */
@@ -854,10 +824,10 @@ head report
   row +1 'table.data-tbl th { text-align:left; height:26px; font-size:12px !important; }'
   row +1 '.grid-cell.label { min-height: 26px; }'
 
-  /* Sticky Overrides with hardcoded pixels to bypass WebView2 CSS var bugs */
+  /* Fixed 180/40/40 sticky sizing logic */
   row +1 '.sticky-med { position:sticky; left:0; z-index:10; background:var(--sticky-bg); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; width:180px; min-width:180px; max-width:180px; }'
   row +1 '.sticky-doses { position:sticky; left:180px; z-index:10; background:var(--sticky-bg); width:40px; min-width:40px; max-width:40px; text-align:center; }'
-  row +1 '.sticky-dot { position:sticky; left:182px; z-index:10; background:var(--sticky-bg); box-shadow: 2px 0 5px -2px rgba(0,0,0,0.2); width:40px; min-width:40px; max-width:40px; text-align:center; }'
+  row +1 '.sticky-dot { position:sticky; left:220px; z-index:10; background:var(--sticky-bg); box-shadow: 2px 0 5px -2px rgba(0,0,0,0.2); width:40px; min-width:40px; max-width:40px; text-align:center; }'
   row +1 '.hdr-intersect { z-index:20 !important; }'
   
   /* Content Alignment & Striping */
@@ -865,6 +835,14 @@ head report
   row +1 '.even-cell.sticky-med, .even-cell.sticky-doses, .even-cell.sticky-dot { background: var(--sticky-bg-alt) !important; }'
   row +1 '.dot-val { justify-content: center; }'
   row +1 call print(concat('.grid-cell.medname { padding:2px 6px; font-size:', v_med_font_size, ' !important; }'))
+  
+  /* EDGE 3 Interactive UI Classes */
+  row +1 '.med-trigger { cursor: pointer; color: var(--cerner-blue); transition: background 0.2s; }'
+  row +1 '.med-trigger:hover { background-color: #e0f0ff !important; }'
+  row +1 '.filter-icon { font-size: 8px; opacity: 0.5; margin-left: 6px; }'
+  row +1 '.dimmed { opacity: 0.15; filter: grayscale(100%); pointer-events: none; transition: opacity 0.3s ease; }'
+  row +1 '.dimmable { transition: opacity 0.3s ease; }'
+  row +1 '.active-filter { background-color: #e0f0ff !important; font-weight: 700; }'
   
   /* Physical 20x20 constraint for specific data cells */
   row +1 '.cell, .tick { width:20px; min-width:20px; max-width:20px; justify-content:center; font-size:10px; }'
@@ -891,31 +869,31 @@ head report
   row +1 '.enc-label-cell a { color:var(--cerner-blue); text-decoration:none; font-weight:600; }'
   row +1 '.enc-cell-text { font-size:8px; font-weight:700; color:#111; line-height:1; }'
   
-  /* PERFECT ALIGNMENT FIX: Table box model and strict minimal width applied to guarantee 180px survival */
+  /* Table Layout Rules */
   row +1 'table.data-tbl { width:100%; min-width:1000px; border-collapse:separate; border-spacing:0; margin-top:12px; font-size:12px; border-top:1px solid var(--border-dark); border-left:1px solid var(--border-dark); border-bottom:2px solid #a0a0a0; table-layout:fixed; }'
-  row +1 'table.data-tbl th, table.data-tbl td { border-right:1px solid var(--border-dark); border-bottom:1px solid var(--border-dark); padding:4px 6px; text-align:left; background:var(--bg-main); word-break:break-word; overflow-wrap:break-word; overflow:hidden; }'
+  row +1 'table.data-tbl th, table.data-tbl td { border-right:1px solid var(--border-dark); border-bottom:1px solid var(--border-dark); padding:4px 6px; text-align:left; background:var(--bg-main); word-break:break-word; overflow-wrap:break-word; overflow:hidden; transition: background-color 0.2s; }'
   row +1 'table.data-tbl th:nth-child(1), table.data-tbl td:nth-child(1) { box-sizing:border-box !important; width:180px; min-width:180px; max-width:180px; }'
   row +1 'table.data-tbl th:nth-child(2), table.data-tbl td:nth-child(2) { box-sizing:border-box !important; width:40px; min-width:40px; max-width:40px; text-align:center; padding:4px 0; }'
   row +1 'table.data-tbl th:nth-child(3), table.data-tbl td:nth-child(3) { box-sizing:border-box !important; width:40px; min-width:40px; max-width:40px; text-align:center; padding:4px 0; }'
   row +1 'table.data-tbl tr.even td { background:var(--bg-alt); }'
   row +1 'table.data-tbl tbody tr:last-child td { border-bottom:none; }'
+  row +1 'table.data-tbl tbody tr:hover td { background-color: #f0f7ff; cursor: default; }'
 
   row +1 '</style></head><body><div class="wrap">'
 
   /* --- CHART SECTION --- */
-  row +1 '<h1>Antimicrobial Administrations by Date</h1>'
-  row +1 '<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given.</div>'
+  row +1 '<h1>Antimicrobial Administrations by Date v3</h1>'
+  row +1 '<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given.<br/><b>Interactive:</b> Click a medication name to isolate its history across the chart and table.</div>'
 
   row +1 '<div class="chart-wrap">'
   row +1 call print(concat('<div class="chart-grid" style="grid-template-columns: 180px 40px 40px repeat(', trim(cnvtstring(v_days), 3), ', 20px);">'))
   
-  row +1 call print(concat('<div class="grid-cell label sticky-med hdr-intersect">Medication</div><div class="grid-cell label sticky-doses hdr-intersect">Doses</div><div class="grid-cell label sticky-dot hdr-intersect">DOT</div><div class="grid-cell label axis-header" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), ';">Days'))
+  row +1 call print(concat('<div class="grid-cell label sticky-med hdr-intersect always-on">Medication</div><div class="grid-cell label sticky-doses hdr-intersect always-on">Doses</div><div class="grid-cell label sticky-dot hdr-intersect always-on">DOT</div><div class="grid-cell label axis-header always-on" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), ';">Days'))
   row +1 call print(v_axis_html)
   row +1 '</div>'
   
-  /* POINTER-BASED CHUNKING (O(N) safe rendering without 'set' keywords in report block) */
   if (textlen(v_header_html) > 0)
-    row +1 '<div class="grid-cell sticky-med hdr-intersect"></div><div class="grid-cell sticky-doses hdr-intersect"></div><div class="grid-cell sticky-dot hdr-intersect"></div>'
+    row +1 '<div class="grid-cell sticky-med hdr-intersect always-on"></div><div class="grid-cell sticky-doses hdr-intersect always-on"></div><div class="grid-cell sticky-dot hdr-intersect always-on"></div>'
     v_pos = 1
     v_len = textlen(v_header_html)
     while (v_pos <= v_len)
@@ -951,17 +929,16 @@ head report
     v_pos = v_pos + v_toklen
   endwhile
   
-  row +1 '</div></div>' /* Closes Grid, Closes Wrap */
+  row +1 '</div></div>'
 
   /* --- TABLE SECTION --- */
   row +1 '<h2>Antimicrobial Order Details</h2>'
   row +1 '<div style="width: 100%; overflow-x: auto; display: block;">'
   row +1 '<table class="data-tbl"><colgroup>'
-  /* MATCHED WIDTHS: Explicitly size the columns so they are strictly rigid and wide enough */
   row +1 '<col style="width:180px"><col style="width:40px"><col style="width:40px">'
-  row +1 '<col style="width:100px"><col style="display:none;">' /* Target Dose / Dose */
-  row +1 '<col style="width:350px">' /* Order Detail */
-  row +1 '<col style="width:250px">' /* Indication */
+  row +1 '<col style="width:100px"><col style="display:none;">'
+  row +1 '<col style="width:350px">'
+  row +1 '<col style="width:250px">'
   row +1 '<col style="width:100px"><col style="width:120px"><col style="width:100px"><col style="width:100px"><col style="width:120px">'
   row +1 '</colgroup>'
   row +1 '<thead><tr>'
@@ -988,7 +965,33 @@ head report
   endwhile
 
   row +1 '</tbody></table></div>'
-  row +1 '<div class="legend" style="margin-top:8px;">Days of therapy (DOT) for antimicrobial orders which have been administered are included in this report.</div>'
+  
+  /* Javascript Interactive UI Engine */
+  row +1 '<script>'
+  row +1 'document.addEventListener("DOMContentLoaded", function() {'
+  row +1 '  const items = document.querySelectorAll(".dimmable");'
+  row +1 '  const triggers = document.querySelectorAll(".med-trigger");'
+  row +1 '  triggers.forEach(function(trigger) {'
+  row +1 '    trigger.addEventListener("click", function() {'
+  row +1 '      const medName = this.getAttribute("data-med");'
+  row +1 '      const isCurrentlyActive = this.classList.contains("active-filter");'
+  row +1 '      triggers.forEach(function(t) { t.classList.remove("active-filter"); });'
+  row +1 '      if (isCurrentlyActive) {'
+  row +1 '        items.forEach(function(el) { el.classList.remove("dimmed"); });'
+  row +1 '      } else {'
+  row +1 '        this.classList.add("active-filter");'
+  row +1 '        items.forEach(function(el) {'
+  row +1 '          if (el.getAttribute("data-med") === medName || el.classList.contains("always-on")) {'
+  row +1 '            el.classList.remove("dimmed");'
+  row +1 '          } else {'
+  row +1 '            el.classList.add("dimmed");'
+  row +1 '          }'
+  row +1 '        });'
+  row +1 '      }'
+  row +1 '    });'
+  row +1 '  });'
+  row +1 '});'
+  row +1 '</script>'
 
   /* --- DEBUG PANEL --- */
   row +1 '<div style="margin-top:24px;padding:10px 14px;border:1px solid #f0a000;background:#fffbe6;color:#333;font-size:11px;font-family:monospace;">'
