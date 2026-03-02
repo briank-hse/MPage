@@ -623,7 +623,7 @@ head report
   row +1 '.chart-wrap{overflow-x:auto;border:1px solid #ddd;background:#fff;margin-bottom:12px;}'
   
   /* Edge HTML Update: Enforce fixed layout for robust edge rendering without nested divs */
-  row +1 'table.chart-tbl{border-collapse:collapse;border-spacing:0;table-layout:fixed;}'
+  row +1 'table.chart-tbl{border-collapse:separate;border-spacing:0;table-layout:fixed;}'
   
   row +1 'table.chart-tbl th, table.chart-tbl td{vertical-align:top;padding:0px 4px;text-align:left;font-size:12px;}'
   row +1 'table.chart-tbl thead th{vertical-align:middle;}'
@@ -659,7 +659,7 @@ head report
   /* Edge CSS Update: Shifted explicit width logic from inline DOM divs directly into the sticky classes */
   row +1 'table.chart-tbl th.sticky-med, table.chart-tbl td.sticky-med { position:sticky; left:0; background:#fff; z-index:10; border-right:1px solid #ccc; border-bottom:1px solid #d6d9dd; padding-left:8px; width:180px; min-width:180px; max-width:180px; word-wrap:break-word; white-space:normal; }'
   row +1 'table.chart-tbl th.sticky-doses, table.chart-tbl td.sticky-doses { position:sticky; left:180px; background:#fff; z-index:10; border-right:1px solid #ccc; border-bottom:1px solid #d6d9dd; width:46px; min-width:46px; max-width:46px; text-align:center; }'
-  row +1 'table.chart-tbl th.sticky-dot, table.chart-tbl td.sticky-dot { position:sticky; left:226px; background:#fff; z-index:10; border-right:1px solid #ccc; border-bottom:1px solid #d6d9dd; width:46px; min-width:46px; max-width:46px; text-align:center; }'
+  row +1 'table.chart-tbl th.sticky-dot, table.chart-tbl td.sticky-dot { position:sticky; left:226px; background:#fff; z-index:10; border-right:none; box-shadow: 2px 0 5px -2px rgba(0,0,0,0.2); border-bottom:1px solid #d6d9dd; width:46px; min-width:46px; max-width:46px; text-align:center; }'
   
   row +1 'table.chart-tbl thead tr.ticks th.sticky-med, table.chart-tbl thead tr.ticks th.sticky-doses, table.chart-tbl thead tr.ticks th.sticky-dot {border-bottom:1px solid #b5b5b5;}'
 
@@ -674,9 +674,9 @@ head report
   row +1 'table.data-tbl tr.even td { background: #f5f5f5;}'
 
   row +1 'table.chart-tbl tbody th.label{z-index:11;}'
-  row +1 'table.chart-tbl thead th.sticky-med {z-index:15;}'
-  row +1 'table.chart-tbl thead th.sticky-doses {z-index:15;}'
-  row +1 'table.chart-tbl thead th.sticky-dot {z-index:15;}'
+  row +1 'table.chart-tbl thead th.sticky-med {z-index:20;}'
+  row +1 'table.chart-tbl thead th.sticky-doses {z-index:20;}'
+  row +1 'table.chart-tbl thead th.sticky-dot {z-index:20;}'
 
   row +1 'table.data-tbl{border-collapse:collapse;margin-top:12px;font-size:12px;border:1px solid #b5b5b5;border-bottom:2px solid #a0a0a0;}'
   row +1 'table.data-tbl td{border:1px solid #d6d9dd;padding:4px 6px;text-align:left;background:#fff;}'
