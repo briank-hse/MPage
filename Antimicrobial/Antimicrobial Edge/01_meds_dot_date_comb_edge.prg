@@ -834,7 +834,7 @@ head report
   row +1 '.chart-wrap{overflow-x:auto;border:1px solid var(--border-color);background:var(--bg-main);margin-bottom:12px;}'
   
   /* Edge HTML Update: Enforce fixed layout for robust edge rendering without nested divs */
-  row +1 'table.chart-tbl{width:max-content !important;min-width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed !important;}'
+  row +1 'table.chart-tbl{table-layout:fixed !important;width:100% !important;min-width:max-content !important;border-collapse:separate;border-spacing:0;}'
   
   row +1 'table.chart-tbl th, table.chart-tbl td{vertical-align:top;padding:0px 4px;text-align:left;font-size:12px;}'
   row +1 'table.chart-tbl thead th{vertical-align:middle;}'
@@ -872,7 +872,7 @@ head report
   row +1 'table.chart-tbl th.sticky-doses, table.chart-tbl td.sticky-doses { position:sticky; left:150px; background:var(--sticky-bg); z-index:10; border-right:1px solid var(--border-dark); border-bottom:1px solid var(--border-color); width:32px; min-width:32px; max-width:32px; text-align:center; }'
   row +1 'table.chart-tbl th.sticky-dot, table.chart-tbl td.sticky-dot { position:sticky; left:182px; background:var(--sticky-bg); z-index:10; border-right:none; box-shadow: 2px 0 5px -2px rgba(0,0,0,0.2); border-bottom:1px solid var(--border-color); width:32px; min-width:32px; max-width:32px; text-align:center; }'
   
-  row +1 'table.chart-tbl thead tr.ticks th.sticky-med, table.chart-tbl thead tr.ticks th.sticky-doses, table.chart-tbl thead tr.ticks th.sticky-dot {background-color:#ffffff !important; z-index:110 !important; border-bottom:1px solid var(--border-dark); overflow:hidden;}'
+  row +1 'table.chart-tbl thead tr.ticks th.sticky-med, table.chart-tbl thead tr.ticks th.sticky-doses, table.chart-tbl thead tr.ticks th.sticky-dot {background-color:var(--bg-main) !important; z-index:50 !important; border-bottom:1px solid var(--border-dark); clip-path:inset(0); transform:translateZ(0);}'
 
   row +1 call print(concat('table.chart-tbl td.medname{font-size:', v_med_font_size, ' !important;vertical-align:middle;padding:2px 6px;}'))
   row +1 'table.chart-tbl tbody td.label{vertical-align:middle;padding:2px 6px;}'
@@ -889,15 +889,15 @@ head report
   row +1 'table.chart-tbl thead th.sticky-doses {background-color:#ffffff !important; z-index:100 !important;}'
   row +1 'table.chart-tbl thead th.sticky-dot {background-color:#ffffff !important; z-index:100 !important;}'
 
-  row +1 'table.data-tbl{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;border:1px solid var(--border-dark);border-bottom:2px solid #a0a0a0; table-layout: fixed;}'
+  row +1 'table.data-tbl{width:100% !important;border-collapse:collapse;margin-top:12px;font-size:12px;border:1px solid var(--border-dark);border-bottom:2px solid #a0a0a0; table-layout: fixed !important;}'
   row +1 'table.data-tbl td{border:1px solid var(--border-color);padding:4px 6px;text-align:left;background:var(--bg-main); word-break: break-word; overflow-wrap: break-word;}'
   row +1 'table.chart-tbl, table.data-tbl {table-layout:fixed !important;}'
-  row +1 'table.chart-tbl {width:max-content !important;}'
+  row +1 'table.chart-tbl {width:100% !important; min-width:max-content !important;}'
   
   /* Enforce matched fixed widths on data table columns */
   row +1 'table.chart-tbl th.sticky-med, table.chart-tbl td.sticky-med, table.data-tbl th:nth-child(1), table.data-tbl td:nth-child(1) { width:150px !important; min-width:150px !important; max-width:150px !important; box-sizing:border-box !important; }'
-  row +1 'table.chart-tbl th.sticky-doses, table.chart-tbl td.sticky-doses, table.data-tbl th:nth-child(2), table.data-tbl td:nth-child(2) { width:32px !important; min-width:32px !important; max-width:32px !important; left:150px !important; box-sizing:border-box !important; }'
-  row +1 'table.chart-tbl th.sticky-dot, table.chart-tbl td.sticky-dot, table.data-tbl th:nth-child(3), table.data-tbl td:nth-child(3) { width:32px !important; min-width:32px !important; max-width:32px !important; left:182px !important; box-sizing:border-box !important; }'
+  row +1 'table.chart-tbl th.sticky-doses, table.chart-tbl td.sticky-doses, table.data-tbl th:nth-child(2), table.data-tbl td:nth-child(2) { width:32px !important; min-width:32px !important; max-width:32px !important; box-sizing:border-box !important; }'
+  row +1 'table.chart-tbl th.sticky-dot, table.chart-tbl td.sticky-dot, table.data-tbl th:nth-child(3), table.data-tbl td:nth-child(3) { width:32px !important; min-width:32px !important; max-width:32px !important; box-sizing:border-box !important; }'
 
   row +1 'table.data-tbl tbody tr:last-child td{border-bottom:2px solid #a0a0a0;}'
 
