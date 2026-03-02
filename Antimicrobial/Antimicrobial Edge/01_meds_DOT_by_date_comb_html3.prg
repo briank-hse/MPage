@@ -27,7 +27,7 @@ declare v_font_size      = vc with noconstant("13px")
 declare v_med_font_size = vc with noconstant("14px")
 
 /* --- Meta and Header Variables --- */
-declare v_mrn         = vc with noconstant("")
+declare v_mrn          = vc with noconstant("")
 declare v_name        = vc with noconstant("")
 declare v_admit_dt    = vc with noconstant("")
 declare v_los         = vc with noconstant("")
@@ -821,7 +821,7 @@ head report
   row +1 '<title>Antimicrobial Days of Therapy - By Date</title>'
   row +1 '<style>'
   row +1 ':root{--bg-main:#fff;--bg-alt:#f5f5f5;--border-color:#d6d9dd;--border-dark:#b5b5b5;--cerner-blue:#0086CE;'
-  row +1 '--header-bg:rgba(231, 234, 238, 0.85);--sticky-bg:rgba(255, 255, 255, 0.85);--sticky-bg-alt: rgba(245, 245, 245, 0.95);}'
+  row +1 '--header-bg:#e7eaee;--sticky-bg:#ffffff;--sticky-bg-alt:#f5f5f5;}'
   row +1 '*,*:before,*:after{box-sizing:border-box}'
   row +1 call print(concat('body{margin:0;font:', v_font_size, '/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;color:#111;background:var(--bg-main);padding:0;}'))
   row +1 '.wrap{width:100%; max-width:100%; margin:0; padding:0; box-sizing:border-box;}'
@@ -834,15 +834,13 @@ head report
   row +1 '.chart-wrap{overflow-x:auto;border:1px solid var(--border-color);background:var(--bg-main);margin-bottom:12px;}'
   
   /* Edge HTML Update: Enforce fixed layout for robust edge rendering without nested divs */
-  row +1 'table.chart-tbl{min-width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;}'
+  row +1 'table.chart-tbl{width:max-content !important;min-width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed !important;}'
   
   row +1 'table.chart-tbl th, table.chart-tbl td{vertical-align:top;padding:0px 4px;text-align:left;font-size:12px;}'
   row +1 'table.chart-tbl thead th{vertical-align:middle;}'
 
   row +1 'table.data-tbl th {'
   row +1 '  background:var(--header-bg) !important;'
-  row +1 '  -webkit-backdrop-filter: blur(8px);'
-  row +1 '  backdrop-filter: blur(8px);'
   row +1 '  color:#2f3c4b;'
   row +1 '  border:1px solid var(--border-dark);'
   row +1 '  padding:4px 8px !important;'
@@ -856,8 +854,6 @@ head report
 
   row +1 'table.chart-tbl thead th.label {'
   row +1 '  background:var(--header-bg) !important;'
-  row +1 '  -webkit-backdrop-filter: blur(8px);'
-  row +1 '  backdrop-filter: blur(8px);'
   row +1 '  color:#2f3c4b;'
   row +1 '  border:1px solid var(--border-dark);'
   row +1 '  padding:4px 8px !important;'
@@ -872,11 +868,11 @@ head report
   row +1 'table.chart-tbl thead tr.ticks th{background:transparent;border:0;padding:0;color:#555;}'
   
   /* Edge CSS Update: Shifted explicit width logic from inline DOM divs directly into the sticky classes */
-  row +1 'table.chart-tbl th.sticky-med, table.chart-tbl td.sticky-med { position:sticky; left:0; background:var(--sticky-bg); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); z-index:10; border-right:1px solid var(--border-dark); border-bottom:1px solid var(--border-color); padding-left:8px; width:150px; min-width:150px; max-width:150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }'
-  row +1 'table.chart-tbl th.sticky-doses, table.chart-tbl td.sticky-doses { position:sticky; left:150px; background:var(--sticky-bg); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); z-index:10; border-right:1px solid var(--border-dark); border-bottom:1px solid var(--border-color); width:32px; min-width:32px; max-width:32px; text-align:center; }'
-  row +1 'table.chart-tbl th.sticky-dot, table.chart-tbl td.sticky-dot { position:sticky; left:182px; background:var(--sticky-bg); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); z-index:10; border-right:none; box-shadow: 2px 0 5px -2px rgba(0,0,0,0.2); border-bottom:1px solid var(--border-color); width:32px; min-width:32px; max-width:32px; text-align:center; }'
+  row +1 'table.chart-tbl th.sticky-med, table.chart-tbl td.sticky-med { position:sticky; left:0; background:var(--sticky-bg); z-index:10; border-right:1px solid var(--border-dark); border-bottom:1px solid var(--border-color); padding-left:8px; width:150px; min-width:150px; max-width:150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }'
+  row +1 'table.chart-tbl th.sticky-doses, table.chart-tbl td.sticky-doses { position:sticky; left:150px; background:var(--sticky-bg); z-index:10; border-right:1px solid var(--border-dark); border-bottom:1px solid var(--border-color); width:32px; min-width:32px; max-width:32px; text-align:center; }'
+  row +1 'table.chart-tbl th.sticky-dot, table.chart-tbl td.sticky-dot { position:sticky; left:182px; background:var(--sticky-bg); z-index:10; border-right:none; box-shadow: 2px 0 5px -2px rgba(0,0,0,0.2); border-bottom:1px solid var(--border-color); width:32px; min-width:32px; max-width:32px; text-align:center; }'
   
-  row +1 'table.chart-tbl thead tr.ticks th.sticky-med, table.chart-tbl thead tr.ticks th.sticky-doses, table.chart-tbl thead tr.ticks th.sticky-dot {background: var(--bg-main) !important; z-index: 30; border-bottom:1px solid var(--border-dark); overflow:hidden;}'
+  row +1 'table.chart-tbl thead tr.ticks th.sticky-med, table.chart-tbl thead tr.ticks th.sticky-doses, table.chart-tbl thead tr.ticks th.sticky-dot {background-color:#ffffff !important; z-index:110 !important; border-bottom:1px solid var(--border-dark); overflow:hidden;}'
 
   row +1 call print(concat('table.chart-tbl td.medname{font-size:', v_med_font_size, ' !important;vertical-align:middle;padding:2px 6px;}'))
   row +1 'table.chart-tbl tbody td.label{vertical-align:middle;padding:2px 6px;}'
@@ -889,12 +885,19 @@ head report
   row +1 'table.data-tbl tr.even td { background: var(--bg-alt);}'
 
   row +1 'table.chart-tbl tbody th.label{z-index:11;}'
-  row +1 'table.chart-tbl thead th.sticky-med {z-index:20;}'
-  row +1 'table.chart-tbl thead th.sticky-doses {z-index:20;}'
-  row +1 'table.chart-tbl thead th.sticky-dot {z-index:20;}'
+  row +1 'table.chart-tbl thead th.sticky-med {background-color:#ffffff !important; z-index:100 !important;}'
+  row +1 'table.chart-tbl thead th.sticky-doses {background-color:#ffffff !important; z-index:100 !important;}'
+  row +1 'table.chart-tbl thead th.sticky-dot {background-color:#ffffff !important; z-index:100 !important;}'
 
   row +1 'table.data-tbl{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;border:1px solid var(--border-dark);border-bottom:2px solid #a0a0a0; table-layout: fixed;}'
   row +1 'table.data-tbl td{border:1px solid var(--border-color);padding:4px 6px;text-align:left;background:var(--bg-main); word-break: break-word; overflow-wrap: break-word;}'
+  row +1 'table.chart-tbl, table.data-tbl {table-layout:fixed !important;}'
+  row +1 'table.chart-tbl {width:max-content !important;}'
+  
+  /* Enforce matched fixed widths on data table columns */
+  row +1 'table.chart-tbl th.sticky-med, table.chart-tbl td.sticky-med, table.data-tbl th:nth-child(1), table.data-tbl td:nth-child(1) { width:150px !important; min-width:150px !important; max-width:150px !important; box-sizing:border-box !important; }'
+  row +1 'table.chart-tbl th.sticky-doses, table.chart-tbl td.sticky-doses, table.data-tbl th:nth-child(2), table.data-tbl td:nth-child(2) { width:32px !important; min-width:32px !important; max-width:32px !important; left:150px !important; box-sizing:border-box !important; }'
+  row +1 'table.chart-tbl th.sticky-dot, table.chart-tbl td.sticky-dot, table.data-tbl th:nth-child(3), table.data-tbl td:nth-child(3) { width:32px !important; min-width:32px !important; max-width:32px !important; left:182px !important; box-sizing:border-box !important; }'
 
   row +1 'table.data-tbl tbody tr:last-child td{border-bottom:2px solid #a0a0a0;}'
 
@@ -1007,7 +1010,3 @@ with NOFORMAT, maxcol = 35000, time = 60
 
 end
 go
-
-
-
-
