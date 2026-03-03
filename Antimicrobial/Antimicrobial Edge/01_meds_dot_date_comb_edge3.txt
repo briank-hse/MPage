@@ -28,6 +28,10 @@ declare v_los         = vc with noconstant("")
 declare v_lookback    = vc with noconstant("")
 declare v_axis_html   = vc with noconstant(""), maxlen=2000
 declare v_header_html = vc with noconstant(""), maxlen=65534
+declare v_month_html  = vc with noconstant(""), maxlen=65534
+declare v_mo_span     = i4 with noconstant(0)
+declare v_mo_name     = vc with noconstant("")
+declare v_mo_start    = i4 with noconstant(0)
 declare v_min_dt      = dq8 with noconstant(0)
 declare v_max_dt      = dq8 with noconstant(0)
 declare v_first       = i2 with noconstant(1)
@@ -227,15 +231,35 @@ else
   set v_days = (datetimediff(v_max_dt, v_min_dt, 7)) + 1
   set v_axis_html = concat(' <span style="font-weight:normal; font-size:11px; color:#555;">(Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ')</span>')
   set v_header_html = ''
+  set v_month_html  = ''
+  set v_mo_span  = 0
+  set v_mo_name  = ''
+  set v_mo_start = 0
+  set v_i = 0
+  /* Pass A: day-number row */
+  while (v_i < v_days)
+    set v_header_html = concat(v_header_html, '<div class="grid-cell tick" title="', format(v_min_dt + v_i,"YYYY-MM-DD;;D"), '">', format(v_min_dt + v_i,"DD;;D"), '</div>')
+    set v_i = v_i + 1
+  endwhile
+  /* Pass B: month-span row - walk days, emit span div when month changes or at end */
   set v_i = 0
   while (v_i < v_days)
-    if (v_i = 0 or format(v_min_dt + v_i,"MM;;D") != format(v_min_dt + v_i - 1,"MM;;D"))
-      set v_header_html = concat(v_header_html, '<div class="grid-cell tick" title="', format(v_min_dt + v_i,"YYYY-MM-DD;;D"), '"><span class="mo">', format(v_min_dt + v_i,"MMM;;D"), '</span>', format(v_min_dt + v_i,"DD;;D"), '</div>')
+    if (v_i = 0)
+      set v_mo_name  = format(v_min_dt + v_i, "MMM YYYY;;D")
+      set v_mo_start = 0
+      set v_mo_span  = 1
+    elseif (format(v_min_dt + v_i,"MM;;D") != format(v_min_dt + v_i - 1,"MM;;D"))
+      set v_month_html = concat(v_month_html, '<div class="grid-cell mo-span always-on" style="grid-column:span ', trim(cnvtstring(v_mo_span),3), ';">', v_mo_name, '</div>')
+      set v_mo_name  = format(v_min_dt + v_i, "MMM YYYY;;D")
+      set v_mo_start = v_i
+      set v_mo_span  = 1
     else
-      set v_header_html = concat(v_header_html, '<div class="grid-cell tick" title="', format(v_min_dt + v_i,"YYYY-MM-DD;;D"), '">', format(v_min_dt + v_i,"DD;;D"), '</div>')
+      set v_mo_span  = v_mo_span + 1
     endif
     set v_i = v_i + 1
   endwhile
+  /* flush last month */
+  set v_month_html = concat(v_month_html, '<div class="grid-cell mo-span always-on" style="grid-column:span ', trim(cnvtstring(v_mo_span),3), ';">', v_mo_name, '</div>')
 endif
 
 
@@ -343,7 +367,7 @@ foot med_name
     html_chart->cnt = html_chart->cnt + 1
     stat = alterlist(html_chart->qual, html_chart->cnt)
     html_chart->qual[html_chart->cnt].text = concat(
-      '<div class="grid-cell label medname sticky-med med-trigger dimmable', v_cell_bg, '"', v_med_attr, ' title="Click to filter by ', v_curr_med, '">', v_curr_med, ' <span class="filter-icon">&#x25BC;</span></div>',
+      '<div class="grid-cell label medname sticky-med med-trigger dimmable', v_cell_bg, '"', v_med_attr, ' title="Click to filter by ', v_curr_med, '">', v_curr_med, '</div>',
       '<div class="grid-cell dot-val sticky-doses dimmable', v_cell_bg, '"', v_med_attr, '><span class="pill" title="', v_curr_med, ' - Total Doses: ', trim(cnvtstring(v_med_dose_total), 3), '">', trim(cnvtstring(v_med_dose_total), 3), '</span></div>',
       '<div class="grid-cell dot-val sticky-dot dimmable', v_cell_bg, '"', v_med_attr, '><span class="pill" title="', v_curr_med, ' - Total Days of Therapy: ', trim(cnvtstring(v_med_dot_total), 3), '">', trim(cnvtstring(v_med_dot_total), 3), '</span></div>',
       v_strip
@@ -500,7 +524,7 @@ if (admin_rec->cnt > 0 and v_days > 0)
             endif
           endif
         endfor
-        set v_strip = concat(v_strip, '<div class="grid-cell cell enc-border ', v_cell_class, '" title="', v_cell_title, '"><span class="enc-cell-text">', v_cell_text, '</span></div>')
+        set v_strip = concat(v_strip, '<div class="grid-cell cell ', v_cell_class, '" title="', v_cell_title, '"><span class="enc-cell-text">', v_cell_text, '</span></div>')
         set v_i = v_i + 1
       endwhile
 
@@ -508,9 +532,9 @@ if (admin_rec->cnt > 0 and v_days > 0)
       set html_chart->cnt = html_chart->cnt + 1
       set stat = alterlist(html_chart->qual, html_chart->cnt)
       set html_chart->qual[html_chart->cnt].text = concat(
-        '<div class="grid-cell label enc-label-cell sticky-med enc-border always-on">', v_enc_label, '</div>',
-        '<div class="grid-cell sticky-doses enc-border always-on"></div>',
-        '<div class="grid-cell sticky-dot enc-border always-on"></div>',
+        '<div class="grid-cell label enc-label-cell sticky-med always-on">Encounter</div>',
+        '<div class="grid-cell label sticky-doses always-on"></div>',
+        '<div class="grid-cell label sticky-dot always-on"></div>',
         v_strip
       )
     endfor
@@ -686,7 +710,7 @@ head report
   row +1 '.chart-grid { display: grid; background: var(--bg-main); width: max-content; border-top: 1px solid var(--border-dark); border-left: 1px solid var(--border-dark); font-size: 12px; }'
   row +1 '.grid-cell { border-right: 1px solid var(--border-light); border-bottom: none; background: var(--bg-main); padding: 0; display: flex; align-items: center; min-width: 0; }'
   row +1 '.grid-cell.label, .grid-cell.sticky-med, .grid-cell.sticky-doses, .grid-cell.sticky-dot { border-right-color: var(--border-dark) !important; border-bottom: 1px solid var(--border-dark) !important; }'
-  row +1 'table.data-tbl th, .grid-cell.label { background: var(--header-bg) !important; color: #2f3c4b; font-weight: 600 !important; padding: 4px 8px; }'
+  row +1 'table.data-tbl th, .grid-cell.label:not(.medname) { background: var(--header-bg) !important; color: #2f3c4b; font-weight: 600 !important; padding: 4px 8px; }'
   row +1 'table.data-tbl th { text-align:left; height:26px; font-size:12px !important; }'
   row +1 '.grid-cell.label { min-height: 26px; }'
 
@@ -697,12 +721,12 @@ head report
   row +1 '.hdr-intersect { z-index:20 !important; }'
   
   /* Content Alignment & Striping */
-  row +1 '.even-cell.sticky-med, .even-cell.sticky-doses, .even-cell.sticky-dot { background: var(--sticky-bg-alt) !important; }'
+  row +1 '.even-cell.sticky-med, .even-cell.sticky-doses, .even-cell.sticky-dot, .even-cell.medname { background: var(--bg-alt) !important; }'
   row +1 '.dot-val { justify-content: center; }'
   row +1 call print(concat('.grid-cell.medname { padding:2px 6px; font-size:', v_med_font_size, ' !important; }'))
   
   /* EDGE 5 Interactive UI Classes */
-  row +1 '.med-trigger { cursor: pointer; color: var(--cerner-blue); transition: background 0.2s; }'
+  row +1 '.med-trigger { cursor: pointer; color: #111; transition: background 0.2s; }'
   row +1 '.med-trigger:hover { background-color: #e0f0ff !important; }'
   row +1 '.filter-icon { font-size: 8px; opacity: 0.5; margin-left: 6px; }'
   row +1 '.dimmed { opacity: 0.15; filter: grayscale(100%); pointer-events: none; transition: opacity 0.3s ease; }'
@@ -720,10 +744,10 @@ head report
   /* Physical 14px width constraint and Date Ticks */
   row +1 '.cell, .tick { width:14px; min-width:14px; max-width:14px; justify-content:center; font-size:10px; }'
   row +1 '.cell { border-right:1px solid #f8f8f8 !important; border-bottom:none !important; border-left:none !important; color:transparent; background:transparent !important; position:relative; z-index:1; }'
-  row +1 '.tick { border-right:none !important; height:30px; position:relative; overflow:visible !important; align-items:flex-end; padding-bottom:2px; }'
-  row +1 '.tick::after { content:""; position:absolute; right:0; bottom:0; width:1px; height:8px; background:var(--border-dark); }'
-  row +1 '.tick .mo { position:absolute; bottom:16px; left:50%; transform:translateX(-50%); color:#555; white-space:nowrap; pointer-events:none; }'
-  row +1 '.grid-cell.axis-header { display:block; line-height:18px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }'
+  row +1 '.tick { border-right:none !important; height:22px; position:relative; overflow:visible !important; align-items:center; padding-bottom:0; justify-content:center; font-size:10px; color:#555; }'
+  row +1 '.tick::after { content:""; position:absolute; right:0; bottom:0; width:1px; height:6px; background:var(--border-dark); }'
+  row +1 '.mo-span { height:20px; font-size:11px; font-weight:600; color:#2f3c4b; background:var(--header-bg) !important; border-right:1px solid var(--border-dark) !important; border-bottom:1px solid var(--border-dark) !important; padding:0 4px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; align-items:center; }'
+  row +1 '.grid-cell.axis-header { display:block; line-height:18px; overflow:visible; white-space:nowrap; text-overflow:clip; }'
 
   /* Every day cell gets a small square - empty=light grey, admin=blue */
   row +1 '.cell::after { content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:14px; height:12px; background:#F5F5F6; border-radius:0px; z-index:-1; }'
@@ -746,7 +770,7 @@ head report
   row +1 '.enc-border { border-top:2px solid #90b8e0 !important; }'
   row +1 '.enc-label-cell { font-size:11px !important; }'
   row +1 '.enc-label-cell a { color:var(--cerner-blue); text-decoration:none; font-weight:600; }'
-  row +1 '.enc-cell-text { font-size:8px; font-weight:700; color:#111; line-height:1; }'
+  row +1 '.enc-cell-text { font-size:10px; font-weight:700; color:#111; line-height:1; }'
   
   /* Table Layout Rules */
   row +1 'table.data-tbl { width:100%; min-width:1460px; border-collapse:separate; border-spacing:0; margin-top:12px; font-size:12px; border-top:1px solid var(--border-dark); border-left:1px solid var(--border-dark); border-bottom:2px solid #a0a0a0; table-layout:fixed; }'
@@ -768,16 +792,18 @@ head report
 
   /* --- CHART SECTION --- */
   row +1 '<h1>Antimicrobial Administrations by Date</h1>'
-  row +1 '<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given.<br/><b>Interactive:</b> Click a medication name to isolate its history across the chart and table.</div>'
+  row +1 call print(concat('<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given.<br/><b>Interactive:</b> Click a medication name to isolate its history across the chart and table.</div>'))
 
   row +1 '<div class="chart-wrap">'
   row +1 call print(concat('<div class="chart-grid" style="grid-template-columns: 200px 40px 40px repeat(', trim(cnvtstring(v_days), 3), ', 14px);">'))
-  row +1 call print(concat('<div class="grid-cell label sticky-med hdr-intersect always-on">Medication</div><div class="grid-cell label sticky-doses hdr-intersect always-on">Doses</div><div class="grid-cell label sticky-dot hdr-intersect always-on">DOT</div><div class="grid-cell label axis-header always-on" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), ';">Days'))
-  row +1 call print(v_axis_html)
-  row +1 '</div>'
+  row +1 call print(concat('<div class="grid-cell label sticky-med hdr-intersect always-on">Medication</div><div class="grid-cell label sticky-doses hdr-intersect always-on">Doses</div><div class="grid-cell label sticky-dot hdr-intersect always-on">DOT</div><div class="grid-cell label axis-header always-on" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), ';">Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', trim(cnvtstring(v_days), 3), ' days)</div>'))
   
   if (textlen(v_header_html) > 0)
-    row +1 '<div class="grid-cell sticky-med hdr-intersect always-on"></div><div class="grid-cell sticky-doses hdr-intersect always-on"></div><div class="grid-cell sticky-dot hdr-intersect always-on"></div>'
+    /* Month-name spanning row - single merged cell for sticky cols */
+    row +1 call print(concat('<div class="grid-cell hdr-intersect always-on" style="grid-column:span 3;background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>'))
+    row +1 call print(v_month_html)
+    /* Day-number row - single merged cell for sticky cols */
+    row +1 call print(concat('<div class="grid-cell hdr-intersect always-on" style="grid-column:span 3;background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>'))
     row +1 call print(v_header_html)
   endif
 
