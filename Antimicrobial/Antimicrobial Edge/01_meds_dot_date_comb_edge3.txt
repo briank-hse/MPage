@@ -732,15 +732,15 @@ head report
   row +1 '.cell.on:empty::before { content:"1"; }'
   /* Summary and encounter squares */
   row +1 '.cell.sum-yes, .cell.sum-no, .cell.enc-c1, .cell.enc-c2, .cell.enc-c3, .cell.enc-c4 { background:transparent !important; }'
-  row +1 '.cell.sum-yes::after { width:14px; height:12px; background:#ED1C24; }'
-  row +1 '.cell.sum-no::after { width:14px; height:12px; background:#A8D08D; }'
+  row +1 '.cell.sum-yes::after { width:14px; height:12px; background: #f37074be; }'
+  row +1 '.cell.sum-no::after { width:14px; height:12px; background: #a8d08dbe; }'
   
   row +1 '.sum-border { border-top:2px solid #a0a0a0 !important; }'
   row +1 '.pill { display:inline-block; padding:2px 6px; border-radius:12px; background:#eef; color:#334; line-height:1; }'
   
   /* Encounter Formatting */
   row +1 '.cell.enc-c1::after { width:14px; height:12px; background:#b8d8f8; }'
-  row +1 '.cell.enc-c2::after { width:14px; height:12px; background:#9ecbf5; }'
+  row +1 '.cell.enc-c2::after { width:14px; height:12px; background: #b3d0ebb4; }'
   row +1 '.cell.enc-c3::after { width:14px; height:12px; background:#c8e8fb; }'
   row +1 '.cell.enc-c4::after { width:14px; height:12px; background:#aad8f7; }'
   row +1 '.enc-border { border-top:2px solid #90b8e0 !important; }'
