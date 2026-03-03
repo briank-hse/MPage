@@ -709,14 +709,15 @@ head report
   row +1 '.dimmable { transition: opacity 0.3s ease; }'
   row +1 '.active-filter { background-color: #e0f0ff !important; font-weight: 700; }'
   
-  /* Physical 20x20 constraint */
-  row +1 '.cell, .tick { width:20px; min-width:20px; max-width:20px; justify-content:center; font-size:10px; }'
-  row +1 '.cell { height:20px; min-height:20px; max-height:20px; color:transparent; }'
+  /* Physical 14px width constraint and Date Ticks */
+  row +1 '.cell, .tick { width:14px; min-width:14px; max-width:14px; justify-content:center; font-size:10px; }'
+  row +1 '.cell { color:transparent; }'
   row +1 '.tick { height:30px; position:relative; overflow:visible !important; align-items:flex-end; padding-bottom:2px; }'
   row +1 '.tick .mo { position:absolute; bottom:16px; left:50%; transform:translateX(-50%); color:#555; white-space:nowrap; pointer-events:none; }'
   row +1 '.grid-cell.axis-header { display:block; line-height:18px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }'
 
-  row +1 '.cell.on { background:var(--cerner-blue) !important; color:var(--bg-main); font-weight:600; }'
+  row +1 '.cell.on { background:transparent !important; color:var(--bg-main) !important; font-weight:600; position:relative; z-index:1; }'
+  row +1 '.cell.on::after { content:""; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:14px; height:14px; background:var(--cerner-blue); border-radius:1px; z-index:-1; }'
   row +1 '.cell.on:empty::before { content:"1"; }'
   row +1 '.cell.sum-yes { background:#ED1C24 !important; }'
   row +1 '.cell.sum-no { background:#A8D08D !important; }'
