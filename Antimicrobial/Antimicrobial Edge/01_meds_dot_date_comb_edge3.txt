@@ -714,10 +714,11 @@ head report
   row +1 '.grid-cell.dimmed.sticky-med .pill, .grid-cell.dimmed.sticky-doses .pill, .grid-cell.dimmed.sticky-dot .pill { background: #f0f0f0 !important; color: #b5b5b5 !important; box-shadow: none !important; }'
 
   /* Dynamic Chart Row Hover */
-  row +1 '.row-hover:not(.on):not(.always-on) { background-color: #f0f7ff !important; }'
+  row +1 '.row-hover:not(.on):not(.always-on) { background-color: transparent !important; }'
+  row +1 '.cell.row-hover:not(.on)::after { background:#b8d4ee !important; }'
   
   /* Physical 14px width constraint and Date Ticks */
-  row +1 '.cell, .tick { width:14px; min-width:14px; max-width:14px; justify-content:center; font-size:10px; border-right:none !important; border-bottom:none !important; }'
+  row +1 '.cell, .tick { width:14px; min-width:14px; max-width:14px; justify-content:center; font-size:10px; border-right:1px solid #ced2d6 !important; border-bottom:none !important; border-left:none !important; }'
   row +1 '.cell { color:transparent; background:transparent !important; position:relative; z-index:1; }'
   row +1 '.tick { height:30px; position:relative; overflow:visible !important; align-items:flex-end; padding-bottom:2px; }'
   row +1 '.tick::after { content:""; position:absolute; right:0; bottom:0; width:1px; height:8px; background:var(--border-dark); }'
@@ -725,23 +726,23 @@ head report
   row +1 '.grid-cell.axis-header { display:block; line-height:18px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }'
 
   /* Every day cell gets a small square - empty=light grey, admin=blue */
-  row +1 '.cell::after { content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:10px; height:10px; background:#e0e3e7; border-radius:1px; z-index:-1; }'
+  row +1 '.cell::after { content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:14px; height:12px; background:#e0e3e7; border-radius:0px; z-index:-1; }'
   row +1 '.cell.on { color:var(--bg-main) !important; font-weight:600; }'
-  row +1 '.cell.on::after { width:12px; height:12px; background:var(--cerner-blue); border-radius:1px; }'
+  row +1 '.cell.on::after { width:14px; height:12px; background:var(--cerner-blue); border-radius:0px; }'
   row +1 '.cell.on:empty::before { content:"1"; }'
   /* Summary and encounter squares */
   row +1 '.cell.sum-yes, .cell.sum-no, .cell.enc-c1, .cell.enc-c2, .cell.enc-c3, .cell.enc-c4 { background:transparent !important; }'
-  row +1 '.cell.sum-yes::after { width:12px; height:12px; background:#ED1C24; }'
-  row +1 '.cell.sum-no::after { width:12px; height:12px; background:#A8D08D; }'
+  row +1 '.cell.sum-yes::after { width:14px; height:12px; background:#ED1C24; }'
+  row +1 '.cell.sum-no::after { width:14px; height:12px; background:#A8D08D; }'
   
   row +1 '.sum-border { border-top:2px solid #a0a0a0 !important; }'
   row +1 '.pill { display:inline-block; padding:2px 6px; border-radius:12px; background:#eef; color:#334; line-height:1; }'
   
   /* Encounter Formatting */
-  row +1 '.cell.enc-c1::after { width:12px; height:12px; background:#b8d8f8; }'
-  row +1 '.cell.enc-c2::after { width:12px; height:12px; background:#9ecbf5; }'
-  row +1 '.cell.enc-c3::after { width:12px; height:12px; background:#c8e8fb; }'
-  row +1 '.cell.enc-c4::after { width:12px; height:12px; background:#aad8f7; }'
+  row +1 '.cell.enc-c1::after { width:14px; height:12px; background:#b8d8f8; }'
+  row +1 '.cell.enc-c2::after { width:14px; height:12px; background:#9ecbf5; }'
+  row +1 '.cell.enc-c3::after { width:14px; height:12px; background:#c8e8fb; }'
+  row +1 '.cell.enc-c4::after { width:14px; height:12px; background:#aad8f7; }'
   row +1 '.enc-border { border-top:1px solid #c8dff5 !important; }'
   row +1 '.enc-label-cell { font-size:11px !important; }'
   row +1 '.enc-label-cell a { color:var(--cerner-blue); text-decoration:none; font-weight:600; }'
@@ -766,7 +767,7 @@ head report
   row +1 '</style></head><body><div class="wrap">'
 
   /* --- CHART SECTION --- */
-  row +1 '<h1>Antimicrobial Administrations by Date - 14:43</h1>'
+  row +1 '<h1>Antimicrobial Administrations by Date</h1>'
   row +1 '<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given.<br/><b>Interactive:</b> Click a medication name to isolate its history across the chart and table.</div>'
 
   row +1 '<div class="chart-wrap">'
