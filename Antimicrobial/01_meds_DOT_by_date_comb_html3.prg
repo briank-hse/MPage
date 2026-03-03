@@ -9,8 +9,16 @@ create program 01_meds_DOT_by_date_comb_html3
   - Retained all legacy variables, styling, and chunking logic.
   - Applied IE-quirks wrapper fix for fixed-width chart columns (180px).
   - Added mathematical grand totals for DOT to the summary row.
-  - Added new 'Dose' column splitting Target Dose space, powered by 
-    ORDER_DETAIL STRENGTH (2056) and STRENGTHUNIT (2057).
+  - Added new 'Dose' column splitting Target Dose space.
+  - Added Pass 2.5: Greedy Interval Partitioning for Encounter timeline tracks.
+  - Clickable FIN links correctly populated in the left-hand column.
+  - FIXED: "invalid record structure definition in expr" by hoisting all 
+    record structures (enc_rec, enc_sort_rec) to the global declaration block.
+  - FIXED MISSING SQUARES: Replaced broken cnvtdate() arithmetic with native 
+    datetimediff() to ensure encounter start/end indexes map correctly to the 
+    chart grid.
+  - ADDED: Multi-shade CSS logic (enc-c1 through enc-c4) to visually separate
+    different encounters using modulo math.
 ******************************************************************************/
 
 prompt
@@ -23,11 +31,9 @@ with OUTDEV, PAT_PersonId, LOOKBACK
 /* Variable Declarations                                                      */
 /* ========================================================================== */
 
-/* --- Set Font Size --- */
 declare v_font_size      = vc with noconstant("13px")
-declare v_med_font_size = vc with noconstant("14px")
+declare v_med_font_size  = vc with noconstant("14px")
 
-/* --- Meta and Header Variables --- */
 declare v_mrn         = vc with noconstant("")
 declare v_name        = vc with noconstant("")
 declare v_admit_dt    = vc with noconstant("")
@@ -36,7 +42,6 @@ declare v_lookback    = vc with noconstant("")
 declare v_chart_meta  = vc with noconstant(""), maxlen=2000
 declare v_table_meta  = vc with noconstant(""), maxlen=2000
 
-/* --- Chart-Specific Variables --- */
 declare v_axis_html   = vc with noconstant(""), maxlen=2000
 declare v_header_html = vc with noconstant(""), maxlen=65534
 declare v_min_dt      = dq8 with noconstant(0)
@@ -58,7 +63,6 @@ declare v_med_dose_total  = i4 with noconstant(0)
 declare v_doses           = i4 with noconstant(0)
 declare v_row_cnt     = i4 with noconstant(0)
 
-/* --- Summary Row Variables --- */
 declare v_all_days_list = vc with noconstant(""), maxlen=65534
 declare v_sum_strip     = vc with noconstant(""), maxlen=65534
 declare v_spacer_strip  = vc with noconstant(""), maxlen=65534
@@ -66,7 +70,18 @@ declare v_total_summary_dot = i4 with noconstant(0)
 declare v_grand_total_dot   = i4 with noconstant(0)
 declare v_grand_total_doses = i4 with noconstant(0)
 
-/* --- Chart Parsing Variables --- */
+declare v_e             = i4 with noconstant(0)
+declare v_s_idx         = i4 with noconstant(0)
+declare v_e_idx         = i4 with noconstant(0)
+declare v_t             = i4 with noconstant(0)
+declare v_max_track     = i4 with noconstant(0)
+declare v_assigned      = i2 with noconstant(0)
+declare v_cell_class    = vc with noconstant(""), maxlen=100
+declare v_cell_title    = vc with noconstant(""), maxlen=255
+declare v_enc_label     = vc with noconstant(""), maxlen=2000
+declare v_color_idx     = i4 with noconstant(0)
+declare track_ends[50]  = i4
+
 declare v_findpos          = i4 with noconstant(0)
 declare v_after            = vc with noconstant(""), maxlen=65534
 declare v_endpos           = i4 with noconstant(0)
@@ -75,7 +90,6 @@ declare v_pipe_pos         = i4 with noconstant(0)
 declare v_indication       = vc with noconstant(""), maxlen=255
 declare v_discontinue_rsn  = vc with noconstant(""), maxlen=255
 
-/* --- Table-Specific Variables --- */
 declare v_drug        = vc with noconstant("")
 declare v_dose        = f8 with noconstant(0.0)
 declare v_unit        = vc with noconstant("")
@@ -88,7 +102,6 @@ declare v_dot         = i4 with noconstant(0)
 declare v_table_rows  = vc with noconstant(""), maxlen=65534
 declare v_chart_rows  = vc with noconstant(""), maxlen=65534
 
-/* --- General Working Variables --- */
 declare v_low_dt      = dq8 with noconstant(null)
 declare v_high_now_dt = dq8 with noconstant(null)
 declare v_begin_dt_str= vc with noconstant("")
@@ -105,11 +118,9 @@ declare v_disp            = vc with noconstant("")
 declare v_fin             = vc with noconstant("")
 declare v_encntr_id       = vc with noconstant("")
 
-/* --- Debug Count Variables --- */
 declare v_pc_cnt      = i4 with noconstant(0)
 declare v_sn_cnt      = i4 with noconstant(0)
 
-/* --- Safe Print/Chunking Variables --- */
 declare v_token       = vc with noconstant("</tr>")
 declare v_toklen      = i4 with noconstant(5)
 declare v_pos         = i4 with noconstant(0)
@@ -119,7 +130,7 @@ declare v_rowseg      = vc with noconstant(""), maxlen=65534
 declare v_chunk       = i4 with constant(32000)
 
 /* ========================================================================== */
-/* Unified Record Structure Definition                                        */
+/* Record Structure Definitions                                               */
 /* ========================================================================== */
 free record admin_rec
 record admin_rec (
@@ -131,8 +142,30 @@ record admin_rec (
     2 src         = vc
 )
 
+free record enc_rec
+record enc_rec (
+  1 cnt = i4
+  1 qual[*]
+    2 encntr_id = f8
+    2 fin       = vc
+    2 arrive_dt = dq8
+    2 disch_dt  = dq8
+    2 start_idx = i4
+    2 end_idx   = i4
+    2 track     = i4
+)
+
+free record enc_sort_rec
+record enc_sort_rec (
+  1 cnt = i4
+  1 qual[*]
+    2 orig_idx  = i4
+    2 start_idx = i4
+    2 end_idx   = i4
+)
+
 /* ========================================================================== */
-/* PASS 0A: Gather PowerChart Administrations (MAE)                           */
+/* PASS 0A: PowerChart Administrations (MAE)                                  */
 /* ========================================================================== */
 select into "nl:"
 from person p, clinical_event ce, med_admin_event m, orders o,
@@ -162,7 +195,7 @@ head m.event_id
 with nocounter
 
 /* ========================================================================== */
-/* PASS 0B: Gather SN Anesthesia Administrations (SA)                         */
+/* PASS 0B: SN Anesthesia Administrations                                     */
 /* ========================================================================== */
 select into "nl:"
 from person p, orders o, sa_medication_admin sma, sa_med_admin_item smai,
@@ -190,7 +223,7 @@ head smai.sa_med_admin_item_id
 with nocounter
 
 /* ========================================================================== */
-/* PASS 1: Determine Date Range & Demographics                                */
+/* PASS 1: Date Range & Demographics                                          */
 /* ========================================================================== */
 select into "nl:"
 from person p, person_alias pa, encounter e
@@ -201,97 +234,95 @@ head report
   v_first = 1
   v_mrn   = pa.alias
   v_name  = p.name_full_formatted
-  v_admit_dt = format(e.arrive_dt_tm,"DD/MM/YYYY;;d")
-  v_low_dt   = cnvtdatetime(cnvtdate(e.arrive_dt_tm),0)
+  v_admit_dt    = format(e.arrive_dt_tm,"DD/MM/YYYY;;d")
+  v_low_dt      = cnvtdatetime(cnvtdate(e.arrive_dt_tm),0)
   v_high_now_dt = cnvtdatetime(curdate,0)
-  v_today      = cnvtdate(curdate)
-  v_los      = cnvtstring((datetimediff(v_high_now_dt,v_low_dt,7))+1)
-  v_lookback = cnvtstring($LOOKBACK)
+  v_today       = cnvtdate(curdate)
+  v_los         = cnvtstring((datetimediff(v_high_now_dt,v_low_dt,7))+1)
+  v_lookback    = cnvtstring($LOOKBACK)
   v_begin_dt_str = format((curdate-$LOOKBACK),"DD/MM/YYYY;;d")
   v_end_dt_str   = format(curdate,"DD/MM/YYYY;;d")
-  v_debug_info = concat("Query Range Start: ", format(cnvtdate(curdate - $LOOKBACK), "DD-MMM-YYYY;;D"), 
-                       " | Patient_ID: ", cnvtstring($PAT_PersonId), " | Total Admins: ", cnvtstring(admin_rec->cnt))
 with nocounter
 
-/* Dynamically find min/max dates from populated memory record */
 if (admin_rec->cnt > 0)
-  set v_first = 0
+  set v_first  = 0
   set v_min_dt = cnvtdate(admin_rec->qual[1].admin_dt_tm)
   set v_max_dt = cnvtdate(admin_rec->qual[1].admin_dt_tm)
   set v_i = 1
   while (v_i <= admin_rec->cnt)
     set v_local_dt = cnvtdate(admin_rec->qual[v_i].admin_dt_tm)
-    if (v_local_dt < v_min_dt) set v_min_dt = v_local_dt endif
-    if (v_local_dt > v_max_dt) set v_max_dt = v_local_dt endif
+    if (v_local_dt < v_min_dt)
+      set v_min_dt = v_local_dt
+    endif
+    if (v_local_dt > v_max_dt)
+      set v_max_dt = v_local_dt
+    endif
     set v_i = v_i + 1
   endwhile
-  if (v_max_dt < v_today) set v_max_dt = v_today endif
-  
-  /* Count PC vs SN */
+  if (v_max_dt < v_today)
+    set v_max_dt = v_today
+  endif
+
   set v_pc_cnt = 0
   set v_sn_cnt = 0
   set v_i = 1
   while (v_i <= admin_rec->cnt)
-    if (admin_rec->qual[v_i].src = "PC") set v_pc_cnt = v_pc_cnt + 1
-    elseif (admin_rec->qual[v_i].src = "SN") set v_sn_cnt = v_sn_cnt + 1
+    if (admin_rec->qual[v_i].src = "PC")
+      set v_pc_cnt = v_pc_cnt + 1
+    elseif (admin_rec->qual[v_i].src = "SN")
+      set v_sn_cnt = v_sn_cnt + 1
     endif
     set v_i = v_i + 1
   endwhile
 endif
 
-/* --- Build Chart Axis and Header HTML --- */
 if (v_first = 1)
-  set v_days = 0
-  set v_axis_html = ""
-  set v_chart_rows = '<tr><td colspan="3">No administrations found in the selected window.</td></tr>'
+  set v_days        = 0
+  set v_axis_html   = ""
+  set v_chart_rows  = '<tr><td colspan="3">No administrations found in the selected window.</td></tr>'
   set v_header_html = ""
 else
   set v_days = (datetimediff(v_max_dt, v_min_dt, 7)) + 1
   set v_axis_html = concat(
     '<div class="axisbar"><div>Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"),
-    ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), '</div></div>'
-  )
+    ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), '</div></div>')
   set v_header_html = ''
   set v_i = 0
   while (v_i < v_days)
     if (v_i = 0 or format(v_min_dt + v_i,"MM;;D") != format(v_min_dt + v_i - 1,"MM;;D"))
       set v_header_html = concat(v_header_html,
         '<span class="tick" title="', format(v_min_dt + v_i,"YYYY-MM-DD;;D"), '">',
-          '<span class="mo">', format(v_min_dt + v_i,"MMM;;D"), '</span>',
-          format(v_min_dt + v_i,"DD;;D"), '</span>'
-      )
+        '<span class="mo">', format(v_min_dt + v_i,"MMM;;D"), '</span>',
+        format(v_min_dt + v_i,"DD;;D"), '</span>')
     else
       set v_header_html = concat(v_header_html,
         '<span class="tick" title="', format(v_min_dt + v_i,"YYYY-MM-DD;;D"), '">',
-        format(v_min_dt + v_i,"DD;;D"), '</span>'
-      )
+        format(v_min_dt + v_i,"DD;;D"), '</span>')
     endif
     set v_i = v_i + 1
   endwhile
 endif
 
-/* --- Build Meta Strings --- */
-set v_chart_meta = concat('')
 set v_table_meta = '<div class="sub"><b>MRN:</b> '
-set v_table_meta = concat(v_table_meta, v_mrn)
-set v_table_meta = concat(v_table_meta, " &nbsp; <b>Begin:</b> ", v_begin_dt_str)
-set v_table_meta = concat(v_table_meta, " &nbsp;  End:</b> ", v_end_dt_str)
-set v_table_meta = concat(v_table_meta, " &nbsp; <b>Admission:</b> ", v_admit_dt)
-set v_table_meta = concat(v_table_meta, " &nbsp; <b>LOS:</b> ", v_los, " days")
-set v_table_meta = concat(v_table_meta, " &nbsp; <b>Lookback:</b> ", v_lookback, " days</div>")
+set v_table_meta = concat(v_table_meta, v_mrn,
+  " &nbsp; <b>Begin:</b> ", v_begin_dt_str,
+  " &nbsp; <b>End:</b> ",   v_end_dt_str,
+  " &nbsp; <b>Admission:</b> ", v_admit_dt,
+  " &nbsp; <b>LOS:</b> ", v_los, " days",
+  " &nbsp; <b>Lookback:</b> ", v_lookback, " days</div>")
 
 /* ========================================================================== */
-/* PASS 2: Build Chart Rows (Driven from Record Structure)                    */
+/* PASS 2: Build Medication Chart Rows                                        */
 /* ========================================================================== */
 set v_chart_rows = ""
 if (admin_rec->cnt > 0)
 select into "nl:"
-  med_name = trim(oc.primary_mnemonic)
-, mdy = format(admin_rec->qual[d.seq].admin_dt_tm, "YYYYMMDD;;D")
-, indication = substring(1,60,trim(od_indication.oe_field_display_value))
+  med_name           = trim(oc.primary_mnemonic)
+, mdy                = format(admin_rec->qual[d.seq].admin_dt_tm, "YYYYMMDD;;D")
+, indication         = substring(1,60,trim(od_indication.oe_field_display_value))
 , discontinue_reason = substring(1,60,trim(od_dcreason.oe_field_display_value))
-, src_id = admin_rec->qual[d.seq].admin_id
-, admin_src = admin_rec->qual[d.seq].src
+, src_id             = admin_rec->qual[d.seq].admin_id
+, admin_src          = admin_rec->qual[d.seq].src
 from
   (dummyt d with seq = admin_rec->cnt)
 , orders o
@@ -305,78 +336,71 @@ join od_indication where od_indication.order_id = outerjoin(o.order_id)
   and od_indication.oe_field_meaning = outerjoin("INDICATION")
 join od_dcreason where od_dcreason.order_id = outerjoin(o.order_id)
   and od_dcreason.oe_field_meaning = outerjoin("DCREASON")
-
 order by cnvtupper(trim(oc.primary_mnemonic)), mdy, src_id
 
 head report
-  v_curr_med = ""
-  v_dates_kv = ""
-  v_details_kv = ""
+  v_curr_med      = ""
+  v_dates_kv      = ""
+  v_details_kv    = ""
   v_all_days_list = ""
-  v_row_cnt = 0
+  v_row_cnt       = 0
   v_grand_total_dot = 0
 
 head med_name
-  v_curr_med = med_name
-  v_dates_kv = ""
-  v_details_kv = ""
+  v_curr_med       = med_name
+  v_dates_kv       = ""
+  v_details_kv     = ""
   v_med_dot_total  = 0
-  v_med_dose_total = 0 
+  v_med_dose_total = 0
 
 head mdy
   v_cnt_day = 0
 
 head src_id
-  v_cnt_day = v_cnt_day + 1
+  v_cnt_day        = v_cnt_day + 1
   v_med_dose_total = v_med_dose_total + 1
 
 foot mdy
-  v_dates_kv = concat(v_dates_kv, "~", mdy, ":", cnvtstring(v_cnt_day), "~")
+  v_dates_kv   = concat(v_dates_kv,   "~", mdy, ":", cnvtstring(v_cnt_day), "~")
   v_details_kv = concat(v_details_kv, "~", mdy, ":", indication, "|", discontinue_reason, "~")
   v_med_dot_total = v_med_dot_total + 1
-    
   if (findstring(concat("~", mdy, "~"), v_all_days_list) = 0)
     v_all_days_list = concat(v_all_days_list, "~", mdy, "~")
   endif
 
 foot med_name
   if (v_days > 0)
-    v_row_cnt = v_row_cnt + 1
-    
+    v_row_cnt         = v_row_cnt + 1
     v_grand_total_dot = v_grand_total_dot + v_med_dot_total
-    
     v_strip = ""
     v_i = 0
-   
     while (v_i < v_days)
-      v_key8 = format(v_min_dt + v_i, "YYYYMMDD;;D")
-
+      v_key8    = format(v_min_dt + v_i, "YYYYMMDD;;D")
       v_findpos = findstring(concat("~", v_key8, ":"), v_dates_kv)
       if (v_findpos > 0)
-        v_after  = substring(v_findpos + 10, textlen(v_dates_kv) - (v_findpos + 9), v_dates_kv)
-        v_endpos = findstring("~", v_after)
+        v_after    = substring(v_findpos + 10, textlen(v_dates_kv) - (v_findpos + 9), v_dates_kv)
+        v_endpos   = findstring("~", v_after)
         if (v_endpos > 0) v_count_str = substring(1, v_endpos - 1, v_after)
-        else v_count_str = v_after
+        else              v_count_str = v_after
         endif
       else
         v_count_str = ""
       endif
       v_count_i = cnvtint(v_count_str)
 
-      v_indication = ""
+      v_indication      = ""
       v_discontinue_rsn = ""
       v_findpos = findstring(concat("~", v_key8, ":"), v_details_kv)
       if (v_findpos > 0)
-        v_after = substring(v_findpos + 10, textlen(v_details_kv) - (v_findpos + 9), v_details_kv)
-        v_endpos = findstring("~", v_after)
+        v_after      = substring(v_findpos + 10, textlen(v_details_kv) - (v_findpos + 9), v_details_kv)
+        v_endpos     = findstring("~", v_after)
         v_detail_str = ""
         if (v_endpos > 0) v_detail_str = substring(1, v_endpos - 1, v_after)
-        else v_detail_str = v_after
+        else              v_detail_str = v_after
         endif
-        v_pipe_pos = 0
         v_pipe_pos = findstring("|", v_detail_str)
         if (v_pipe_pos > 0)
-          v_indication = substring(1, v_pipe_pos - 1, v_detail_str)
+          v_indication      = substring(1, v_pipe_pos - 1, v_detail_str)
           v_discontinue_rsn = substring(v_pipe_pos + 1, textlen(v_detail_str) - v_pipe_pos, v_detail_str)
         else
           v_indication = v_detail_str
@@ -384,18 +408,19 @@ foot med_name
       endif
 
       if (v_count_i > 0)
-        v_title = concat(v_curr_med, " - ", format(v_min_dt + v_i,"DD/MM/YYYY;;D"), " / ", v_count_str,
-                          if(v_count_i = 1) " admin" else " admins" endif,
-                          "&#10;Indication: ", v_indication,
-                          "&#10;Discontinue Reason: ", v_discontinue_rsn)
+        v_title = concat(v_curr_med, " - ", format(v_min_dt + v_i,"DD/MM/YYYY;;D"),
+          " / ", v_count_str,
+          if(v_count_i = 1) " admin" else " admins" endif,
+          "&#10;Indication: ", v_indication,
+          "&#10;Discontinue Reason: ", v_discontinue_rsn)
         v_strip = concat(v_strip, '<span class="cell on" title="', v_title, '">', trim(v_count_str), '</span>')
       else
         v_strip = concat(v_strip, '<span class="cell" title="', format(v_min_dt + v_i,"DD/MM/YYYY;;D"), '"></span>')
       endif
       v_i = v_i + 1
     endwhile
-    
-    v_chart_rows = concat(v_chart_rows, 
+
+    v_chart_rows = concat(v_chart_rows,
       '<tr', if(mod(v_row_cnt, 2) = 0) ' class="even"' else '' endif, '>',
       '<td width="180" class="label medname sticky-med"><div style="width:180px; word-wrap:break-word; white-space:normal;">', v_curr_med, '</div></td>',
       '<td width="46" class="label dot-val sticky-doses"><div style="width:46px; text-align:center;"><span class="pill" title="', v_curr_med, ' - Total Doses: ', trim(cnvtstring(v_med_dose_total)), '">', cnvtstring(v_med_dose_total), '</span></div></td>',
@@ -406,55 +431,223 @@ foot med_name
 
 foot report
   if (v_days > 0)
-      v_sum_strip = ""
-      v_spacer_strip = "" 
-      v_i = 0
-      while (v_i < v_days)
-          v_key8 = format(v_min_dt + v_i, "YYYYMMDD;;D")
-          if (findstring(concat("~", v_key8, "~"), v_all_days_list) > 0)
-             v_sum_strip = concat(v_sum_strip, '<span class="cell sum-yes" title="Antimicrobial Administered"></span>')
-          else
-              v_sum_strip = concat(v_sum_strip, '<span class="cell sum-no" title="No Antimicrobials"></span>')
-          endif
-          
-          v_spacer_strip = concat(v_spacer_strip, '<span class="cell spacer-bit"></span>')
-          v_i = v_i + 1
-      endwhile
-        
-      v_chart_rows = concat(v_chart_rows,
-          '<tr class="summary-row">',
-            '<td width="180" class="label sticky-med"><div style="width:180px; white-space:normal;">Antimicrobial Summary</div></td>',
-            '<td width="46" class="label sticky-doses"><div style="width:46px;"></div></td>',
-            '<td width="46" class="label dot-val sticky-dot"><div style="width:46px; text-align:center;"><span class="pill" title="Total Summary Days of Therapy: ', cnvtstring(v_grand_total_dot), '">', cnvtstring(v_grand_total_dot), '</span></div></td>',
-            '<td><div class="strip">', v_sum_strip, '</div></td>',
-          '</tr>')
-  endif
+    v_sum_strip = ""
+    v_i = 0
+    while (v_i < v_days)
+      v_key8 = format(v_min_dt + v_i, "YYYYMMDD;;D")
+      if (findstring(concat("~", v_key8, "~"), v_all_days_list) > 0)
+        v_sum_strip = concat(v_sum_strip, '<span class="cell sum-yes" title="Antimicrobial Administered"></span>')
+      else
+        v_sum_strip = concat(v_sum_strip, '<span class="cell sum-no" title="No Antimicrobials"></span>')
+      endif
+      v_i = v_i + 1
+    endwhile
 
+    v_chart_rows = concat(v_chart_rows,
+      '<tr class="summary-row">',
+        '<td width="180" class="label sticky-med"><div style="width:180px; white-space:normal;">Antimicrobial Summary</div></td>',
+        '<td width="46" class="label sticky-doses"><div style="width:46px;"></div></td>',
+        '<td width="46" class="label dot-val sticky-dot"><div style="width:46px; text-align:center;"><span class="pill" title="Total Summary Days of Therapy: ', cnvtstring(v_grand_total_dot), '">', cnvtstring(v_grand_total_dot), '</span></div></td>',
+        '<td><div class="strip">', v_sum_strip, '</div></td>',
+      '</tr>')
+  endif
 with nocounter
-endif ; admin_rec->cnt > 0 (Pass 2)
+endif
 
 /* ========================================================================== */
-/* PASS 3: Build Table Rows (Driven from Record Structure)                    */
+/* PASS 2.5: Encounter Tracks                                                 */
+/* ========================================================================== */
+if (admin_rec->cnt > 0 and v_days > 0)
+
+  select into "nl:"
+    o.encntr_id
+  from (dummyt d with seq = admin_rec->cnt)
+    , orders o
+    , encounter e
+    , encntr_alias ea
+  plan d
+  join o where o.order_id = admin_rec->qual[d.seq].order_id
+  join e where e.encntr_id = o.encntr_id
+  join ea where ea.encntr_id = outerjoin(o.encntr_id)
+    and ea.encntr_alias_type_cd = outerjoin(1077.00)
+    and ea.active_ind = outerjoin(1)
+  order by o.encntr_id
+  head report
+    enc_rec->cnt = 0
+  head o.encntr_id
+    enc_rec->cnt = enc_rec->cnt + 1
+    call alterlist(enc_rec->qual, enc_rec->cnt)
+    enc_rec->qual[enc_rec->cnt].encntr_id = o.encntr_id
+    enc_rec->qual[enc_rec->cnt].fin       = trim(ea.alias)
+    enc_rec->qual[enc_rec->cnt].arrive_dt = e.arrive_dt_tm
+    enc_rec->qual[enc_rec->cnt].disch_dt  = e.disch_dt_tm
+  with nocounter
+
+  /* Calculate start/end indices.
+     RESTORED FIX: Use datetimediff() to calculate integer day indexes natively.
+  */
+  if (enc_rec->cnt > 0)
+    for (v_e = 1 to enc_rec->cnt)
+      if (enc_rec->qual[v_e].arrive_dt = null or enc_rec->qual[v_e].arrive_dt = 0)
+        set v_s_idx = 0
+      else
+        set v_s_idx = datetimediff(enc_rec->qual[v_e].arrive_dt, v_min_dt, 7)
+        if (v_s_idx < 0)
+          set v_s_idx = 0
+        endif
+        if (v_s_idx >= v_days)
+          set v_s_idx = v_days - 1
+        endif
+      endif
+
+      if (enc_rec->qual[v_e].disch_dt = null or enc_rec->qual[v_e].disch_dt = 0)
+        set v_e_idx = v_days - 1
+      else
+        set v_e_idx = datetimediff(enc_rec->qual[v_e].disch_dt, v_min_dt, 7)
+        if (v_e_idx < v_s_idx)
+          set v_e_idx = v_s_idx
+        endif
+        if (v_e_idx >= v_days)
+          set v_e_idx = v_days - 1
+        endif
+      endif
+
+      set enc_rec->qual[v_e].start_idx = v_s_idx
+      set enc_rec->qual[v_e].end_idx   = v_e_idx
+    endfor
+  endif
+
+  /* Sort by start index */
+  select into "nl:"
+    s_idx = enc_rec->qual[d.seq].start_idx
+  from (dummyt d with seq = enc_rec->cnt)
+  order by s_idx, d.seq
+  head report
+    enc_sort_rec->cnt = 0
+  detail
+    enc_sort_rec->cnt = enc_sort_rec->cnt + 1
+    call alterlist(enc_sort_rec->qual, enc_sort_rec->cnt)
+    enc_sort_rec->qual[enc_sort_rec->cnt].orig_idx  = d.seq
+    enc_sort_rec->qual[enc_sort_rec->cnt].start_idx = enc_rec->qual[d.seq].start_idx
+    enc_sort_rec->qual[enc_sort_rec->cnt].end_idx   = enc_rec->qual[d.seq].end_idx
+  with nocounter
+
+  /* Greedy Interval Partitioning */
+  for (v_t = 1 to 50)
+    set track_ends[v_t] = -1
+  endfor
+  if (enc_sort_rec->cnt > 0)
+    for (v_e = 1 to enc_sort_rec->cnt)
+      set v_s_idx    = enc_sort_rec->qual[v_e].start_idx
+      set v_e_idx    = enc_sort_rec->qual[v_e].end_idx
+      set v_assigned = 0
+      set v_t        = 1
+      while (v_t <= 50 and v_assigned = 0)
+        if (track_ends[v_t] <= v_s_idx)
+          set enc_rec->qual[enc_sort_rec->qual[v_e].orig_idx].track = v_t
+          set track_ends[v_t] = v_e_idx
+          if (v_t > v_max_track)
+            set v_max_track = v_t
+          endif
+          set v_assigned = 1
+        endif
+        set v_t = v_t + 1
+      endwhile
+    endfor
+  endif
+
+  /* Generate HTML — one row per track. */
+  if (v_max_track > 0)
+    for (v_t = 1 to v_max_track)
+      
+      /* 1. Build the left column label with clickable FIN(s) for this track */
+      set v_enc_label = ""
+      for (v_e = 1 to enc_rec->cnt)
+        if (enc_rec->qual[v_e].track = v_t)
+          if (v_enc_label != "")
+            set v_enc_label = concat(v_enc_label, ", ")
+          endif
+          set v_enc_label = concat(v_enc_label,
+            '<a href=', char(39), 'javascript:APPLINK(0,', char(94), 'Powerchart.exe', char(94),
+            ',', char(94), '/PERSONID=', trim(cnvtstring($PAT_PersonId, 20, 0)),
+            ' /ENCNTRID=', trim(cnvtstring(enc_rec->qual[v_e].encntr_id, 20, 0)),
+            ' /FIRSTTAB=', char(34), 'Pharmacist MPage', char(34), char(94), ')', char(39),
+            '>', trim(enc_rec->qual[v_e].fin), '</a>')
+        endif
+      endfor
+
+      /* 2. Build the colored cells and tooltips */
+      set v_strip = ""
+      set v_i = 0
+      while (v_i < v_days)
+        set v_cell_class = "cell spacer-bit"
+        set v_cell_title = ""
+        
+        for (v_e = 1 to enc_rec->cnt)
+          if (enc_rec->qual[v_e].track = v_t)
+            if (v_i >= enc_rec->qual[v_e].start_idx and v_i <= enc_rec->qual[v_e].end_idx)
+              
+              /* Use Modulo math on the Encounter ID to dynamically assign 1 of 4 colours */
+              set v_color_idx = mod(v_e, 4) + 1
+              set v_cell_class = concat("cell enc-c", trim(cnvtstring(v_color_idx)))
+              
+              /* Safely construct tooltip string checking for missing/null dates */
+              set v_cell_title = concat("FIN: ", trim(enc_rec->qual[v_e].fin))
+
+              if (enc_rec->qual[v_e].arrive_dt != null and enc_rec->qual[v_e].arrive_dt != 0)
+                 set v_cell_title = concat(v_cell_title, " | Arrive: ", format(enc_rec->qual[v_e].arrive_dt, "DD/MM/YYYY;;d"))
+              else
+                 set v_cell_title = concat(v_cell_title, " | Arrive: Unknown")
+              endif
+
+              if (enc_rec->qual[v_e].disch_dt = null or enc_rec->qual[v_e].disch_dt = 0)
+                set v_cell_title = concat(v_cell_title, " | Active")
+              else
+                set v_cell_title = concat(v_cell_title, " | DC: ", format(enc_rec->qual[v_e].disch_dt, "DD/MM/YYYY;;d"))
+              endif
+
+            endif
+          endif
+        endfor
+        
+        set v_strip = concat(v_strip, '<span class="', v_cell_class, '" title="', v_cell_title, '"></span>')
+        set v_i = v_i + 1
+      endwhile
+
+      set v_chart_rows = concat(v_chart_rows,
+        '<tr class="enc-row">',
+          '<td width="180" class="label sticky-med enc-label-cell">',
+            '<div style="width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">', v_enc_label, '</div></td>',
+          '<td width="46" class="label sticky-doses"><div style="width:46px;"></div></td>',
+          '<td width="46" class="label sticky-dot"><div style="width:46px;"></div></td>',
+          '<td><div class="strip">', v_strip, '</div></td>',
+        '</tr>')
+    endfor
+  endif
+endif
+
+/* ========================================================================== */
+/* PASS 3: Build Table Rows                                                   */
 /* ========================================================================== */
 set v_table_rows = ""
 if (admin_rec->cnt > 0)
 select into "nl:"
-  med_name = trim(oc.primary_mnemonic)
-, admin_src = admin_rec->qual[d.seq].src
-, day_key = format(admin_rec->qual[d.seq].admin_dt_tm, "yyyymmdd")
+  med_name                = trim(oc.primary_mnemonic)
+, admin_src               = admin_rec->qual[d.seq].src
+, day_key                 = format(admin_rec->qual[d.seq].admin_dt_tm, "yyyymmdd")
 , o.current_start_dt_tm
-, o_order_status_disp = uar_get_code_display(o.order_status_cd)
+, o_order_status_disp     = uar_get_code_display(o.order_status_cd)
 , o.status_dt_tm
-, indication = substring(1,60,trim(od_indication.oe_field_display_value))
-, ordered_target_dose = oi.ordered_dose
-, ordered_target_dose_unit = uar_get_code_display(oi.ordered_dose_unit_cd)
-, strength_val = substring(1,60,trim(od_strength.oe_field_display_value))
-, strength_unit  = substring(1,60,trim(od_strengthunit.oe_field_display_value))
-, volume_val     = substring(1,60,trim(od_volume.oe_field_display_value))
-, volume_unit    = substring(1,60,trim(od_volumeunit.oe_field_display_value))
-, simplified_disp = trim(o.simplified_display_line)
-, fin_alias = trim(ea.alias)
-, encntr_id_val = o.encntr_id
+, indication              = substring(1,60,trim(od_indication.oe_field_display_value))
+, ordered_target_dose     = oi.ordered_dose
+, ordered_target_dose_unit= uar_get_code_display(oi.ordered_dose_unit_cd)
+, strength_val            = substring(1,60,trim(od_strength.oe_field_display_value))
+, strength_unit           = substring(1,60,trim(od_strengthunit.oe_field_display_value))
+, volume_val              = substring(1,60,trim(od_volume.oe_field_display_value))
+, volume_unit             = substring(1,60,trim(od_volumeunit.oe_field_display_value))
+, simplified_disp         = trim(o.simplified_display_line)
+, fin_alias               = trim(ea.alias)
+, encntr_id_val           = o.encntr_id
 , o.order_id
 from
   (dummyt d with seq = admin_rec->cnt)
@@ -484,28 +677,27 @@ join od_volumeunit where od_volumeunit.order_id = outerjoin(o.order_id)
   and od_volumeunit.oe_field_meaning_id = outerjoin(2059)
 join ea where ea.encntr_id = outerjoin(o.encntr_id)
   and ea.encntr_alias_type_cd = outerjoin(1077.00)
-
 order by o.order_id, cnvtupper(trim(oc.primary_mnemonic)), day_key
 
 head report
   v_table_rows = ""
-  v_row_cnt = 0
+  v_row_cnt    = 0
 
 head o.order_id
   v_drug      = med_name
   v_order_src = admin_src
-  v_dose  = 0.0
-  v_unit  = ""
-  v_ind   = ""
-  v_disp  = ""
-  v_fin   = ""
+  v_dose      = 0.0
+  v_unit      = ""
+  v_ind       = ""
+  v_disp      = ""
+  v_fin       = ""
   v_encntr_id = ""
-  v_start = ""
-  v_stat  = ""
-  v_sdt   = ""
-  v_oid   = cnvtstring(o.order_id)
-  v_dot   = 0
-  v_doses = 0
+  v_start     = ""
+  v_stat      = ""
+  v_sdt       = ""
+  v_oid       = cnvtstring(o.order_id)
+  v_dot       = 0
+  v_doses     = 0
 
 head day_key
   v_dot = v_dot + 1
@@ -514,24 +706,21 @@ detail
   v_doses = v_doses + 1
 
 foot o.order_id
-  v_dose  = ordered_target_dose
-  v_unit  = ordered_target_dose_unit
-  v_ind   = indication
-  v_disp  = simplified_disp
-  v_fin   = fin_alias
+  v_dose      = ordered_target_dose
+  v_unit      = ordered_target_dose_unit
+  v_ind       = indication
+  v_disp      = simplified_disp
+  v_fin       = fin_alias
   v_encntr_id = trim(cnvtstring(encntr_id_val, 20, 0))
-  v_start = format(o.current_start_dt_tm,"DD/MM/YYYY;;d")
-  v_stat  = o_order_status_disp
-  v_sdt   = format(o.status_dt_tm,"DD/MM/YYYY;;d")
-  
+  v_start     = format(o.current_start_dt_tm,"DD/MM/YYYY;;d")
+  v_stat      = o_order_status_disp
+  v_sdt       = format(o.status_dt_tm,"DD/MM/YYYY;;d")
+
   if (v_dose > 0)
-    ; Format with enough decimal places then strip trailing zeros
     v_dose_str = trim(format(v_dose, "########.####"))
-    ; Strip trailing zeros after decimal point
     while (textlen(v_dose_str) > 0 and substring(textlen(v_dose_str), 1, v_dose_str) = "0")
       v_dose_str = substring(1, textlen(v_dose_str) - 1, v_dose_str)
     endwhile
-    ; Strip trailing decimal point
     if (textlen(v_dose_str) > 0 and substring(textlen(v_dose_str), 1, v_dose_str) = ".")
       v_dose_str = substring(1, textlen(v_dose_str) - 1, v_dose_str)
     endif
@@ -539,46 +728,35 @@ foot o.order_id
   else
     v_dose_str = ""
   endif
-  
+
   v_actual_dose_str = ""
   v_s = ""
   v_v = ""
   if (textlen(trim(strength_val)) > 0)
     v_s = trim(strength_val)
     if (textlen(trim(strength_unit)) > 0)
-      v_s = concat(v_s, " ")
-      v_s = concat(v_s, trim(strength_unit))
+      v_s = concat(v_s, " ", trim(strength_unit))
     endif
   endif
   if (textlen(trim(volume_val)) > 0)
     v_v = trim(volume_val)
     if (textlen(trim(volume_unit)) > 0)
-      v_v = concat(v_v, " ")
-      v_v = concat(v_v, trim(volume_unit))
+      v_v = concat(v_v, " ", trim(volume_unit))
     endif
   endif
   if (textlen(v_s) > 0)
     v_actual_dose_str = v_s
-  endif
-  if (textlen(v_v) > 0 and textlen(v_s) = 0)
+  elseif (textlen(v_v) > 0)
     v_actual_dose_str = v_v
-  endif
-  ; Fallback: if order_detail fields empty, use order_ingredient dose (same as Target Dose)
-  if (textlen(v_actual_dose_str) = 0 and textlen(v_dose_str) > 0)
+  elseif (textlen(v_dose_str) > 0)
     v_actual_dose_str = v_dose_str
   endif
-  ; Fallback: if order_detail fields empty, use order_ingredient dose (same as Target Dose)
-  if (textlen(v_actual_dose_str) = 0 and textlen(v_dose_str) > 0)
-    v_actual_dose_str = v_dose_str
-  endif
-  
-/* Fallback so you always have text to click even if the FIN is missing */
+
   if (trim(v_fin) = "")
     v_fin = "--"
   endif
 
   v_row_cnt = v_row_cnt + 1
-
   v_table_rows = concat(v_table_rows,
     '<tr', if(mod(v_row_cnt, 2) = 0) ' class="even"' else '' endif, '>',
       '<td width="180">', v_drug,
@@ -586,113 +764,73 @@ foot o.order_id
       '</td>',
       '<td width="46" class="dot-val"><span class="pill">', cnvtstring(v_doses), '</span></td>',
       '<td width="46" class="dot-val"><span class="pill">', cnvtstring(v_dot), '</span></td>',
-      "<td>", v_dose_str, "</td>",
+      '<td>', v_dose_str, '</td>',
       '<td style="display:none;">', v_actual_dose_str, '</td>',
-      "<td>", v_disp, "</td>",
-      "<td>", v_ind, "</td>",
-      "<td>", v_start, "</td>",
-      "<td>", v_stat, "</td>",
-      "<td>", v_sdt, "</td>",
-      "<td>", v_oid, "</td>",
-      concat("<td><a href='javascript:APPLINK(0,", char(94), "Powerchart.exe", char(94), ",", char(94), "/PERSONID=",
-      trim(cnvtstring($PAT_PersonId, 20, 0)),
-      " /ENCNTRID=", v_encntr_id,
-      " /FIRSTTAB=", char(34), "Pharmacist MPage", char(34),
-      char(94), ")'>", v_fin, "</a></td>"),
-    "</tr>"
-  )
+      '<td>', v_disp, '</td>',
+      '<td>', v_ind, '</td>',
+      '<td>', v_start, '</td>',
+      '<td>', v_stat, '</td>',
+      '<td>', v_sdt, '</td>',
+      '<td>', v_oid, '</td>',
+      concat('<td><a href=', char(39), 'javascript:APPLINK(0,', char(94), 'Powerchart.exe', char(94),
+        ',', char(94), '/PERSONID=', trim(cnvtstring($PAT_PersonId, 20, 0)),
+        ' /ENCNTRID=', v_encntr_id,
+        ' /FIRSTTAB=', char(34), 'Pharmacist MPage', char(34), char(94), ')',
+        char(39), '>', v_fin, '</a></td>'),
+    '</tr>')
 with nocounter
-endif ; admin_rec->cnt > 0 (Pass 3)
+endif
 
 if (textlen(v_table_rows) = 0)
   set v_table_rows = '<tr><td colspan="11">No antimicrobial orders found in the selected window.</td></tr>'
 endif
 
 /* ========================================================================== */
-/* Final HTML Output Generation                                               */
+/* HTML Output                                                                */
 /* ========================================================================== */
 select into $outdev
 from dummyt d
 head report
   row +1 '<!doctype html><html lang="en"><head>'
-  row +1 '<meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />'
+  row +1 '<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>'
   row +1 '<meta name="discern" content="CCLLINK"/>'
   row +1 '<title>Antimicrobial Days of Therapy - By Date</title>'
   row +1 '<style>'
   row +1 '*,*:before,*:after{box-sizing:border-box}'
   row +1 call print(concat('body{margin:0;font:', v_font_size, '/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;color:#111;background:#fff;padding:16px;}'))
-  row +1 '.wrap{max-width:1200px;margin:0 auto;}'
-  row +1 'h1{font-size:18px;margin:0 0 8px;}'
-  row +1 'h2{font-size:15px;margin:16px 0 8px;padding-top:0;}'
-  row +1 '.sub{color:#444;margin:4px 0 16px;}'
+  row +1 '.wrap{max-width:1200px;margin:0 auto}'
+  row +1 'h1{font-size:18px;margin:0 0 8px}'
+  row +1 'h2{font-size:15px;margin:16px 0 8px}'
+  row +1 '.sub{color:#444;margin:4px 0 16px}'
   row +1 '.legend{margin-top:6px;color:#555;font-size:12px}'
-  row +1 '.axisbar{display:flex;justify-content:space-between;margin:10px 0 8px calc(180px + 46px + 4px);color:#333;font-size:12px;}'
-    
-  row +1 '.chart-wrap{overflow-x:auto;border:1px solid #ddd;background:#fff;margin-bottom:12px;}'
-  row +1 'table.chart-tbl{border-collapse:collapse;border-spacing:0;}'
-  row +1 'col.med{width:180px}'
-  row +1 'col.doses{width:46px}'
-  row +1 'col.dot{width:46px}'
-  row +1 'table.chart-tbl th, table.chart-tbl td{vertical-align:top;padding:0px 4px;text-align:left;font-size:12px;}'
-  row +1 'table.chart-tbl thead th{vertical-align:middle;}'
-  
-  row +1 'table.data-tbl th {'
-  row +1 '  background:#e7eaee !important;'
-  row +1 '  color:#2f3c4b;'
-  row +1 '  border:1px solid #b5b5b5;'
-  row +1 '  padding:4px 8px !important;'
-  row +1 '  text-align:left;'
-  row +1 '  font-weight:600 !important;'
-  row +1 '  height:26px !important;'
-  row +1 '  line-height:1.2 !important;'
-  row +1 '  vertical-align:middle !important;'
-  row +1 '  font-size:12px !important;'
-  row +1 '}'
-
-  row +1 'table.chart-tbl thead th.label {'
-  row +1 '  background:#e7eaee !important;'
-  row +1 '  color:#2f3c4b;'
-  row +1 '  border:1px solid #b5b5b5;'
-  row +1 '  padding:4px 8px !important;'
-  row +1 '  text-align:left;'
-  row +1 '  font-weight:600 !important;'
-  row +1 '  height:26px !important;'
-  row +1 '  line-height:1.2 !important;'
-  row +1 '  vertical-align:middle !important;'
-  row +1 '  font-size:12px !important;'
-  row +1 '}'
-
-  row +1 'table.chart-tbl thead tr.ticks th{background:transparent;border:0;padding:0;color:#555;}'
-  row +1 'table.chart-tbl thead tr.ticks th.sticky-med, table.chart-tbl thead tr.ticks th.sticky-doses, table.chart-tbl thead tr.ticks th.sticky-dot {border-right:1px solid #ccc;border-bottom:1px solid #b5b5b5;}'
-
-  row +1 call print(concat('table.chart-tbl td.medname{font-size:', v_med_font_size, ' !important;vertical-align:middle;padding:2px 6px;}'))
-  row +1 'table.chart-tbl tbody td.label{vertical-align:middle;padding:2px 6px;}'
-  
-  row +1 '.dot-val, table.data-tbl td.dot-val, table.chart-tbl td.dot-val{text-align:center !important;vertical-align:middle !important;}'
-  row +1 'table.chart-tbl tbody td.dot-val{background:#fff;}'
-    
-  row +1 'table.chart-tbl tbody th.sticky-med, table.chart-tbl tbody td.sticky-med {position:sticky;left:0;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;padding-left:8px;width:180px;}'
-  row +1 'table.chart-tbl tbody th.sticky-doses, table.chart-tbl tbody td.sticky-doses {position:sticky;left:180px;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;width:46px;}'
-  row +1 'table.chart-tbl tbody th.sticky-dot, table.chart-tbl tbody td.sticky-dot {position:sticky;left:226px;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;width:46px;}'
-  
-  row +1 'tr.even td.sticky-med, tr.even td.sticky-doses, tr.even td.sticky-dot { background: #f5f5f5 !important;}'
-  row +1 'tr.even td.dot-val { background: #f5f5f5 !important;}'
-  row +1 'table.data-tbl tr.even td { background: #f5f5f5;}'
-
-  row +1 'table.chart-tbl tbody th.label{z-index:11;}'
-  row +1 'table.chart-tbl thead th.sticky-med {position:sticky;left:0;z-index:15;}'
-  row +1 'table.chart-tbl thead th.sticky-doses {position:sticky;left:180px;z-index:15;}'
-  row +1 'table.chart-tbl thead th.sticky-dot {position:sticky;left:226px;z-index:15;}'
-    
-  row +1 'table.data-tbl{border-collapse:collapse;margin-top:12px;font-size:12px;border:1px solid #b5b5b5;border-bottom:2px solid #a0a0a0;}'
-  row +1 'table.data-tbl td{border:1px solid #d6d9dd;padding:4px 6px;text-align:left;background:#fff;}'
-  row +1 'table.data-tbl td{border:1px solid #d6d9dd;padding:4px 6px;text-align:left;background:#fff;}'
-  
-  row +1 'table.data-tbl tbody tr:last-child td{border-bottom:2px solid #a0a0a0;}'
-    
-  row +1 '.strip{display:flex;gap:1px;align-items:center;padding:4px 0;font-size:0;white-space:nowrap;overflow:visible;}'
-    
-  row +1 '.cell,.tick{flex:0 0 14px;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;text-align:center;font-size:10px;}'
+  row +1 '.axisbar{display:flex;justify-content:space-between;margin:10px 0 8px calc(180px + 46px + 4px);color:#333;font-size:12px}'
+  row +1 '.chart-wrap{overflow-x:auto;border:1px solid #ddd;background:#fff;margin-bottom:12px}'
+  row +1 'table.chart-tbl{border-collapse:collapse;border-spacing:0}'
+  row +1 'col.med{width:180px}col.doses{width:46px}col.dot{width:46px}'
+  row +1 'table.chart-tbl th,table.chart-tbl td{vertical-align:top;padding:0 4px;text-align:left;font-size:12px}'
+  row +1 'table.chart-tbl thead th{vertical-align:middle}'
+  row +1 'table.data-tbl th,table.chart-tbl thead th.label{background:#e7eaee !important;color:#2f3c4b;border:1px solid #b5b5b5;padding:4px 8px !important;text-align:left;font-weight:600 !important;height:26px !important;line-height:1.2 !important;vertical-align:middle !important;font-size:12px !important}'
+  row +1 'table.chart-tbl thead tr.ticks th{background:transparent;border:0;padding:0;color:#555}'
+  row +1 'table.chart-tbl thead tr.ticks th.sticky-med,table.chart-tbl thead tr.ticks th.sticky-doses,table.chart-tbl thead tr.ticks th.sticky-dot{border-right:1px solid #ccc;border-bottom:1px solid #b5b5b5}'
+  row +1 call print(concat('table.chart-tbl td.medname{font-size:', v_med_font_size, ' !important;vertical-align:middle;padding:2px 6px}'))
+  row +1 'table.chart-tbl tbody td.label{vertical-align:middle;padding:2px 6px}'
+  row +1 '.dot-val,table.data-tbl td.dot-val,table.chart-tbl td.dot-val{text-align:center !important;vertical-align:middle !important}'
+  row +1 'table.chart-tbl tbody td.dot-val{background:#fff}'
+  row +1 'table.chart-tbl tbody td.sticky-med,table.chart-tbl tbody th.sticky-med{position:sticky;left:0;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;padding-left:8px;width:180px}'
+  row +1 'table.chart-tbl tbody td.sticky-doses,table.chart-tbl tbody th.sticky-doses{position:sticky;left:180px;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;width:46px}'
+  row +1 'table.chart-tbl tbody td.sticky-dot,table.chart-tbl tbody th.sticky-dot{position:sticky;left:226px;background:#fff;z-index:10;border-right:1px solid #ccc;border-bottom:1px solid #d6d9dd;width:46px}'
+  row +1 'tr.even td.sticky-med,tr.even td.sticky-doses,tr.even td.sticky-dot{background:#f5f5f5 !important}'
+  row +1 'tr.even td.dot-val{background:#f5f5f5 !important}'
+  row +1 'table.data-tbl tr.even td{background:#f5f5f5}'
+  row +1 'table.chart-tbl tbody th.label{z-index:11}'
+  row +1 'table.chart-tbl thead th.sticky-med{position:sticky;left:0;z-index:15}'
+  row +1 'table.chart-tbl thead th.sticky-doses{position:sticky;left:180px;z-index:15}'
+  row +1 'table.chart-tbl thead th.sticky-dot{position:sticky;left:226px;z-index:15}'
+  row +1 'table.data-tbl{border-collapse:collapse;margin-top:12px;font-size:12px;border:1px solid #b5b5b5;border-bottom:2px solid #a0a0a0}'
+  row +1 'table.data-tbl td{border:1px solid #d6d9dd;padding:4px 6px;text-align:left;background:#fff}'
+  row +1 'table.data-tbl tbody tr:last-child td{border-bottom:2px solid #a0a0a0}'
+  row +1 '.strip{display:flex;gap:1px;align-items:center;padding:4px 0;font-size:0;white-space:nowrap;overflow:visible}'
+  row +1 '.cell,.tick{flex:0 0 14px;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;text-align:center;font-size:10px}'
   row +1 '.tick{color:#555;border:1px solid transparent;border-radius:3px;position:relative}'
   row +1 '.ticks .strip{padding-top:20px}'
   row +1 '.ticks .tick{overflow:visible;text-overflow:initial}'
@@ -700,23 +838,29 @@ head report
   row +1 '.cell{border:1px solid #ccc;border-radius:3px;background:#fff}'
   row +1 '.cell.on{background:#0086CE;border-color:#0D66A1;color:#fff;font-weight:600}'
   row +1 '.cell.on:empty::before{content:"1"}'
-    
-  row +1 '.cell.sum-yes{background:#ED1C24;border-color:#cc0000;}'
-  row +1 '.cell.sum-no{background:#A8D08D;border-color:#88b070;}'
-  row +1 '.summary-row td{border-top:1px solid #ccc;padding-top:4px;}'
-    
+  row +1 '.cell.sum-yes{background:#ED1C24;border-color:#cc0000}'
+  row +1 '.cell.sum-no{background:#A8D08D;border-color:#88b070}'
+  row +1 '.cell.spacer-bit{background:transparent;border-color:transparent}'
+  row +1 '.summary-row td{border-top:1px solid #ccc;padding-top:4px}'
   row +1 '.ticks th{border-bottom:0;background:#fff}'
-  row +1 '.pill{display:inline-block;padding:2px 6px;border-radius:12px;background:#eef;color:#334;}'
+  row +1 '.pill{display:inline-block;padding:2px 6px;border-radius:12px;background:#eef;color:#334}'
+  row +1 '.cell.enc-c1{background:#e0f0ff;border-color:#6ab0e8}' /* Original Light Blue */
+  row +1 '.cell.enc-c2{background:#d1e8ff;border-color:#509ee3}' /* Slightly Deeper Sky Blue */
+  row +1 '.cell.enc-c3{background:#e8f4fd;border-color:#84badb}' /* Softer Steel Blue */
+  row +1 '.cell.enc-c4{background:#d9f0fa;border-color:#5bb2db}' /* Crisp Ice Blue */
+  row +1 'tr.enc-row td{border-top:1px solid #c8dff5}'
+  row +1 '.enc-label-cell{font-size:11px !important;vertical-align:middle !important}'
+  row +1 '.enc-label-cell a{color:#0056b3;text-decoration:none;font-weight:600;}'
+  row +1 '.enc-label-cell a:hover{text-decoration:underline;}'
   row +1 '</style></head><body><div class="wrap">'
 
-  /* --- CHART SECTION --- */
-  row +1 '<h1>Antimicrobial Administrations by Date</h1>'
-  row +1 '<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given.</div>'
+  row +1 '<h1>Antimicrobial Administrations by Date - Edge Version</h1>'
+  row +1 '<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given.<br>Hover over encounter bars for FIN and admission dates. Click FIN in the left column or the table below to open the patient chart.</div>'
   row +1 call print(v_axis_html)
-    
+
   row +1 '<div class="chart-wrap">'
   row +1 '<table width="100%" class="chart-tbl"><colgroup><col width="180" class="med"><col width="46" class="doses"><col width="46" class="dot"><col></colgroup><thead>'
-  row +1 '<tr><th width="180" class="label sticky-med"><div style="width:180px; text-align:left;">Medication</div></th><th width="46" class="label sticky-doses"><div style="width:46px; text-align:center;">Doses</div></th><th width="46" class="label sticky-dot"><div style="width:46px; text-align:center;">DOT</div></th><th class="label">Days</th></tr>'
+  row +1 '<tr><th width="180" class="label sticky-med"><div style="width:180px;text-align:left;">Medication</div></th><th width="46" class="label sticky-doses"><div style="width:46px;text-align:center;">Doses</div></th><th width="46" class="label sticky-dot"><div style="width:46px;text-align:center;">DOT</div></th><th class="label">Days</th></tr>'
   if (textlen(v_header_html) > 0)
     row +1 '<tr class="ticks"><th class="sticky-med"></th><th class="sticky-doses"></th><th class="sticky-dot"></th><th><div class="strip">'
     row +1 call print(v_header_html)
@@ -726,10 +870,10 @@ head report
 
   v_pos = findstring(v_token, v_chart_rows)
   while (v_pos > 0)
-    v_seglen = v_pos + v_toklen - 1
-    v_rowseg = substring(1, v_seglen, v_chart_rows)
+    v_seglen  = v_pos + v_toklen - 1
+    v_rowseg  = substring(1, v_seglen, v_chart_rows)
     row +1 call print(v_rowseg)
-    v_len = textlen(v_chart_rows)
+    v_len     = textlen(v_chart_rows)
     v_chart_rows = substring(v_pos + v_toklen, v_len - (v_pos + v_toklen - 1), v_chart_rows)
     v_pos = findstring(v_token, v_chart_rows)
   endwhile
@@ -738,22 +882,18 @@ head report
   endif
   row +1 '</tbody></table></div>'
 
-  /* --- TABLE SECTION --- */
   row +1 '<h2>Antimicrobial Order Details</h2>'
   row +1 '<table width="100%" class="data-tbl">'
-  row +1 '<colgroup><col width="180" class="med"><col width="46" class="doses"><col width="46" class="dot"><col style="width:6%;"><col style="width:0;"><col style="width:24%;"></colgroup>'
-  row +1 '<thead><tr>'
-  row +1 '<th>Medication</th><th style="text-align:center;">Doses</th><th style="text-align:center;">DOT</th><th>Target Dose</th><th style="display:none;">Dose</th><th>Order Detail</th><th>Indication</th>'
-  row +1 '<th>Start Date</th><th>Latest Status</th><th>Status Date</th><th>Order ID</th><th>FIN</th>'
-  row +1 '</tr></thead>'
+  row +1 '<colgroup><col width="180" class="med"><col width="46" class="doses"><col width="46" class="dot"><col style="width:6%"><col style="width:0"><col style="width:24%"></colgroup>'
+  row +1 '<thead><tr><th>Medication</th><th style="text-align:center;">Doses</th><th style="text-align:center;">DOT</th><th>Target Dose</th><th style="display:none;">Dose</th><th>Order Detail</th><th>Indication</th><th>Start Date</th><th>Latest Status</th><th>Status Date</th><th>Order ID</th><th>FIN</th></tr></thead>'
   row +1 '<tbody>'
 
   v_pos = findstring(v_token, v_table_rows)
   while (v_pos > 0)
-    v_seglen = v_pos + v_toklen - 1
-    v_rowseg = substring(1, v_seglen, v_table_rows)
+    v_seglen  = v_pos + v_toklen - 1
+    v_rowseg  = substring(1, v_seglen, v_table_rows)
     row +1 call print(v_rowseg)
-    v_len = textlen(v_table_rows)
+    v_len     = textlen(v_table_rows)
     v_table_rows = substring(v_pos + v_toklen, v_len - (v_pos + v_toklen - 1), v_table_rows)
     v_pos = findstring(v_token, v_table_rows)
   endwhile
@@ -764,7 +904,6 @@ head report
   row +1 '</tbody></table>'
   row +1 '<div class="legend" style="margin-top:8px;">Days of therapy (DOT) for antimicrobial orders which have been administered are included in this report.</div>'
 
-  /* --- DEBUG PANEL --- */
   row +1 '<div style="margin-top:24px;padding:10px 14px;border:1px solid #f0a000;background:#fffbe6;color:#333;font-size:11px;font-family:monospace;">'
   row +1 '<b style="font-size:12px;">&#9888; DEBUG INFO (remove before go-live)</b><br/>'
   row +1 call print(concat('Patient ID: ', cnvtstring($PAT_PersonId), ' &nbsp;|&nbsp; Lookback: ', cnvtstring($LOOKBACK), ' days<br/>'))
@@ -773,11 +912,9 @@ head report
   row +1 call print(concat('Query window: ', v_begin_dt_str, ' to ', v_end_dt_str, '<br/>'))
   row +1 call print(concat('Total admin_rec entries: ', cnvtstring(admin_rec->cnt), ' (PowerChart: ', cnvtstring(v_pc_cnt), ', SN Anesthesia: ', cnvtstring(v_sn_cnt), ')<br/>'))
   row +1 call print(concat('Chart date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', cnvtstring(v_days), ' days)<br/>'))
-  row +1 call print(concat('v_chart_rows length: ', cnvtstring(textlen(v_chart_rows)), ' chars (limit 65534)<br/>'))
-  row +1 call print(concat('v_table_rows length: ', cnvtstring(textlen(v_table_rows)), ' chars (limit 65534)<br/>'))
+  row +1 call print(concat('Encounters found: ', cnvtstring(enc_rec->cnt), ' | Tracks used: ', cnvtstring(v_max_track), '<br/>'))
   row +1 '</div>'
 
-  /* --- FOOTER --- */
   row +1 '<div style="margin-top:24px;padding-top:8px;border-top:1px solid #ddd;color:#666;font-size:12px;">Generated on '
   row +1 call print(format(cnvtdatetime(curdate, curtime), "YYYY-MM-DD HH:MM:SS;;D"))
   row +1 '.</div></div></body></html>'
