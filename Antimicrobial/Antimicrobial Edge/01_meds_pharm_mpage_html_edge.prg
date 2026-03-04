@@ -17,11 +17,17 @@
  *     triggers Cerner's runtime injection of the XMLCclRequest class.
  *   - Do NOT define your own XMLCclRequest — it overwrites Cerner's.
  *
- * STUB TEST MODE (current):
- *   01_meds_dot_date_comb_edge3:Group1 is currently a no-DB stub that
- *   confirms the XCR + srcdoc pipeline is working. Once confirmed,
- *   replace it with the real DOT program of the same name.
- *   No shell change required — the program name stays the same.
+ * TABS:
+ *   tab-dot   : Antimicrobial Days of Therapy  (01_meds_dot_date_comb_edge3)
+ *   tab-nicu  : NICU Infusion Labels           (01_bk_NICU_Inf_Edge)
+ *   tab-dev1  : GP Medications (ghost)         (01_meds_pharm_anvs_edge)
+ *   tab-dev2  : Reserved ghost slot
+ *   tab-dev3  : Reserved ghost slot
+ *
+ * NICU PRINT LABELS:
+ *   CCLLINK() calls inside the NICU iframe srcdoc are honoured by
+ *   Cerner's WebView2 runtime via <meta name='discern' content='CCLLINK'/>
+ *   in the NICU program output. This opens the label popup as before.
  *
  * PARAM CONSTRUCTION:
  *   ^ inside tilde-delimited strings causes CCL parse errors.
@@ -44,30 +50,36 @@ declare v_pid    = vc with noconstant(trim(cnvtstring($patient_id)))
 declare v_enc_id = vc with noconstant(trim(cnvtstring($encounter_id)))
 
 ; -- Program names -------------------------------------------------------------
-; Points to 01_meds_dot_date_comb_edge3:Group1 — currently the stub,
-; will be replaced in-place with the real program once pipeline is confirmed.
-declare v_xcr_prog_dot = vc with noconstant("01_meds_dot_date_comb_edge3:Group1")
-declare v_xcr_prog_gp  = vc with noconstant("01_meds_pharm_anvs_edge:Group1")
+declare v_xcr_prog_dot  = vc with noconstant("01_meds_dot_date_comb_edge3:Group1")
+declare v_xcr_prog_nicu = vc with noconstant("01_bk_NICU_Inf_Edge:Group1")
+declare v_xcr_prog_gp   = vc with noconstant("01_meds_pharm_anvs_edge:Group1")
 
 ; -- Param strings -------------------------------------------------------------
 ; DOT prompts:  OUTDEV, PAT_PersonId, LOOKBACK
+; NICU prompts: OUTDEV, PERSONID
 ; GP prompts:   OUTDEV, user_id, patient_id, encounter_id
-declare v_params_dot = vc with noconstant("")
-declare v_params_gp  = vc with noconstant("")
+declare v_params_dot  = vc with noconstant("")
+declare v_params_nicu = vc with noconstant("")
+declare v_params_gp   = vc with noconstant("")
 
-set v_params_dot = concat("^MINE^,", v_pid, ".0,180.0")
-set v_params_gp  = concat("^MINE^,", v_pid, ".0,", v_pid, ".0,", v_enc_id, ".0")
+set v_params_dot  = concat("^MINE^,", v_pid, ".0,180.0")
+set v_params_nicu = concat("^MINE^,", v_pid, ".0")
+set v_params_gp   = concat("^MINE^,", v_pid, ".0,", v_pid, ".0,", v_enc_id, ".0")
 
 ; -- JS variable declarations (pre-built for row +1 injection) -----------------
-declare v_js_prog_dot   = vc with noconstant("")
-declare v_js_params_dot = vc with noconstant("")
-declare v_js_prog_gp    = vc with noconstant("")
-declare v_js_params_gp  = vc with noconstant("")
+declare v_js_prog_dot    = vc with noconstant("")
+declare v_js_params_dot  = vc with noconstant("")
+declare v_js_prog_nicu   = vc with noconstant("")
+declare v_js_params_nicu = vc with noconstant("")
+declare v_js_prog_gp     = vc with noconstant("")
+declare v_js_params_gp   = vc with noconstant("")
 
-set v_js_prog_dot   = build2("var PROG_DOT    = '", v_xcr_prog_dot, "';")
-set v_js_params_dot = build2("var PARAMS_DOT  = '", v_params_dot,   "';")
-set v_js_prog_gp    = build2("var PROG_GP     = '", v_xcr_prog_gp,  "';")
-set v_js_params_gp  = build2("var PARAMS_GP   = '", v_params_gp,    "';")
+set v_js_prog_dot    = build2("var PROG_DOT    = '", v_xcr_prog_dot,  "';")
+set v_js_params_dot  = build2("var PARAMS_DOT  = '", v_params_dot,    "';")
+set v_js_prog_nicu   = build2("var PROG_NICU   = '", v_xcr_prog_nicu, "';")
+set v_js_params_nicu = build2("var PARAMS_NICU = '", v_params_nicu,   "';")
+set v_js_prog_gp     = build2("var PROG_GP     = '", v_xcr_prog_gp,   "';")
+set v_js_params_gp   = build2("var PARAMS_GP   = '", v_params_gp,     "';")
 
 select into $outdev
 from dummyt d
@@ -95,8 +107,6 @@ detail
   row +1 "  height: 100vh;"
   row +1 "  overflow: hidden;"
   row +1 "}"
-
-  ; -- Page header removed — tab bar serves as the top chrome ------------------
 
   ; -- Ghost tabs (invisible, developer-accessible only) ------------------------
   row +1 ".tab-btn.ghost {"
@@ -192,6 +202,8 @@ detail
   ; Inject CCL-resolved values as JS constants
   row +1 v_js_prog_dot
   row +1 v_js_params_dot
+  row +1 v_js_prog_nicu
+  row +1 v_js_params_nicu
   row +1 v_js_prog_gp
   row +1 v_js_params_gp
 
@@ -280,11 +292,15 @@ detail
 
   ; -- Tab loader functions -----------------------------------------------------
   row +1 "function loadDOT() {"
-  row +1 "  loadTab(PROG_DOT, PARAMS_DOT, 'tab-dot');"
+  row +1 "  loadTab(PROG_DOT, PARAMS_DOT + ',' + Date.now(), 'tab-dot');"
+  row +1 "}"
+  row +1 ""
+  row +1 "function loadNICU() {"
+  row +1 "  loadTab(PROG_NICU, PARAMS_NICU + ',' + Date.now(), 'tab-nicu');"
   row +1 "}"
   row +1 ""
   row +1 "function loadGP() {"
-  row +1 "  loadTab(PROG_GP, PARAMS_GP, 'tab-dev1');"
+  row +1 "  loadTab(PROG_GP, PARAMS_GP + ',' + Date.now(), 'tab-dev1');"
   row +1 "}"
   row +1 ""
   row +1 "function loadPlaceholder(tabId, label) {"
@@ -307,16 +323,16 @@ detail
   row +1 "  >Antimicrobial Days of Therapy</button>"
   row +1 "  <div style='flex:1;'></div>"
   row +1 ~  <button id='tab-dev1' class='tab-btn ghost' onclick='loadGP()'>&nbsp;</button>~
-  row +1 ~  <button id='tab-dev2' class='tab-btn ghost' onclick='loadPlaceholder("tab-dev2", "Dev 2")'>&nbsp;</button>~
+  row +1 ~  <button id='tab-nicu' class='tab-btn ghost' onclick='loadNICU()'>&nbsp;</button>~
   row +1 ~  <button id='tab-dev3' class='tab-btn ghost' onclick='loadPlaceholder("tab-dev3", "Dev 3")'>&nbsp;</button>~
   row +1 "</div>"
 
   row +1 "<div id='frame-msg'>Select a tab to load a report.</div>"
 
   ; sandbox="allow-scripts allow-same-origin" needed for srcdoc content
-  ; that contains inline <script> tags (as the real DOT program does).
+  ; that contains inline <script> tags and CCLLINK calls.
   row +1 "<iframe id='content-frame'"
-  row +1 "  sandbox='allow-scripts allow-same-origin'></iframe>"
+  row +1 "></iframe>"
 
   row +1 "</body></html>"
 
