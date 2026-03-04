@@ -12,7 +12,8 @@
  * on the commas.
  *
  * Do NOT pass raw, unquoted Patient IDs (e.g., 18800454) to JavaScript functions,
- * as Edge may lose precision on large integers. Always use single quotes around
+ * as Edge may lose precision on large integers.
+ * Always use single quotes around
  * the string-converted ID parameter.
  *
  * You must stick to this variable-building approach when updating or replicating
@@ -30,16 +31,22 @@ prompt
 
 with OUTDEV, user_id, patient_id, encounter_id
 
+;
 ; Safely store the string conversion of the patient ID
 declare v_pid = vc with noconstant(trim(cnvtstring($patient_id)))
 
-; Declare a variable to hold the fully constructed HTML link
+;
+; Declare variables to hold the fully constructed HTML links
 declare v_link_html = vc with noconstant("")
+declare v_link_html2 = vc with noconstant("")
 
-; Build the link string securely before the select statement.
+;
+; Build the link strings securely before the select statement.
+;
 ; This avoids any row +1 comma-parsing compiler errors while ensuring the
 ; Javascript parameters are perfectly formatted for the Edge engine.
-set v_link_html = build2(~<a class="report-link" href="javascript:CCLLINK('01_meds_dot_date_comb_edge:Group1','^MINE^,~, v_pid, ~,200',1)">Antimicrobial Days of Therapy &ndash; By Date</a>~)
+set v_link_html = build2(~<a class="report-link" href="javascript:CCLLINK('01_meds_dot_date_comb_edge3:Group1','^MINE^,~, v_pid, ~,200',1)">Antimicrobial Days of Therapy &ndash; By Date</a>~)
+
 
 select into $outdev
 from dummyt d
@@ -55,7 +62,7 @@ detail
   row +1 "  .header { background-color: #006f99; color: #ffffff; padding: 12px 16px; font-size: 18px; font-weight: 600; }"
   row +1 "  .subheader { background-color: #c0d5dc; color: #444; padding: 8px 16px; font-weight: 600; border-bottom: 1px solid #dcdcdc; font-size: 14px; }"
   row +1 "  .content { padding: 20px 16px; }"
-  row +1 "  .report-link { display: inline-block; padding: 10px 14px; margin-bottom: 24px; color: #006f99; text-decoration: none; font-weight: 500; border: 1px solid #b3d4e0; border-radius: 4px; background-color: #f0f7fa; transition: background-color 0.2s ease; font-size: 14px; }"
+  row +1 "  .report-link { display: inline-block; padding: 10px 14px; margin-bottom: 24px; margin-right: 10px; color: #006f99; text-decoration: none; font-weight: 500; border: 1px solid #b3d4e0; border-radius: 4px; background-color: #f0f7fa; transition: background-color 0.2s ease; font-size: 14px; }"
   row +1 "  .report-link:hover { background-color: #e0f0f5; text-decoration: none; }"
   row +1 "  .footer-text { font-size: 13px; color: #666; padding-top: 16px; border-top: 1px solid #eee; line-height: 1.5; }"
   row +1 "</style>"
@@ -66,7 +73,7 @@ detail
   row +1 "  <div class='subheader'>Antimicrobial Reports</div>"
   row +1 "  <div class='content'>"
   
-  /* Output the dynamically built link variable securely */
+  /* Output the dynamically built link variables securely */
   row +1 "    ", v_link_html
   
   row +1 "    <div class='footer-text'>"
