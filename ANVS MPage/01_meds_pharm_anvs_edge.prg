@@ -1,13 +1,13 @@
 /**
- * PROGRAM: 01_meds_pharm_anvs_edge
+ * PROGRAM: 01_meds_pharm_gp_edge
  *
  * EDGE MIGRATION ARCHITECTURE:
  * Loaded into the parent MPage iframe via XMLCclRequest + srcdoc.
  * Output via _memory_reply_string — select into $outdev not valid in XCR.
  */
 
-DROP PROGRAM 01_meds_pharm_anvs_edge GO
-CREATE PROGRAM 01_meds_pharm_anvs_edge
+DROP PROGRAM 01_meds_pharm_gp_edge GO
+CREATE PROGRAM 01_meds_pharm_gp_edge
 
 PROMPT
     "Output to File/Printer/MINE" = "MINE"
