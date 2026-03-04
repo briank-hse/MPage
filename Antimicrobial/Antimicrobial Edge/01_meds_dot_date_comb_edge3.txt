@@ -860,7 +860,7 @@ set _memory_reply_string = concat(_memory_reply_string, '});')
 set _memory_reply_string = concat(_memory_reply_string, '</script>')
 
 /* --- DEBUG PANEL --- */
-set _memory_reply_string = concat(_memory_reply_string, '<div style="margin-top:24px;padding:10px 14px;border:1px solid #f0a000;background:#fffbe6;color:#333;font-size:11px;font-family:monospace;">')
+set _memory_reply_string = concat(_memory_reply_string, '<div id="debug-panel" style="display:none;margin-top:24px;padding:10px 14px;border:1px solid #f0a000;background:#fffbe6;color:#333;font-size:11px;font-family:monospace;">')
 set _memory_reply_string = concat(_memory_reply_string, '<b style="font-size:12px;">&#9888; DEBUG INFO (Array Buffer Mode Active)</b><br/>')
 set _memory_reply_string = concat(_memory_reply_string, concat('Patient ID: ', trim(cnvtstring($PAT_PersonId), 3), ' &nbsp;|&nbsp; Lookback: ', trim(cnvtstring($LOOKBACK), 3), ' days<br/>'))
 set _memory_reply_string = concat(_memory_reply_string, concat('MRN: ', v_mrn, '<br/>'))
