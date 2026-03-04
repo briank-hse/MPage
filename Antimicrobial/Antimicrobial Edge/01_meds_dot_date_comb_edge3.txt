@@ -245,12 +245,12 @@ else
   set v_i = 0
   while (v_i < v_days)
     if (v_i = 0)
-      set v_mo_name  = format(v_min_dt + v_i, "MMM YYYY;;D")
+      set v_mo_name  = format(v_min_dt + v_i, "MMM;;D")
       set v_mo_start = 0
       set v_mo_span  = 1
     elseif (format(v_min_dt + v_i,"MM;;D") != format(v_min_dt + v_i - 1,"MM;;D"))
       set v_month_html = concat(v_month_html, '<div class="grid-cell mo-span always-on" style="grid-column:span ', trim(cnvtstring(v_mo_span),3), ';">', v_mo_name, '</div>')
-      set v_mo_name  = format(v_min_dt + v_i, "MMM YYYY;;D")
+      set v_mo_name  = format(v_min_dt + v_i, "MMM;;D")
       set v_mo_start = v_i
       set v_mo_span  = 1
     else
@@ -470,7 +470,7 @@ if (admin_rec->cnt > 0 and v_days > 0)
       set v_assigned = 0
       set v_t        = 1
       while (v_t <= 50 and v_assigned = 0)
-        if (track_ends[v_t] <= v_s_idx)
+        if (track_ends[v_t] < v_s_idx)
           set enc_rec->qual[enc_sort_rec->qual[v_e].orig_idx].track = v_t
           set track_ends[v_t] = v_e_idx
           if (v_t > v_max_track) set v_max_track = v_t endif
@@ -508,7 +508,7 @@ if (admin_rec->cnt > 0 and v_days > 0)
 
               if (enc_rec->qual[v_e].arrive_dt != null and enc_rec->qual[v_e].arrive_dt != 0)
                  set v_cell_title = concat(v_cell_title, " | Arrive: ", format(enc_rec->qual[v_e].arrive_dt, "DD/MM/YYYY;;d"))
-                 if (v_i = enc_rec->qual[v_e].start_idx) set v_cell_text = "A" endif
+                 if (v_i = enc_rec->qual[v_e].start_idx) set v_cell_text = "&#9650;" endif
               else
                  set v_cell_title = concat(v_cell_title, " | Arrive: Unknown")
               endif
@@ -518,7 +518,7 @@ if (admin_rec->cnt > 0 and v_days > 0)
               else
                 set v_cell_title = concat(v_cell_title, " | DC: ", format(enc_rec->qual[v_e].disch_dt, "DD/MM/YYYY;;d"))
                 if (v_i = enc_rec->qual[v_e].end_idx)
-                   if (v_cell_text = "A") set v_cell_text = "A/D" else set v_cell_text = "D" endif
+                   if (v_cell_text = "&#9650;") set v_cell_text = "&#9670;" else set v_cell_text = "&#9660;" endif
                 endif
               endif
             endif
@@ -700,14 +700,14 @@ head report
   row +1 call print(concat('body{margin:0;font:', v_font_size, '/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;color:#111;background:var(--bg-main);padding:0;}'))
   row +1 '.wrap{width:100%; max-width:100%; margin:0; padding:0; box-sizing:border-box;}'
   row +1 'h1{font-size:18px;margin:0 0 8px;}'
-  row +1 'h2{font-size:15px;margin:16px 0 8px;padding-top:0;}'
+  row +1 'h2{font-size:15px;margin:16px 0 2px;padding-top:0;}'
   row +1 '.sub{color:#444;margin:4px 0 16px;}'
   row +1 '.meta-flex { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }'
   row +1 '.legend{margin-top:6px;color:#555;font-size:12px}'
 
   /* CSS GRID ARCHITECTURE */
   row +1 '.chart-wrap { overflow-x:auto; overflow-y:hidden; margin-bottom:12px; width:100%; display:block; }'
-  row +1 '.chart-grid { display: grid; background: var(--bg-main); width: max-content; border-top: 1px solid var(--border-dark); border-left: 1px solid var(--border-dark); font-size: 12px; }'
+  row +1 '.chart-grid { display: grid; background: var(--bg-main); width: max-content; border-left: 1px solid var(--border-dark); font-size: 12px; }'
   row +1 '.grid-cell { border-right: 1px solid var(--border-light); border-bottom: none; background: var(--bg-main); padding: 0; display: flex; align-items: center; min-width: 0; }'
   row +1 '.grid-cell.label, .grid-cell.sticky-med, .grid-cell.sticky-doses, .grid-cell.sticky-dot { border-right-color: var(--border-dark) !important; border-bottom: 1px solid var(--border-dark) !important; }'
   row +1 'table.data-tbl th, .grid-cell.label:not(.medname) { background: var(--header-bg) !important; color: #2f3c4b; font-weight: 600 !important; padding: 4px 8px; }'
@@ -718,7 +718,7 @@ head report
   row +1 '.sticky-med { position:sticky; left:0; z-index:10; background:var(--sticky-bg); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; width:200px; min-width:200px; max-width:200px; }'
   row +1 '.sticky-doses { position:sticky; left:200px; z-index:10; background:var(--sticky-bg); width:40px; min-width:40px; max-width:40px; text-align:center; justify-content:center; }'
   row +1 '.sticky-dot { position:sticky; left:240px; z-index:10; background:var(--sticky-bg); box-shadow: 2px 0 5px -2px rgba(0,0,0,0.2); width:40px; min-width:40px; max-width:40px; text-align:center; justify-content:center; }'
-  row +1 '.hdr-intersect { z-index:20 !important; }'
+  row +1 '.hdr-intersect { z-index:20 !important; border-top:1px solid var(--border-dark) !important; }'
   
   /* Content Alignment & Striping */
   row +1 '.even-cell.sticky-med, .even-cell.sticky-doses, .even-cell.sticky-dot, .even-cell.medname { background: var(--bg-alt) !important; }'
@@ -746,8 +746,8 @@ head report
   row +1 '.cell { border-right:1px solid #f8f8f8 !important; border-bottom:none !important; border-left:none !important; color:transparent; background:transparent !important; position:relative; z-index:1; }'
   row +1 '.tick { border-right:none !important; height:22px; position:relative; overflow:visible !important; align-items:center; padding-bottom:0; justify-content:center; font-size:10px; color:#555; }'
   row +1 '.tick::after { content:""; position:absolute; right:0; bottom:0; width:1px; height:6px; background:var(--border-dark); }'
-  row +1 '.mo-span { height:20px; font-size:11px; font-weight:600; color:#2f3c4b; background:var(--header-bg) !important; border-right:1px solid var(--border-dark) !important; border-bottom:1px solid var(--border-dark) !important; padding:0 4px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; align-items:center; }'
-  row +1 '.grid-cell.axis-header { display:block; line-height:18px; overflow:visible; white-space:nowrap; text-overflow:clip; }'
+  row +1 '.mo-span { height:20px; font-size:11px; font-weight:600; color:#2f3c4b; background:var(--header-bg) !important; border-top:1px solid var(--border-dark) !important; border-right:1px solid var(--border-dark) !important; border-bottom:1px solid var(--border-dark) !important; padding:0 4px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; align-items:center; }'
+  row +1 '.grid-cell.axis-header { display:block; line-height:18px; overflow:visible; white-space:nowrap; border-top:1px solid var(--border-dark) !important; }'
 
   /* Every day cell gets a small square - empty=light grey, admin=blue */
   row +1 '.cell::after { content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:14px; height:12px; background:#F5F5F6; border-radius:0px; z-index:-1; }'
@@ -770,10 +770,10 @@ head report
   row +1 '.enc-border { border-top:2px solid #90b8e0 !important; }'
   row +1 '.enc-label-cell { font-size:11px !important; }'
   row +1 '.enc-label-cell a { color:var(--cerner-blue); text-decoration:none; font-weight:600; }'
-  row +1 '.enc-cell-text { font-size:10px; font-weight:700; color:#111; line-height:1; }'
+  row +1 '.enc-cell-text { font-size:8px; font-weight:700; color:#111; line-height:1; overflow:hidden; max-width:14px; display:block; text-align:center; }'
   
   /* Table Layout Rules */
-  row +1 'table.data-tbl { width:100%; min-width:1460px; border-collapse:separate; border-spacing:0; margin-top:12px; font-size:12px; border-top:1px solid var(--border-dark); border-left:1px solid var(--border-dark); border-bottom:2px solid #a0a0a0; table-layout:fixed; }'
+  row +1 'table.data-tbl { width:100%; min-width:1460px; border-collapse:separate; border-spacing:0; margin-top:2px; font-size:12px; border-top:1px solid var(--border-dark); border-left:1px solid var(--border-dark); border-bottom:2px solid #a0a0a0; table-layout:fixed; }'
   row +1 'table.data-tbl th, table.data-tbl td { border-right:1px solid var(--border-dark); border-bottom:1px solid var(--border-dark); padding:4px 6px; text-align:left; background:var(--bg-main); word-break:break-word; overflow-wrap:break-word; overflow:hidden; transition: background-color 0.2s; }'
   
   /* Locked Table Columns */
@@ -792,11 +792,11 @@ head report
 
   /* --- CHART SECTION --- */
   row +1 '<h1>Antimicrobial Administrations by Date</h1>'
-  row +1 call print(concat('<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given.<br/><b>Interactive:</b> Click a medication name to isolate its history across the chart and table.</div>'))
+  row +1 call print(concat('<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given. &nbsp;<b>Encounter:</b> &#9650; Admit, &#9660; Discharge, &#9670; Same-day admit &amp; discharge.<br/><b>Interactive:</b> Click a medication name to isolate its history across the chart and table.</div>'))
 
   row +1 '<div class="chart-wrap">'
   row +1 call print(concat('<div class="chart-grid" style="grid-template-columns: 200px 40px 40px repeat(', trim(cnvtstring(v_days), 3), ', 14px);">'))
-  row +1 call print(concat('<div class="grid-cell label sticky-med hdr-intersect always-on">Medication</div><div class="grid-cell label sticky-doses hdr-intersect always-on">Doses</div><div class="grid-cell label sticky-dot hdr-intersect always-on">DOT</div><div class="grid-cell label axis-header always-on" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), ';">Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', trim(cnvtstring(v_days), 3), ' days)</div>'))
+  row +1 call print(concat('<div class="grid-cell label sticky-med hdr-intersect always-on">Medication</div><div class="grid-cell label sticky-doses hdr-intersect always-on">Doses</div><div class="grid-cell label sticky-dot hdr-intersect always-on">DOT</div><div class="grid-cell label axis-header always-on" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), '; min-width:320px;">Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', trim(cnvtstring(v_days), 3), ' days)</div>'))
   
   if (textlen(v_header_html) > 0)
     /* Month-name spanning row - single merged cell for sticky cols */
