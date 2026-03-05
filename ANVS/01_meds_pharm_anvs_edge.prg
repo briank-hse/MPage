@@ -146,7 +146,7 @@ set _memory_reply_string = concat(_memory_reply_string, "html, body { height: 10
 set _memory_reply_string = concat(_memory_reply_string, ".gp-container { display: flex; height: 100vh; }")
 
 ; -- Sidebar -------------------------------------------------------------------
-set _memory_reply_string = concat(_memory_reply_string, ".gp-sidebar { width: 190px; min-width: 190px; background: #f8f9fa; border-right: 1px solid #ddd; overflow-y: auto; display: flex; flex-direction: column; }")
+set _memory_reply_string = concat(_memory_reply_string, ".gp-sidebar { width: 160px; min-width: 160px; background: #f8f9fa; border-right: 1px solid #ddd; overflow-y: auto; display: flex; flex-direction: column; }")
 set _memory_reply_string = concat(_memory_reply_string, ".gp-nav-item { display: block; padding: 9px 12px; color: #333; font-size: 12px; border-bottom: 1px solid #eee; cursor: pointer; line-height: 1.3; position: relative; user-select: none; }")
 set _memory_reply_string = concat(_memory_reply_string, ".gp-nav-item:hover { background: #e2e6ea; color: #006f99; }")
 set _memory_reply_string = concat(_memory_reply_string, ".gp-nav-item .nav-date { font-weight: 600; display: block; }")
@@ -228,9 +228,9 @@ set _memory_reply_string = concat(_memory_reply_string, "<script>")
 set _memory_reply_string = concat(_memory_reply_string, "var totalBlobs = ", v_blob_cnt_str, ";")
 set _memory_reply_string = concat(_memory_reply_string, "</script>")
 
-; Load external JavaScript file
+; Load external JavaScript file 
 set _memory_reply_string = concat(_memory_reply_string, 
-    "<script src='", v_content_url, "/custom_mpage_content/mncms_meds/01_meds_pharm_anvs.js'></script>")
+    "<script src='", v_content_url, "/custom_mpage_content/mncms_meds/01_meds_pharm_anvs_v3.js'></script>")
 
 ; -- HTML body -----------------------------------------------------------------
 set _memory_reply_string = concat(_memory_reply_string, "</head><body>")
@@ -240,15 +240,9 @@ set _memory_reply_string = concat(_memory_reply_string, "<div class='gp-sidebar'
 ; Sidebar nav items
 set x = 1
 while (x <= size(rec_blob->list, 5))
-    if (x = 1)
-        set _memory_reply_string = concat(_memory_reply_string,
-            "<div id='nav-", trim(cnvtstring(x)), "' class='gp-nav-item active-nav' onclick='goToBlob(", trim(cnvtstring(x)), ")'>",
-            "<span class='nav-date'>", rec_blob->list[x].dt_tm, "</span></div>")
-    else
-        set _memory_reply_string = concat(_memory_reply_string,
-            "<div id='nav-", trim(cnvtstring(x)), "' class='gp-nav-item' onclick='goToBlob(", trim(cnvtstring(x)), ")'>",
-            "<span class='nav-date'>", rec_blob->list[x].dt_tm, "</span></div>")
-    endif
+    set _memory_reply_string = concat(_memory_reply_string,
+        "<div id='nav-", trim(cnvtstring(x)), "' class='gp-nav-item' onclick='goToBlob(", trim(cnvtstring(x)), ")'>",
+        "<span class='nav-date'>", rec_blob->list[x].dt_tm, "</span></div>")
     set x = x + 1
 endwhile
 
@@ -270,7 +264,7 @@ set _memory_reply_string = concat(_memory_reply_string, "  <div class='header-se
 set _memory_reply_string = concat(_memory_reply_string, "  <button id='btn-diff' class='tool-btn' onclick='toggleDiff()'>Diff</button>")
 set _memory_reply_string = concat(_memory_reply_string, "  <button id='btn-compare' class='tool-btn' onclick='toggleCompare()'>Compare</button>")
 set _memory_reply_string = concat(_memory_reply_string, "  <div class='header-sep'></div>")
-set _memory_reply_string = concat(_memory_reply_string, "  <input id='search-box' class='search-box' type='text' placeholder='Search medications...' oninput='onSearchInput(this.value)' />")
+set _memory_reply_string = concat(_memory_reply_string, "  <input id='search-box' class='search-box' type='search' placeholder='Search medications...' oninput='onSearchInput(this.value)' />")
 set _memory_reply_string = concat(_memory_reply_string, "  <span id='search-info' class='search-info'></span>")
 set _memory_reply_string = concat(_memory_reply_string, "</div>")
 
@@ -303,7 +297,7 @@ while (x <= size(rec_blob->list, 5))
         "<div class='blob-meta'>Performed: <span id='blob-meta-text-", trim(cnvtstring(x)), "'>",
         rec_blob->list[x].dt_tm, " by ", rec_blob->list[x].prsnl, "</span></div>")
 
-    ; Hidden raw blob HTML for JS parser — display:none so it doesn't render
+    ; Hidden raw blob HTML for JS parser — display:none so it doesn't render visually
     set _memory_reply_string = concat(_memory_reply_string,
         "<div id='blob-raw-", trim(cnvtstring(x)), "' style='display:none;'>")
 

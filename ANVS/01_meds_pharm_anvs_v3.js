@@ -155,10 +155,35 @@ function extractDrugKey(text) {
 function diffBlobs(idxA, idxB) {
   function getPrescribed(idx) { var secs = blobData[idx]||[]; for(var i=0;i<secs.length;i++){if(secs[i].key==='prescribed')return secs[i].rows;} return []; }
   var rowsA = getPrescribed(idxA); var rowsB = getPrescribed(idxB);
-  var keysA = {}; for(var i=0;i<rowsA.length;i++){keysA[extractDrugKey(rowsA[i].text)]=rowsA[i].text;}
-  var keysB = {}; for(var i=0;i<rowsB.length;i++){keysB[extractDrugKey(rowsB[i].text)]=rowsB[i].text;}
-  var diffA=[]; for(var i=0;i<rowsA.length;i++){var k=extractDrugKey(rowsA[i].text); diffA.push({type: !keysB.hasOwnProperty(k)?'removed':keysB[k]!==rowsA[i].text?'changed':'unchanged', row:rowsA[i]});}
-  var diffB=[]; for(var i=0;i<rowsB.length;i++){var k=extractDrugKey(rowsB[i].text); diffB.push({type: !keysA.hasOwnProperty(k)?'added':keysA[k]!==rowsB[i].text?'changed':'unchanged', row:rowsB[i]});}
+  
+  // Store an array of texts for each drug key to handle duplicate prescriptions
+  var keysA = {}; 
+  for(var i=0;i<rowsA.length;i++){ 
+      var k=extractDrugKey(rowsA[i].text); 
+      if(!keysA[k]) keysA[k]=[]; 
+      keysA[k].push(rowsA[i].text); 
+  }
+  var keysB = {}; 
+  for(var i=0;i<rowsB.length;i++){ 
+      var k=extractDrugKey(rowsB[i].text); 
+      if(!keysB[k]) keysB[k]=[]; 
+      keysB[k].push(rowsB[i].text); 
+  }
+  
+  var diffA=[]; 
+  for(var i=0;i<rowsA.length;i++){
+      var k=extractDrugKey(rowsA[i].text);
+      var type = !keysB[k] ? 'removed' : (keysB[k].indexOf(rowsA[i].text) < 0 ? 'changed' : 'unchanged');
+      diffA.push({type: type, row:rowsA[i]});
+  }
+  
+  var diffB=[]; 
+  for(var i=0;i<rowsB.length;i++){
+      var k=extractDrugKey(rowsB[i].text);
+      var type = !keysA[k] ? 'added' : (keysA[k].indexOf(rowsB[i].text) < 0 ? 'changed' : 'unchanged');
+      diffB.push({type: type, row:rowsB[i]});
+  }
+  
   return { diffA: diffA, diffB: diffB };
 }
 
@@ -215,7 +240,6 @@ function updateCounter(idx) {
 function setActiveNav(idx) {
   for (var i = 1; i <= totalBlobs; i++) {
     var n = document.getElementById('nav-' + i); if (!n) continue;
-    // Uses classList to safely apply or remove the highlight without string manipulation
     if (i === idx) {
       n.classList.add('active-nav');
     } else {
@@ -226,10 +250,45 @@ function setActiveNav(idx) {
   if (active) active.scrollIntoView({ block: 'nearest' });
 }
 
+function goToBlob(idx) {
+  if (compareMode) { handleCompareClick(idx); return; }
+  if (idx < 1 || idx > totalBlobs) return;
+  currentBlob = idx; scrollSpyEnabled = false;
+  setActiveNav(idx); updateCounter(idx);
+  var target = document.getElementById('blob-' + idx);
+  if (target) {
+    var scroller = document.getElementById('scroll-main');
+    var sr = scroller.getBoundingClientRect();
+    var tr = target.getBoundingClientRect();
+    scroller.scrollTo({ top: scroller.scrollTop + (tr.top - sr.top) - 12, behavior: 'smooth' });
+  }
+  setTimeout(function() { scrollSpyEnabled = true; }, 600);
+}
+
+function nextBlob() { goToBlob(currentBlob + 1); }
+function prevBlob() { goToBlob(currentBlob - 1); }
+
+function toggleDiff() {
+  diffMode = !diffMode;
+  var btn = document.getElementById('btn-diff');
+  if (btn) { btn.className = diffMode ? 'tool-btn active' : 'tool-btn'; btn.textContent = diffMode ? 'Diff ON' : 'Diff'; }
+  renderAllBlobs(diffMode); applySearch(lastSearchTerm);
+}
+
+function toggleCompare() {
+  compareMode = !compareMode; compareSelected = [];
+  var btn = document.getElementById('btn-compare');
+  if (btn) { btn.className = compareMode ? 'tool-btn active' : 'tool-btn'; btn.textContent = compareMode ? 'Select 2...' : 'Compare'; }
+  var banner = document.getElementById('compare-banner');
+  if (banner) { banner.className = compareMode ? 'compare-banner visible' : 'compare-banner'; banner.textContent = compareMode ? 'Compare mode: click two records in the sidebar' : ''; }
+  if (!compareMode) exitCompareView();
+  clearCompareHighlights();
+}
+
 function clearCompareHighlights() {
   for (var i=1;i<=totalBlobs;i++){
     var n=document.getElementById('nav-'+i); 
-    if(n) n.classList.remove('compare-sel'); // Safely strips compare highlight
+    if(n) n.classList.remove('compare-sel');
   }
 }
 
@@ -237,7 +296,7 @@ function handleCompareClick(idx) {
   if (compareSelected.indexOf(idx) >= 0) return;
   compareSelected.push(idx);
   var n = document.getElementById('nav-' + idx);
-  if (n) n.classList.add('compare-sel'); // Safely adds compare highlight
+  if (n) n.classList.add('compare-sel');
   var banner = document.getElementById('compare-banner');
   if (compareSelected.length === 1 && banner) banner.textContent = 'Compare mode: 1 selected — click another record';
   if (compareSelected.length === 2) showCompareView(compareSelected[0], compareSelected[1]);
@@ -317,14 +376,21 @@ function buildSidebarFlags() {
 // INITIALISATION
 // =============================================================================
 document.addEventListener('DOMContentLoaded', function() {
+  if (window._gpInitialized) return;
+  window._gpInitialized = true;
+
   initBlobData();
   renderAllBlobs(false);
   buildSidebarFlags();
+  
   document.querySelectorAll('.nav-date').forEach(function(el) {
     var rel = document.createElement('span'); rel.className='nav-rel'; rel.textContent=relativeDate(el.textContent);
     el.parentNode.insertBefore(rel, el.nextSibling);
   });
+  
   updateCounter(1);
+  setActiveNav(1);
+  
   var scroller = document.getElementById('scroll-main');
   if ('IntersectionObserver' in window) {
     var obs = new IntersectionObserver(function(entries) {
