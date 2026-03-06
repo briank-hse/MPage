@@ -6,32 +6,34 @@
  * Tab clicks call loadTab(program, params) which uses XMLCclRequest
  * to fetch the target CCL program's HTML output asynchronously.
  * The responseText is injected into an <iframe srcdoc> beneath the
- * persistent tab bar. The shell page never navigates away.
+ * persistent tab bar.
+ * The shell page never navigates away.
  *
  * EDGE NOTES:
- *   - Synchronous XMLCclRequest is not supported in Edge/WebView2.
- *     All calls use async = true (open() third param).
- *   - In Edge, XMLCclRequest lives on window.external, not as a
- *     global constructor. The shim below normalises this.
- *   - The META tag <META content="XMLCCLREQUEST" name="discern"/>
- *     triggers Cerner's runtime injection of the XMLCclRequest class.
- *   - Do NOT define your own XMLCclRequest — it overwrites Cerner's.
+ * - Synchronous XMLCclRequest is not supported in Edge/WebView2.
+ * All calls use async = true (open() third param).
+ * - In Edge, XMLCclRequest lives on window.external, not as a
+ * global constructor.
+ * The shim below normalises this.
+ * - The META tag <META content="XMLCCLREQUEST" name="discern"/>
+ * triggers Cerner's runtime injection of the XMLCclRequest class.
+ * - Do NOT define your own XMLCclRequest — it overwrites Cerner's.
  *
  * TABS:
- *   tab-dot   : Antimicrobial Days of Therapy  (01_meds_dot_date_comb_edge3)
- *   tab-nicu  : NICU Infusion Labels           (01_bk_NICU_Inf_Edge)
- *   tab-dev1  : GP Medications (ghost)         (01_meds_pharm_anvs_edge)
- *   tab-dev2  : Reserved ghost slot
- *   tab-dev3  : Reserved ghost slot
+ * tab-dot   : Antimicrobial Days of Therapy  (01_meds_dot_date_comb_edge3)
+ * tab-nicu  : NICU Infusion Labels           (01_bk_NICU_Inf_Edge)
+ * tab-dev1  : GP Medications (ghost)         (01_meds_pharm_anvs_edge)
+ * tab-dev2  : Global Chart Search (ghost)    (01_meds_pharm_search_edge)
+ * tab-dev3  : Reserved ghost slot
  *
  * NICU PRINT LABELS:
- *   CCLLINK() calls inside the NICU iframe srcdoc are honoured by
- *   Cerner's WebView2 runtime via <meta name='discern' content='CCLLINK'/>
- *   in the NICU program output. This opens the label popup as before.
+ * CCLLINK() calls inside the NICU iframe srcdoc are honoured by
+ * Cerner's WebView2 runtime via <meta name='discern' content='CCLLINK'/>
+ * in the NICU program output. This opens the label popup as before.
  *
  * PARAM CONSTRUCTION:
- *   ^ inside tilde-delimited strings causes CCL parse errors.
- *   All param strings are built with concat() before the select.
+ * ^ inside tilde-delimited strings causes CCL parse errors.
+ * All param strings are built with concat() before the select.
  */
 
 DROP PROGRAM 01_meds_pharm_mpage_html_edge GO
@@ -48,38 +50,47 @@ with OUTDEV, user_id, patient_id, encounter_id
 ; -- ID conversions ------------------------------------------------------------
 declare v_pid    = vc with noconstant(trim(cnvtstring($patient_id)))
 declare v_enc_id = vc with noconstant(trim(cnvtstring($encounter_id)))
+declare v_usr_id = vc with noconstant(trim(cnvtstring($user_id)))
 
 ; -- Program names -------------------------------------------------------------
-declare v_xcr_prog_dot  = vc with noconstant("01_meds_dot_date_comb_edge3:Group1")
-declare v_xcr_prog_nicu = vc with noconstant("01_bk_NICU_Inf_Edge:Group1")
-declare v_xcr_prog_gp   = vc with noconstant("01_meds_pharm_anvs_edge:Group1")
+declare v_xcr_prog_dot    = vc with noconstant("01_meds_dot_date_comb_edge3:Group1")
+declare v_xcr_prog_nicu   = vc with noconstant("01_bk_NICU_Inf_Edge:Group1")
+declare v_xcr_prog_gp     = vc with noconstant("01_meds_pharm_anvs_edge:Group1")
+declare v_xcr_prog_search = vc with noconstant("01_meds_pharm_search_edge:Group1")
 
 ; -- Param strings -------------------------------------------------------------
 ; DOT prompts:  OUTDEV, PAT_PersonId, LOOKBACK
 ; NICU prompts: OUTDEV, PERSONID
 ; GP prompts:   OUTDEV, user_id, patient_id, encounter_id
-declare v_params_dot  = vc with noconstant("")
-declare v_params_nicu = vc with noconstant("")
-declare v_params_gp   = vc with noconstant("")
+; Search prompts: OUTDEV, user_id, patient_id, encounter_id
+declare v_params_dot    = vc with noconstant("")
+declare v_params_nicu   = vc with noconstant("")
+declare v_params_gp     = vc with noconstant("")
+declare v_params_search = vc with noconstant("")
 
-set v_params_dot  = concat("^MINE^,", v_pid, ".0,180.0")
-set v_params_nicu = concat("^MINE^,", v_pid, ".0")
-set v_params_gp   = concat("^MINE^,", v_pid, ".0,", v_pid, ".0,", v_enc_id, ".0")
+set v_params_dot    = concat("^MINE^,", v_pid, ".0,180.0")
+set v_params_nicu   = concat("^MINE^,", v_pid, ".0")
+set v_params_gp     = concat("^MINE^,", v_pid, ".0,", v_pid, ".0,", v_enc_id, ".0")
+set v_params_search = concat("^MINE^,", v_usr_id, ".0,", v_pid, ".0,", v_enc_id, ".0")
 
 ; -- JS variable declarations (pre-built for row +1 injection) -----------------
-declare v_js_prog_dot    = vc with noconstant("")
-declare v_js_params_dot  = vc with noconstant("")
-declare v_js_prog_nicu   = vc with noconstant("")
-declare v_js_params_nicu = vc with noconstant("")
-declare v_js_prog_gp     = vc with noconstant("")
-declare v_js_params_gp   = vc with noconstant("")
+declare v_js_prog_dot      = vc with noconstant("")
+declare v_js_params_dot    = vc with noconstant("")
+declare v_js_prog_nicu     = vc with noconstant("")
+declare v_js_params_nicu   = vc with noconstant("")
+declare v_js_prog_gp       = vc with noconstant("")
+declare v_js_params_gp     = vc with noconstant("")
+declare v_js_prog_search   = vc with noconstant("")
+declare v_js_params_search = vc with noconstant("")
 
-set v_js_prog_dot    = build2("var PROG_DOT    = '", v_xcr_prog_dot,  "';")
-set v_js_params_dot  = build2("var PARAMS_DOT  = '", v_params_dot,    "';")
-set v_js_prog_nicu   = build2("var PROG_NICU   = '", v_xcr_prog_nicu, "';")
-set v_js_params_nicu = build2("var PARAMS_NICU = '", v_params_nicu,   "';")
-set v_js_prog_gp     = build2("var PROG_GP     = '", v_xcr_prog_gp,   "';")
-set v_js_params_gp   = build2("var PARAMS_GP   = '", v_params_gp,     "';")
+set v_js_prog_dot      = build2("var PROG_DOT      = '", v_xcr_prog_dot,  "';")
+set v_js_params_dot    = build2("var PARAMS_DOT    = '", v_params_dot,    "';")
+set v_js_prog_nicu     = build2("var PROG_NICU     = '", v_xcr_prog_nicu, "';")
+set v_js_params_nicu   = build2("var PARAMS_NICU   = '", v_params_nicu,   "';")
+set v_js_prog_gp       = build2("var PROG_GP       = '", v_xcr_prog_gp,   "';")
+set v_js_params_gp     = build2("var PARAMS_GP     = '", v_params_gp,     "';")
+set v_js_prog_search   = build2("var PROG_SEARCH   = '", v_xcr_prog_search, "';")
+set v_js_params_search = build2("var PARAMS_SEARCH = '", v_params_search, "';")
 
 select into $outdev
 from dummyt d
@@ -167,7 +178,7 @@ detail
   row +1 "#content-frame {"
   row +1 "  flex: 1;"
   row +1 "  border: none;"
-  row +1 "  width: 100%;"
+  row +1 "  width: 100%;;"
   row +1 "  background: #fff;"
   row +1 "  display: none;"
   row +1 "}"
@@ -206,6 +217,8 @@ detail
   row +1 v_js_params_nicu
   row +1 v_js_prog_gp
   row +1 v_js_params_gp
+  row +1 v_js_prog_search
+  row +1 v_js_params_search
 
   ; -- Edge compatibility shim --------------------------------------------------
   ; In Edge/WebView2, XMLCclRequest lives on window.external.
@@ -303,6 +316,10 @@ detail
   row +1 "  loadTab(PROG_GP, PARAMS_GP + ',' + Date.now(), 'tab-dev1');"
   row +1 "}"
   row +1 ""
+  row +1 "function loadSearch() {"
+  row +1 "  loadTab(PROG_SEARCH, PARAMS_SEARCH + ',' + Date.now(), 'tab-dev2');"
+  row +1 "}"
+  row +1 ""
   row +1 "function loadPlaceholder(tabId, label) {"
   row +1 "  activateTab(tabId);"
   row +1 ~  showMsg(label + ' \u2014 not yet available.');~
@@ -323,6 +340,7 @@ detail
   row +1 "  >Antimicrobial Days of Therapy</button>"
   row +1 "  <div style='flex:1;'></div>"
   row +1 ~  <button id='tab-dev1' class='tab-btn ghost' onclick='loadGP()'>&nbsp;</button>~
+  row +1 ~  <button id='tab-dev2' class='tab-btn ghost' onclick='loadSearch()'>&nbsp;</button>~
   row +1 ~  <button id='tab-nicu' class='tab-btn ghost' onclick='loadNICU()'>&nbsp;</button>~
   row +1 ~  <button id='tab-dev3' class='tab-btn ghost' onclick='loadPlaceholder("tab-dev3", "Dev 3")'>&nbsp;</button>~
   row +1 "</div>"

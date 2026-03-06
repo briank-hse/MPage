@@ -16,12 +16,16 @@ window.addEventListener('error', function(e) {
   dbg.innerHTML += '<strong>Global Parse Error:</strong> ' + msg + ' (Line ' + e.lineno + ', Col ' + e.colno + ')<br>';
 }, true);
 
+var totalBlobs = 0;
 var currentBlob = 1;
 var scrollSpyEnabled = true;
 var diffMode = false;
 var compareMode = false;
 var compareSelected = [];
 var lastSearchTerm = '';
+
+window.blobDataRaw = [];
+window.blobDataParsed = [];
 
 // =============================================================================
 // HIGH RISK MEDICATIONS
@@ -43,25 +47,10 @@ var HIGH_RISK_MEDS = [
 ];
 
 // =============================================================================
-// HELPERS
+// HELPERS & UTILITIES
 // =============================================================================
-function relativeDate(ddmmyyyy) {
-  var parts = ddmmyyyy.split('/');
-  if (parts.length < 3) return '';
-  var d = new Date(parts[2], parts[1] - 1, parts[0]);
-  var now = new Date();
-  var diffMs = now - d;
-  var diffDays = Math.floor(diffMs / 86400000);
-  if (diffDays < 1)  return 'Today';
-  if (diffDays < 7)  return diffDays + ' day' + (diffDays === 1 ? '' : 's') + ' ago';
-  var diffWeeks = Math.floor(diffDays / 7);
-  if (diffDays < 31) return diffWeeks + ' week' + (diffWeeks === 1 ? '' : 's') + ' ago';
-  var diffMonths = Math.round(diffDays / 30.5);
-  if (diffDays < 365) return diffMonths + ' month' + (diffMonths === 1 ? '' : 's') + ' ago';
-  var diffYears = Math.floor(diffDays / 365.25);
-  var remMonths = Math.round((diffDays - diffYears * 365.25) / 30.5);
-  if (remMonths === 0) return diffYears + ' yr' + (diffYears === 1 ? '' : 's') + ' ago';
-  return diffYears + ' yr ' + remMonths + ' mo ago';
+function escHtml(s) { 
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); 
 }
 
 function getHighRiskMatches(text) {
@@ -76,24 +65,32 @@ function getHighRiskMatches(text) {
   return hits;
 }
 
-function escHtml(s) { 
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); 
-}
-
-function escAttr(s) { 
-  return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); 
+function relativeDate(ddmmyyyy) {
+  if (!ddmmyyyy) return '';
+  var parts = ddmmyyyy.split(' ')[0].split('/');
+  if (parts.length < 3) return '';
+  var d = new Date(parts[2], parts[1] - 1, parts[0]);
+  var now = new Date();
+  var diffDays = Math.floor((now - d) / 86400000);
+  if (diffDays < 1)  return 'Today';
+  if (diffDays < 7)  return diffDays + ' days ago';
+  var diffWeeks = Math.floor(diffDays / 7);
+  if (diffDays < 31) return diffWeeks + ' wks ago';
+  var diffMonths = Math.round(diffDays / 30.5);
+  if (diffDays < 365) return diffMonths + ' mos ago';
+  var diffYears = Math.floor(diffDays / 365.25);
+  return diffYears + ' yrs ago';
 }
 
 function highlightSearch(text, term) {
-  var esc = escHtml(text); 
-  if (!term) return esc;
-  var safeTerm = term.split('').map(function(c) { return '.*+?^${}()|[]\\'.indexOf(c) > -1 ? '\\' + c : c; }).join('');
+  if (!term) return escHtml(text);
+  var safeTerm = term.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
   var re = new RegExp('(' + safeTerm + ')', 'gi');
-  return esc.replace(re, '<mark>$1</mark>');
+  return escHtml(text).replace(re, '<mark>$1</mark>');
 }
 
 // =============================================================================
-// PARSING & DATA
+// PARSER (RESTORED TO HANDLE SECTIONS AND <br> TAGS)
 // =============================================================================
 var SECTION_PATTERNS = [
   { re: /prescribed med/i,   key: 'prescribed', label: 'Prescribed Medications',   cls: 'sec-prescribed' },
@@ -103,110 +100,142 @@ var SECTION_PATTERNS = [
 
 var DATE_RE = /^(\d{2}\/\d{2}\/\d{4})\s+(.+)$/;
 
-function decodeHtmlEntities(s) {
-  return s.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'");
-}
-
 function parseBlobText(rawHtml) {
-  var lines = rawHtml.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').split('\n');
-  var sections = []; var curSection = null;
+  // Convert HTML breaks to real newlines and strip remaining tags
+  var text = rawHtml.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '');
+  var lines = text.split('\n');
+  
+  var sections = []; 
+  var curSection = null;
+  
   function flush() { if (curSection) sections.push(curSection); }
+  
   for (var i = 0; i < lines.length; i++) {
-    var line = decodeHtmlEntities(lines[i].trim()); if (!line) continue;
+    var line = lines[i].replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+    if (!line) continue;
+    
+    // Clean out noise lines
+    if (line.indexOf('(last 12 months)') >= 0) continue;
+    if (line === 'CHANGED') continue;
+
     var isHead = false;
     for (var s = 0; s < SECTION_PATTERNS.length; s++) {
       if (SECTION_PATTERNS[s].re.test(line)) {
-        flush(); curSection = { key: SECTION_PATTERNS[s].key, label: SECTION_PATTERNS[s].label, cls: SECTION_PATTERNS[s].cls, rows: [] };
-        isHead = true; break;
+        flush(); 
+        curSection = { key: SECTION_PATTERNS[s].key, label: SECTION_PATTERNS[s].label, cls: SECTION_PATTERNS[s].cls, rows: [] };
+        isHead = true; 
+        break;
       }
     }
+    
     if (isHead) continue;
-    if (!curSection) { curSection = { key: 'other', label: '', cls: 'sec-other', rows: [] }; }
+    if (!curSection) curSection = { key: 'other', label: '', cls: 'sec-other', rows: [] };
+    
     var m = DATE_RE.exec(line);
-    if (m) { curSection.rows.push({ date: m[1], text: m[2] }); }
-    else { curSection.rows.push({ date: '', text: line }); }
+    if (m) { 
+        curSection.rows.push({ date: m[1], text: m[2], full: line }); 
+    } else { 
+        curSection.rows.push({ date: '', text: line, full: line }); 
+    }
   }
-  flush(); return sections;
+  flush(); 
+  return sections;
 }
 
-var blobData = {};
 function initBlobData() {
-  for (var i = 1; i <= totalBlobs; i++) {
-    var el = document.getElementById('blob-raw-' + i);
-    if (el) blobData[i] = parseBlobText(el.innerHTML);
-  }
+  window.blobDataRaw = [];
+  window.blobDataParsed = [];
+  var elements = document.querySelectorAll('[id^="blob-raw-"]');
+  elements.forEach(function(el) {
+    var idx = parseInt(el.id.replace('blob-raw-', ''), 10);
+    window.blobDataRaw[idx] = el.innerHTML;
+    window.blobDataParsed[idx] = parseBlobText(el.innerHTML);
+    if (idx > totalBlobs) totalBlobs = idx;
+  });
 }
 
 // =============================================================================
-// DIFF ENGINE & RENDERING
+// EXACT-MATCH DIFF ENGINE
 // =============================================================================
-function extractDrugKey(text) {
-  var t = text.toLowerCase().replace(/[^a-z0-9 ]/g,' ').trim();
-  var tokens = t.split(/\s+/);
-  var doseWords = ['mg','ml','mcg','ug','g','tablet','tablets','capsule','capsules','injection','solution','cream','ointment','patch','spray','inhaler','drops','puff','puffs','unit','units','iu'];
-  var key = [];
-  for (var i = 0; i < Math.min(tokens.length, 6); i++) {
-    if (/^\d/.test(tokens[i]) || doseWords.indexOf(tokens[i]) >= 0) break;
-    key.push(tokens[i]); if (key.length >= 3) break;
+function diffBlobs(idxOlder, idxNewer) {
+  var diffOlder = {}; 
+  var diffNewer = {}; 
+  
+  var secsOlder = window.blobDataParsed[idxOlder] || [];
+  var secsNewer = window.blobDataParsed[idxNewer] || [];
+  
+function extractTextList(secs) {
+    var list = [];
+    for (var s = 0; s < secs.length; s++) {
+      for (var r = 0; r < secs[s].rows.length; r++) {
+        var rawText = secs[s].rows[r].text;
+        // Normalize: lowercase, then remove ALL spaces, punctuation, and special characters
+        var compKey = rawText.toLowerCase().replace(/[\W_]+/g, "");
+        list.push({ secKey: secs[s].key, rIdx: r, compKey: compKey });
+      }
+    }
+    return list;
   }
-  return key.join(' ');
+  
+  var listOlder = extractTextList(secsOlder);
+  var listNewer = extractTextList(secsNewer);
+  
+  // 1. Check what is in Newer but missing in Older (ADDED)
+  for (var i = 0; i < listNewer.length; i++) {
+     var foundNew = false;
+     for (var j = 0; j < listOlder.length; j++) {
+         if (listOlder[j].compKey === listNewer[i].compKey) { foundNew = true; break; }
+     }
+     if (!foundNew) {
+         if (!diffNewer[listNewer[i].secKey]) diffNewer[listNewer[i].secKey] = {};
+         diffNewer[listNewer[i].secKey][listNewer[i].rIdx] = { type: 'added' };
+     }
+  }
+  
+  // 2. Check what is in Older but missing in Newer (REMOVED)
+  for (var k = 0; k < listOlder.length; k++) {
+     var foundOld = false;
+     for (var l = 0; l < listNewer.length; l++) {
+         if (listNewer[l].compKey === listOlder[k].compKey) { foundOld = true; break; }
+     }
+     if (!foundOld) {
+         if (!diffOlder[listOlder[k].secKey]) diffOlder[listOlder[k].secKey] = {};
+         diffOlder[listOlder[k].secKey][listOlder[k].rIdx] = { type: 'removed' };
+     }
+  }
+  
+  return { diffOlder: diffOlder, diffNewer: diffNewer };
 }
 
-function diffBlobs(idxA, idxB) {
-  function getPrescribed(idx) { var secs = blobData[idx]||[]; for(var i=0;i<secs.length;i++){if(secs[i].key==='prescribed')return secs[i].rows;} return []; }
-  var rowsA = getPrescribed(idxA); var rowsB = getPrescribed(idxB);
-  
-  // Store an array of texts for each drug key to handle duplicate prescriptions
-  var keysA = {}; 
-  for(var i=0;i<rowsA.length;i++){ 
-      var k=extractDrugKey(rowsA[i].text); 
-      if(!keysA[k]) keysA[k]=[]; 
-      keysA[k].push(rowsA[i].text); 
-  }
-  var keysB = {}; 
-  for(var i=0;i<rowsB.length;i++){ 
-      var k=extractDrugKey(rowsB[i].text); 
-      if(!keysB[k]) keysB[k]=[]; 
-      keysB[k].push(rowsB[i].text); 
-  }
-  
-  var diffA=[]; 
-  for(var i=0;i<rowsA.length;i++){
-      var k=extractDrugKey(rowsA[i].text);
-      var type = !keysB[k] ? 'removed' : (keysB[k].indexOf(rowsA[i].text) < 0 ? 'changed' : 'unchanged');
-      diffA.push({type: type, row:rowsA[i]});
-  }
-  
-  var diffB=[]; 
-  for(var i=0;i<rowsB.length;i++){
-      var k=extractDrugKey(rowsB[i].text);
-      var type = !keysA[k] ? 'added' : (keysA[k].indexOf(rowsB[i].text) < 0 ? 'changed' : 'unchanged');
-      diffB.push({type: type, row:rowsB[i]});
-  }
-  
-  return { diffA: diffA, diffB: diffB };
-}
-
-function renderBlobSections(idx, diffRows) {
-  var sections = blobData[idx];
+// =============================================================================
+// RENDERING
+// =============================================================================
+function renderBlobSections(idx, diffInfoMap) {
+  var sections = window.blobDataParsed[idx];
   if (!sections || !sections.length) return '<em style="color:#aaa">No content</em>';
   var html = '';
+  
   for (var s = 0; s < sections.length; s++) {
     var sec = sections[s];
     html += '<div class="med-section">';
     if (sec.label) html += '<div class="med-section-heading ' + sec.cls + '">' + sec.label + '</div>';
     if (sec.rows.length === 0) html += '<div class="med-section-empty">None recorded</div>';
+    
     for (var r = 0; r < sec.rows.length; r++) {
       var row = sec.rows[r];
-      var diffInfo = (diffRows && sec.key === 'prescribed') ? (diffRows[r] || null) : null;
+      var diffInfo = (diffInfoMap && diffInfoMap[sec.key] && diffInfoMap[sec.key][r]) ? diffInfoMap[sec.key][r] : null;
+      
       var rowCls = 'med-row' + (row.date ? '' : ' non-dated');
       if (diffInfo) rowCls += ' diff-' + diffInfo.type;
+      
       var hrMatches = getHighRiskMatches(row.text);
       var hrHtml = '';
       for (var h = 0; h < hrMatches.length; h++) hrHtml += '<span class="highrisk-pill">' + hrMatches[h] + '</span>';
-      var diffTagHtml = (diffInfo && diffInfo.type !== 'unchanged') ? '<span class="diff-tag diff-tag-' + diffInfo.type + '">' + diffInfo.type.toUpperCase() + '</span>' : '';
+      
+      var diffTagHtml = diffInfo ? '<span class="diff-tag diff-tag-' + diffInfo.type + '">' + diffInfo.type.toUpperCase() + '</span>' : '';
       var dispText = lastSearchTerm ? highlightSearch(row.text, lastSearchTerm) : escHtml(row.text);
-      html += '<div class="' + rowCls + '" data-medtext="' + escAttr(row.text) + '">'; 
+      
+      html += '<div class="' + rowCls + '">'; 
       if (row.date) html += '<span class="med-date">' + row.date + '</span>';
       html += '<span class="med-text">' + dispText + hrHtml + '</span>' + diffTagHtml + '</div>';
     }
@@ -217,39 +246,67 @@ function renderBlobSections(idx, diffRows) {
 
 function renderAllBlobs(applyDiff) {
   for (var i = 1; i <= totalBlobs; i++) {
-    var c = document.getElementById('blob-body-' + i); if (!c) continue;
-    var diffRows = null;
+    var c = document.getElementById('blob-body-' + i); 
+    if (!c) continue;
+    
+    var diffMap = null;
     if (applyDiff && i < totalBlobs) {
-      var d = diffBlobs(i, i+1); diffRows = {};
-      for (var r = 0; r < d.diffA.length; r++) diffRows[r] = { type: d.diffA[r].type };
+      // In main view diffing, compare current record (i) against the older one (i+1)
+      var d = diffBlobs(i + 1, i); 
+      diffMap = d.diffNewer;
     }
-    c.innerHTML = renderBlobSections(i, diffRows);
+    c.innerHTML = renderBlobSections(i, diffMap);
   }
 }
 
 // =============================================================================
-// UI INTERACTIONS
+// SIDE-BY-SIDE COMPARE UI
 // =============================================================================
-function updateCounter(idx) {
-  var el = document.getElementById('blob-counter');
-  if (el) el.textContent = idx + ' of ' + totalBlobs;
-  var p = document.getElementById('btn-prev'); var n = document.getElementById('btn-next');
-  if (p) p.disabled = (idx <= 1); if (n) n.disabled = (idx >= totalBlobs);
+function showCompareView(idxA, idxB) {
+  var scroller = document.getElementById('scroll-main');
+  var pane = document.getElementById('compare-pane');
+  if (scroller) scroller.style.display = 'none';
+  if (pane) pane.className = 'compare-pane visible';
+  
+  var newerIdx = Math.min(idxA, idxB);
+  var olderIdx = Math.max(idxA, idxB);
+  var diff = diffBlobs(olderIdx, newerIdx);
+  
+  var mA = document.getElementById('blob-meta-text-' + newerIdx);
+  var mB = document.getElementById('blob-meta-text-' + olderIdx);
+  
+  var hA = document.getElementById('compare-header-a'); 
+  if (hA) hA.textContent = mA ? mA.textContent : 'Record ' + newerIdx;
+  
+  var hB = document.getElementById('compare-header-b'); 
+  if (hB) hB.textContent = mB ? mB.textContent : 'Record ' + olderIdx;
+  
+  var cA = document.getElementById('compare-col-a'); 
+  if (cA) cA.innerHTML = renderBlobSections(newerIdx, diff.diffNewer);
+  
+  var cB = document.getElementById('compare-col-b'); 
+  if (cB) cB.innerHTML = renderBlobSections(olderIdx, diff.diffOlder);
+  
+  var banner = document.getElementById('compare-banner');
+  if (banner) banner.innerHTML = 'Comparing records ' + newerIdx + ' and ' + olderIdx + ' &nbsp; <button class="tool-btn" onclick="exitCompareView()">Exit Compare</button>';
 }
 
-function setActiveNav(idx) {
+function exitCompareView() {
+  var sc = document.getElementById('scroll-main'); if (sc) sc.style.display = '';
+  var pn = document.getElementById('compare-pane'); if (pn) pn.className = 'compare-pane';
+  compareSelected = []; compareMode = false;
+  var btn = document.getElementById('btn-compare'); if (btn) { btn.className='tool-btn'; btn.textContent='Compare'; }
+  var banner = document.getElementById('compare-banner'); if (banner) banner.className = 'compare-banner';
+  
   for (var i = 1; i <= totalBlobs; i++) {
-    var n = document.getElementById('nav-' + i); if (!n) continue;
-    if (i === idx) {
-      n.classList.add('active-nav');
-    } else {
-      n.classList.remove('active-nav');
-    }
+    var n = document.getElementById('nav-' + i); 
+    if (n) n.classList.remove('compare-sel');
   }
-  var active = document.getElementById('nav-' + idx);
-  if (active) active.scrollIntoView({ block: 'nearest' });
 }
 
+// =============================================================================
+// EVENT HANDLERS & NAVIGATION
+// =============================================================================
 function goToBlob(idx) {
   if (compareMode) { handleCompareClick(idx); return; }
   if (idx < 1 || idx > totalBlobs) return;
@@ -271,104 +328,98 @@ function prevBlob() { goToBlob(currentBlob - 1); }
 function toggleDiff() {
   diffMode = !diffMode;
   var btn = document.getElementById('btn-diff');
-  if (btn) { btn.className = diffMode ? 'tool-btn active' : 'tool-btn'; btn.textContent = diffMode ? 'Diff ON' : 'Diff'; }
-  renderAllBlobs(diffMode); applySearch(lastSearchTerm);
+  if (btn) { 
+    btn.className = diffMode ? 'tool-btn active' : 'tool-btn'; 
+    btn.textContent = diffMode ? 'Diff ON' : 'Diff'; 
+  }
+  renderAllBlobs(diffMode);
 }
 
 function toggleCompare() {
   compareMode = !compareMode; compareSelected = [];
   var btn = document.getElementById('btn-compare');
-  if (btn) { btn.className = compareMode ? 'tool-btn active' : 'tool-btn'; btn.textContent = compareMode ? 'Select 2...' : 'Compare'; }
+  if (btn) { btn.className = compareMode ? 'tool-btn active' : 'tool-btn'; btn.textContent = compareMode ? 'Cancel' : 'Compare'; }
   var banner = document.getElementById('compare-banner');
   if (banner) { banner.className = compareMode ? 'compare-banner visible' : 'compare-banner'; banner.textContent = compareMode ? 'Compare mode: click two records in the sidebar' : ''; }
-  if (!compareMode) exitCompareView();
-  clearCompareHighlights();
-}
-
-function clearCompareHighlights() {
-  for (var i=1;i<=totalBlobs;i++){
-    var n=document.getElementById('nav-'+i); 
-    if(n) n.classList.remove('compare-sel');
+  
+  if (!compareMode) {
+    exitCompareView();
   }
 }
 
 function handleCompareClick(idx) {
-  if (compareSelected.indexOf(idx) >= 0) return;
-  compareSelected.push(idx);
   var n = document.getElementById('nav-' + idx);
-  if (n) n.classList.add('compare-sel');
+  var pos = compareSelected.indexOf(idx);
+  if (pos > -1) {
+    compareSelected.splice(pos, 1);
+    if (n) n.classList.remove('compare-sel');
+  } else {
+    compareSelected.push(idx);
+    if (n) n.classList.add('compare-sel');
+  }
+  
   var banner = document.getElementById('compare-banner');
   if (compareSelected.length === 1 && banner) banner.textContent = 'Compare mode: 1 selected — click another record';
-  if (compareSelected.length === 2) showCompareView(compareSelected[0], compareSelected[1]);
-}
-
-function showCompareView(idxA, idxB) {
-  var scroller = document.getElementById('scroll-main');
-  var pane = document.getElementById('compare-pane');
-  if (scroller) scroller.style.display = 'none';
-  if (pane) pane.className = 'compare-pane visible';
-  var diff = diffBlobs(idxA, idxB);
-  var mA = document.getElementById('blob-meta-text-' + idxA);
-  var mB = document.getElementById('blob-meta-text-' + idxB);
-  var hA = document.getElementById('compare-header-a'); if (hA) hA.textContent = mA ? mA.textContent : 'Record ' + idxA;
-  var hB = document.getElementById('compare-header-b'); if (hB) hB.textContent = mB ? mB.textContent : 'Record ' + idxB;
-  var drA={}; for(var r=0;r<diff.diffA.length;r++) drA[r]={type:diff.diffA[r].type};
-  var drB={}; for(var r=0;r<diff.diffB.length;r++) drB[r]={type:diff.diffB[r].type};
-  var cA = document.getElementById('compare-col-a'); if (cA) cA.innerHTML = renderBlobSections(idxA, drA);
-  var cB = document.getElementById('compare-col-b'); if (cB) cB.innerHTML = renderBlobSections(idxB, drB);
-  var banner = document.getElementById('compare-banner');
-  if (banner) banner.innerHTML = 'Comparing records ' + idxA + ' and ' + idxB + ' &nbsp; <button class="tool-btn" onclick="exitCompareView()">Exit Compare</button>';
-}
-
-function exitCompareView() {
-  var sc = document.getElementById('scroll-main'); if (sc) sc.style.display = '';
-  var pn = document.getElementById('compare-pane'); if (pn) pn.className = 'compare-pane';
-  compareSelected = []; compareMode = false;
-  var btn = document.getElementById('btn-compare'); if (btn) { btn.className='tool-btn'; btn.textContent='Compare'; }
-  var banner = document.getElementById('compare-banner'); if (banner) banner.className = 'compare-banner';
-  clearCompareHighlights();
+  if (compareSelected.length === 2) {
+    showCompareView(compareSelected[0], compareSelected[1]);
+  }
 }
 
 function applySearch(term) {
   lastSearchTerm = term ? term.toLowerCase() : '';
   renderAllBlobs(diffMode);
-  var matchCount = 0; var blobHits = [];
-  for (var i = 1; i <= totalBlobs; i++) {
-    var rows = document.querySelectorAll('#blob-' + i + ' .med-row');
-    var blobMatch = false;
-    for (var r = 0; r < rows.length; r++) {
-      if (lastSearchTerm && (rows[r].getAttribute('data-medtext')||'').toLowerCase().indexOf(lastSearchTerm) >= 0) {
-        rows[r].classList.add('search-hit'); matchCount++; blobMatch = true;
-      }
-    }
-    var navItem = document.getElementById('nav-' + i);
-    if (navItem) { var esf = navItem.querySelector('.nav-flag-search'); if (esf) esf.parentNode.removeChild(esf); }
-    if (blobMatch && navItem) {
-      blobHits.push(i);
-      var flags = navItem.querySelector('.nav-flags'); if (!flags) { flags = document.createElement('div'); flags.className='nav-flags'; navItem.appendChild(flags); }
-      var sf = document.createElement('span'); sf.className='nav-flag nav-flag-search'; sf.textContent='MATCH'; flags.appendChild(sf);
-    }
-  }
-  var info = document.getElementById('search-info');
-  if (info) info.textContent = lastSearchTerm ? (matchCount + ' match' + (matchCount===1?'':'es') + ' in ' + blobHits.length + ' record' + (blobHits.length===1?'':'s')) : '';
-  if (blobHits.length > 0) goToBlob(blobHits[0]);
 }
 
-function onSearchInput(val) { clearTimeout(window._st); window._st = setTimeout(function(){applySearch(val);},300); }
+function onSearchInput(val) { 
+  clearTimeout(window._st); 
+  window._st = setTimeout(function(){ applySearch(val); }, 300); 
+}
+
+function updateCounter(idx) {
+  var counterEl = document.getElementById('blob-counter');
+  if (counterEl) counterEl.textContent = idx + " of " + totalBlobs;
+  
+  var p = document.getElementById('btn-prev'); var n = document.getElementById('btn-next');
+  if (p) p.disabled = (idx <= 1); if (n) n.disabled = (idx >= totalBlobs);
+}
+
+function setActiveNav(idx) {
+  for (var i = 1; i <= totalBlobs; i++) {
+    var n = document.getElementById('nav-' + i); 
+    if (n) n.classList.remove('active-nav');
+  }
+  var active = document.getElementById('nav-' + idx);
+  if (active) {
+    active.classList.add('active-nav');
+    active.scrollIntoView({ block: 'nearest' });
+  }
+}
 
 function buildSidebarFlags() {
-  for (var i=1;i<=totalBlobs;i++){
-    var raw=document.getElementById('blob-raw-'+i); if(!raw) continue;
-    var hits=getHighRiskMatches(raw.textContent||raw.innerText||''); if(!hits.length) continue;
-    var nav=document.getElementById('nav-'+i); if(!nav) continue;
-    var flags=document.createElement('div'); flags.className='nav-flags';
-    for(var h=0;h<hits.length;h++){
-      var sp=document.createElement('span');
-      sp.className='nav-flag nav-flag-highrisk';
-      sp.textContent=hits[h];
-      flags.appendChild(sp);
+  for (var i = 1; i <= totalBlobs; i++) {
+    var raw = window.blobDataRaw[i] || "";
+    var hits = getHighRiskMatches(raw.replace(/<[^>]+>/g, '')); 
+    
+    if (hits.length > 0) {
+      var nav = document.getElementById('nav-' + i);
+      if (!nav) continue;
+      
+      // Deduplicate hits
+      var uniqueHits = [];
+      for(var j=0; j<hits.length; j++) {
+          if (uniqueHits.indexOf(hits[j]) === -1) uniqueHits.push(hits[j]);
+      }
+      
+      var flags = document.createElement('div');
+      flags.className = 'nav-flags';
+      for(var k=0; k<uniqueHits.length; k++) {
+        var sp = document.createElement('span');
+        sp.className = 'nav-flag nav-flag-highrisk';
+        sp.textContent = uniqueHits[k];
+        flags.appendChild(sp);
+      }
+      nav.appendChild(flags);
     }
-    nav.appendChild(flags);
   }
 }
 
@@ -384,7 +435,9 @@ document.addEventListener('DOMContentLoaded', function() {
   buildSidebarFlags();
   
   document.querySelectorAll('.nav-date').forEach(function(el) {
-    var rel = document.createElement('span'); rel.className='nav-rel'; rel.textContent=relativeDate(el.textContent);
+    var rel = document.createElement('span'); 
+    rel.className = 'nav-rel'; 
+    rel.textContent = relativeDate(el.textContent);
     el.parentNode.insertBefore(rel, el.nextSibling);
   });
   
@@ -394,14 +447,17 @@ document.addEventListener('DOMContentLoaded', function() {
   var scroller = document.getElementById('scroll-main');
   if ('IntersectionObserver' in window) {
     var obs = new IntersectionObserver(function(entries) {
-      if (!scrollSpyEnabled) return;
+      if (!scrollSpyEnabled || diffMode || compareMode) return;
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
-          var idx = parseInt(entry.target.getAttribute('data-idx'),10);
-          currentBlob=idx; setActiveNav(idx); updateCounter(idx);
+          var idx = parseInt(entry.target.getAttribute('data-idx'), 10);
+          currentBlob = idx; 
+          setActiveNav(idx); 
+          updateCounter(idx);
         }
       });
     }, { root: scroller, rootMargin: '-10px 0px -85% 0px', threshold: 0 });
+
     document.querySelectorAll('.blob-record').forEach(function(el) { obs.observe(el); });
   }
 });
