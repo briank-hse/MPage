@@ -40,6 +40,21 @@ RECORD rec_docs (
     2 doc_text    = vc
 )
 
+RECORD rec_debug (
+  1 list[*]
+    2 event_id    = f8
+    2 title       = vc
+    2 dt_tm       = vc
+    2 prsnl       = vc
+    2 source_type = vc
+    2 blob_len    = i4
+    2 text_len    = i4
+    2 status      = vc   ; "DISPLAYED" or "DROPPED"
+    2 reason      = vc
+)
+
+DECLARE dCnt       = i4  WITH noconstant(0)
+
 DECLARE OcfCD      = f8  WITH noconstant(0.0)
 DECLARE stat       = i4  WITH noconstant(0)
 DECLARE stat_rtf   = i4  WITH noconstant(0)
@@ -175,6 +190,43 @@ IF (RUN_NOTES = 1)
             rec_docs->list[nCnt].doc_text = vCleanText
         ENDIF
 
+        ; ---- DEBUG CAPTURE (Notes) ----
+        dCnt = size(rec_debug->list, 5) + 1
+        stat = alterlist(rec_debug->list, dCnt)
+        rec_debug->list[dCnt].event_id    = CE.EVENT_ID
+        rec_debug->list[dCnt].blob_len    = bloblen
+        rec_debug->list[dCnt].text_len    = TEXTLEN(TRIM(vCleanText))
+        rec_debug->list[dCnt].source_type = UAR_GET_CODE_DISPLAY(CE.EVENT_CLASS_CD)
+        rec_debug->list[dCnt].dt_tm       = REPLACE(FORMAT(CE.EVENT_END_DT_TM, "DD/MM/YYYY HH:MM"), " 00:00", "", 0)
+
+        IF (PARENT_CE.EVENT_ID > 0 AND TRIM(PARENT_CE.EVENT_TITLE_TEXT, 3) != "")
+            rec_debug->list[dCnt].title = TRIM(PARENT_CE.EVENT_TITLE_TEXT, 3)
+        ELSEIF (TRIM(CE.EVENT_TITLE_TEXT, 3) != "")
+            rec_debug->list[dCnt].title = TRIM(CE.EVENT_TITLE_TEXT, 3)
+        ELSE
+            rec_debug->list[dCnt].title = UAR_GET_CODE_DISPLAY(CE.EVENT_CD)
+        ENDIF
+
+        IF (PR.PERSON_ID > 0)
+            rec_debug->list[dCnt].prsnl = TRIM(PR.NAME_FULL_FORMATTED, 3)
+        ELSE
+            rec_debug->list[dCnt].prsnl = "System Process"
+        ENDIF
+
+        IF (TEXTLEN(TRIM(vCleanText)) > 1)
+            rec_debug->list[dCnt].status = "DISPLAYED"
+            rec_debug->list[dCnt].reason = ""
+        ELSEIF (bloblen = 0)
+            rec_debug->list[dCnt].status = "DROPPED"
+            rec_debug->list[dCnt].reason = "Zero blob length"
+        ELSEIF (tlen = 0)
+            rec_debug->list[dCnt].status = "DROPPED"
+            rec_debug->list[dCnt].reason = "Decompress/extract 0 bytes"
+        ELSE
+            rec_debug->list[dCnt].status = "DROPPED"
+            rec_debug->list[dCnt].reason = "Empty after processing"
+        ENDIF
+
     WITH NOCOUNTER, FORMAT, UR, MAXREC = 150
 ENDIF
 
@@ -216,6 +268,23 @@ IF (RUN_STICKY = 1)
         vCleanText = REPLACE(vCleanText, CHAR(13), "<br />", 0)
         vCleanText = REPLACE(vCleanText, CHAR(10), "<br />", 0)
         rec_docs->list[nCnt].doc_text = vCleanText
+
+        ; ---- DEBUG CAPTURE (Sticky Note - always displayed) ----
+        dCnt = size(rec_debug->list, 5) + 1
+        stat = alterlist(rec_debug->list, dCnt)
+        rec_debug->list[dCnt].event_id    = SN.STICKY_NOTE_ID
+        rec_debug->list[dCnt].title       = "Patient Sticky Note"
+        rec_debug->list[dCnt].dt_tm       = REPLACE(FORMAT(SN.BEG_EFFECTIVE_DT_TM, "DD/MM/YYYY HH:MM"), " 00:00", "", 0)
+        rec_debug->list[dCnt].source_type = "STICKY NOTE"
+        rec_debug->list[dCnt].blob_len    = 0
+        rec_debug->list[dCnt].text_len    = TEXTLEN(TRIM(SN.STICKY_NOTE_TEXT, 3))
+        rec_debug->list[dCnt].status      = "DISPLAYED"
+        rec_debug->list[dCnt].reason      = ""
+        IF (P.PERSON_ID > 0)
+            rec_debug->list[dCnt].prsnl = TRIM(P.NAME_FULL_FORMATTED, 3)
+        ELSE
+            rec_debug->list[dCnt].prsnl = "System Process"
+        ENDIF
 
     WITH NOCOUNTER, FORMAT, UR, MAXREC = 50
 ENDIF
@@ -452,8 +521,93 @@ SET _memory_reply_string = BUILD2(_memory_reply_string, "  highlightCurrentMatch
 SET _memory_reply_string = BUILD2(_memory_reply_string, "});")
 
 SET _memory_reply_string = BUILD2(_memory_reply_string, "buildHighRiskFlags();")
-SET _memory_reply_string = BUILD2(_memory_reply_string, "</script></body></html>")
+SET _memory_reply_string = BUILD2(_memory_reply_string, "</script>")
 
+; =============================================================================
+; 6. DEBUG PANEL
+; =============================================================================
+DECLARE vDbgDisplayed = i4 WITH noconstant(0)
+DECLARE vDbgDropped   = i4 WITH noconstant(0)
+DECLARE vDbgTotal     = i4 WITH noconstant(0)
+SET vDbgTotal = SIZE(rec_debug->list, 5)
+
+SET x = 1
+WHILE (x <= vDbgTotal)
+    IF (rec_debug->list[x].status = "DISPLAYED")
+        SET vDbgDisplayed = vDbgDisplayed + 1
+    ELSE
+        SET vDbgDropped = vDbgDropped + 1
+    ENDIF
+    SET x = x + 1
+ENDWHILE
+
+SET _memory_reply_string = BUILD2(_memory_reply_string,
+    "<div id='dbg-panel' style='position:fixed;bottom:0;left:0;right:0;font-family:monospace;font-size:11px;z-index:9999;max-height:22px;overflow:hidden;transition:max-height 0.3s ease;'>",
+    "<div id='dbg-bar' style='padding:3px 10px;background:#333;color:#d4d4d4;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;'",
+    ~ onclick="var p=document.getElementById('dbg-panel');var expanded=p.style.maxHeight~,
+    ~!=='22px';p.style.maxHeight=expanded?'22px':'42vh';document.getElementById('dbg-caret')~,
+    ~.textContent=expanded?String.fromCharCode(9650):String.fromCharCode(9660);">~,
+    "<span>",
+    "&#x1F50D; DEBUG &nbsp;|&nbsp; <b style='color:#4ec94e;'>", TRIM(CNVTSTRING(vDbgDisplayed)), " displayed</b>",
+    " &nbsp;|&nbsp; <b style='color:#f48771;'>", TRIM(CNVTSTRING(vDbgDropped)), " dropped</b>",
+    " &nbsp;|&nbsp; ", TRIM(CNVTSTRING(vDbgTotal)), " reached DETAIL (inner join excludes no-blob records)",
+    "</span>",
+    "<span id='dbg-caret' style='font-size:9px;color:#888;'>&#x25B2;</span></div>",
+    "<div style='overflow-y:auto;max-height:calc(42vh - 22px);background:#1e1e1e;'>",
+    "<table style='width:100%;border-collapse:collapse;color:#d4d4d4;'>",
+    "<thead><tr style='background:#252526;position:sticky;top:0;'>",
+    "<th style='padding:4px 8px;text-align:left;border-bottom:1px solid #444;white-space:nowrap;'>Event ID</th>",
+    "<th style='padding:4px 8px;text-align:left;border-bottom:1px solid #444;'>Title</th>",
+    "<th style='padding:4px 8px;text-align:left;border-bottom:1px solid #444;white-space:nowrap;'>Date</th>",
+    "<th style='padding:4px 8px;text-align:left;border-bottom:1px solid #444;'>Author</th>",
+    "<th style='padding:4px 8px;text-align:left;border-bottom:1px solid #444;'>Class</th>",
+    "<th style='padding:4px 8px;text-align:right;border-bottom:1px solid #444;'>Blob</th>",
+    "<th style='padding:4px 8px;text-align:right;border-bottom:1px solid #444;'>Text</th>",
+    "<th style='padding:4px 8px;text-align:left;border-bottom:1px solid #444;'>Status</th>",
+    "<th style='padding:4px 8px;text-align:left;border-bottom:1px solid #444;'>Reason</th>",
+    "</tr></thead><tbody>")
+
+SET x = 1
+WHILE (x <= vDbgTotal)
+    IF (rec_debug->list[x].status = "DISPLAYED")
+        SET _memory_reply_string = BUILD2(_memory_reply_string, "<tr style='background:#1a2b1a;'>")
+    ELSE
+        SET _memory_reply_string = BUILD2(_memory_reply_string, "<tr style='background:#2b1a1a;'>")
+    ENDIF
+
+    SET _memory_reply_string = BUILD2(_memory_reply_string,
+        "<td style='padding:3px 8px;border-bottom:1px solid #2a2a2a;color:#9cdcfe;white-space:nowrap;'>",
+            TRIM(CNVTSTRING(rec_debug->list[x].event_id, 14, 0)), "</td>",
+        "<td style='padding:3px 8px;border-bottom:1px solid #2a2a2a;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;' title='",
+            rec_debug->list[x].title, "'>", rec_debug->list[x].title, "</td>",
+        "<td style='padding:3px 8px;border-bottom:1px solid #2a2a2a;white-space:nowrap;'>", rec_debug->list[x].dt_tm, "</td>",
+        "<td style='padding:3px 8px;border-bottom:1px solid #2a2a2a;white-space:nowrap;'>", rec_debug->list[x].prsnl, "</td>",
+        "<td style='padding:3px 8px;border-bottom:1px solid #2a2a2a;'>", rec_debug->list[x].source_type, "</td>",
+        "<td style='padding:3px 8px;border-bottom:1px solid #2a2a2a;text-align:right;'>",
+            TRIM(CNVTSTRING(rec_debug->list[x].blob_len)), "</td>",
+        "<td style='padding:3px 8px;border-bottom:1px solid #2a2a2a;text-align:right;'>",
+            TRIM(CNVTSTRING(rec_debug->list[x].text_len)), "</td>")
+
+    IF (rec_debug->list[x].status = "DISPLAYED")
+        SET _memory_reply_string = BUILD2(_memory_reply_string,
+            "<td style='padding:3px 8px;border-bottom:1px solid #2a2a2a;color:#4ec94e;font-weight:bold;'>DISPLAYED</td>")
+    ELSE
+        SET _memory_reply_string = BUILD2(_memory_reply_string,
+            "<td style='padding:3px 8px;border-bottom:1px solid #2a2a2a;color:#f48771;font-weight:bold;'>DROPPED</td>")
+    ENDIF
+
+    SET _memory_reply_string = BUILD2(_memory_reply_string,
+        "<td style='padding:3px 8px;border-bottom:1px solid #2a2a2a;color:#ce9178;'>",
+            rec_debug->list[x].reason, "</td>",
+        "</tr>")
+
+    SET x = x + 1
+ENDWHILE
+
+SET _memory_reply_string = BUILD2(_memory_reply_string, "</tbody></table></div></div>")
+SET _memory_reply_string = BUILD2(_memory_reply_string, "</body></html>")
+
+FREE RECORD rec_debug
 FREE RECORD rec_docs
 END
 GO
