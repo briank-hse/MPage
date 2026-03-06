@@ -550,9 +550,16 @@ SET _memory_reply_string = BUILD2(_memory_reply_string,
     "<span>",
     "&#x1F50D; DEBUG &nbsp;|&nbsp; <b style='color:#4ec94e;'>", TRIM(CNVTSTRING(vDbgDisplayed)), " displayed</b>",
     " &nbsp;|&nbsp; <b style='color:#f48771;'>", TRIM(CNVTSTRING(vDbgDropped)), " dropped</b>",
-    " &nbsp;|&nbsp; ", TRIM(CNVTSTRING(vDbgTotal)), " reached DETAIL (inner join excludes no-blob records)",
+    " &nbsp;|&nbsp; ", TRIM(CNVTSTRING(vDbgTotal)), " reached DETAIL",
+    " &nbsp;|&nbsp; <span style='color:#9cdcfe;'>Pat:</span> ", TRIM(CNVTSTRING($patient_id, 14, 0)),
+    " &nbsp;<span style='color:#9cdcfe;'>Enc:</span> ", TRIM(CNVTSTRING($encounter_id, 14, 0)),
+    " &nbsp;<span style='color:#9cdcfe;'>Usr:</span> ", TRIM(CNVTSTRING($user_id, 14, 0)),
     "</span>",
-    "<span id='dbg-caret' style='font-size:9px;color:#888;'>&#x25B2;</span></div>",
+    "<span style='display:flex;align-items:center;gap:8px;'>",
+    "<button id='dbg-copy' style='font-size:10px;padding:1px 7px;background:#444;color:#ccc;",
+    "border:1px solid #666;border-radius:3px;cursor:pointer;font-family:monospace;'>Copy</button>",
+    "<span id='dbg-caret' style='font-size:9px;color:#888;'>&#x25B2;</span>",
+    "</span></div>",
     "<div style='overflow-y:auto;max-height:calc(42vh - 22px);background:#1e1e1e;'>",
     "<table style='width:100%;border-collapse:collapse;color:#d4d4d4;'>",
     "<thead><tr style='background:#252526;position:sticky;top:0;'>",
@@ -605,7 +612,29 @@ WHILE (x <= vDbgTotal)
 ENDWHILE
 
 SET _memory_reply_string = BUILD2(_memory_reply_string, "</tbody></table></div></div>")
+
+SET _memory_reply_string = BUILD2(_memory_reply_string, "<script>")
+SET _memory_reply_string = BUILD2(_memory_reply_string,
+    ~document.getElementById('dbg-copy').addEventListener('click',function(){~,
+    ~var rows=document.querySelectorAll('#dbg-panel table tr');~,
+    ~var lines=[];~,
+    ~for(var i=0;i<rows.length;i++){~,
+    ~  var cells=rows[i].querySelectorAll('th,td');~,
+    ~  var cols=[];~,
+    ~  for(var j=0;j<cells.length;j++) cols.push(cells[j].innerText.trim());~,
+    ~  lines.push(cols.join('\t'));~,
+    ~}~,
+    ~var txt='Pat: '+document.querySelector('#dbg-panel span:first-child').innerText+'\n\n'+lines.join('\n');~,
+    ~navigator.clipboard.writeText(txt).then(function(){~,
+    ~  var b=document.getElementById('dbg-copy');~,
+    ~  b.textContent='Copied!';b.style.color='#4ec94e';~,
+    ~  setTimeout(function(){b.textContent='Copy';b.style.color='#ccc';},2000);~,
+    ~});~,
+    ~});~)
+SET _memory_reply_string = BUILD2(_memory_reply_string, "</script>")
+
 SET _memory_reply_string = BUILD2(_memory_reply_string, "</body></html>")
+
 
 FREE RECORD rec_debug
 FREE RECORD rec_docs
