@@ -1,7 +1,7 @@
 /**
  * PROGRAM: 01_meds_pharm_anvs:group1
  *
- * SPA JSON BACKEND — GP Medications (ANVS blob extraction)
+ * SPA JSON BACKEND - GP Medications (ANVS blob extraction)
  * Returns pure JSON via CNVTRECTOJSON(reply).
  * No HTML, no CSS, no JS.
  *
@@ -15,7 +15,6 @@
  *   - The SPA shell JS renderer handles display escaping.
  *   - parseBlobText() in the shell already splits on \n and strips tags.
  */
-
 DROP PROGRAM 01_meds_pharm_anvs:group1 GO
 CREATE PROGRAM 01_meds_pharm_anvs:group1
 
@@ -78,7 +77,7 @@ DECLARE vCleanText = vc  WITH noconstant(" ")
 SET stat = uar_get_meaning_by_codeset(120, "OCFCOMP", 1, OcfCD)
 
 ; =============================================================================
-; DIAGNOSTIC — identify EVENT_CD values for CE_BLOB rows on this patient
+; DIAGNOSTIC ??? identify EVENT_CD values for CE_BLOB rows on this patient
 ; Remove this block once correct EVENT_CD is confirmed.
 ; =============================================================================
 RECORD rec_diag (
@@ -112,7 +111,7 @@ DETAIL
 WITH NOCOUNTER
 
 ; =============================================================================
-; BLOB EXTRACTION — preserved from 01_meds_pharm_anvs_edge
+; BLOB EXTRACTION ??? preserved from 01_meds_pharm_anvs_edge
 ; =============================================================================
 SELECT INTO "NL:"
 FROM CLINICAL_EVENT CE
@@ -163,13 +162,13 @@ DETAIL
     IF (TEXTLEN(TRIM(vCleanText)) <= 1)
         vCleanText = "-- No narrative note found --"
     ELSE
-        ; Normalise line endings to plain \n only — no HTML injection
+        ; Normalise line endings to plain \n only ??? no HTML injection
         ; JSON consumers (SPA shell parseBlobText) split on \n directly
         vCleanText = REPLACE(vCleanText, concat(CHAR(13), CHAR(10)), CHAR(10), 0)
         vCleanText = REPLACE(vCleanText, CHAR(13), CHAR(10), 0)
         vCleanText = REPLACE(vCleanText, CHAR(11), CHAR(10), 0)
 
-        ; Consolidate runs of blank lines (3+ newlines → 2)
+        ; Consolidate runs of blank lines (3+ newlines ??? 2)
         vCleanText = REPLACE(vCleanText, concat(CHAR(10), CHAR(10), CHAR(10), CHAR(10)), concat(CHAR(10), CHAR(10)), 0)
         vCleanText = REPLACE(vCleanText, concat(CHAR(10), CHAR(10), CHAR(10)),           concat(CHAR(10), CHAR(10)), 0)
 
