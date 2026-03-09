@@ -248,7 +248,7 @@ SET _memory_reply_string = BUILD2(
     ~var TAB_CONFIG = {~,
     ~  ANVS:   { label: 'GP Meds',       program: '01_meds_pharm_anvs:group1' },~,
     ~  SEARCH: { label: 'Chart Search',  program: '01_meds_pharm_search:group1', params: function() { return '^MINE^,' + USER_ID + '.0,' + PATIENT_ID + '.0,' + ENCNTR_ID + '.0'; } },~,
-    ~  MICRO:  { label: 'Antimicrobial', program: '01_meds_pharm_antimicrobial:group1', params: function() { return '^MINE^,' + PATIENT_ID + '.0,180'; } },~,
+    ~  MICRO:  { label: 'Antimicrobial', program: '01_meds_pharm_antimicrobial:group1', params: function() { return '^MINE^,' + PATIENT_ID + '.0,200'; } },~,
     ~  NICU:   { label: 'NICU Labels',   program: '01_meds_pharm_NICU_Inf:group1', params: function() { return '^MINE^,' + PATIENT_ID + '.0'; } }~,
     ~};~,
     ~/* Shared shell helpers */~,

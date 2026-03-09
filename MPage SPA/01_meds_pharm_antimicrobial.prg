@@ -1,7 +1,7 @@
 DROP PROGRAM 01_meds_pharm_antimicrobial:group1 GO
 CREATE PROGRAM 01_meds_pharm_antimicrobial:group1
 
-PROMPT "Output to File/Printer/MINE" = "MINE", "Patient_ID" = 0, "Days Lookback" = 180
+PROMPT "Output to File/Printer/MINE" = "MINE", "Patient_ID" = 0, "Days Lookback" = 200
 WITH OUTDEV, PAT_PersonId, LOOKBACK
 
 DECLARE v_font_size      = vc WITH NOCONSTANT("13px")
@@ -11,7 +11,7 @@ DECLARE v_name           = vc WITH NOCONSTANT("")
 DECLARE v_admit_dt       = vc WITH NOCONSTANT("")
 DECLARE v_los            = vc WITH NOCONSTANT("")
 DECLARE v_lookback       = vc WITH NOCONSTANT("")
-DECLARE v_effective_lookback = i4 WITH NOCONSTANT(180)
+DECLARE v_effective_lookback = i4 WITH NOCONSTANT(200)
 DECLARE v_min_dt         = dq8 WITH NOCONSTANT(0)
 DECLARE v_max_dt         = dq8 WITH NOCONSTANT(0)
 DECLARE v_first          = i2 WITH NOCONSTANT(1)
