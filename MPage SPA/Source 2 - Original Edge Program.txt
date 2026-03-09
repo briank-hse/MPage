@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <meta charset='utf-8'/>
+        <meta name='discern' content='XMLCCLREQUEST'/>
+        <title>Pharmacist MPage</title>
+        <style>
+            *, *::before, *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+                font-size: 13px;
+                background: #f4f5f7;
+                color: #333;
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            .tab-btn.ghost {
+                color: transparent;
+                cursor: default;
+                width: 24px;
+                min-width: 24px;
+                padding: 8px 4px;
+                pointer-events: auto;
+            }
+
+            .tab-btn.ghost:hover {
+                background: transparent;
+            }
+
+            #dbg-bar {
+                background: #3a1a00;
+                color: #ffcc80;
+                padding: 4px 10px;
+                font-size: 11px;
+                font-family: monospace;
+                word-break: break-all;
+                white-space: pre-wrap;
+                flex-shrink: 0;
+                display: none;
+            }
+
+            .tab-row {
+                display: flex;
+                align-items: flex-end;
+                background: #fff;
+                border-bottom: 2px solid #ddd;
+                padding: 0 8px;
+                flex-shrink: 0;
+            }
+
+            .tab-btn {
+                padding: 8px 16px;
+                margin-right: 4px;
+                cursor: pointer;
+                background: transparent;
+                border: none;
+                border-bottom: 3px solid transparent;
+                color: #666;
+                font-size: 13px;
+                font-family: inherit;
+                white-space: nowrap;
+                outline: none;
+                position: relative;
+                bottom: -2px;
+            }
+
+            .tab-btn:hover {
+                background: #f0f4f8;
+                color: #333;
+            }
+
+            .tab-btn.active {
+                border-bottom: 3px solid #006f99;
+                color: #006f99;
+                font-weight: 600;
+                background: #fff;
+            }
+
+            .tab-btn.placeholder {
+                color: #aaa;
+                cursor: default;
+                pointer-events: none;
+            }
+
+            #content-frame {
+                flex: 1;
+                border: none;
+                width: 100%;
+                ; background: #fff;
+                display: none;
+            }
+
+            #frame-msg {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex: 1;
+                color: #888;
+                font-size: 14px;
+                background: #fff;
+            }
+
+            .placeholder-badge {
+                display: inline-block;
+                margin-left: 6px;
+                font-size: 10px;
+                background: #e0e0e0;
+                color: #888;
+                border-radius: 8px;
+                padding: 1px 6px;
+                vertical-align: middle;
+            }
+        </style>
+        <script>
+            var PROG_DOT = '01_meds_dot_date_comb_edge3:Group1';
+            var PARAMS_DOT = '^MINE^,12690542.0,180.0';
+            var PROG_NICU = '01_bk_NICU_Inf_Edge:Group1';
+            var PARAMS_NICU = '^MINE^,12690542.0';
+            var PROG_GP = '01_meds_pharm_anvs_edge:Group1';
+            var PARAMS_GP = '^MINE^,12690542.0,12690542.0,28766114.0';
+            var PROG_SEARCH = '01_meds_pharm_search_edge:Group1';
+            var PARAMS_SEARCH = '^MINE^,180876.0,12690542.0,28766114.0';
+            if (typeof XMLCclRequest === 'undefined' && window.external && 'XMLCclRequest'in window.external) {
+                window.XMLCclRequest = function() {
+                    return window.external.XMLCclRequest();
+                }
+                ;
+            }
+            var activeTabId = null;
+
+            function activateTab(id) {
+                var tabs = document.querySelectorAll('.tab-btn');
+                for (var i = 0; i < tabs.length; i++) {
+                    tabs[i].classList.remove('active');
+                }
+                var btn = document.getElementById(id);
+                if (btn)
+                    btn.classList.add('active');
+                activeTabId = id;
+
+            }
+
+            function showMsg(msg) {
+                var msgDiv = document.getElementById('frame-msg');
+                var iframe = document.getElementById('content-frame');
+                if (msgDiv) {
+                    msgDiv.style.display = 'flex';
+                    msgDiv.textContent = msg;
+                }
+                if (iframe)
+                    iframe.style.display = 'none';
+            }
+
+            function showIframe() {
+                var msgDiv = document.getElementById('frame-msg');
+                var iframe = document.getElementById('content-frame');
+                if (msgDiv)
+                    msgDiv.style.display = 'none';
+                if (iframe)
+                    iframe.style.display = 'block';
+            }
+
+            function loadTab(program, params, tabId) {
+                activateTab(tabId);
+                showMsg('Loading\u2026');
+
+                if (typeof XMLCclRequest === 'undefined') {
+                    showMsg('ERROR: XMLCclRequest is not available in this environment.');
+                    return;
+                }
+
+                var xcr = new XMLCclRequest();
+
+                xcr.onreadystatechange = function() {
+                    if (xcr.readyState === 4) {
+                        if (xcr.status === 200) {
+                            var iframe = document.getElementById('content-frame');
+                            if (iframe) {
+                                iframe.srcdoc = xcr.responseText;
+                                showIframe();
+                            }
+                        } else {
+                            var dbg = 'Status:' + xcr.status + ' | prog:' + program + ' | params:' + params + ' | resp:' + xcr.responseText;
+                            var bar = document.getElementById('dbg-bar');
+                            bar.textContent = dbg;
+                            bar.style.display = 'block';
+                            showMsg('Error ' + xcr.status + ' - see debug bar above');
+                        }
+                    }
+                }
+                ;
+
+                xcr.open('GET', program, true);
+                xcr.send(params);
+            }
+
+            function loadDOT() {
+                loadTab(PROG_DOT, PARAMS_DOT + ',' + Date.now(), 'tab-dot');
+            }
+
+            function loadNICU() {
+                loadTab(PROG_NICU, PARAMS_NICU + ',' + Date.now(), 'tab-nicu');
+            }
+
+            function loadGP() {
+                loadTab(PROG_GP, PARAMS_GP + ',' + Date.now(), 'tab-dev1');
+            }
+
+            function loadSearch() {
+                loadTab(PROG_SEARCH, PARAMS_SEARCH + ',' + Date.now(), 'tab-dev2');
+            }
+
+            function loadPlaceholder(tabId, label) {
+                activateTab(tabId);
+                showMsg(label + ' \u2014 not yet available.');
+            }
+        </script>
+    </head>
+    <body>
+        <div id='dbg-bar'></div>
+        <div class='tab-row'>
+            <button id='tab-dot' class='tab-btn' onclick='loadDOT()'>Antimicrobial Days of Therapy</button>
+            <div style='flex:1;'></div>
+            <button id='tab-dev1' class='tab-btn ghost' onclick='loadGP()'>&nbsp;</button>
+            <button id='tab-dev2' class='tab-btn ghost' onclick='loadSearch()'>&nbsp;</button>
+            <button id='tab-nicu' class='tab-btn ghost' onclick='loadNICU()'>&nbsp;</button>
+            <button id='tab-dev3' class='tab-btn ghost' onclick='loadPlaceholder("tab-dev3", "Dev 3")'>&nbsp;</button>
+        </div>
+        <div id='frame-msg'>Select a tab to load a report.</div>
+        <iframe id='content-frame'></iframe>
+    </body>
+</html>
