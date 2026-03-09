@@ -28,10 +28,14 @@ declare v_los         = vc with noconstant("")
 declare v_lookback    = vc with noconstant("")
 declare v_axis_html   = vc with noconstant(""), maxlen=2000
 declare v_header_html = vc with noconstant(""), maxlen=65534
+declare v_month_html  = vc with noconstant(""), maxlen=65534
+declare v_mo_span     = i4 with noconstant(0)
+declare v_mo_name     = vc with noconstant("")
+declare v_mo_start    = i4 with noconstant(0)
 declare v_min_dt      = dq8 with noconstant(0)
 declare v_max_dt      = dq8 with noconstant(0)
 declare v_first       = i2 with noconstant(1)
-declare v_days        = i4 with noconstant(0)
+declare v_days          = i4 with noconstant(0)
 declare v_curr_med    = vc with noconstant("")
 declare v_dates_kv    = vc with noconstant(""), maxlen=65534
 declare v_details_kv  = vc with noconstant(""), maxlen=65534
@@ -41,7 +45,7 @@ declare v_key8        = vc with noconstant("")
 declare v_count_str   = vc with noconstant("")
 declare v_count_i     = i4 with noconstant(0)
 declare v_title       = vc with noconstant(""), maxlen=1000
-declare v_strip       = vc with noconstant(""), maxlen=65534
+declare v_strip        = vc with noconstant(""), maxlen=65534
 declare v_med_dot_total   = i4 with noconstant(0)
 declare v_med_dose_total  = i4 with noconstant(0)
 declare v_row_cnt     = i4 with noconstant(0)
@@ -53,7 +57,7 @@ declare v_indication       = vc with noconstant(""), maxlen=255
 declare v_discontinue_rsn  = vc with noconstant(""), maxlen=255
 declare v_low_dt      = dq8 with noconstant(null)
 declare v_high_now_dt = dq8 with noconstant(null)
-declare v_today       = dq8 with noconstant(0)
+declare v_today        = dq8 with noconstant(0)
 
 declare v_findpos          = i4 with noconstant(0)
 declare v_after            = vc with noconstant(""), maxlen=65534
@@ -227,15 +231,35 @@ else
   set v_days = (datetimediff(v_max_dt, v_min_dt, 7)) + 1
   set v_axis_html = concat(' <span style="font-weight:normal; font-size:11px; color:#555;">(Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ')</span>')
   set v_header_html = ''
+  set v_month_html  = ''
+  set v_mo_span  = 0
+  set v_mo_name  = ''
+  set v_mo_start = 0
+  set v_i = 0
+  /* Pass A: day-number row */
+  while (v_i < v_days)
+    set v_header_html = concat(v_header_html, '<div class="grid-cell tick" title="', format(v_min_dt + v_i,"YYYY-MM-DD;;D"), '">', format(v_min_dt + v_i,"DD;;D"), '</div>')
+    set v_i = v_i + 1
+  endwhile
+  /* Pass B: month-span row - walk days, emit span div when month changes or at end */
   set v_i = 0
   while (v_i < v_days)
-    if (v_i = 0 or format(v_min_dt + v_i,"MM;;D") != format(v_min_dt + v_i - 1,"MM;;D"))
-      set v_header_html = concat(v_header_html, '<div class="grid-cell tick" title="', format(v_min_dt + v_i,"YYYY-MM-DD;;D"), '"><span class="mo">', format(v_min_dt + v_i,"MMM;;D"), '</span>', format(v_min_dt + v_i,"DD;;D"), '</div>')
+    if (v_i = 0)
+      set v_mo_name  = format(v_min_dt + v_i, "MMM;;D")
+      set v_mo_start = 0
+      set v_mo_span  = 1
+    elseif (format(v_min_dt + v_i,"MM;;D") != format(v_min_dt + v_i - 1,"MM;;D"))
+      set v_month_html = concat(v_month_html, '<div class="grid-cell mo-span always-on" style="grid-column:span ', trim(cnvtstring(v_mo_span),3), ';">', v_mo_name, '</div>')
+      set v_mo_name  = format(v_min_dt + v_i, "MMM;;D")
+      set v_mo_start = v_i
+      set v_mo_span  = 1
     else
-      set v_header_html = concat(v_header_html, '<div class="grid-cell tick" title="', format(v_min_dt + v_i,"YYYY-MM-DD;;D"), '">', format(v_min_dt + v_i,"DD;;D"), '</div>')
+      set v_mo_span  = v_mo_span + 1
     endif
     set v_i = v_i + 1
   endwhile
+  /* flush last month */
+  set v_month_html = concat(v_month_html, '<div class="grid-cell mo-span always-on" style="grid-column:span ', trim(cnvtstring(v_mo_span),3), ';">', v_mo_name, '</div>')
 endif
 
 
@@ -343,7 +367,7 @@ foot med_name
     html_chart->cnt = html_chart->cnt + 1
     stat = alterlist(html_chart->qual, html_chart->cnt)
     html_chart->qual[html_chart->cnt].text = concat(
-      '<div class="grid-cell label medname sticky-med med-trigger dimmable', v_cell_bg, '"', v_med_attr, ' title="Click to filter by ', v_curr_med, '">', v_curr_med, ' <span class="filter-icon">&#x25BC;</span></div>',
+      '<div class="grid-cell label medname sticky-med med-trigger dimmable', v_cell_bg, '"', v_med_attr, ' title="Click to filter by ', v_curr_med, '">', v_curr_med, '</div>',
       '<div class="grid-cell dot-val sticky-doses dimmable', v_cell_bg, '"', v_med_attr, '><span class="pill" title="', v_curr_med, ' - Total Doses: ', trim(cnvtstring(v_med_dose_total), 3), '">', trim(cnvtstring(v_med_dose_total), 3), '</span></div>',
       '<div class="grid-cell dot-val sticky-dot dimmable', v_cell_bg, '"', v_med_attr, '><span class="pill" title="', v_curr_med, ' - Total Days of Therapy: ', trim(cnvtstring(v_med_dot_total), 3), '">', trim(cnvtstring(v_med_dot_total), 3), '</span></div>',
       v_strip
@@ -360,7 +384,7 @@ foot report
           if (findstring(concat("~", v_key8, "~"), v_all_days_list) > 0)
              v_sum_strip = concat(v_sum_strip, '<div class="grid-cell cell sum-yes sum-border" title="Antimicrobial Administered"></div>')
           else
-              v_sum_strip = concat(v_sum_strip, '<div class="grid-cell cell sum-no sum-border" title="No Antimicrobials"></div>')
+             v_sum_strip = concat(v_sum_strip, '<div class="grid-cell cell sum-no sum-border" title="No Antimicrobials"></div>')
           endif
           v_i = v_i + 1
       endwhile
@@ -379,7 +403,7 @@ with nocounter
 endif
 
 /* ========================================================================== */
-/* PASS 2.5: ENCOUNTER TRACKS (Appended to Array)                             */
+/* PASS 2.5: ENCOUNTER TRACKS (Appended to Array)                            */
 /* ========================================================================== */
 if (admin_rec->cnt > 0 and v_days > 0)
   select into "nl:"
@@ -446,7 +470,7 @@ if (admin_rec->cnt > 0 and v_days > 0)
       set v_assigned = 0
       set v_t        = 1
       while (v_t <= 50 and v_assigned = 0)
-        if (track_ends[v_t] <= v_s_idx)
+        if (track_ends[v_t] < v_s_idx)
           set enc_rec->qual[enc_sort_rec->qual[v_e].orig_idx].track = v_t
           set track_ends[v_t] = v_e_idx
           if (v_t > v_max_track) set v_max_track = v_t endif
@@ -484,7 +508,7 @@ if (admin_rec->cnt > 0 and v_days > 0)
 
               if (enc_rec->qual[v_e].arrive_dt != null and enc_rec->qual[v_e].arrive_dt != 0)
                  set v_cell_title = concat(v_cell_title, " | Arrive: ", format(enc_rec->qual[v_e].arrive_dt, "DD/MM/YYYY;;d"))
-                 if (v_i = enc_rec->qual[v_e].start_idx) set v_cell_text = "A" endif
+                 if (v_i = enc_rec->qual[v_e].start_idx) set v_cell_text = "&#9650;" endif
               else
                  set v_cell_title = concat(v_cell_title, " | Arrive: Unknown")
               endif
@@ -494,13 +518,13 @@ if (admin_rec->cnt > 0 and v_days > 0)
               else
                 set v_cell_title = concat(v_cell_title, " | DC: ", format(enc_rec->qual[v_e].disch_dt, "DD/MM/YYYY;;d"))
                 if (v_i = enc_rec->qual[v_e].end_idx)
-                   if (v_cell_text = "A") set v_cell_text = "A/D" else set v_cell_text = "D" endif
+                   if (v_cell_text = "&#9650;") set v_cell_text = "&#9670;" else set v_cell_text = "&#9660;" endif
                 endif
               endif
             endif
           endif
         endfor
-        set v_strip = concat(v_strip, '<div class="grid-cell cell enc-border ', v_cell_class, '" title="', v_cell_title, '"><span class="enc-cell-text">', v_cell_text, '</span></div>')
+        set v_strip = concat(v_strip, '<div class="grid-cell cell ', v_cell_class, '" title="', v_cell_title, '"><span class="enc-cell-text">', v_cell_text, '</span></div>')
         set v_i = v_i + 1
       endwhile
 
@@ -508,9 +532,9 @@ if (admin_rec->cnt > 0 and v_days > 0)
       set html_chart->cnt = html_chart->cnt + 1
       set stat = alterlist(html_chart->qual, html_chart->cnt)
       set html_chart->qual[html_chart->cnt].text = concat(
-        '<div class="grid-cell label enc-label-cell sticky-med enc-border always-on">', v_enc_label, '</div>',
-        '<div class="grid-cell sticky-doses enc-border always-on"></div>',
-        '<div class="grid-cell sticky-dot enc-border always-on"></div>',
+        '<div class="grid-cell label enc-label-cell sticky-med always-on">Encounter</div>',
+        '<div class="grid-cell label sticky-doses always-on"></div>',
+        '<div class="grid-cell label sticky-dot always-on"></div>',
         v_strip
       )
     endfor
@@ -533,7 +557,7 @@ select into "nl:"
 , ordered_target_dose = oi.ordered_dose
 , ordered_target_dose_unit = uar_get_code_display(oi.ordered_dose_unit_cd)
 , strength_val = substring(1,60,trim(od_strength.oe_field_display_value))
-, strength_unit  = substring(1,60,trim(od_strengthunit.oe_field_display_value))
+, strength_unit = substring(1,60,trim(od_strengthunit.oe_field_display_value))
 , volume_val     = substring(1,60,trim(od_volume.oe_field_display_value))
 , volume_unit    = substring(1,60,trim(od_volumeunit.oe_field_display_value))
 , simplified_disp = trim(o.simplified_display_line)
@@ -662,182 +686,194 @@ endif
 /* ========================================================================== */
 /* FINAL HTML OUTPUT GENERATION (Reads from Array Buffers)                    */
 /* ========================================================================== */
-select into $outdev
-from dummyt d
-head report
-  row +1 '<!doctype html><html lang="en"><head>'
-  row +1 '<meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />'
-  row +1 '<meta name="discern" content="CCLLINK,APPLINK"/>'
-  row +1 '<title>Antimicrobial Days of Therapy - By Date</title>'
-  row +1 '<style>'
-  row +1 ':root{--bg-main:#fff;--bg-alt:#f5f5f5;--border-color:#d6d9dd;--border-dark:#b5b5b5;--cerner-blue:#0086CE;'
-  row +1 '--header-bg:rgba(231, 234, 238, 0.85);--sticky-bg:#ffffff;--sticky-bg-alt:#f5f5f5;}'
-  row +1 '*,*:before,*:after{box-sizing:border-box}'
-  row +1 call print(concat('body{margin:0;font:', v_font_size, '/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;color:#111;background:var(--bg-main);padding:0;}'))
-  row +1 '.wrap{width:100%; max-width:100%; margin:0; padding:0; box-sizing:border-box;}'
-  row +1 'h1{font-size:18px;margin:0 0 8px;}'
-  row +1 'h2{font-size:15px;margin:16px 0 8px;padding-top:0;}'
-  row +1 '.sub{color:#444;margin:4px 0 16px;}'
-  row +1 '.meta-flex { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }'
-  row +1 '.legend{margin-top:6px;color:#555;font-size:12px}'
 
-  /* CSS GRID ARCHITECTURE */
-  row +1 '.chart-wrap { overflow-x:auto; overflow-y:hidden; margin-bottom:12px; width:100%; display:block; }'
-  row +1 '.chart-grid { display: grid; background: var(--bg-main); width: max-content; border-top: 1px solid var(--border-dark); border-left: 1px solid var(--border-dark); font-size: 12px; }'
-  row +1 '.grid-cell { border-right: 1px solid var(--border-dark); border-bottom: 1px solid var(--border-dark); background: var(--bg-main); padding: 0; display: flex; align-items: center; min-width: 0; }'
-  row +1 'table.data-tbl th, .grid-cell.label { background: var(--header-bg) !important; color: #2f3c4b; font-weight: 600 !important; padding: 4px 8px; }'
-  row +1 'table.data-tbl th { text-align:left; height:26px; font-size:12px !important; }'
-  row +1 '.grid-cell.label { min-height: 26px; }'
+/* Output via _memory_reply_string for XMLCclRequest compatibility          */
+/* select into $outdev is not valid in XCR context.                         */
+/* _memory_reply_string is a built-in gvc — no declare needed.              */
 
-  /* Fixed 180/40/40 sticky sizing logic */
-  row +1 '.sticky-med { position:sticky; left:0; z-index:10; background:var(--sticky-bg); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; width:180px; min-width:180px; max-width:180px; }'
-  row +1 '.sticky-doses { position:sticky; left:180px; z-index:10; background:var(--sticky-bg); width:40px; min-width:40px; max-width:40px; text-align:center; }'
-  row +1 '.sticky-dot { position:sticky; left:220px; z-index:10; background:var(--sticky-bg); box-shadow: 2px 0 5px -2px rgba(0,0,0,0.2); width:40px; min-width:40px; max-width:40px; text-align:center; }'
-  row +1 '.hdr-intersect { z-index:20 !important; }'
-  
-  /* Content Alignment & Striping */
-  row +1 '.even-cell { background: var(--bg-alt) !important; }'
-  row +1 '.even-cell.sticky-med, .even-cell.sticky-doses, .even-cell.sticky-dot { background: var(--sticky-bg-alt) !important; }'
-  row +1 '.dot-val { justify-content: center; }'
-  row +1 call print(concat('.grid-cell.medname { padding:2px 6px; font-size:', v_med_font_size, ' !important; }'))
-  
-  /* EDGE 5 Interactive UI Classes */
-  row +1 '.med-trigger { cursor: pointer; color: var(--cerner-blue); transition: background 0.2s; }'
-  row +1 '.med-trigger:hover { background-color: #e0f0ff !important; }'
-  row +1 '.filter-icon { font-size: 8px; opacity: 0.5; margin-left: 6px; }'
-  row +1 '.dimmed { opacity: 0.15; filter: grayscale(100%); pointer-events: none; transition: opacity 0.3s ease; }'
-  row +1 '.dimmable { transition: opacity 0.3s ease; }'
-  row +1 '.active-filter { background-color: #e0f0ff !important; font-weight: 700; }'
-  
-  /* Physical 14px width constraint and Date Ticks */
-  row +1 '.cell, .tick { width:14px; min-width:14px; max-width:14px; justify-content:center; font-size:10px; }'
-  row +1 '.cell { color:transparent; }'
-  row +1 '.tick { height:30px; position:relative; overflow:visible !important; align-items:flex-end; padding-bottom:2px; }'
-  row +1 '.tick .mo { position:absolute; bottom:16px; left:50%; transform:translateX(-50%); color:#555; white-space:nowrap; pointer-events:none; }'
-  row +1 '.grid-cell.axis-header { display:block; line-height:18px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }'
+set _memory_reply_string = ""
 
-  row +1 '.cell.on { background:transparent !important; color:var(--bg-main) !important; font-weight:600; position:relative; z-index:1; }'
-  row +1 '.cell.on::after { content:""; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:14px; height:14px; background:var(--cerner-blue); border-radius:1px; z-index:-1; }'
-  row +1 '.cell.on:empty::before { content:"1"; }'
-  row +1 '.cell.sum-yes { background:#ED1C24 !important; }'
-  row +1 '.cell.sum-no { background:#A8D08D !important; }'
-  row +1 '.sum-border { border-top:2px solid #a0a0a0 !important; }'
-  row +1 '.pill { display:inline-block; padding:2px 6px; border-radius:12px; background:#eef; color:#334; line-height:1; }'
-  
-  /* Encounter Formatting */
-  row +1 '.cell.enc-c1 { background:#e0f0ff !important; }'
-  row +1 '.cell.enc-c2 { background:#d1e8ff !important; }'
-  row +1 '.cell.enc-c3 { background:#e8f4fd !important; }'
-  row +1 '.cell.enc-c4 { background:#d9f0fa !important; }'
-  row +1 '.enc-border { border-top:1px solid #c8dff5 !important; }'
-  row +1 '.enc-label-cell { font-size:11px !important; }'
-  row +1 '.enc-label-cell a { color:var(--cerner-blue); text-decoration:none; font-weight:600; }'
-  row +1 '.enc-cell-text { font-size:8px; font-weight:700; color:#111; line-height:1; }'
-  
-  /* Table Layout Rules */
-  row +1 'table.data-tbl { width:100%; min-width:1000px; border-collapse:separate; border-spacing:0; margin-top:12px; font-size:12px; border-top:1px solid var(--border-dark); border-left:1px solid var(--border-dark); border-bottom:2px solid #a0a0a0; table-layout:fixed; }'
-  row +1 'table.data-tbl th, table.data-tbl td { border-right:1px solid var(--border-dark); border-bottom:1px solid var(--border-dark); padding:4px 6px; text-align:left; background:var(--bg-main); word-break:break-word; overflow-wrap:break-word; overflow:hidden; transition: background-color 0.2s; }'
-  row +1 'table.data-tbl th:nth-child(1), table.data-tbl td:nth-child(1) { box-sizing:border-box !important; width:180px; min-width:180px; max-width:180px; }'
-  row +1 'table.data-tbl th:nth-child(2), table.data-tbl td:nth-child(2) { box-sizing:border-box !important; width:40px; min-width:40px; max-width:40px; text-align:center; padding:4px 0; }'
-  row +1 'table.data-tbl th:nth-child(3), table.data-tbl td:nth-child(3) { box-sizing:border-box !important; width:40px; min-width:40px; max-width:40px; text-align:center; padding:4px 0; }'
-  row +1 'table.data-tbl tr.even td { background:var(--bg-alt); }'
-  row +1 'table.data-tbl tbody tr:last-child td { border-bottom:none; }'
-  row +1 'table.data-tbl tbody tr:hover td { background-color: #f0f7ff; cursor: default; }'
+/* --- HEAD & CSS --- */
+set _memory_reply_string = concat(_memory_reply_string, '<!doctype html><html lang="en"><head>')
+set _memory_reply_string = concat(_memory_reply_string, '<meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />')
+set _memory_reply_string = concat(_memory_reply_string, '<meta name="discern" content="CCLLINK,APPLINK"/>')
+set _memory_reply_string = concat(_memory_reply_string, '<title>Antimicrobial Days of Therapy - By Date</title>')
+set _memory_reply_string = concat(_memory_reply_string, '<style>')
+set _memory_reply_string = concat(_memory_reply_string, ':root{--bg-main:#fff;--bg-alt:#fafafa;--border-color:#d6d9dd;--border-dark:#b5b5b5;--border-light:#dde1e5;--cerner-blue:#0086CE;')
+set _memory_reply_string = concat(_memory_reply_string, '--header-bg:#e7eaee;--sticky-bg:#ffffff;--sticky-bg-alt:#fafafa;}')
+set _memory_reply_string = concat(_memory_reply_string, '*,*:before,*:after{box-sizing:border-box}')
+set _memory_reply_string = concat(_memory_reply_string, concat('body{margin:0;font:', v_font_size, '/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;color:#111;background:var(--bg-main);padding:0;}'))
+set _memory_reply_string = concat(_memory_reply_string, '.wrap{width:100%; max-width:100%; margin:0; padding:0; box-sizing:border-box;}')
+set _memory_reply_string = concat(_memory_reply_string, 'h1{font-size:18px;margin:0 0 8px;}')
+set _memory_reply_string = concat(_memory_reply_string, 'h2{font-size:15px;margin:16px 0 2px;padding-top:0;}')
+set _memory_reply_string = concat(_memory_reply_string, '.sub{color:#444;margin:4px 0 16px;}')
+set _memory_reply_string = concat(_memory_reply_string, '.meta-flex { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }')
+set _memory_reply_string = concat(_memory_reply_string, '.legend{margin-top:6px;color:#555;font-size:12px}')
+set _memory_reply_string = concat(_memory_reply_string, '.chart-wrap { overflow-x:auto; overflow-y:hidden; margin-bottom:12px; width:100%; display:block; }')
+set _memory_reply_string = concat(_memory_reply_string, '.chart-grid { display: grid; background: var(--bg-main); width: max-content; border-left: 1px solid var(--border-dark); font-size: 12px; }')
+set _memory_reply_string = concat(_memory_reply_string, '.grid-cell { border-right: 1px solid var(--border-light); border-bottom: none; background: var(--bg-main); padding: 0; display: flex; align-items: center; min-width: 0; }')
+set _memory_reply_string = concat(_memory_reply_string, '.grid-cell.label, .grid-cell.sticky-med, .grid-cell.sticky-doses, .grid-cell.sticky-dot { border-right-color: var(--border-dark) !important; border-bottom: 1px solid var(--border-dark) !important; }')
+set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th, .grid-cell.label:not(.medname) { background: var(--header-bg) !important; color: #2f3c4b; font-weight: 600 !important; padding: 4px 8px; }')
+set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th { text-align:left; height:26px; font-size:12px !important; }')
+set _memory_reply_string = concat(_memory_reply_string, '.grid-cell.label { min-height: 26px; }')
+set _memory_reply_string = concat(_memory_reply_string, '.sticky-med { position:sticky; left:0; z-index:10; background:var(--sticky-bg); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; width:200px; min-width:200px; max-width:200px; }')
+set _memory_reply_string = concat(_memory_reply_string, '.sticky-doses { position:sticky; left:200px; z-index:10; background:var(--sticky-bg); width:40px; min-width:40px; max-width:40px; text-align:center; justify-content:center; }')
+set _memory_reply_string = concat(_memory_reply_string, '.sticky-dot { position:sticky; left:240px; z-index:10; background:var(--sticky-bg); box-shadow: 2px 0 5px -2px rgba(0,0,0,0.2); width:40px; min-width:40px; max-width:40px; text-align:center; justify-content:center; }')
+set _memory_reply_string = concat(_memory_reply_string, '.hdr-intersect { z-index:20 !important; border-top:1px solid var(--border-dark) !important; }')
+set _memory_reply_string = concat(_memory_reply_string, '.even-cell.sticky-med, .even-cell.sticky-doses, .even-cell.sticky-dot, .even-cell.medname { background: var(--bg-alt) !important; }')
+set _memory_reply_string = concat(_memory_reply_string, '.dot-val { justify-content: center; }')
+set _memory_reply_string = concat(_memory_reply_string, concat('.grid-cell.medname { padding:2px 6px; font-size:', v_med_font_size, ' !important; }'))
+set _memory_reply_string = concat(_memory_reply_string, '.med-trigger { cursor: pointer; color: #111; transition: background 0.2s; }')
+set _memory_reply_string = concat(_memory_reply_string, '.med-trigger:hover { background-color: #e0f0ff !important; }')
+set _memory_reply_string = concat(_memory_reply_string, '.filter-icon { font-size: 8px; opacity: 0.5; margin-left: 6px; }')
+set _memory_reply_string = concat(_memory_reply_string, '.dimmed { opacity: 0.15; filter: grayscale(100%); pointer-events: none; transition: opacity 0.3s ease; }')
+set _memory_reply_string = concat(_memory_reply_string, '.dimmable { transition: opacity 0.3s ease; }')
+set _memory_reply_string = concat(_memory_reply_string, '.active-filter { background-color: #e0f0ff !important; font-weight: 700; }')
+set _memory_reply_string = concat(_memory_reply_string, '.grid-cell.dimmed.sticky-med, .grid-cell.dimmed.sticky-doses, .grid-cell.dimmed.sticky-dot { opacity: 1 !important; filter: none !important; color: #b5b5b5 !important; }')
+set _memory_reply_string = concat(_memory_reply_string, '.grid-cell.dimmed.sticky-med .pill, .grid-cell.dimmed.sticky-doses .pill, .grid-cell.dimmed.sticky-dot .pill { background: #f0f0f0 !important; color: #b5b5b5 !important; box-shadow: none !important; }')
+set _memory_reply_string = concat(_memory_reply_string, '.row-hover:not(.on):not(.always-on) { background-color: transparent !important; }')
+set _memory_reply_string = concat(_memory_reply_string, '.cell.row-hover:not(.on)::after { background:#b8d4ee !important; }')
+set _memory_reply_string = concat(_memory_reply_string, '.cell, .tick { width:14px; min-width:14px; max-width:14px; justify-content:center; font-size:10px; }')
+set _memory_reply_string = concat(_memory_reply_string, '.cell { border-right:1px solid #f8f8f8 !important; border-bottom:none !important; border-left:none !important; color:transparent; background:transparent !important; position:relative; z-index:1; }')
+set _memory_reply_string = concat(_memory_reply_string, '.tick { border-right:none !important; height:22px; position:relative; overflow:visible !important; align-items:center; padding-bottom:0; justify-content:center; font-size:10px; color:#555; }')
+set _memory_reply_string = concat(_memory_reply_string, '.tick::after { content:""; position:absolute; right:0; bottom:0; width:1px; height:6px; background:var(--border-dark); }')
+set _memory_reply_string = concat(_memory_reply_string, '.mo-span { height:20px; font-size:11px; font-weight:600; color:#2f3c4b; background:var(--header-bg) !important; border-top:1px solid var(--border-dark) !important; border-right:1px solid var(--border-dark) !important; border-bottom:1px solid var(--border-dark) !important; padding:0 4px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; align-items:center; }')
+set _memory_reply_string = concat(_memory_reply_string, '.grid-cell.axis-header { display:block; line-height:18px; overflow:visible; white-space:nowrap; border-top:1px solid var(--border-dark) !important; }')
+set _memory_reply_string = concat(_memory_reply_string, '.cell::after { content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:14px; height:12px; background:#F5F5F6; border-radius:0px; z-index:-1; }')
+set _memory_reply_string = concat(_memory_reply_string, '.cell.on { color:var(--bg-main) !important; font-weight:600; }')
+set _memory_reply_string = concat(_memory_reply_string, '.cell.on::after { width:14px; height:12px; background:var(--cerner-blue); border-radius:0px; }')
+set _memory_reply_string = concat(_memory_reply_string, '.cell.on:empty::before { content:"1"; }')
+set _memory_reply_string = concat(_memory_reply_string, '.cell.sum-yes, .cell.sum-no, .cell.enc-c1, .cell.enc-c2, .cell.enc-c3, .cell.enc-c4 { background:transparent !important; }')
+set _memory_reply_string = concat(_memory_reply_string, '.cell.sum-yes::after { width:14px; height:12px; background: #f37074be; }')
+set _memory_reply_string = concat(_memory_reply_string, '.cell.sum-no::after { width:14px; height:12px; background: #a8d08dbe; }')
+set _memory_reply_string = concat(_memory_reply_string, '.sum-border { border-top:2px solid #a0a0a0 !important; }')
+set _memory_reply_string = concat(_memory_reply_string, '.pill { display:inline-block; padding:2px 6px; border-radius:12px; background:#eef; color:#334; line-height:1; }')
+set _memory_reply_string = concat(_memory_reply_string, '.cell.enc-c1::after { width:14px; height:12px; background:#b8d8f8; }')
+set _memory_reply_string = concat(_memory_reply_string, '.cell.enc-c2::after { width:14px; height:12px; background: #b3d0ebb4; }')
+set _memory_reply_string = concat(_memory_reply_string, '.cell.enc-c3::after { width:14px; height:12px; background:#c8e8fb; }')
+set _memory_reply_string = concat(_memory_reply_string, '.cell.enc-c4::after { width:14px; height:12px; background:#aad8f7; }')
+set _memory_reply_string = concat(_memory_reply_string, '.enc-border { border-top:2px solid #90b8e0 !important; }')
+set _memory_reply_string = concat(_memory_reply_string, '.enc-label-cell { font-size:11px !important; }')
+set _memory_reply_string = concat(_memory_reply_string, '.enc-label-cell a { color:var(--cerner-blue); text-decoration:none; font-weight:600; }')
+set _memory_reply_string = concat(_memory_reply_string, '.enc-cell-text { font-size:8px; font-weight:700; color:#111; line-height:1; overflow:hidden; max-width:14px; display:block; text-align:center; }')
+set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl { width:100%; min-width:1460px; border-collapse:separate; border-spacing:0; margin-top:2px; font-size:12px; border-top:1px solid var(--border-dark); border-left:1px solid var(--border-dark); border-bottom:2px solid #a0a0a0; table-layout:fixed; }')
+set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th, table.data-tbl td { border-right:1px solid var(--border-dark); border-bottom:1px solid var(--border-dark); padding:4px 6px; text-align:left; background:var(--bg-main); word-break:break-word; overflow-wrap:break-word; overflow:hidden; transition: background-color 0.2s; }')
+set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th:nth-child(1), table.data-tbl td:nth-child(1) { box-sizing:border-box !important; width:200px; min-width:200px; max-width:200px; }')
+set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th:nth-child(2), table.data-tbl td:nth-child(2) { box-sizing:border-box !important; width:40px; min-width:40px; max-width:40px; text-align:center; padding:4px 0; }')
+set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th:nth-child(3), table.data-tbl td:nth-child(3) { box-sizing:border-box !important; width:40px; min-width:40px; max-width:40px; text-align:center; padding:4px 0; }')
+set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th:nth-child(4), table.data-tbl td:nth-child(4) { box-sizing:border-box !important; width:100px; min-width:100px; max-width:100px; }')
+set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th:nth-child(6), table.data-tbl td:nth-child(6) { box-sizing:border-box !important; width:350px; min-width:350px; max-width:350px; }')
+set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th:nth-child(7), table.data-tbl td:nth-child(7) { box-sizing:border-box !important; width:250px; min-width:250px; max-width:250px; }')
+set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl tr.even td { background:var(--bg-alt); }')
+set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl tbody tr:last-child td { border-bottom:none; }')
+set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl tbody tr:hover td { background-color: #f0f7ff; cursor: default; }')
+set _memory_reply_string = concat(_memory_reply_string, '</style></head><body><div class="wrap">')
 
-  row +1 '</style></head><body><div class="wrap">'
+/* --- CHART SECTION --- */
+set _memory_reply_string = concat(_memory_reply_string, '<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given. &nbsp;<b>Encounter:</b> &#9650; Admit, &#9660; Discharge, &#9670; Same-day admit &amp; discharge.<br/><b>Interactive:</b> Click a medication name to isolate its history across the chart and table.</div>')
+set _memory_reply_string = concat(_memory_reply_string, '<div class="chart-wrap">')
+set _memory_reply_string = concat(_memory_reply_string, concat('<div class="chart-grid" style="grid-template-columns: 200px 40px 40px repeat(', trim(cnvtstring(v_days), 3), ', 14px);">'))
+set _memory_reply_string = concat(_memory_reply_string, concat('<div class="grid-cell label sticky-med hdr-intersect always-on">Medication</div><div class="grid-cell label sticky-doses hdr-intersect always-on">Doses</div><div class="grid-cell label sticky-dot hdr-intersect always-on">DOT</div><div class="grid-cell label axis-header always-on" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), '; min-width:320px;">Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', trim(cnvtstring(v_days), 3), ' days)</div>'))
 
-  /* --- CHART SECTION --- */
-  row +1 '<h1>Antimicrobial Administrations by Date</h1>'
-  row +1 '<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given.<br/><b>Interactive:</b> Click a medication name to isolate its history across the chart and table.</div>'
+if (textlen(v_header_html) > 0)
+  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="grid-cell hdr-intersect always-on" style="grid-column:span 3;background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>'))
+  set _memory_reply_string = concat(_memory_reply_string, v_month_html)
+  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="grid-cell hdr-intersect always-on" style="grid-column:span 3;background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>'))
+  set _memory_reply_string = concat(_memory_reply_string, v_header_html)
+endif
 
-  row +1 '<div class="chart-wrap">'
-  row +1 call print(concat('<div class="chart-grid" style="grid-template-columns: 180px 40px 40px repeat(', trim(cnvtstring(v_days), 3), ', 20px);">'))
-  row +1 call print(concat('<div class="grid-cell label sticky-med hdr-intersect always-on">Medication</div><div class="grid-cell label sticky-doses hdr-intersect always-on">Doses</div><div class="grid-cell label sticky-dot hdr-intersect always-on">DOT</div><div class="grid-cell label axis-header always-on" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), ';">Days'))
-  row +1 call print(v_axis_html)
-  row +1 '</div>'
-  
-  if (textlen(v_header_html) > 0)
-    row +1 '<div class="grid-cell sticky-med hdr-intersect always-on"></div><div class="grid-cell sticky-doses hdr-intersect always-on"></div><div class="grid-cell sticky-dot hdr-intersect always-on"></div>'
-    row +1 call print(v_header_html)
-  endif
+/* Output Chart HTML Array */
+set v_i = 1
+while (v_i <= html_chart->cnt)
+  set _memory_reply_string = concat(_memory_reply_string, html_chart->qual[v_i].text)
+  set v_i = v_i + 1
+endwhile
 
-  /* Output Chart HTML Array safely */
-  v_i = 1
-  while (v_i <= html_chart->cnt)
-     row +1 call print(html_chart->qual[v_i].text)
-     v_i = v_i + 1
-  endwhile
-  
-  row +1 '</div></div>'
+set _memory_reply_string = concat(_memory_reply_string, '</div></div>')
 
-  /* --- TABLE SECTION --- */
-  row +1 '<h2>Antimicrobial Order Details</h2>'
-  row +1 '<div style="width: 100%; overflow-x: auto; display: block;">'
-  row +1 '<table class="data-tbl"><colgroup>'
-  row +1 '<col style="width:180px"><col style="width:40px"><col style="width:40px">'
-  row +1 '<col style="width:100px"><col style="display:none;">'
-  row +1 '<col style="width:350px">'
-  row +1 '<col style="width:250px">'
-  row +1 '<col style="width:100px"><col style="width:120px"><col style="width:100px"><col style="width:100px"><col style="width:120px">'
-  row +1 '</colgroup>'
-  row +1 '<thead><tr>'
-  row +1 '<th>Medication</th><th style="text-align:center;">Doses</th><th style="text-align:center;">DOT</th><th>Target Dose</th><th style="display:none;">Dose</th><th>Order Detail</th><th>Indication</th>'
-  row +1 '<th>Start Date</th><th>Latest Status</th><th>Status Date</th><th>Order ID</th><th>FIN</th>'
-  row +1 '</tr></thead>'
-  row +1 '<tbody>'
+/* --- TABLE SECTION --- */
+set _memory_reply_string = concat(_memory_reply_string, '<h2>Antimicrobial Order Details</h2>')
+set _memory_reply_string = concat(_memory_reply_string, '<div style="width: 100%; overflow-x: auto; display: block;">')
+set _memory_reply_string = concat(_memory_reply_string, '<table class="data-tbl"><colgroup>')
+set _memory_reply_string = concat(_memory_reply_string, '<col style="width:200px"><col style="width:40px"><col style="width:40px">')
+set _memory_reply_string = concat(_memory_reply_string, '<col style="width:100px"><col style="display:none;">')
+set _memory_reply_string = concat(_memory_reply_string, '<col style="width:350px">')
+set _memory_reply_string = concat(_memory_reply_string, '<col style="width:250px">')
+set _memory_reply_string = concat(_memory_reply_string, '<col><col><col><col><col>')
+set _memory_reply_string = concat(_memory_reply_string, '</colgroup>')
+set _memory_reply_string = concat(_memory_reply_string, '<thead><tr>')
+set _memory_reply_string = concat(_memory_reply_string, '<th>Medication</th><th style="text-align:center;">Doses</th><th style="text-align:center;">DOT</th><th>Target Dose</th><th style="display:none;">Dose</th><th>Order Detail</th><th>Indication</th>')
+set _memory_reply_string = concat(_memory_reply_string, '<th>Start Date</th><th>Latest Status</th><th>Status Date</th><th>Order ID</th><th>FIN</th>')
+set _memory_reply_string = concat(_memory_reply_string, '</tr></thead>')
+set _memory_reply_string = concat(_memory_reply_string, '<tbody>')
 
-  /* Output Table HTML Array safely */
-  v_i = 1
-  while (v_i <= html_table->cnt)
-     row +1 call print(html_table->qual[v_i].text)
-     v_i = v_i + 1
-  endwhile
+/* Output Table HTML Array */
+set v_i = 1
+while (v_i <= html_table->cnt)
+  set _memory_reply_string = concat(_memory_reply_string, html_table->qual[v_i].text)
+  set v_i = v_i + 1
+endwhile
 
-  row +1 '</tbody></table></div>'
-  
-  /* Javascript Interactive UI Engine */
-  row +1 '<script>'
-  row +1 'document.addEventListener("DOMContentLoaded", function() {'
-  row +1 '  const items = document.querySelectorAll(".dimmable");'
-  row +1 '  const triggers = document.querySelectorAll(".med-trigger");'
-  row +1 '  triggers.forEach(function(trigger) {'
-  row +1 '    trigger.addEventListener("click", function() {'
-  row +1 '      const medName = this.getAttribute("data-med");'
-  row +1 '      const isCurrentlyActive = this.classList.contains("active-filter");'
-  row +1 '      triggers.forEach(function(t) { t.classList.remove("active-filter"); });'
-  row +1 '      if (isCurrentlyActive) {'
-  row +1 '        items.forEach(function(el) { el.classList.remove("dimmed"); });'
-  row +1 '      } else {'
-  row +1 '        this.classList.add("active-filter");'
-  row +1 '        items.forEach(function(el) {'
-  row +1 '          if (el.getAttribute("data-med") === medName || el.classList.contains("always-on")) {'
-  row +1 '            el.classList.remove("dimmed");'
-  row +1 '          } else {'
-  row +1 '            el.classList.add("dimmed");'
-  row +1 '          }'
-  row +1 '        });'
-  row +1 '      }'
-  row +1 '    });'
-  row +1 '  });'
-  row +1 '});'
-  row +1 '</script>'
+set _memory_reply_string = concat(_memory_reply_string, '</tbody></table></div>')
 
-  /* --- DEBUG PANEL --- */
-  row +1 '<div style="margin-top:24px;padding:10px 14px;border:1px solid #f0a000;background:#fffbe6;color:#333;font-size:11px;font-family:monospace;">'
-  row +1 '<b style="font-size:12px;">&#9888; DEBUG INFO (Array Buffer Mode Active)</b><br/>'
-  row +1 call print(concat('Patient ID: ', trim(cnvtstring($PAT_PersonId), 3), ' &nbsp;|&nbsp; Lookback: ', trim(cnvtstring($LOOKBACK), 3), ' days<br/>'))
-  row +1 call print(concat('MRN: ', v_mrn, '<br/>'))
-  row +1 call print(concat('Admission: ', v_admit_dt, ' &nbsp;|&nbsp; LOS: ', v_los, ' days<br/>'))
-  row +1 call print(concat('Query window: ', v_begin_dt_str, ' to ', v_end_dt_str, '<br/>'))
-  row +1 call print(concat('Total admin_rec entries: ', trim(cnvtstring(admin_rec->cnt), 3), ' (PowerChart: ', trim(cnvtstring(v_pc_cnt), 3), ', SN Anesthesia: ', trim(cnvtstring(v_sn_cnt), 3), ')<br/>'))
-  row +1 call print(concat('Chart date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', trim(cnvtstring(v_days), 3), ' days)<br/>'))
-  row +1 call print(concat('html_chart array count: ', trim(cnvtstring(html_chart->cnt), 3), '<br/>'))
-  row +1 call print(concat('html_table array count: ', trim(cnvtstring(html_table->cnt), 3), '<br/>'))
-  row +1 '</div>'
+/* --- JAVASCRIPT INTERACTIVE UI ENGINE --- */
+set _memory_reply_string = concat(_memory_reply_string, '<script>')
+set _memory_reply_string = concat(_memory_reply_string, 'document.addEventListener("DOMContentLoaded", function() {')
+set _memory_reply_string = concat(_memory_reply_string, '  const items = document.querySelectorAll(".dimmable");')
+set _memory_reply_string = concat(_memory_reply_string, '  const triggers = document.querySelectorAll(".med-trigger");')
+set _memory_reply_string = concat(_memory_reply_string, '  triggers.forEach(function(trigger) {')
+set _memory_reply_string = concat(_memory_reply_string, '    trigger.addEventListener("click", function() {')
+set _memory_reply_string = concat(_memory_reply_string, '      const medName = this.getAttribute("data-med");')
+set _memory_reply_string = concat(_memory_reply_string, '      const isCurrentlyActive = this.classList.contains("active-filter");')
+set _memory_reply_string = concat(_memory_reply_string, '      triggers.forEach(function(t) { t.classList.remove("active-filter"); });')
+set _memory_reply_string = concat(_memory_reply_string, '      if (isCurrentlyActive) {')
+set _memory_reply_string = concat(_memory_reply_string, '        items.forEach(function(el) { el.classList.remove("dimmed"); });')
+set _memory_reply_string = concat(_memory_reply_string, '      } else {')
+set _memory_reply_string = concat(_memory_reply_string, '        this.classList.add("active-filter");')
+set _memory_reply_string = concat(_memory_reply_string, '        items.forEach(function(el) {')
+set _memory_reply_string = concat(_memory_reply_string, '          if (el.getAttribute("data-med") === medName || el.classList.contains("always-on")) {')
+set _memory_reply_string = concat(_memory_reply_string, '            el.classList.remove("dimmed");')
+set _memory_reply_string = concat(_memory_reply_string, '          } else {')
+set _memory_reply_string = concat(_memory_reply_string, '            el.classList.add("dimmed");')
+set _memory_reply_string = concat(_memory_reply_string, '          }')
+set _memory_reply_string = concat(_memory_reply_string, '        });')
+set _memory_reply_string = concat(_memory_reply_string, '      }')
+set _memory_reply_string = concat(_memory_reply_string, '    });')
+set _memory_reply_string = concat(_memory_reply_string, '  });')
+set _memory_reply_string = concat(_memory_reply_string, '  items.forEach(function(item) {')
+set _memory_reply_string = concat(_memory_reply_string, '    item.addEventListener("mouseenter", function() {')
+set _memory_reply_string = concat(_memory_reply_string, '      var med = this.getAttribute("data-med");')
+set _memory_reply_string = concat(_memory_reply_string, '      if (med) {')
+set _memory_reply_string = concat(_memory_reply_string, ~      var siblings = document.querySelectorAll('.dimmable[data-med="' + med + '"]');~)
+set _memory_reply_string = concat(_memory_reply_string, '        siblings.forEach(function(el) { el.classList.add("row-hover"); });')
+set _memory_reply_string = concat(_memory_reply_string, '      }')
+set _memory_reply_string = concat(_memory_reply_string, '    });')
+set _memory_reply_string = concat(_memory_reply_string, '    item.addEventListener("mouseleave", function() {')
+set _memory_reply_string = concat(_memory_reply_string, '      var med = this.getAttribute("data-med");')
+set _memory_reply_string = concat(_memory_reply_string, '      if (med) {')
+set _memory_reply_string = concat(_memory_reply_string, ~      var siblings = document.querySelectorAll('.dimmable[data-med="' + med + '"]');~)
+set _memory_reply_string = concat(_memory_reply_string, '        siblings.forEach(function(el) { el.classList.remove("row-hover"); });')
+set _memory_reply_string = concat(_memory_reply_string, '      }')
+set _memory_reply_string = concat(_memory_reply_string, '    });')
+set _memory_reply_string = concat(_memory_reply_string, '  });')
+set _memory_reply_string = concat(_memory_reply_string, '});')
+set _memory_reply_string = concat(_memory_reply_string, '</script>')
 
-  /* --- FOOTER --- */
-  row +1 call print(build2('<div style="margin-top:24px;padding-top:8px;border-top:1px solid var(--border-dark);color:#666;font-size:12px;">Generated on ', format(cnvtdatetime(curdate, curtime), "YYYY-MM-DD HH:MM:SS;;D"), '.</div></div></body></html>'))
-with NOFORMAT, maxcol = 35000, time = 60
+/* --- DEBUG PANEL --- */
+set _memory_reply_string = concat(_memory_reply_string, '<div id="debug-panel" style="display:none;margin-top:24px;padding:10px 14px;border:1px solid #f0a000;background:#fffbe6;color:#333;font-size:11px;font-family:monospace;">')
+set _memory_reply_string = concat(_memory_reply_string, '<b style="font-size:12px;">&#9888; DEBUG INFO (Array Buffer Mode Active)</b><br/>')
+set _memory_reply_string = concat(_memory_reply_string, concat('Patient ID: ', trim(cnvtstring($PAT_PersonId), 3), ' &nbsp;|&nbsp; Lookback: ', trim(cnvtstring($LOOKBACK), 3), ' days<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, concat('MRN: ', v_mrn, '<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, concat('Admission: ', v_admit_dt, ' &nbsp;|&nbsp; LOS: ', v_los, ' days<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, concat('Query window: ', v_begin_dt_str, ' to ', v_end_dt_str, '<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, concat('Total admin_rec entries: ', trim(cnvtstring(admin_rec->cnt), 3), ' (PowerChart: ', trim(cnvtstring(v_pc_cnt), 3), ', SN Anesthesia: ', trim(cnvtstring(v_sn_cnt), 3), ')<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, concat('Chart date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', trim(cnvtstring(v_days), 3), ' days)<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, concat('html_chart array count: ', trim(cnvtstring(html_chart->cnt), 3), '<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, concat('html_table array count: ', trim(cnvtstring(html_table->cnt), 3), '<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, '</div>')
+
+/* --- FOOTER --- */
+set _memory_reply_string = concat(_memory_reply_string, build2('<div style="margin-top:24px;padding-top:8px;border-top:1px solid var(--border-dark);color:#666;font-size:12px;">Generated on ', format(cnvtdatetime(curdate, curtime), "YYYY-MM-DD HH:MM:SS;;D"), '.</div></div></body></html>'))
 
 end
 go
