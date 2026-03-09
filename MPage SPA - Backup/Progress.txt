@@ -1,0 +1,31 @@
+Pass 2 issues:
+When you click next, the whole header bar is no longer visible and you have to scroll back up to see it. It should be sticky/fixed
+
+
+
+Pass 2 ANVS parity changes are in 01_meds_pharm_mpage.prg.
+What changed:
+
+removed the extra SPA-only ANVS title/meta wrapper so ANVS now starts directly with the legacy-style sidebar/content layout
+let ANVS use the full shell width
+set the ANVS header search box to the legacy width
+added explicit mark styling for search highlights
+updated ANVS search info to show matches in records, matching legacy behavior more closely
+What did not change:
+no backend changes
+no shared request lifecycle changes
+no tab contracts
+no logging/auditing
+Reviewer notes:
+diff stayed small: 8 insertions, 7 deletions
+no lines over 900 chars
+changes are confined to ANVS CSS/JS plus the ANVS render wrapper
+Next step:
+have Claude review this pass
+recompile 01_meds_pharm_mpage.prg
+in PowerChart, check ANVS specifically for:
+full-width sidebar/content layout
+no extra GP Medications header block
+prev/next, diff, compare, search
+highlighted search terms and updated match count text
+If that signs off cleanly, I’ll move to Pass 3.
