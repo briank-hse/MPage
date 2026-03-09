@@ -59,6 +59,11 @@ RECORD reply (
         2 form_class_cd       = f8
         2 auth_status_cd      = f8
         2 modified_status_cd  = f8
+    1 ui
+        2 html_parts[*]
+            3 text = vc
+        2 css_parts[*]
+            3 text = vc
     1 summary
         2 total_results            = i4
         2 notes                    = i4
@@ -715,6 +720,73 @@ IF (CNVTREAL($pid) > 0)
         ENDIF
     ENDIF
 ENDIF
+
+SET stat = ALTERLIST(reply->ui.html_parts, 4)
+SET reply->ui.html_parts[1].text = BUILD2(
+    "<section class='panel module-shell module-search'><div class='search-header'>"
+    , "<div class='search-row-1'><div class='search-wrapper'>"
+    , "<input id='search-filter-input' class='search-box' type='search' placeholder='Search chart documents...' />"
+    , "<button id='search-clear-btn' class='clear-btn' type='button' title='Clear search'>&times;</button>"
+    , "</div><span id='search-visible-count' class='search-count'></span></div>"
+)
+SET reply->ui.html_parts[2].text = BUILD2(
+    "<div class='search-row-2'><select id='search-range-select' class='date-dropdown'></select>"
+    , "<div id='search-category-filters' class='search-category-bar'></div></div></div>"
+    , "<div class='search-layout'><div id='search-results-sidebar' class='search-sidebar'></div>"
+    , "<div class='search-viewer viewer-container'>"
+)
+SET reply->ui.html_parts[3].text = BUILD2(
+    "<div id='search-match-nav' class='match-nav'><span><b id='search-match-index'>0</b> of <span id='search-match-total'>0</span> matches</span>"
+    , "<button id='search-match-prev' class='nav-btn' type='button'>&uarr;</button>"
+    , "<button id='search-match-next' class='nav-btn' type='button'>&darr;</button></div>"
+    , "<div id='search-document-viewer' class='viewer'></div>"
+)
+SET reply->ui.html_parts[4].text = BUILD2(
+    "</div></div></section>"
+)
+
+SET stat = ALTERLIST(reply->ui.css_parts, 3)
+SET reply->ui.css_parts[1].text = BUILD2(
+    ".module-search{max-width:100%;height:100%;display:flex;flex-direction:column}"
+    , ".search-header{padding:12px;background:#f4f6f8;border:1px solid #ddd;border-bottom:0;display:flex;flex-direction:column;gap:8px;flex-shrink:0}"
+    , ".search-row-1,.search-row-2{display:flex;align-items:center;gap:10px;flex-wrap:wrap}"
+    , ".search-wrapper{position:relative;display:inline-flex;align-items:center;max-width:100%}"
+    , ".module-search .search-box{width:350px;max-width:100%;padding:6px 30px 6px 10px;font-size:13px}"
+    , ".clear-btn{position:absolute;right:8px;background:transparent;border:none;font-size:18px;font-weight:700;color:#999;cursor:pointer;line-height:1;padding:0;display:none}"
+    , ".clear-btn.visible{display:block}"
+    , ".clear-btn:hover{color:#333}"
+    , ".search-count{font-size:12px;color:#666;white-space:nowrap}"
+    , ".search-category-bar{display:flex;gap:8px;flex-wrap:wrap}"
+    , ".module-search .filter-pill{padding:4px 10px;font-size:11px;border:1px solid #ccc;border-radius:12px;background:#fff;color:#555;cursor:pointer;user-select:none}"
+    , ".module-search .filter-pill.active{background:#006f99;color:#fff;border-color:#004c66;font-weight:600}"
+    , ".date-dropdown{padding:4px 6px;font-size:11px;border:1px solid #ccc;border-radius:3px;outline:none;background:#fff}"
+)
+SET reply->ui.css_parts[2].text = BUILD2(
+    ".search-layout{display:flex;flex:1;min-height:520px;border:1px solid #ddd;background:#fff;overflow:hidden}"
+    , ".search-sidebar{width:300px;min-width:300px;background:#fafafa;border-right:1px solid #ddd;overflow-y:auto}"
+    , ".doc-item{padding:10px 12px;border-bottom:1px solid #eee;cursor:pointer}"
+    , ".doc-item:hover{background:#e2e6ea}"
+    , ".doc-item.active{background:#006f99;color:#fff}"
+    , ".doc-item.active .doc-meta{color:#cce4f0}"
+    , ".doc-meta{font-size:11px;color:#666;margin-bottom:4px;line-height:1.35}"
+    , ".doc-title{font-size:13px;font-weight:600;line-height:1.35}"
+    , ".raw-title{vertical-align:middle}"
+    , ".doc-preview{font-size:12px;color:#444;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-top:4px}"
+    , ".doc-item.active .doc-preview{color:#f3fbff}"
+    , ".viewer-container{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#fff;min-width:0}"
+    , ".match-nav{padding:8px 15px;background:#e2f0f5;border-bottom:1px solid #b3d4e0;display:none;align-items:center;gap:10px;font-size:12px;flex-shrink:0}"
+    , ".viewer{flex:1;padding:20px;overflow-y:auto;line-height:1.5;font-size:13px}"
+)
+SET reply->ui.css_parts[3].text = BUILD2(
+    ".search-doc-header{padding-bottom:12px;margin-bottom:16px;border-bottom:1px solid #ddd}"
+    , ".search-doc-title{font-size:18px;color:#005b8f;margin:0 0 6px}"
+    , ".search-doc-meta{font-size:12px;color:#555;line-height:1.5}"
+    , ".search-doc-body{white-space:pre-wrap;line-height:1.5;font-size:13px;color:#222}"
+    , ".search-empty{padding:18px 14px;color:#666;font-style:italic}"
+    , ".type-badge{display:inline-block;font-size:9px;padding:1px 4px;border-radius:3px;background:#e0e0e0;color:#333;margin-right:5px;vertical-align:middle}"
+    , ".viewer mark.active-match{background:#ff9800;color:#fff;box-shadow:0 0 0 1px #e65100}"
+    , "@media (max-width:1100px){.search-layout{flex-direction:column}.search-sidebar{width:100%;min-width:0;max-height:220px;border-right:0;border-bottom:1px solid #ddd}.viewer{padding:12px}.module-search .search-box{width:100%}}"
+)
 
 SET _memory_reply_string = CNVTRECTOJSON(reply)
 
