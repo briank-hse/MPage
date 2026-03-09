@@ -85,6 +85,20 @@ DECLARE v_status_msg     = vc WITH NOCONSTANT(""), MAXLEN=255
 DECLARE v_target_dose    = vc WITH NOCONSTANT(""), MAXLEN=255
 DECLARE v_order_detail   = vc WITH NOCONSTANT(""), MAXLEN=255
 DECLARE v_args           = vc WITH NOCONSTANT(""), MAXLEN=255
+DECLARE v_html_idx       = i4 WITH NOCONSTANT(0)
+DECLARE v_html_part      = vc WITH NOCONSTANT(""), MAXLEN=65534
+DECLARE v_html_text      = vc WITH NOCONSTANT(""), MAXLEN=65534
+DECLARE v_html_attr      = vc WITH NOCONSTANT(""), MAXLEN=65534
+DECLARE v_html_attr2     = vc WITH NOCONSTANT(""), MAXLEN=65534
+DECLARE v_chart_cols     = vc WITH NOCONSTANT(""), MAXLEN=255
+DECLARE v_chart_start_lbl = vc WITH NOCONSTANT(""), MAXLEN=64
+DECLARE v_chart_end_lbl   = vc WITH NOCONSTANT(""), MAXLEN=64
+DECLARE v_month_span     = i4 WITH NOCONSTANT(0)
+DECLARE v_next_idx       = i4 WITH NOCONSTANT(0)
+DECLARE v_marker         = vc WITH NOCONSTANT(""), MAXLEN=16
+DECLARE v_row_class      = vc WITH NOCONSTANT(""), MAXLEN=32
+DECLARE v_generated_ts   = vc WITH NOCONSTANT(""), MAXLEN=32
+DECLARE v_day_zero_idx   = i4 WITH NOCONSTANT(0)
 
 FREE RECORD admin_rec
 RECORD admin_rec (
@@ -145,6 +159,11 @@ RECORD reply (
     2 track_count         = i4
     2 grand_total_dot     = i4
     2 grand_total_doses   = i4
+  1 ui
+    2 html_parts[*]
+      3 text = vc
+    2 css_parts[*]
+      3 text = vc
   1 headers[*]
     2 day_key      = vc
     2 day_label    = vc
@@ -837,6 +856,378 @@ ENDIF
 
 IF (reply->meta.medication_rows = 0 AND reply->meta.order_rows = 0)
   SET reply->status.message = "No antimicrobial orders found in the selected window."
+ENDIF
+
+SET stat = ALTERLIST(reply->ui.css_parts, 5)
+SET reply->ui.css_parts[1].text = BUILD2(
+  ".module-micro{max-width:100%}"
+  , ".module-micro .micro-title{display:none;margin:0 0 8px;padding-bottom:8px;border-bottom:3px solid #0c7aa6;color:#0c7aa6;font-size:18px;font-weight:400}"
+  , ".module-micro h2{font-size:15px;margin:16px 0 2px;padding-top:0;color:#111}"
+  , ".module-micro .legend{margin-top:6px;color:#555;font-size:12px}"
+  , ".module-micro .chart-wrap{overflow-x:auto;overflow-y:hidden;margin-bottom:12px;width:100%;display:block}"
+  , ".module-micro .chart-grid{display:grid;background:#fff;width:max-content;border-left:1px solid #b5b5b5;font-size:12px}"
+  , ".module-micro .grid-cell{border-right:1px solid #dde1e5;border-bottom:none;background:#fff;padding:0;display:flex;align-items:center;min-width:0}"
+  , ".module-micro .grid-cell.label,.module-micro .grid-cell.sticky-med{border-right-color:#b5b5b5!important;border-bottom:1px solid #b5b5b5!important}"
+  , ".module-micro .grid-cell.sticky-doses,.module-micro .grid-cell.sticky-dot{border-right-color:#b5b5b5!important;border-bottom:1px solid #b5b5b5!important}"
+  , ".module-micro table.data-tbl th,.module-micro .grid-cell.label:not(.medname){background:#e7eaee!important;color:#2f3c4b;font-weight:600!important;padding:4px 8px}"
+  , ".module-micro table.data-tbl th{text-align:left;height:26px;font-size:12px!important}"
+  , ".module-micro .grid-cell.label{min-height:26px}"
+  , ".module-micro .sticky-med{position:sticky;left:0;z-index:10;background:#fff;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;width:200px;min-width:200px;max-width:200px}"
+  , ".module-micro .sticky-doses{position:sticky;left:200px;z-index:10;background:#fff;width:40px;min-width:40px;max-width:40px;text-align:center;justify-content:center}"
+  , ".module-micro .sticky-dot{position:sticky;left:240px;z-index:10;background:#fff;box-shadow:2px 0 5px -2px rgba(0,0,0,.2);width:40px;min-width:40px;max-width:40px;text-align:center;justify-content:center}"
+  , ".module-micro .hdr-intersect{z-index:20!important;border-top:1px solid #b5b5b5!important}"
+  , ".module-micro .even-cell.sticky-med,.module-micro .even-cell.sticky-doses,.module-micro .even-cell.sticky-dot,.module-micro .even-cell.medname{background:#fafafa!important}"
+)
+SET reply->ui.css_parts[2].text = BUILD2(
+  ".module-micro .dot-val{justify-content:center}"
+  , ".module-micro .grid-cell.medname{padding:2px 6px;font-size:14px!important}"
+  , ".module-micro .med-trigger{cursor:pointer;color:#111;transition:background .2s}"
+  , ".module-micro .med-trigger:hover{background-color:#e0f0ff!important}"
+  , ".module-micro .filter-icon{font-size:8px;opacity:.5;margin-left:6px}"
+  , ".module-micro .dimmed{opacity:.15;filter:grayscale(100%);pointer-events:none;transition:opacity .3s ease}"
+  , ".module-micro .dimmable{transition:opacity .3s ease}"
+  , ".module-micro .active-filter{background-color:#e0f0ff!important;font-weight:700}"
+  , ".module-micro .grid-cell.dimmed.sticky-med,.module-micro .grid-cell.dimmed.sticky-doses,.module-micro .grid-cell.dimmed.sticky-dot{opacity:1!important;filter:none!important;color:#b5b5b5!important}"
+  , ".module-micro .grid-cell.dimmed.sticky-med .pill,.module-micro .grid-cell.dimmed.sticky-doses .pill,.module-micro .grid-cell.dimmed.sticky-dot .pill{background:#f0f0f0!important;color:#b5b5b5!important;box-shadow:none!important}"
+  , ".module-micro .row-hover:not(.on):not(.always-on){background-color:transparent!important}"
+  , ".module-micro .cell.row-hover:not(.on)::after{background:#b8d4ee!important}"
+  , ".module-micro .cell,.module-micro .tick{width:14px;min-width:14px;max-width:14px;justify-content:center;font-size:10px}"
+  , ".module-micro .cell{border-right:1px solid #f8f8f8!important;border-bottom:none!important;border-left:none!important;color:transparent;background:transparent!important;position:relative;z-index:1}"
+  , ".module-micro .tick{border-right:none!important;height:22px;position:relative;overflow:visible!important;align-items:center;padding-bottom:0;justify-content:center;font-size:10px;color:#555}"
+  , ".module-micro .tick::after{content:'';position:absolute;right:0;bottom:0;width:1px;height:6px;background:#b5b5b5}"
+  , ".module-micro .mo-span{height:20px;font-size:11px;font-weight:600;color:#2f3c4b;background:#e7eaee!important;border-top:1px solid #b5b5b5!important;border-right:1px solid #b5b5b5!important;border-bottom:1px solid #b5b5b5!important;padding:0 4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;align-items:center}"
+  , ".module-micro .grid-cell.axis-header{display:block;line-height:18px;overflow:visible;white-space:nowrap;border-top:1px solid #b5b5b5!important}"
+)
+SET reply->ui.css_parts[3].text = BUILD2(
+  ".module-micro .cell::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:14px;height:12px;background:#F5F5F6;border-radius:0;z-index:-1}"
+  , ".module-micro .cell.on{color:#fff!important;font-weight:600}"
+  , ".module-micro .cell.on::after{width:14px;height:12px;background:#0086ce;border-radius:0}"
+  , ".module-micro .cell.on:empty::before{content:'1'}"
+  , ".module-micro .cell.sum-yes,.module-micro .cell.sum-no,.module-micro .cell.enc-c1,.module-micro .cell.enc-c2,.module-micro .cell.enc-c3,.module-micro .cell.enc-c4{background:transparent!important}"
+  , ".module-micro .cell.sum-yes::after{width:14px;height:12px;background:#f37074be}"
+  , ".module-micro .cell.sum-no::after{width:14px;height:12px;background:#a8d08dbe}"
+  , ".module-micro .sum-border{border-top:2px solid #a0a0a0!important}"
+  , ".module-micro .pill,.module-micro .pill-num{display:inline-block;padding:2px 6px;border-radius:12px;background:#eef;color:#334;line-height:1}"
+  , ".module-micro .cell.enc-c1::after{width:14px;height:12px;background:#b8d8f8}"
+  , ".module-micro .cell.enc-c2::after{width:14px;height:12px;background:#b3d0ebb4}"
+  , ".module-micro .cell.enc-c3::after{width:14px;height:12px;background:#c8e8fb}"
+  , ".module-micro .cell.enc-c4::after{width:14px;height:12px;background:#aad8f7}"
+  , ".module-micro .enc-border{border-top:2px solid #90b8e0!important}"
+  , ".module-micro .enc-label-cell{font-size:11px!important}"
+  , ".module-micro .enc-label-cell a,.module-micro .fin-link{color:#0086ce;text-decoration:none;font-weight:600}"
+  , ".module-micro .enc-label-cell a:hover,.module-micro .fin-link:hover{text-decoration:underline}"
+  , ".module-micro .enc-cell-text{font-size:8px;font-weight:700;color:#111;line-height:1;overflow:hidden;max-width:14px;display:block;text-align:center}"
+)
+SET reply->ui.css_parts[4].text = BUILD2(
+  ".module-micro .table-wrap{width:100%;overflow-x:auto;display:block}"
+  , ".module-micro table.data-tbl{width:100%;min-width:1460px;border-collapse:separate;border-spacing:0;margin-top:2px;font-size:12px;border-top:1px solid #b5b5b5;border-left:1px solid #b5b5b5;border-bottom:2px solid #a0a0a0;table-layout:fixed}"
+  , ".module-micro table.data-tbl th,.module-micro table.data-tbl td{border-right:1px solid #b5b5b5;border-bottom:1px solid #b5b5b5;padding:4px 6px;text-align:left;background:#fff;word-break:break-word;overflow-wrap:break-word;overflow:hidden;transition:background-color .2s}"
+  , ".module-micro table.data-tbl th:nth-child(1),.module-micro table.data-tbl td:nth-child(1){box-sizing:border-box!important;width:200px;min-width:200px;max-width:200px}"
+  , ".module-micro table.data-tbl th:nth-child(2),.module-micro table.data-tbl td:nth-child(2){box-sizing:border-box!important;width:40px;min-width:40px;max-width:40px;text-align:center;padding:4px 0}"
+  , ".module-micro table.data-tbl th:nth-child(3),.module-micro table.data-tbl td:nth-child(3){box-sizing:border-box!important;width:40px;min-width:40px;max-width:40px;text-align:center;padding:4px 0}"
+  , ".module-micro table.data-tbl th:nth-child(4),.module-micro table.data-tbl td:nth-child(4){box-sizing:border-box!important;width:100px;min-width:100px;max-width:100px}"
+  , ".module-micro table.data-tbl th:nth-child(6),.module-micro table.data-tbl td:nth-child(6){box-sizing:border-box!important;width:350px;min-width:350px;max-width:350px}"
+  , ".module-micro table.data-tbl th:nth-child(7),.module-micro table.data-tbl td:nth-child(7){box-sizing:border-box!important;width:250px;min-width:250px;max-width:250px}"
+  , ".module-micro table.data-tbl tr.even td{background:#fafafa}"
+  , ".module-micro table.data-tbl tbody tr:last-child td{border-bottom:none}"
+  , ".module-micro table.data-tbl tbody tr:hover td{background-color:#f0f7ff;cursor:default}"
+  , ".module-micro .micro-footer{margin-top:24px;padding-top:8px;border-top:1px solid #b5b5b5;color:#666;font-size:12px}"
+  , "@media (max-width:1100px){.module-micro .viewer{padding:12px}.module-micro .chart-wrap{margin-bottom:8px}.module-micro .table-wrap{overflow-x:auto;display:block}}"
+)
+
+SET v_html_idx = 0
+SET v_generated_ts = TRIM(FORMAT(CNVTDATETIME(CURDATE, CURTIME3), "YYYY-MM-DD HH:MM:SS;;Q"), 3)
+
+SET v_html_idx = v_html_idx + 1
+SET stat = ALTERLIST(reply->ui.html_parts, v_html_idx)
+SET reply->ui.html_parts[v_html_idx].text = BUILD2(
+  "<section class='panel module-shell module-micro'><div class='panel-body'>"
+  , "<div class='micro-title'>Antimicrobial Days of Therapy</div>"
+  , "<div class='legend'>Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br>"
+  , "<b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given. &nbsp;<b>Encounter:</b> &#9650; Admit, &#9660; Discharge, &#9670; Same-day admit &amp; discharge.<br />"
+  , "<b>Interactive:</b> Click a medication name to isolate its history across the chart and table.</div>"
+)
+
+IF (reply->meta.medication_rows = 0)
+  SET v_html_text = TRIM(reply->status.message, 3)
+  IF (v_html_text = "")
+    SET v_html_text = "No antimicrobial orders found in the selected window."
+  ENDIF
+  SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+  SET v_html_idx = v_html_idx + 1
+  SET stat = ALTERLIST(reply->ui.html_parts, v_html_idx)
+  SET reply->ui.html_parts[v_html_idx].text = BUILD2("<div class='empty-state'>", v_html_text, "</div></div></section>")
+ELSE
+  SET v_chart_start_lbl = FORMAT(v_min_dt, "DD-MMM-YYYY;;D")
+  SET v_chart_end_lbl = FORMAT(v_max_dt, "DD-MMM-YYYY;;D")
+  SET v_chart_cols = BUILD2("grid-template-columns: 200px 40px 40px repeat(", TRIM(CNVTSTRING(size(reply->headers, 5), 20, 0)), ", 14px);")
+  SET v_chart_start_lbl = REPLACE(REPLACE(REPLACE(TRIM(v_chart_start_lbl, 3), "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+  SET v_chart_end_lbl = REPLACE(REPLACE(REPLACE(TRIM(v_chart_end_lbl, 3), "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+
+  SET v_html_idx = v_html_idx + 1
+  SET stat = ALTERLIST(reply->ui.html_parts, v_html_idx)
+  SET reply->ui.html_parts[v_html_idx].text = BUILD2(
+    "<div class='chart-wrap'><div class='chart-grid' style='", v_chart_cols, "'>"
+    , "<div class='grid-cell label sticky-med hdr-intersect always-on'>Medication</div>"
+    , "<div class='grid-cell label sticky-doses hdr-intersect always-on'>Doses</div>"
+    , "<div class='grid-cell label sticky-dot hdr-intersect always-on'>DOT</div>"
+    , "<div class='grid-cell label axis-header always-on' style='grid-column: 4 / span ", TRIM(CNVTSTRING(size(reply->headers, 5), 20, 0)), "; min-width:320px;'>Date range: "
+    , v_chart_start_lbl, " to ", v_chart_end_lbl, " (", TRIM(CNVTSTRING(size(reply->headers, 5), 20, 0)), " days)</div>"
+  )
+
+  SET v_html_idx = v_html_idx + 1
+  SET stat = ALTERLIST(reply->ui.html_parts, v_html_idx)
+  SET v_html_part = "<div class='grid-cell hdr-intersect always-on' style='grid-column:span 3;background:#e7eaee;border-right:1px solid #b5b5b5;border-bottom:1px solid #b5b5b5;'></div>"
+  SET v_i = 1
+  WHILE (v_i <= size(reply->headers, 5))
+    SET v_month_span = 1
+    SET v_next_idx = v_i + 1
+    WHILE (v_next_idx <= size(reply->headers, 5) AND reply->headers[v_next_idx].new_month = 0)
+      SET v_month_span = v_month_span + 1
+      SET v_next_idx = v_next_idx + 1
+    ENDWHILE
+    SET v_html_text = TRIM(reply->headers[v_i].month_label, 3)
+    SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+    SET v_html_part = BUILD2(v_html_part, "<div class='grid-cell mo-span always-on' style='grid-column:span ", TRIM(CNVTSTRING(v_month_span, 20, 0)), ";'>", v_html_text, "</div>")
+    SET v_i = v_next_idx
+  ENDWHILE
+  SET reply->ui.html_parts[v_html_idx].text = v_html_part
+
+  SET v_html_idx = v_html_idx + 1
+  SET stat = ALTERLIST(reply->ui.html_parts, v_html_idx)
+  SET v_html_part = "<div class='grid-cell hdr-intersect always-on' style='grid-column:span 3;background:#e7eaee;border-right:1px solid #b5b5b5;border-bottom:1px solid #b5b5b5;'></div>"
+  SET v_day_idx = 1
+  WHILE (v_day_idx <= size(reply->headers, 5))
+    SET v_html_attr = TRIM(reply->headers[v_day_idx].iso_date, 3)
+    SET v_html_attr = REPLACE(REPLACE(REPLACE(v_html_attr, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+    SET v_html_attr = REPLACE(v_html_attr, "'", "&#39;", 0)
+    SET v_html_text = TRIM(reply->headers[v_day_idx].day_label, 3)
+    SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+    SET v_html_part = BUILD2(v_html_part, "<div class='grid-cell tick' title='", v_html_attr, "'>", v_html_text, "</div>")
+    SET v_day_idx = v_day_idx + 1
+  ENDWHILE
+  SET reply->ui.html_parts[v_html_idx].text = v_html_part
+
+  SET v_i = 1
+  WHILE (v_i <= reply->meta.medication_rows)
+    IF (MOD(v_i, 2) = 0)
+      SET v_row_class = " even-cell"
+    ELSE
+      SET v_row_class = ""
+    ENDIF
+
+    SET v_html_text = TRIM(reply->timeline[v_i].medication_name, 3)
+    SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+    SET v_html_attr = REPLACE(v_html_text, "'", "&#39;", 0)
+    SET v_html_attr2 = BUILD2(TRIM(reply->timeline[v_i].medication_name, 3), " - Total Doses: ", TRIM(CNVTSTRING(reply->timeline[v_i].doses_total, 20, 0)))
+    SET v_html_attr2 = REPLACE(REPLACE(REPLACE(v_html_attr2, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+    SET v_html_attr2 = REPLACE(v_html_attr2, "'", "&#39;", 0)
+
+    SET v_html_part = BUILD2(
+      "<div class='grid-cell label medname sticky-med med-trigger dimmable", v_row_class, "' data-med='", v_html_attr, "' title='Click to filter by ", v_html_attr, "'>", v_html_text, "</div>"
+      , "<div class='grid-cell dot-val sticky-doses dimmable", v_row_class, "' data-med='", v_html_attr, "'><span class='pill' title='", v_html_attr2, "'>", TRIM(CNVTSTRING(reply->timeline[v_i].doses_total, 20, 0)), "</span></div>"
+    )
+
+    SET v_html_attr2 = BUILD2(TRIM(reply->timeline[v_i].medication_name, 3), " - Total Days of Therapy: ", TRIM(CNVTSTRING(reply->timeline[v_i].dot_total, 20, 0)))
+    SET v_html_attr2 = REPLACE(REPLACE(REPLACE(v_html_attr2, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+    SET v_html_attr2 = REPLACE(v_html_attr2, "'", "&#39;", 0)
+    SET v_html_part = BUILD2(v_html_part, "<div class='grid-cell dot-val sticky-dot dimmable", v_row_class, "' data-med='", v_html_attr, "'><span class='pill' title='", v_html_attr2, "'>", TRIM(CNVTSTRING(reply->timeline[v_i].dot_total, 20, 0)), "</span></div>")
+
+    SET v_day_idx = 1
+    WHILE (v_day_idx <= size(reply->headers, 5))
+      IF (v_day_idx <= size(reply->timeline[v_i].days, 5))
+        SET v_html_attr2 = REPLACE(reply->timeline[v_i].days[v_day_idx].title, "&#10;", CHAR(10), 0)
+        SET v_html_attr2 = REPLACE(REPLACE(REPLACE(v_html_attr2, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+        SET v_html_attr2 = REPLACE(v_html_attr2, "'", "&#39;", 0)
+      ELSE
+        SET v_html_attr2 = TRIM(reply->headers[v_day_idx].iso_date, 3)
+        SET v_html_attr2 = REPLACE(REPLACE(REPLACE(v_html_attr2, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+        SET v_html_attr2 = REPLACE(v_html_attr2, "'", "&#39;", 0)
+      ENDIF
+      IF (v_day_idx <= size(reply->timeline[v_i].days, 5) AND reply->timeline[v_i].days[v_day_idx].on_ind = 1)
+        SET v_html_part = BUILD2(v_html_part, "<div class='grid-cell cell on dimmable", v_row_class, "' data-med='", v_html_attr, "' title='", v_html_attr2, "'>", TRIM(CNVTSTRING(reply->timeline[v_i].days[v_day_idx].admin_count, 20, 0)), "</div>")
+      ELSE
+        SET v_html_part = BUILD2(v_html_part, "<div class='grid-cell cell dimmable", v_row_class, "' data-med='", v_html_attr, "' title='", v_html_attr2, "'></div>")
+      ENDIF
+      SET v_day_idx = v_day_idx + 1
+    ENDWHILE
+
+    SET v_html_idx = v_html_idx + 1
+    SET stat = ALTERLIST(reply->ui.html_parts, v_html_idx)
+    SET reply->ui.html_parts[v_html_idx].text = v_html_part
+    SET v_i = v_i + 1
+  ENDWHILE
+
+  IF (size(reply->summary_days, 5) > 0)
+    SET v_html_idx = v_html_idx + 1
+    SET stat = ALTERLIST(reply->ui.html_parts, v_html_idx)
+    SET v_html_attr = BUILD2("Total Summary Days of Therapy: ", TRIM(CNVTSTRING(reply->meta.grand_total_dot, 20, 0)))
+    SET v_html_attr = REPLACE(REPLACE(REPLACE(v_html_attr, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+    SET v_html_attr = REPLACE(v_html_attr, "'", "&#39;", 0)
+    SET v_html_part = BUILD2(
+      "<div class='grid-cell label sticky-med sum-border always-on'>Antimicrobial Summary</div>"
+      , "<div class='grid-cell label sticky-doses sum-border always-on'></div>"
+      , "<div class='grid-cell label dot-val sticky-dot sum-border always-on'><span class='pill' title='", v_html_attr, "'>", TRIM(CNVTSTRING(reply->meta.grand_total_dot, 20, 0)), "</span></div>"
+    )
+    SET v_day_idx = 1
+    WHILE (v_day_idx <= size(reply->summary_days, 5))
+      IF (reply->summary_days[v_day_idx].antimicrobial_ind = 1)
+        SET v_html_attr = "Antimicrobial Administered"
+        SET v_html_text = "sum-yes"
+      ELSE
+        SET v_html_attr = "No Antimicrobials"
+        SET v_html_text = "sum-no"
+      ENDIF
+      SET v_html_attr = REPLACE(REPLACE(REPLACE(v_html_attr, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+      SET v_html_attr = REPLACE(v_html_attr, "'", "&#39;", 0)
+      SET v_html_part = BUILD2(v_html_part, "<div class='grid-cell cell ", v_html_text, " sum-border' title='", v_html_attr, "'></div>")
+      SET v_day_idx = v_day_idx + 1
+    ENDWHILE
+    SET reply->ui.html_parts[v_html_idx].text = v_html_part
+  ENDIF
+
+  SET v_track_idx = 1
+  WHILE (v_track_idx <= size(reply->encounter_tracks, 5))
+    SET v_html_part = "<div class='grid-cell label enc-label-cell sticky-med always-on'>Encounter</div><div class='grid-cell label sticky-doses always-on'></div><div class='grid-cell label sticky-dot always-on'></div>"
+    SET v_day_idx = 1
+    WHILE (v_day_idx <= size(reply->headers, 5))
+      SET v_day_zero_idx = v_day_idx - 1
+      SET v_marker = " "
+      SET v_enc_idx = 1
+      WHILE (v_enc_idx <= size(reply->encounter_tracks[v_track_idx].encounters, 5))
+        IF (v_day_zero_idx >= reply->encounter_tracks[v_track_idx].encounters[v_enc_idx].start_idx AND v_day_zero_idx <= reply->encounter_tracks[v_track_idx].encounters[v_enc_idx].end_idx)
+          IF (v_day_zero_idx = reply->encounter_tracks[v_track_idx].encounters[v_enc_idx].start_idx AND v_day_zero_idx = reply->encounter_tracks[v_track_idx].encounters[v_enc_idx].end_idx)
+            SET v_marker = "&#9670;"
+          ELSEIF (v_day_zero_idx = reply->encounter_tracks[v_track_idx].encounters[v_enc_idx].start_idx)
+            SET v_marker = "&#9650;"
+          ELSEIF (v_day_zero_idx = reply->encounter_tracks[v_track_idx].encounters[v_enc_idx].end_idx)
+            SET v_marker = "&#9660;"
+          ENDIF
+        ENDIF
+        SET v_enc_idx = v_enc_idx + 1
+      ENDWHILE
+      IF (v_day_idx <= size(reply->encounter_tracks[v_track_idx].days, 5))
+        SET v_html_attr = TRIM(reply->encounter_tracks[v_track_idx].days[v_day_idx].cell_class, 3)
+        SET v_html_attr2 = TRIM(reply->encounter_tracks[v_track_idx].days[v_day_idx].title, 3)
+      ELSE
+        SET v_html_attr = "spacer-bit"
+        SET v_html_attr2 = " "
+      ENDIF
+      SET v_html_attr2 = REPLACE(REPLACE(REPLACE(v_html_attr2, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+      SET v_html_attr2 = REPLACE(v_html_attr2, "'", "&#39;", 0)
+      SET v_html_part = BUILD2(v_html_part, "<div class='grid-cell cell ", v_html_attr, "' title='", v_html_attr2, "'><span class='enc-cell-text'>", v_marker, "</span></div>")
+      SET v_day_idx = v_day_idx + 1
+    ENDWHILE
+    SET v_html_idx = v_html_idx + 1
+    SET stat = ALTERLIST(reply->ui.html_parts, v_html_idx)
+    SET reply->ui.html_parts[v_html_idx].text = v_html_part
+    SET v_track_idx = v_track_idx + 1
+  ENDWHILE
+
+  SET v_html_idx = v_html_idx + 1
+  SET stat = ALTERLIST(reply->ui.html_parts, v_html_idx)
+  SET reply->ui.html_parts[v_html_idx].text = BUILD2(
+    "</div></div>"
+    , "<h2>Antimicrobial Order Details</h2>"
+    , "<div class='table-wrap'><table class='data-tbl'><colgroup>"
+    , "<col style='width:200px'><col style='width:40px'><col style='width:40px'>"
+    , "<col style='width:100px'><col style='display:none;'>"
+    , "<col style='width:350px'><col style='width:250px'>"
+    , "<col><col><col><col><col></colgroup>"
+    , "<thead><tr><th>Medication</th><th style='text-align:center;'>Doses</th><th style='text-align:center;'>DOT</th><th>Target Dose</th>"
+    , "<th style='display:none;'>Dose</th><th>Order Detail</th><th>Indication</th><th>Start Date</th>"
+    , "<th>Latest Status</th><th>Status Date</th><th>Order ID</th><th>FIN</th></tr></thead><tbody>"
+  )
+
+  IF (reply->meta.order_rows = 0)
+    SET v_html_idx = v_html_idx + 1
+    SET stat = ALTERLIST(reply->ui.html_parts, v_html_idx)
+    SET reply->ui.html_parts[v_html_idx].text = "<tr><td colspan='11'>No antimicrobial orders found in the selected window.</td></tr>"
+  ELSE
+    SET v_i = 1
+    WHILE (v_i <= reply->meta.order_rows)
+      IF (MOD(v_i, 2) = 0)
+        SET v_row_class = " class='even dimmable'"
+      ELSE
+        SET v_row_class = " class='dimmable'"
+      ENDIF
+
+      SET v_html_text = TRIM(reply->order_details[v_i].medication_name, 3)
+      SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+      SET v_html_attr = REPLACE(v_html_text, "'", "&#39;", 0)
+      SET v_html_attr2 = TRIM(reply->order_details[v_i].applink_app, 3)
+      IF (v_html_attr2 = "")
+        SET v_html_attr2 = "Powerchart.exe"
+      ENDIF
+      SET v_html_attr2 = REPLACE(REPLACE(REPLACE(v_html_attr2, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+      SET v_html_attr2 = REPLACE(v_html_attr2, "'", "&#39;", 0)
+
+      SET v_html_part = BUILD2("<tr", v_row_class, " data-med='", v_html_attr, "'>")
+      IF (reply->order_details[v_i].source = "SN")
+        SET v_html_part = BUILD2(v_html_part, "<td>", v_html_text, " <span style='color:#888;font-size:10px;'>(Anes)</span></td>")
+      ELSE
+        SET v_html_part = BUILD2(v_html_part, "<td>", v_html_text, "</td>")
+      ENDIF
+
+      SET v_html_part = BUILD2(
+        v_html_part
+        , "<td class='dot-val'><span class='pill'>", TRIM(CNVTSTRING(reply->order_details[v_i].doses_total, 20, 0)), "</span></td>"
+        , "<td class='dot-val'><span class='pill'>", TRIM(CNVTSTRING(reply->order_details[v_i].dot_total, 20, 0)), "</span></td>"
+      )
+
+      SET v_html_text = TRIM(reply->order_details[v_i].target_dose, 3)
+      SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+      SET v_html_part = BUILD2(v_html_part, "<td>", v_html_text, "</td>")
+
+      SET v_html_text = TRIM(reply->order_details[v_i].actual_dose, 3)
+      SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+      SET v_html_part = BUILD2(v_html_part, "<td style='display:none;'>", v_html_text, "</td>")
+
+      SET v_html_text = TRIM(reply->order_details[v_i].order_detail, 3)
+      SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+      SET v_html_part = BUILD2(v_html_part, "<td>", v_html_text, "</td>")
+
+      SET v_html_text = TRIM(reply->order_details[v_i].indication, 3)
+      SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+      SET v_html_part = BUILD2(v_html_part, "<td>", v_html_text, "</td>")
+
+      SET v_html_text = TRIM(reply->order_details[v_i].start_date, 3)
+      SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+      SET v_html_part = BUILD2(v_html_part, "<td>", v_html_text, "</td>")
+
+      SET v_html_text = TRIM(reply->order_details[v_i].latest_status, 3)
+      SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+      SET v_html_part = BUILD2(v_html_part, "<td>", v_html_text, "</td>")
+
+      SET v_html_text = TRIM(reply->order_details[v_i].status_date, 3)
+      SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+      SET v_html_part = BUILD2(v_html_part, "<td>", v_html_text, "</td>")
+
+      SET v_html_text = TRIM(reply->order_details[v_i].order_id, 3)
+      SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+      SET v_html_part = BUILD2(v_html_part, "<td>", v_html_text, "</td>")
+
+      SET v_html_text = TRIM(reply->order_details[v_i].fin, 3)
+      IF (v_html_text = "")
+        SET v_html_text = "--"
+      ENDIF
+      SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+      SET v_html_attr = TRIM(reply->order_details[v_i].applink_args, 3)
+      SET v_html_attr = REPLACE(REPLACE(REPLACE(v_html_attr, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+      SET v_html_attr = REPLACE(v_html_attr, "'", "&#39;", 0)
+      SET v_html_part = BUILD2(v_html_part, "<td><a href='#' class='fin-link' data-app='", v_html_attr2, "' data-args='", v_html_attr, "'>", v_html_text, "</a></td></tr>")
+
+      SET v_html_idx = v_html_idx + 1
+      SET stat = ALTERLIST(reply->ui.html_parts, v_html_idx)
+      SET reply->ui.html_parts[v_html_idx].text = v_html_part
+      SET v_i = v_i + 1
+    ENDWHILE
+  ENDIF
+
+  SET v_html_idx = v_html_idx + 1
+  SET stat = ALTERLIST(reply->ui.html_parts, v_html_idx)
+  SET v_html_text = REPLACE(REPLACE(REPLACE(TRIM(v_generated_ts, 3), "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+  SET reply->ui.html_parts[v_html_idx].text = BUILD2("</tbody></table></div><div class='micro-footer'>Generated on ", v_html_text, "</div></div></section>")
 ENDIF
 
 SET _memory_reply_string = CNVTRECTOJSON(reply)
