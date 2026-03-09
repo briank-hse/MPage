@@ -1,3 +1,8 @@
+Pass 2 issues:
+When you click next, the whole header bar is no longer visible and you have to scroll back up to see it. It should be sticky/fixed
+
+
+
 Pass 2 ANVS parity changes are in 01_meds_pharm_mpage.prg.
 What changed:
 
