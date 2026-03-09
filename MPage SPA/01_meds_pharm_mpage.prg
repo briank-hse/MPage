@@ -161,6 +161,7 @@ SET _memory_reply_string = BUILD2(
     ~.search-count{font-size:12px;color:#666;white-space:nowrap}~,
     ~.search-category-bar{display:flex;gap:8px;flex-wrap:wrap}~,
     ~.module-search .filter-pill{padding:4px 10px;font-size:11px;border:1px solid #ccc;border-radius:12px;background:#fff;color:#555;cursor:pointer;user-select:none}~,
+    ~.module-search .filter-pill.active{background:#006f99;color:#fff;border-color:#004c66;font-weight:600}~,
     ~.date-dropdown{padding:4px 6px;font-size:11px;border:1px solid #ccc;border-radius:3px;outline:none;background:#fff}~,
     ~.search-layout{display:flex;flex:1;min-height:520px;border:1px solid #ddd;background:#fff;overflow:hidden}~,
     ~.search-sidebar{width:300px;min-width:300px;background:#fafafa;border-right:1px solid #ddd;overflow-y:auto}~,
