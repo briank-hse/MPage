@@ -1,240 +1,2218 @@
-<!DOCTYPE html>
-<html lang='en'>
-    <head>
-        <meta charset='utf-8'/>
-        <meta name='discern' content='XMLCCLREQUEST'/>
-        <title>Pharmacist MPage</title>
-        <style>
-            *, *::before, *::after {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
+<!doctype html>
+<html lang=&quot;en&quot;>
 
-            body {
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-                font-size: 13px;
-                background: #f4f5f7;
-                color: #333;
-                display: flex;
-                flex-direction: column;
-                height: 100vh;
-                overflow: hidden;
-            }
+<head>
+    <meta charset=&quot;utf-8&quot; />
+    <meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
+    <meta name=&quot;discern&quot; content=&quot;CCLLINK,APPLINK&quot; />
+    <title>Antimicrobial Days of Therapy - By Date</title>
+    <style>
+        :root {
+            --bg-main: #fff;
+            --bg-alt: #fafafa;
+            --border-color: #d6d9dd;
+            --border-dark: #b5b5b5;
+            --border-light: #dde1e5;
+            --cerner-blue: #0086CE;
+            --header-bg: #e7eaee;
+            --sticky-bg: #ffffff;
+            --sticky-bg-alt: #fafafa;
+        }
 
-            .tab-btn.ghost {
-                color: transparent;
-                cursor: default;
-                width: 24px;
-                min-width: 24px;
-                padding: 8px 4px;
-                pointer-events: auto;
-            }
+        *,
+        *:before,
+        *:after {
+            box-sizing: border-box
+        }
 
-            .tab-btn.ghost:hover {
-                background: transparent;
-            }
+        body {
+            margin: 0;
+            font: 13px/1.4 -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial, sans-serif;
+            color: #111;
+            background: var(--bg-main);
+            padding: 0;
+        }
 
-            #dbg-bar {
-                background: #3a1a00;
-                color: #ffcc80;
-                padding: 4px 10px;
-                font-size: 11px;
-                font-family: monospace;
-                word-break: break-all;
-                white-space: pre-wrap;
-                flex-shrink: 0;
-                display: none;
-            }
+        .wrap {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-            .tab-row {
-                display: flex;
-                align-items: flex-end;
-                background: #fff;
-                border-bottom: 2px solid #ddd;
-                padding: 0 8px;
-                flex-shrink: 0;
-            }
+        h1 {
+            font-size: 18px;
+            margin: 0 0 8px;
+        }
 
-            .tab-btn {
-                padding: 8px 16px;
-                margin-right: 4px;
-                cursor: pointer;
-                background: transparent;
-                border: none;
-                border-bottom: 3px solid transparent;
-                color: #666;
-                font-size: 13px;
-                font-family: inherit;
-                white-space: nowrap;
-                outline: none;
-                position: relative;
-                bottom: -2px;
-            }
+        h2 {
+            font-size: 15px;
+            margin: 16px 0 2px;
+            padding-top: 0;
+        }
 
-            .tab-btn:hover {
-                background: #f0f4f8;
-                color: #333;
-            }
+        .sub {
+            color: #444;
+            margin: 4px 0 16px;
+        }
 
-            .tab-btn.active {
-                border-bottom: 3px solid #006f99;
-                color: #006f99;
-                font-weight: 600;
-                background: #fff;
-            }
+        .meta-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
 
-            .tab-btn.placeholder {
-                color: #aaa;
-                cursor: default;
-                pointer-events: none;
-            }
+        .legend {
+            margin-top: 6px;
+            color: #555;
+            font-size: 12px
+        }
 
-            #content-frame {
-                flex: 1;
-                border: none;
-                width: 100%;
-                ; background: #fff;
-                display: none;
-            }
+        .chart-wrap {
+            overflow-x: auto;
+            overflow-y: hidden;
+            margin-bottom: 12px;
+            width: 100%;
+            display: block;
+        }
 
-            #frame-msg {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex: 1;
-                color: #888;
-                font-size: 14px;
-                background: #fff;
-            }
+        .chart-grid {
+            display: grid;
+            background: var(--bg-main);
+            width: max-content;
+            border-left: 1px solid var(--border-dark);
+            font-size: 12px;
+        }
 
-            .placeholder-badge {
-                display: inline-block;
-                margin-left: 6px;
-                font-size: 10px;
-                background: #e0e0e0;
-                color: #888;
-                border-radius: 8px;
-                padding: 1px 6px;
-                vertical-align: middle;
-            }
-        </style>
-        <script>
-            var PROG_DOT = '01_meds_dot_date_comb_edge3:Group1';
-            var PARAMS_DOT = '^MINE^,12690542.0,180.0';
-            var PROG_NICU = '01_bk_NICU_Inf_Edge:Group1';
-            var PARAMS_NICU = '^MINE^,12690542.0';
-            var PROG_GP = '01_meds_pharm_anvs_edge:Group1';
-            var PARAMS_GP = '^MINE^,12690542.0,12690542.0,28766114.0';
-            var PROG_SEARCH = '01_meds_pharm_search_edge:Group1';
-            var PARAMS_SEARCH = '^MINE^,180876.0,12690542.0,28766114.0';
-            if (typeof XMLCclRequest === 'undefined' && window.external && 'XMLCclRequest'in window.external) {
-                window.XMLCclRequest = function() {
-                    return window.external.XMLCclRequest();
-                }
-                ;
-            }
-            var activeTabId = null;
+        .grid-cell {
+            border-right: 1px solid var(--border-light);
+            border-bottom: none;
+            background: var(--bg-main);
+            padding: 0;
+            display: flex;
+            align-items: center;
+            min-width: 0;
+        }
 
-            function activateTab(id) {
-                var tabs = document.querySelectorAll('.tab-btn');
-                for (var i = 0; i < tabs.length; i++) {
-                    tabs[i].classList.remove('active');
-                }
-                var btn = document.getElementById(id);
-                if (btn)
-                    btn.classList.add('active');
-                activeTabId = id;
+        .grid-cell.label,
+        .grid-cell.sticky-med,
+        .grid-cell.sticky-doses,
+        .grid-cell.sticky-dot {
+            border-right-color: var(--border-dark) !important;
+            border-bottom: 1px solid var(--border-dark) !important;
+        }
 
-            }
+        table.data-tbl th,
+        .grid-cell.label:not(.medname) {
+            background: var(--header-bg) !important;
+            color: #2f3c4b;
+            font-weight: 600 !important;
+            padding: 4px 8px;
+        }
 
-            function showMsg(msg) {
-                var msgDiv = document.getElementById('frame-msg');
-                var iframe = document.getElementById('content-frame');
-                if (msgDiv) {
-                    msgDiv.style.display = 'flex';
-                    msgDiv.textContent = msg;
-                }
-                if (iframe)
-                    iframe.style.display = 'none';
-            }
+        table.data-tbl th {
+            text-align: left;
+            height: 26px;
+            font-size: 12px !important;
+        }
 
-            function showIframe() {
-                var msgDiv = document.getElementById('frame-msg');
-                var iframe = document.getElementById('content-frame');
-                if (msgDiv)
-                    msgDiv.style.display = 'none';
-                if (iframe)
-                    iframe.style.display = 'block';
-            }
+        .grid-cell.label {
+            min-height: 26px;
+        }
 
-            function loadTab(program, params, tabId) {
-                activateTab(tabId);
-                showMsg('Loading\u2026');
+        .sticky-med {
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            background: var(--sticky-bg);
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 200px;
+            min-width: 200px;
+            max-width: 200px;
+        }
 
-                if (typeof XMLCclRequest === 'undefined') {
-                    showMsg('ERROR: XMLCclRequest is not available in this environment.');
-                    return;
-                }
+        .sticky-doses {
+            position: sticky;
+            left: 200px;
+            z-index: 10;
+            background: var(--sticky-bg);
+            width: 40px;
+            min-width: 40px;
+            max-width: 40px;
+            text-align: center;
+            justify-content: center;
+        }
 
-                var xcr = new XMLCclRequest();
+        .sticky-dot {
+            position: sticky;
+            left: 240px;
+            z-index: 10;
+            background: var(--sticky-bg);
+            box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.2);
+            width: 40px;
+            min-width: 40px;
+            max-width: 40px;
+            text-align: center;
+            justify-content: center;
+        }
 
-                xcr.onreadystatechange = function() {
-                    if (xcr.readyState === 4) {
-                        if (xcr.status === 200) {
-                            var iframe = document.getElementById('content-frame');
-                            if (iframe) {
-                                iframe.srcdoc = xcr.responseText;
-                                showIframe();
-                            }
-                        } else {
-                            var dbg = 'Status:' + xcr.status + ' | prog:' + program + ' | params:' + params + ' | resp:' + xcr.responseText;
-                            var bar = document.getElementById('dbg-bar');
-                            bar.textContent = dbg;
-                            bar.style.display = 'block';
-                            showMsg('Error ' + xcr.status + ' - see debug bar above');
-                        }
-                    }
-                }
-                ;
+        .hdr-intersect {
+            z-index: 20 !important;
+            border-top: 1px solid var(--border-dark) !important;
+        }
 
-                xcr.open('GET', program, true);
-                xcr.send(params);
-            }
+        .even-cell.sticky-med,
+        .even-cell.sticky-doses,
+        .even-cell.sticky-dot,
+        .even-cell.medname {
+            background: var(--bg-alt) !important;
+        }
 
-            function loadDOT() {
-                loadTab(PROG_DOT, PARAMS_DOT + ',' + Date.now(), 'tab-dot');
-            }
+        .dot-val {
+            justify-content: center;
+        }
 
-            function loadNICU() {
-                loadTab(PROG_NICU, PARAMS_NICU + ',' + Date.now(), 'tab-nicu');
-            }
+        .grid-cell.medname {
+            padding: 2px 6px;
+            font-size: 14px !important;
+        }
 
-            function loadGP() {
-                loadTab(PROG_GP, PARAMS_GP + ',' + Date.now(), 'tab-dev1');
-            }
+        .med-trigger {
+            cursor: pointer;
+            color: #111;
+            transition: background 0.2s;
+        }
 
-            function loadSearch() {
-                loadTab(PROG_SEARCH, PARAMS_SEARCH + ',' + Date.now(), 'tab-dev2');
-            }
+        .med-trigger:hover {
+            background-color: #e0f0ff !important;
+        }
 
-            function loadPlaceholder(tabId, label) {
-                activateTab(tabId);
-                showMsg(label + ' \u2014 not yet available.');
-            }
-        </script>
-    </head>
-    <body>
-        <div id='dbg-bar'></div>
-        <div class='tab-row'>
-            <button id='tab-dot' class='tab-btn' onclick='loadDOT()'>Antimicrobial Days of Therapy</button>
-            <div style='flex:1;'></div>
-            <button id='tab-dev1' class='tab-btn ghost' onclick='loadGP()'>&nbsp;</button>
-            <button id='tab-dev2' class='tab-btn ghost' onclick='loadSearch()'>&nbsp;</button>
-            <button id='tab-nicu' class='tab-btn ghost' onclick='loadNICU()'>&nbsp;</button>
-            <button id='tab-dev3' class='tab-btn ghost' onclick='loadPlaceholder("tab-dev3", "Dev 3")'>&nbsp;</button>
+        .filter-icon {
+            font-size: 8px;
+            opacity: 0.5;
+            margin-left: 6px;
+        }
+
+        .dimmed {
+            opacity: 0.15;
+            filter: grayscale(100%);
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .dimmable {
+            transition: opacity 0.3s ease;
+        }
+
+        .active-filter {
+            background-color: #e0f0ff !important;
+            font-weight: 700;
+        }
+
+        .grid-cell.dimmed.sticky-med,
+        .grid-cell.dimmed.sticky-doses,
+        .grid-cell.dimmed.sticky-dot {
+            opacity: 1 !important;
+            filter: none !important;
+            color: #b5b5b5 !important;
+        }
+
+        .grid-cell.dimmed.sticky-med .pill,
+        .grid-cell.dimmed.sticky-doses .pill,
+        .grid-cell.dimmed.sticky-dot .pill {
+            background: #f0f0f0 !important;
+            color: #b5b5b5 !important;
+            box-shadow: none !important;
+        }
+
+        .row-hover:not(.on):not(.always-on) {
+            background-color: transparent !important;
+        }
+
+        .cell.row-hover:not(.on)::after {
+            background: #b8d4ee !important;
+        }
+
+        .cell,
+        .tick {
+            width: 14px;
+            min-width: 14px;
+            max-width: 14px;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .cell {
+            border-right: 1px solid #f8f8f8 !important;
+            border-bottom: none !important;
+            border-left: none !important;
+            color: transparent;
+            background: transparent !important;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tick {
+            border-right: none !important;
+            height: 22px;
+            position: relative;
+            overflow: visible !important;
+            align-items: center;
+            padding-bottom: 0;
+            justify-content: center;
+            font-size: 10px;
+            color: #555;
+        }
+
+        .tick::after {
+            content: &quot;
+            &quot;
+            ;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 1px;
+            height: 6px;
+            background: var(--border-dark);
+        }
+
+        .mo-span {
+            height: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #2f3c4b;
+            background: var(--header-bg) !important;
+            border-top: 1px solid var(--border-dark) !important;
+            border-right: 1px solid var(--border-dark) !important;
+            border-bottom: 1px solid var(--border-dark) !important;
+            padding: 0 4px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            align-items: center;
+        }
+
+        .grid-cell.axis-header {
+            display: block;
+            line-height: 18px;
+            overflow: visible;
+            white-space: nowrap;
+            border-top: 1px solid var(--border-dark) !important;
+        }
+
+        .cell::after {
+            content: &quot;
+            &quot;
+            ;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 14px;
+            height: 12px;
+            background: #F5F5F6;
+            border-radius: 0px;
+            z-index: -1;
+        }
+
+        .cell.on {
+            color: var(--bg-main) !important;
+            font-weight: 600;
+        }
+
+        .cell.on::after {
+            width: 14px;
+            height: 12px;
+            background: var(--cerner-blue);
+            border-radius: 0px;
+        }
+
+        .cell.on:empty::before {
+            content: &quot;
+            1&quot;
+            ;
+        }
+
+        .cell.sum-yes,
+        .cell.sum-no,
+        .cell.enc-c1,
+        .cell.enc-c2,
+        .cell.enc-c3,
+        .cell.enc-c4 {
+            background: transparent !important;
+        }
+
+        .cell.sum-yes::after {
+            width: 14px;
+            height: 12px;
+            background: #f37074be;
+        }
+
+        .cell.sum-no::after {
+            width: 14px;
+            height: 12px;
+            background: #a8d08dbe;
+        }
+
+        .sum-border {
+            border-top: 2px solid #a0a0a0 !important;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: #eef;
+            color: #334;
+            line-height: 1;
+        }
+
+        .cell.enc-c1::after {
+            width: 14px;
+            height: 12px;
+            background: #b8d8f8;
+        }
+
+        .cell.enc-c2::after {
+            width: 14px;
+            height: 12px;
+            background: #b3d0ebb4;
+        }
+
+        .cell.enc-c3::after {
+            width: 14px;
+            height: 12px;
+            background: #c8e8fb;
+        }
+
+        .cell.enc-c4::after {
+            width: 14px;
+            height: 12px;
+            background: #aad8f7;
+        }
+
+        .enc-border {
+            border-top: 2px solid #90b8e0 !important;
+        }
+
+        .enc-label-cell {
+            font-size: 11px !important;
+        }
+
+        .enc-label-cell a {
+            color: var(--cerner-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .enc-cell-text {
+            font-size: 8px;
+            font-weight: 700;
+            color: #111;
+            line-height: 1;
+            overflow: hidden;
+            max-width: 14px;
+            display: block;
+            text-align: center;
+        }
+
+        table.data-tbl {
+            width: 100%;
+            min-width: 1460px;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 2px;
+            font-size: 12px;
+            border-top: 1px solid var(--border-dark);
+            border-left: 1px solid var(--border-dark);
+            border-bottom: 2px solid #a0a0a0;
+            table-layout: fixed;
+        }
+
+        table.data-tbl th,
+        table.data-tbl td {
+            border-right: 1px solid var(--border-dark);
+            border-bottom: 1px solid var(--border-dark);
+            padding: 4px 6px;
+            text-align: left;
+            background: var(--bg-main);
+            word-break: break-word;
+            overflow-wrap: break-word;
+            overflow: hidden;
+            transition: background-color 0.2s;
+        }
+
+        table.data-tbl th:nth-child(1),
+        table.data-tbl td:nth-child(1) {
+            box-sizing: border-box !important;
+            width: 200px;
+            min-width: 200px;
+            max-width: 200px;
+        }
+
+        table.data-tbl th:nth-child(2),
+        table.data-tbl td:nth-child(2) {
+            box-sizing: border-box !important;
+            width: 40px;
+            min-width: 40px;
+            max-width: 40px;
+            text-align: center;
+            padding: 4px 0;
+        }
+
+        table.data-tbl th:nth-child(3),
+        table.data-tbl td:nth-child(3) {
+            box-sizing: border-box !important;
+            width: 40px;
+            min-width: 40px;
+            max-width: 40px;
+            text-align: center;
+            padding: 4px 0;
+        }
+
+        table.data-tbl th:nth-child(4),
+        table.data-tbl td:nth-child(4) {
+            box-sizing: border-box !important;
+            width: 100px;
+            min-width: 100px;
+            max-width: 100px;
+        }
+
+        table.data-tbl th:nth-child(6),
+        table.data-tbl td:nth-child(6) {
+            box-sizing: border-box !important;
+            width: 350px;
+            min-width: 350px;
+            max-width: 350px;
+        }
+
+        table.data-tbl th:nth-child(7),
+        table.data-tbl td:nth-child(7) {
+            box-sizing: border-box !important;
+            width: 250px;
+            min-width: 250px;
+            max-width: 250px;
+        }
+
+        table.data-tbl tr.even td {
+            background: var(--bg-alt);
+        }
+
+        table.data-tbl tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        table.data-tbl tbody tr:hover td {
+            background-color: #f0f7ff;
+            cursor: default;
+        }
+    </style>
+</head>
+
+<body>
+    <div class=&quot;wrap&quot;>
+        <div class=&quot;legend&quot;>Each blue square marks a <b>day</b> where the medication has been administered. A
+            number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given,
+            Green = No antimicrobial given. &amp;nbsp;<b>Encounter:</b> &amp;#9650; Admit, &amp;#9660; Discharge,
+            &amp;#9670; Same-day admit &amp;amp; discharge.<br /><b>Interactive:</b> Click a medication name to isolate
+            its history across the chart and table.</div>
+        <div class=&quot;chart-wrap&quot;>
+            <div class=&quot;chart-grid&quot; style=&quot;grid-template-columns: 200px 40px 40px repeat(76,
+                14px);&quot;>
+                <div class=&quot;grid-cell label sticky-med hdr-intersect always-on&quot;>Medication</div>
+                <div class=&quot;grid-cell label sticky-doses hdr-intersect always-on&quot;>Doses</div>
+                <div class=&quot;grid-cell label sticky-dot hdr-intersect always-on&quot;>DOT</div>
+                <div class=&quot;grid-cell label axis-header always-on&quot; style=&quot;grid-column: 4 / span 76;
+                    min-width:320px;&quot;>Date range: 24-DEC-2025 to 09-MAR-2026 (76 days)</div>
+                <div class=&quot;grid-cell hdr-intersect always-on&quot; style=&quot;grid-column:span
+                    3;background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid
+                    var(--border-dark);&quot;></div>
+                <div class=&quot;grid-cell mo-span always-on&quot; style=&quot;grid-column:span 8;&quot;>DEC</div>
+                <div class=&quot;grid-cell mo-span always-on&quot; style=&quot;grid-column:span 31;&quot;>JAN</div>
+                <div class=&quot;grid-cell mo-span always-on&quot; style=&quot;grid-column:span 28;&quot;>FEB</div>
+                <div class=&quot;grid-cell mo-span always-on&quot; style=&quot;grid-column:span 9;&quot;>MAR</div>
+                <div class=&quot;grid-cell hdr-intersect always-on&quot; style=&quot;grid-column:span
+                    3;background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid
+                    var(--border-dark);&quot;></div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2025-12-24&quot;>24</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2025-12-25&quot;>25</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2025-12-26&quot;>26</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2025-12-27&quot;>27</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2025-12-28&quot;>28</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2025-12-29&quot;>29</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2025-12-30&quot;>30</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2025-12-31&quot;>31</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-01&quot;>01</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-02&quot;>02</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-03&quot;>03</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-04&quot;>04</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-05&quot;>05</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-06&quot;>06</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-07&quot;>07</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-08&quot;>08</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-09&quot;>09</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-10&quot;>10</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-11&quot;>11</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-12&quot;>12</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-13&quot;>13</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-14&quot;>14</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-15&quot;>15</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-16&quot;>16</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-17&quot;>17</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-18&quot;>18</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-19&quot;>19</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-20&quot;>20</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-21&quot;>21</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-22&quot;>22</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-23&quot;>23</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-24&quot;>24</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-25&quot;>25</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-26&quot;>26</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-27&quot;>27</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-28&quot;>28</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-29&quot;>29</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-30&quot;>30</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-01-31&quot;>31</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-01&quot;>01</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-02&quot;>02</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-03&quot;>03</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-04&quot;>04</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-05&quot;>05</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-06&quot;>06</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-07&quot;>07</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-08&quot;>08</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-09&quot;>09</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-10&quot;>10</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-11&quot;>11</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-12&quot;>12</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-13&quot;>13</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-14&quot;>14</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-15&quot;>15</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-16&quot;>16</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-17&quot;>17</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-18&quot;>18</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-19&quot;>19</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-20&quot;>20</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-21&quot;>21</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-22&quot;>22</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-23&quot;>23</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-24&quot;>24</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-25&quot;>25</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-26&quot;>26</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-27&quot;>27</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-02-28&quot;>28</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-03-01&quot;>01</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-03-02&quot;>02</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-03-03&quot;>03</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-03-04&quot;>04</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-03-05&quot;>05</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-03-06&quot;>06</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-03-07&quot;>07</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-03-08&quot;>08</div>
+                <div class=&quot;grid-cell tick&quot; title=&quot;2026-03-09&quot;>09</div>
+                <div class=&quot;grid-cell label medname sticky-med med-trigger dimmable &quot;
+                    data-med=&quot;cefUROXime&quot; title=&quot;Click to filter by cefUROXime&quot;>cefUROXime</div>
+                <div class=&quot;grid-cell dot-val sticky-doses dimmable &quot; data-med=&quot;cefUROXime&quot;><span
+                        class=&quot;pill&quot; title=&quot;cefUROXime - Total Doses: 1&quot;>1</span></div>
+                <div class=&quot;grid-cell dot-val sticky-dot dimmable &quot; data-med=&quot;cefUROXime&quot;><span
+                        class=&quot;pill&quot; title=&quot;cefUROXime - Total Days of Therapy: 1&quot;>1</span></div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;cefUROXime - 24/12/2025 / 1 admin&amp;#10;Indication: &amp;#10;Discontinue
+                    Reason:&quot;>1</div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;25/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;26/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;27/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;28/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;29/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;30/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;31/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;01/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;02/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;03/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;04/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;05/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;06/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;07/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;08/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;09/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;10/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;11/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;12/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;13/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;14/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;15/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;16/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;17/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;18/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;19/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;20/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;21/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;22/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;23/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;24/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;25/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;26/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;27/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;28/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;29/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;30/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;31/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;01/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;02/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;03/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;04/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;05/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;06/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;07/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;08/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;09/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;10/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;11/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;12/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;13/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;14/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;15/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;16/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;17/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;18/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;19/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;20/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;21/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;22/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;23/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;24/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;25/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;26/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;27/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;28/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;01/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;02/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;03/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;04/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;05/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;06/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;07/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;08/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;cefUROXime&quot;
+                    title=&quot;09/03/2026&quot;></div>
+                <div class=&quot;grid-cell label medname sticky-med med-trigger dimmable even-cell&quot;
+                    data-med=&quot;Co-amoxiclav&quot; title=&quot;Click to filter by Co-amoxiclav&quot;>Co-amoxiclav
+                </div>
+                <div class=&quot;grid-cell dot-val sticky-doses dimmable even-cell&quot;
+                    data-med=&quot;Co-amoxiclav&quot;><span class=&quot;pill&quot; title=&quot;Co-amoxiclav - Total
+                        Doses: 8&quot;>8</span></div>
+                <div class=&quot;grid-cell dot-val sticky-dot dimmable even-cell&quot;
+                    data-med=&quot;Co-amoxiclav&quot;><span class=&quot;pill&quot; title=&quot;Co-amoxiclav - Total Days
+                        of Therapy: 4&quot;>4</span></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;24/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;25/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;26/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;27/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;28/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;29/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell on dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;Co-amoxiclav - 30/12/2025 / 1 admin&amp;#10;Indication: Endometritis&amp;#10;Discontinue
+                    Reason: Doctors Request&quot;>1</div>
+                <div class=&quot;grid-cell cell on dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;Co-amoxiclav - 31/12/2025 / 2 admins&amp;#10;Indication:
+                    Endometritis&amp;#10;Discontinue Reason: Doctors Request&quot;>2</div>
+                <div class=&quot;grid-cell cell on dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;Co-amoxiclav - 01/01/2026 / 3 admins&amp;#10;Indication:
+                    Endometritis&amp;#10;Discontinue Reason: Doctors Request&quot;>3</div>
+                <div class=&quot;grid-cell cell on dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;Co-amoxiclav - 02/01/2026 / 2 admins&amp;#10;Indication:
+                    Endometritis&amp;#10;Discontinue Reason: Doctors Request&quot;>2</div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;03/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;04/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;05/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;06/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;07/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;08/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;09/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;10/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;11/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;12/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;13/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;14/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;15/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;16/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;17/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;18/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;19/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;20/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;21/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;22/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;23/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;24/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;25/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;26/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;27/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;28/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;29/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;30/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;31/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;01/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;02/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;03/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;04/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;05/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;06/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;07/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;08/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;09/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;10/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;11/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;12/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;13/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;14/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;15/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;16/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;17/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;18/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;19/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;20/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;21/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;22/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;23/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;24/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;25/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;26/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;27/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;28/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;01/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;02/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;03/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;04/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;05/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;06/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;07/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;08/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Co-amoxiclav&quot;
+                    title=&quot;09/03/2026&quot;></div>
+                <div class=&quot;grid-cell label medname sticky-med med-trigger dimmable &quot;
+                    data-med=&quot;Ertapenem&quot; title=&quot;Click to filter by Ertapenem&quot;>Ertapenem</div>
+                <div class=&quot;grid-cell dot-val sticky-doses dimmable &quot; data-med=&quot;Ertapenem&quot;><span
+                        class=&quot;pill&quot; title=&quot;Ertapenem - Total Doses: 3&quot;>3</span></div>
+                <div class=&quot;grid-cell dot-val sticky-dot dimmable &quot; data-med=&quot;Ertapenem&quot;><span
+                        class=&quot;pill&quot; title=&quot;Ertapenem - Total Days of Therapy: 3&quot;>3</span></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;24/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;25/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;26/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;27/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;28/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;29/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;30/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;31/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;01/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;02/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;03/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;04/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;05/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;06/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;07/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;08/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;09/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Ertapenem&quot; title=&quot;Ertapenem
+                    - 10/01/2026 / 1 admin&amp;#10;Indication: OTHER: See Instructions&amp;#10;Discontinue
+                    Reason:&quot;>1</div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Ertapenem&quot; title=&quot;Ertapenem
+                    - 11/01/2026 / 1 admin&amp;#10;Indication: Per micro / ID recommendation&amp;#10;Discontinue
+                    Reason:&quot;>1</div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Ertapenem&quot; title=&quot;Ertapenem
+                    - 12/01/2026 / 1 admin&amp;#10;Indication: Per micro / ID recommendation&amp;#10;Discontinue
+                    Reason:&quot;>1</div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;13/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;14/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;15/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;16/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;17/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;18/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;19/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;20/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;21/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;22/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;23/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;24/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;25/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;26/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;27/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;28/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;29/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;30/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;31/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;01/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;02/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;03/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;04/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;05/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;06/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;07/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;08/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;09/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;10/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;11/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;12/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;13/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;14/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;15/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;16/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;17/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;18/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;19/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;20/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;21/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;22/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;23/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;24/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;25/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;26/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;27/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;28/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;01/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;02/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;03/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;04/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;05/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;06/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;07/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;08/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Ertapenem&quot;
+                    title=&quot;09/03/2026&quot;></div>
+                <div class=&quot;grid-cell label medname sticky-med med-trigger dimmable even-cell&quot;
+                    data-med=&quot;Gentamicin&quot; title=&quot;Click to filter by Gentamicin&quot;>Gentamicin</div>
+                <div class=&quot;grid-cell dot-val sticky-doses dimmable even-cell&quot;
+                    data-med=&quot;Gentamicin&quot;><span class=&quot;pill&quot; title=&quot;Gentamicin - Total Doses:
+                        2&quot;>2</span></div>
+                <div class=&quot;grid-cell dot-val sticky-dot dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;>
+                    <span class=&quot;pill&quot; title=&quot;Gentamicin - Total Days of Therapy: 2&quot;>2</span></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;24/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;25/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;26/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;27/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;28/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;29/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;30/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;31/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;01/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell on dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;Gentamicin - 02/01/2026 / 1 admin&amp;#10;Indication: OTHER: See
+                    Instructions&amp;#10;Discontinue Reason: Change in clinical status&quot;>1</div>
+                <div class=&quot;grid-cell cell on dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;Gentamicin - 03/01/2026 / 1 admin&amp;#10;Indication: OTHER: See
+                    Instructions&amp;#10;Discontinue Reason: Change in clinical status&quot;>1</div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;04/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;05/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;06/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;07/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;08/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;09/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;10/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;11/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;12/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;13/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;14/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;15/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;16/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;17/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;18/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;19/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;20/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;21/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;22/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;23/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;24/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;25/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;26/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;27/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;28/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;29/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;30/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;31/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;01/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;02/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;03/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;04/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;05/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;06/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;07/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;08/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;09/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;10/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;11/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;12/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;13/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;14/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;15/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;16/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;17/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;18/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;19/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;20/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;21/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;22/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;23/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;24/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;25/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;26/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;27/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;28/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;01/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;02/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;03/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;04/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;05/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;06/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;07/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;08/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Gentamicin&quot;
+                    title=&quot;09/03/2026&quot;></div>
+                <div class=&quot;grid-cell label medname sticky-med med-trigger dimmable &quot;
+                    data-med=&quot;Meropenem&quot; title=&quot;Click to filter by Meropenem&quot;>Meropenem</div>
+                <div class=&quot;grid-cell dot-val sticky-doses dimmable &quot; data-med=&quot;Meropenem&quot;><span
+                        class=&quot;pill&quot; title=&quot;Meropenem - Total Doses: 15&quot;>15</span></div>
+                <div class=&quot;grid-cell dot-val sticky-dot dimmable &quot; data-med=&quot;Meropenem&quot;><span
+                        class=&quot;pill&quot; title=&quot;Meropenem - Total Days of Therapy: 6&quot;>6</span></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;24/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;25/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;26/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;27/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;28/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;29/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;30/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;31/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;01/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;02/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;03/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;04/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;05/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;06/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;07/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;08/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;09/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;10/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;11/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;12/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Meropenem&quot; title=&quot;Meropenem
+                    - 13/01/2026 / 2 admins&amp;#10;Indication: Abdominal Wound Infection&amp;#10;Discontinue Reason:
+                    Course completed&quot;>2</div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Meropenem&quot; title=&quot;Meropenem
+                    - 14/01/2026 / 2 admins&amp;#10;Indication: Abdominal Wound Infection&amp;#10;Discontinue Reason:
+                    Course completed&quot;>2</div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Meropenem&quot; title=&quot;Meropenem
+                    - 15/01/2026 / 3 admins&amp;#10;Indication: Abdominal Wound Infection&amp;#10;Discontinue Reason:
+                    Course completed&quot;>3</div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Meropenem&quot; title=&quot;Meropenem
+                    - 16/01/2026 / 3 admins&amp;#10;Indication: Abdominal Wound Infection&amp;#10;Discontinue Reason:
+                    Course completed&quot;>3</div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Meropenem&quot; title=&quot;Meropenem
+                    - 17/01/2026 / 3 admins&amp;#10;Indication: Abdominal Wound Infection&amp;#10;Discontinue Reason:
+                    Course completed&quot;>3</div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Meropenem&quot; title=&quot;Meropenem
+                    - 18/01/2026 / 2 admins&amp;#10;Indication: Abdominal Wound Infection&amp;#10;Discontinue Reason:
+                    Course completed&quot;>2</div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;19/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;20/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;21/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;22/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;23/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;24/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;25/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;26/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;27/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;28/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;29/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;30/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;31/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;01/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;02/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;03/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;04/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;05/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;06/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;07/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;08/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;09/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;10/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;11/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;12/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;13/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;14/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;15/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;16/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;17/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;18/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;19/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;20/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;21/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;22/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;23/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;24/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;25/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;26/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;27/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;28/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;01/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;02/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;03/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;04/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;05/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;06/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;07/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;08/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Meropenem&quot;
+                    title=&quot;09/03/2026&quot;></div>
+                <div class=&quot;grid-cell label medname sticky-med med-trigger dimmable even-cell&quot;
+                    data-med=&quot;Metronidazole&quot; title=&quot;Click to filter by Metronidazole&quot;>Metronidazole
+                </div>
+                <div class=&quot;grid-cell dot-val sticky-doses dimmable even-cell&quot;
+                    data-med=&quot;Metronidazole&quot;><span class=&quot;pill&quot; title=&quot;Metronidazole - Total
+                        Doses: 2&quot;>2</span></div>
+                <div class=&quot;grid-cell dot-val sticky-dot dimmable even-cell&quot;
+                    data-med=&quot;Metronidazole&quot;><span class=&quot;pill&quot; title=&quot;Metronidazole - Total
+                        Days of Therapy: 2&quot;>2</span></div>
+                <div class=&quot;grid-cell cell on dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;Metronidazole - 24/12/2025 / 1 admin&amp;#10;Indication: &amp;#10;Discontinue
+                    Reason:&quot;>1</div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;25/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;26/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;27/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;28/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;29/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;30/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;31/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;01/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;02/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;03/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;04/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;05/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;06/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;07/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;08/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;09/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell on dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;Metronidazole - 10/01/2026 / 1 admin&amp;#10;Indication: Per micro / ID
+                    recommendation&amp;#10;Discontinue Reason:&quot;>1</div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;11/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;12/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;13/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;14/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;15/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;16/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;17/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;18/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;19/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;20/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;21/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;22/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;23/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;24/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;25/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;26/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;27/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;28/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;29/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;30/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;31/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;01/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;02/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;03/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;04/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;05/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;06/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;07/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;08/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;09/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;10/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;11/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;12/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;13/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;14/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;15/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;16/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;17/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;18/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;19/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;20/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;21/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;22/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;23/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;24/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;25/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;26/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;27/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;28/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;01/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;02/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;03/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;04/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;05/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;06/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;07/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;08/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable even-cell&quot; data-med=&quot;Metronidazole&quot;
+                    title=&quot;09/03/2026&quot;></div>
+                <div class=&quot;grid-cell label medname sticky-med med-trigger dimmable &quot;
+                    data-med=&quot;Piperacillin + Tazobactam&quot; title=&quot;Click to filter by Piperacillin +
+                    Tazobactam&quot;>Piperacillin + Tazobactam</div>
+                <div class=&quot;grid-cell dot-val sticky-doses dimmable &quot; data-med=&quot;Piperacillin +
+                    Tazobactam&quot;><span class=&quot;pill&quot; title=&quot;Piperacillin + Tazobactam - Total Doses:
+                        29&quot;>29</span></div>
+                <div class=&quot;grid-cell dot-val sticky-dot dimmable &quot; data-med=&quot;Piperacillin +
+                    Tazobactam&quot;><span class=&quot;pill&quot; title=&quot;Piperacillin + Tazobactam - Total Days of
+                        Therapy: 9&quot;>9</span></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;24/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;25/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;26/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;27/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;28/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;29/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;30/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;31/12/2025&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;01/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;Piperacillin + Tazobactam - 02/01/2026 / 1 admin&amp;#10;Indication: OTHER: See
+                    Instructions&amp;#10;Discontinue Reason:&quot;>1</div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;Piperacillin + Tazobactam - 03/01/2026 / 4 admins&amp;#10;Indication: OTHER: See
+                    Instructions&amp;#10;Discontinue Reason:&quot;>4</div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;Piperacillin + Tazobactam - 04/01/2026 / 4 admins&amp;#10;Indication: OTHER: See
+                    Instructions&amp;#10;Discontinue Reason:&quot;>4</div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;Piperacillin + Tazobactam - 05/01/2026 / 4 admins&amp;#10;Indication: OTHER: See
+                    Instructions&amp;#10;Discontinue Reason:&quot;>4</div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;Piperacillin + Tazobactam - 06/01/2026 / 4 admins&amp;#10;Indication: OTHER: See
+                    Instructions&amp;#10;Discontinue Reason:&quot;>4</div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;Piperacillin + Tazobactam - 07/01/2026 / 3 admins&amp;#10;Indication: OTHER: See
+                    Instructions&amp;#10;Discontinue Reason:&quot;>3</div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;Piperacillin + Tazobactam - 08/01/2026 / 4 admins&amp;#10;Indication: OTHER: See
+                    Instructions&amp;#10;Discontinue Reason:&quot;>4</div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;Piperacillin + Tazobactam - 09/01/2026 / 4 admins&amp;#10;Indication: OTHER: See
+                    Instructions&amp;#10;Discontinue Reason:&quot;>4</div>
+                <div class=&quot;grid-cell cell on dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;Piperacillin + Tazobactam - 10/01/2026 / 1 admin&amp;#10;Indication: OTHER: See
+                    Instructions&amp;#10;Discontinue Reason:&quot;>1</div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;11/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;12/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;13/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;14/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;15/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;16/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;17/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;18/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;19/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;20/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;21/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;22/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;23/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;24/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;25/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;26/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;27/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;28/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;29/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;30/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;31/01/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;01/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;02/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;03/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;04/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;05/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;06/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;07/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;08/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;09/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;10/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;11/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;12/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;13/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;14/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;15/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;16/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;17/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;18/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;19/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;20/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;21/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;22/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;23/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;24/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;25/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;26/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;27/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;28/02/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;01/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;02/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;03/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;04/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;05/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;06/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;07/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;08/03/2026&quot;></div>
+                <div class=&quot;grid-cell cell dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;
+                    title=&quot;09/03/2026&quot;></div>
+                <div class=&quot;grid-cell label sticky-med sum-border always-on&quot;>Antimicrobial Summary</div>
+                <div class=&quot;grid-cell label sticky-doses sum-border always-on&quot;></div>
+                <div class=&quot;grid-cell label dot-val sticky-dot sum-border always-on&quot;><span
+                        class=&quot;pill&quot; title=&quot;Total Summary Days of Therapy: 27&quot;>27</span></div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-yes sum-border&quot; title=&quot;Antimicrobial Administered&quot;>
+                </div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell cell sum-no sum-border&quot; title=&quot;No Antimicrobials&quot;></div>
+                <div class=&quot;grid-cell label enc-label-cell sticky-med always-on&quot;>Encounter</div>
+                <div class=&quot;grid-cell label sticky-doses always-on&quot;></div>
+                <div class=&quot;grid-cell label sticky-dot always-on&quot;></div>
+                <div class=&quot;grid-cell cell enc-c2&quot; title=&quot;FIN: I000807564 | Arrive: 24/12/2025 | DC:
+                    26/12/2025&quot;><span class=&quot;enc-cell-text&quot;>&amp;#9650;</span></div>
+                <div class=&quot;grid-cell cell enc-c2&quot; title=&quot;FIN: I000807564 | Arrive: 24/12/2025 | DC:
+                    26/12/2025&quot;><span class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell enc-c2&quot; title=&quot;FIN: I000807564 | Arrive: 24/12/2025 | DC:
+                    26/12/2025&quot;><span class=&quot;enc-cell-text&quot;>&amp;#9660;</span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell enc-c3&quot; title=&quot;FIN: I000808071 | Arrive: 30/12/2025 | DC:
+                    10/01/2026&quot;><span class=&quot;enc-cell-text&quot;>&amp;#9650;</span></div>
+                <div class=&quot;grid-cell cell enc-c3&quot; title=&quot;FIN: I000808071 | Arrive: 30/12/2025 | DC:
+                    10/01/2026&quot;><span class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell enc-c3&quot; title=&quot;FIN: I000808071 | Arrive: 30/12/2025 | DC:
+                    10/01/2026&quot;><span class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell enc-c3&quot; title=&quot;FIN: I000808071 | Arrive: 30/12/2025 | DC:
+                    10/01/2026&quot;><span class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell enc-c3&quot; title=&quot;FIN: I000808071 | Arrive: 30/12/2025 | DC:
+                    10/01/2026&quot;><span class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell enc-c3&quot; title=&quot;FIN: I000808071 | Arrive: 30/12/2025 | DC:
+                    10/01/2026&quot;><span class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell enc-c3&quot; title=&quot;FIN: I000808071 | Arrive: 30/12/2025 | DC:
+                    10/01/2026&quot;><span class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell enc-c3&quot; title=&quot;FIN: I000808071 | Arrive: 30/12/2025 | DC:
+                    10/01/2026&quot;><span class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell enc-c3&quot; title=&quot;FIN: I000808071 | Arrive: 30/12/2025 | DC:
+                    10/01/2026&quot;><span class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell enc-c3&quot; title=&quot;FIN: I000808071 | Arrive: 30/12/2025 | DC:
+                    10/01/2026&quot;><span class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell enc-c3&quot; title=&quot;FIN: I000808071 | Arrive: 30/12/2025 | DC:
+                    10/01/2026&quot;><span class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell enc-c3&quot; title=&quot;FIN: I000808071 | Arrive: 30/12/2025 | DC:
+                    10/01/2026&quot;><span class=&quot;enc-cell-text&quot;>&amp;#9660;</span></div>
+                <div class=&quot;grid-cell cell enc-c4&quot; title=&quot;FIN: E000261457 | Arrive: 11/01/2026 | DC:
+                    11/01/2026&quot;><span class=&quot;enc-cell-text&quot;>&amp;#9670;</span></div>
+                <div class=&quot;grid-cell cell enc-c2&quot; title=&quot;FIN: E000261532 | Arrive: 12/01/2026 | DC:
+                    12/01/2026&quot;><span class=&quot;enc-cell-text&quot;>&amp;#9670;</span></div>
+                <div class=&quot;grid-cell cell enc-c1&quot; title=&quot;FIN: I000809300 | Arrive: 13/01/2026 | DC:
+                    18/01/2026&quot;><span class=&quot;enc-cell-text&quot;>&amp;#9650;</span></div>
+                <div class=&quot;grid-cell cell enc-c1&quot; title=&quot;FIN: I000809300 | Arrive: 13/01/2026 | DC:
+                    18/01/2026&quot;><span class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell enc-c1&quot; title=&quot;FIN: I000809300 | Arrive: 13/01/2026 | DC:
+                    18/01/2026&quot;><span class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell enc-c1&quot; title=&quot;FIN: I000809300 | Arrive: 13/01/2026 | DC:
+                    18/01/2026&quot;><span class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell enc-c1&quot; title=&quot;FIN: I000809300 | Arrive: 13/01/2026 | DC:
+                    18/01/2026&quot;><span class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell enc-c1&quot; title=&quot;FIN: I000809300 | Arrive: 13/01/2026 | DC:
+                    18/01/2026&quot;><span class=&quot;enc-cell-text&quot;>&amp;#9660;</span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+                <div class=&quot;grid-cell cell spacer-bit&quot; title=&quot; &quot;><span
+                        class=&quot;enc-cell-text&quot;> </span></div>
+            </div>
         </div>
-        <div id='frame-msg'>Select a tab to load a report.</div>
-        <iframe id='content-frame'></iframe>
-    </body>
-</html>
+        <h2>Antimicrobial Order Details</h2>
+        <div style=&quot;width: 100%; overflow-x: auto; display: block;&quot;>
+            <table class=&quot;data-tbl&quot;>
+                <colgroup>
+                    <col style=&quot;width:200px&quot;>
+                    <col style=&quot;width:40px&quot;>
+                    <col style=&quot;width:40px&quot;>
+                    <col style=&quot;width:100px&quot;>
+                    <col style=&quot;display:none;&quot;>
+                    <col style=&quot;width:350px&quot;>
+                    <col style=&quot;width:250px&quot;>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Medication</th>
+                        <th style=&quot;text-align:center;&quot;>Doses</th>
+                        <th style=&quot;text-align:center;&quot;>DOT</th>
+                        <th>Target Dose</th>
+                        <th style=&quot;display:none;&quot;>Dose</th>
+                        <th>Order Detail</th>
+                        <th>Indication</th>
+                        <th>Start Date</th>
+                        <th>Latest Status</th>
+                        <th>Status Date</th>
+                        <th>Order ID</th>
+                        <th>FIN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class=&quot;dimmable &quot; data-med=&quot;cefUROXime&quot;>
+                        <td>cefUROXime <span style=&quot;color:#888;font-size:10px;&quot;>(Anes)</span></td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>1</span></td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>1</span></td>
+                        <td> </td>
+                        <td style=&quot;display:none;&quot;> </td>
+                        <td>intraVENOUS, once ONLY</td>
+                        <td></td>
+                        <td>24/12/2025</td>
+                        <td>Completed</td>
+                        <td>24/12/2025</td>
+                        <td>543540261</td>
+                        <td><a href=&quot;javascript:APPLINK(0,'Powerchart.exe','/PERSONID=12690542
+                                /ENCNTRID=28182268')&quot;>I000807564</a></td>
+                    </tr>
+                    <tr class=&quot;dimmable even&quot; data-med=&quot;Metronidazole&quot;>
+                        <td>Metronidazole <span style=&quot;color:#888;font-size:10px;&quot;>(Anes)</span></td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>1</span></td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>1</span></td>
+                        <td> </td>
+                        <td style=&quot;display:none;&quot;> </td>
+                        <td>intraVENOUS, once ONLY</td>
+                        <td></td>
+                        <td>24/12/2025</td>
+                        <td>Completed</td>
+                        <td>24/12/2025</td>
+                        <td>543540263</td>
+                        <td><a href=&quot;javascript:APPLINK(0,'Powerchart.exe','/PERSONID=12690542
+                                /ENCNTRID=28182268')&quot;>I000807564</a></td>
+                    </tr>
+                    <tr class=&quot;dimmable &quot; data-med=&quot;Co-amoxiclav&quot;>
+                        <td>Co-amoxiclav </td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>8</span></td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>1</span></td>
+                        <td> </td>
+                        <td style=&quot;display:none;&quot;>1.2 g</td>
+                        <td>1.2 g, intraVENOUS, every EIGHT hours</td>
+                        <td>Endometritis</td>
+                        <td>31/12/2025</td>
+                        <td>Discontinued</td>
+                        <td>02/01/2026</td>
+                        <td>544983839</td>
+                        <td><a href=&quot;javascript:APPLINK(0,'Powerchart.exe','/PERSONID=12690542
+                                /ENCNTRID=28223549')&quot;>I000808071</a></td>
+                    </tr>
+                    <tr class=&quot;dimmable even&quot; data-med=&quot;Gentamicin&quot;>
+                        <td>Gentamicin </td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>2</span></td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>1</span></td>
+                        <td> 5 mg/kg</td>
+                        <td style=&quot;display:none;&quot;>392.5 mg</td>
+                        <td>392.5 mg, intraVENOUS, every TWENTY FOUR hours</td>
+                        <td>OTHER: See Instructions</td>
+                        <td>02/01/2026</td>
+                        <td>Discontinued</td>
+                        <td>04/01/2026</td>
+                        <td>545564809</td>
+                        <td><a href=&quot;javascript:APPLINK(0,'Powerchart.exe','/PERSONID=12690542
+                                /ENCNTRID=28223549')&quot;>I000808071</a></td>
+                    </tr>
+                    <tr class=&quot;dimmable &quot; data-med=&quot;Piperacillin + Tazobactam&quot;>
+                        <td>Piperacillin + Tazobactam </td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>29</span></td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>1</span></td>
+                        <td> </td>
+                        <td style=&quot;display:none;&quot;>4.5 g</td>
+                        <td>4.5 g, intraVENOUS, every SIX hours</td>
+                        <td>OTHER: See Instructions</td>
+                        <td>02/01/2026</td>
+                        <td>Discontinued</td>
+                        <td>11/01/2026</td>
+                        <td>545645801</td>
+                        <td><a href=&quot;javascript:APPLINK(0,'Powerchart.exe','/PERSONID=12690542
+                                /ENCNTRID=28223549')&quot;>I000808071</a></td>
+                    </tr>
+                    <tr class=&quot;dimmable even&quot; data-med=&quot;Ertapenem&quot;>
+                        <td>Ertapenem </td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>1</span></td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>1</span></td>
+                        <td> </td>
+                        <td style=&quot;display:none;&quot;>1 g</td>
+                        <td>1 g, intraVENOUS, every TWENTY FOUR hours</td>
+                        <td>OTHER: See Instructions</td>
+                        <td>10/01/2026</td>
+                        <td>Discontinued</td>
+                        <td>11/01/2026</td>
+                        <td>548024425</td>
+                        <td><a href=&quot;javascript:APPLINK(0,'Powerchart.exe','/PERSONID=12690542
+                                /ENCNTRID=28223549')&quot;>I000808071</a></td>
+                    </tr>
+                    <tr class=&quot;dimmable &quot; data-med=&quot;Metronidazole&quot;>
+                        <td>Metronidazole </td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>1</span></td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>1</span></td>
+                        <td> </td>
+                        <td style=&quot;display:none;&quot;>400 mg</td>
+                        <td>400 mg, oral, every EIGHT hours</td>
+                        <td>Per micro / ID recommendation</td>
+                        <td>10/01/2026</td>
+                        <td>Discontinued</td>
+                        <td>11/01/2026</td>
+                        <td>548058773</td>
+                        <td><a href=&quot;javascript:APPLINK(0,'Powerchart.exe','/PERSONID=12690542
+                                /ENCNTRID=28223549')&quot;>I000808071</a></td>
+                    </tr>
+                    <tr class=&quot;dimmable even&quot; data-med=&quot;Ertapenem&quot;>
+                        <td>Ertapenem </td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>1</span></td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>1</span></td>
+                        <td> </td>
+                        <td style=&quot;display:none;&quot;>1 g</td>
+                        <td>1 g, intraVENOUS, once ONLY</td>
+                        <td>Per micro / ID recommendation</td>
+                        <td>11/01/2026</td>
+                        <td>Completed</td>
+                        <td>11/01/2026</td>
+                        <td>548255019</td>
+                        <td><a href=&quot;javascript:APPLINK(0,'Powerchart.exe','/PERSONID=12690542
+                                /ENCNTRID=28355864')&quot;>E000261457</a></td>
+                    </tr>
+                    <tr class=&quot;dimmable &quot; data-med=&quot;Ertapenem&quot;>
+                        <td>Ertapenem </td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>1</span></td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>1</span></td>
+                        <td> </td>
+                        <td style=&quot;display:none;&quot;>1 g</td>
+                        <td>1 g, intraVENOUS, once ONLY</td>
+                        <td>Per micro / ID recommendation</td>
+                        <td>12/01/2026</td>
+                        <td>Completed</td>
+                        <td>12/01/2026</td>
+                        <td>548496391</td>
+                        <td><a href=&quot;javascript:APPLINK(0,'Powerchart.exe','/PERSONID=12690542
+                                /ENCNTRID=28360144')&quot;>E000261532</a></td>
+                    </tr>
+                    <tr class=&quot;dimmable even&quot; data-med=&quot;Meropenem&quot;>
+                        <td>Meropenem </td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>15</span></td>
+                        <td class=&quot;dot-val&quot;><span class=&quot;pill&quot;>1</span></td>
+                        <td> </td>
+                        <td style=&quot;display:none;&quot;>1 g</td>
+                        <td>1 g, intraVENOUS, every EIGHT hours</td>
+                        <td>Abdominal Wound Infection</td>
+                        <td>13/01/2026</td>
+                        <td>Discontinued</td>
+                        <td>18/01/2026</td>
+                        <td>548882013</td>
+                        <td><a href=&quot;javascript:APPLINK(0,'Powerchart.exe','/PERSONID=12690542
+                                /ENCNTRID=28357373')&quot;>I000809300</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <script>document.addEventListener(& quot; DOMContentLoaded & quot;, function() { const items = document.querySelectorAll(& quot;.dimmable & quot;); const triggers = document.querySelectorAll(& quot;.med - trigger & quot;); triggers.forEach(function (trigger) { trigger.addEventListener(& quot; click & quot;, function() { const medName = this.getAttribute(& quot; data - med & quot;); const isCurrentlyActive = this.classList.contains(& quot; active - filter & quot;); triggers.forEach(function (t) { t.classList.remove(& quot; active - filter & quot;); }); if (isCurrentlyActive) { items.forEach(function (el) { el.classList.remove(& quot; dimmed & quot;); });      } else { this.classList.add(& quot; active - filter & quot;); items.forEach(function (el) { if (el.getAttribute(& quot; data - med & quot;) === medName || el.classList.contains(& quot; always - on & quot;)) { el.classList.remove(& quot; dimmed & quot;); } else { el.classList.add(& quot; dimmed & quot;); } });      }    });  }); items.forEach(function (item) { item.addEventListener(& quot; mouseenter & quot;, function() { var med = this.getAttribute(& quot; data - med & quot;); if (med) { var siblings = document.querySelectorAll('.dimmable[data-med=&quot;' + med + '&quot;]'); siblings.forEach(function (el) { el.classList.add(& quot; row - hover & quot;); });      }    }); item.addEventListener(& quot; mouseleave & quot;, function() { var med = this.getAttribute(& quot; data - med & quot;); if (med) { var siblings = document.querySelectorAll('.dimmable[data-med=&quot;' + med + '&quot;]'); siblings.forEach(function (el) { el.classList.remove(& quot; row - hover & quot;); }); }    });  });});</script>
+        <div id=&quot;debug-panel&quot; style=&quot;display:none;margin-top:24px;padding:10px 14px;border:1px solid
+            #f0a000;background:#fffbe6;color:#333;font-size:11px;font-family:monospace;&quot;><b
+                style=&quot;font-size:12px;&quot;>&amp;#9888; DEBUG INFO (Array Buffer Mode Active)</b><br />Patient ID:
+            12690542 &amp;nbsp;|&amp;nbsp; Lookback: 180 days<br />MRN: H01132363<br />Admission: 09/02/2018
+            &amp;nbsp;|&amp;nbsp; LOS: 2951 days<br />Query window: 10/09/2025 to 09/03/2026<br />Total admin_rec
+            entries: 60 (PowerChart: 58, SN Anesthesia: 2)<br />Chart date range: 24-DEC-2025 to 09-MAR-2026 (76
+            days)<br />html_chart array count: 9<br />html_table array count: 10<br /></div>
+        <div style=&quot;margin-top:24px;padding-top:8px;border-top:1px solid
+            var(--border-dark);color:#666;font-size:12px;&quot;>Generated on 2026-03-09 15:15:00.</div>
+    </div>
+</body>
+
+</html>"
