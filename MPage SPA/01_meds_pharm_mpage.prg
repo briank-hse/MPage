@@ -577,7 +577,7 @@ SET _memory_reply_string = BUILD2(
     ~    var filter = state.filters[i];~,
     ~    if (filter.filter_type !== filterType) { continue; }~,
     ~    var isActive = filterType === 'category' ? state.categoryCode === filter.code : Number(state.rangeDays || 0) === Number(filter.days || 0);~,
-    ~    var action = filterType === 'category' ? ('setSearchCategory(' + JSON.stringify(filter.code) + ')') : ('setSearchRange(' + Number(filter.days || 0) + ')');~,
+    ~    var action = filterType === 'category' ? ('setSearchCategory(' + JSON.stringify(String(filter.code || '')).replace(/"/g, '&quot;') + ')') : ('setSearchRange(' + Number(filter.days || 0) + ')');~,
     ~    html.push('<button class="filter-pill' + (isActive ? ' active' : '') + '" onclick="' + action + '">' + escapeHtml(filter.label || filter.code || '') + '</button>');~,
     ~  }~,
     ~  return html.join('');~,
