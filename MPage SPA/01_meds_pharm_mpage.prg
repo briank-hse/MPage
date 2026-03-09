@@ -911,7 +911,7 @@ SET _memory_reply_string = BUILD2(
     ~    var medName = row.medication_name || '';~,
     ~    var cellBg = i % 2 === 1 ? ' even-cell' : '';~,
     ~    html.push('<div class="grid-cell label medname sticky-med med-trigger dimmable' + cellBg + '" data-med="' + escapeAttr(medName) + '"');~,
-    ~    html.push(' title="Click to filter by ' + escapeAttr(medName) + '" onclick="toggleMicroMedication(this)">' + escapeHtml(medName) + ' <span class="filter-icon">&#x25BC;</span></div>');~,
+    ~    html.push(' title="Click to filter by ' + escapeAttr(medName) + '" onclick="toggleMicroMedication(this)">' + escapeHtml(medName) + '</div>');~,
     ~    html.push('<div class="grid-cell dot-val sticky-doses dimmable' + cellBg + '" data-med="' + escapeAttr(medName) + '">');~,
     ~    html.push('<span class="pill" title="' + escapeAttr(medName + ' - Total Doses: ' + (row.doses_total || 0)) + '">' + escapeHtml(row.doses_total || 0) + '</span></div>');~,
     ~    html.push('<div class="grid-cell dot-val sticky-dot dimmable' + cellBg + '" data-med="' + escapeAttr(medName) + '">');~,
