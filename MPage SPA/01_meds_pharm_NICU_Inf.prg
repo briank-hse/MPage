@@ -18,6 +18,11 @@ DECLARE iSpace        = i4
 DECLARE i             = i4
 DECLARE stat          = i4
 DECLARE vPid          = vc WITH NOCONSTANT(TRIM(CNVTSTRING($pid), 3))
+DECLARE v_html_idx    = i4 WITH NOCONSTANT(0)
+DECLARE v_html_part   = vc WITH NOCONSTANT(""), MAXLEN=65534
+DECLARE v_html_text   = vc WITH NOCONSTANT(""), MAXLEN=65534
+DECLARE v_html_attr   = vc WITH NOCONSTANT(""), MAXLEN=65534
+DECLARE v_html_attr2  = vc WITH NOCONSTANT(""), MAXLEN=65534
 
 FREE RECORD inf_data
 RECORD inf_data (
@@ -52,6 +57,11 @@ RECORD reply (
         2 patient_id = f8
         2 encntr_id  = f8
         2 item_count = i4
+    1 ui
+        2 html_parts[*]
+            3 text = vc
+        2 css_parts[*]
+            3 text = vc
     1 infusions[*]
         2 order_id           = f8
         2 start_dt_tm        = vc
@@ -255,6 +265,124 @@ ELSE
         SET reply->infusions[reply->meta.item_count].print_flags = 0
     ENDFOR
 ENDIF
+
+SET stat = ALTERLIST(reply->ui.css_parts, 2)
+SET reply->ui.css_parts[1].text = BUILD2(
+    ".module-nicu{max-width:850px}"
+    , ".module-nicu .hdr-main{background:#2d5f8b;color:#fff;font-size:14px;font-weight:700;padding:10px;border:1px solid #2d5f8b}"
+    , ".module-nicu .hdr-sub{background:#eff6f9;color:#555;font-weight:700;border:1px solid #ccc}"
+    , ".module-nicu .no-data{background:#fff;color:#555;font-style:italic;text-align:center;padding:20px}"
+    , ".module-nicu .nicu-tbl{width:850px;border:1px solid #ccc}"
+    , ".module-nicu .nicu-tbl th{background:#f2f2f2;color:#333;font-weight:700;text-align:left;padding:8px;border:1px solid #ccc}"
+    , ".module-nicu .nicu-tbl td{padding:8px;border:1px solid #e0e0e0;vertical-align:middle}"
+    , ".module-nicu .print-btn{display:inline-block;background:#fff;color:#333;border:1px solid #999;padding:5px 15px;text-decoration:none;font-weight:700;font-size:11px;cursor:pointer;vertical-align:middle;margin-left:5px}"
+    , ".module-nicu .print-btn:hover{background:#e6f7ff;border-color:#0066cc;text-decoration:none}"
+    , ".module-nicu .scan-input{width:92px;margin-right:0;padding:4px;height:26px;vertical-align:middle;color:#999;font-style:italic}"
+)
+SET reply->ui.css_parts[2].text = BUILD2(
+    ".module-nicu .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;opacity:.4;z-index:9998}"
+    , ".module-nicu .modal-box{display:none;position:fixed;top:30%;left:50%;width:350px;margin-left:-175px;background:#fefefe;border:1px solid #888;z-index:9999;font-family:'Segoe UI',Tahoma,sans-serif;box-shadow:2px 2px 10px #aaa}"
+    , ".module-nicu .modal-header{padding:8px 10px;background:#f0f0f0;border-bottom:1px solid #ddd}"
+    , ".module-nicu .modal-title{font-weight:700;font-size:14px;color:#333}"
+    , ".module-nicu .modal-body{padding:15px 10px;font-size:13px;color:#333}"
+    , ".module-nicu .modal-footer{padding:8px 10px;text-align:right;background:#f0f0f0;border-top:1px solid #ddd}"
+    , ".module-nicu .btn-ok{padding:3px 20px;cursor:pointer;font-family:'Segoe UI',Tahoma,sans-serif;font-size:12px}"
+)
+
+SET v_html_idx = 1
+SET stat = ALTERLIST(reply->ui.html_parts, v_html_idx)
+SET reply->ui.html_parts[v_html_idx].text = BUILD2(
+    "<section class='panel module-shell module-nicu'><div class='panel-body'>"
+    , "<div id='nicu-modal-overlay' class='modal-overlay'></div>"
+    , "<div id='nicu-modal-box' class='modal-box'><div class='modal-header'><span class='modal-title'>Incorrect Code Scanned</span></div><div class='modal-body'>Scan does not match expected code.</div><div class='modal-footer'><button id='nicu-modal-ok' class='btn-ok' type='button'>OK</button></div></div>"
+    , "<table class='nicu-tbl' cellspacing='0' cellpadding='0'>"
+    , "<tr><td class='hdr-main' colspan='3'>MN-CMS NICU Infusion Labels</td></tr>"
+    , "<tr><td class='hdr-sub' colspan='3'>Active Infusions</td></tr>"
+    , "<tr><th style='width:20%'>Start Date/Time</th><th style='width:55%'>Infusion</th><th style='width:25%;text-align:center;'>Print Label</th></tr>"
+)
+
+IF (reply->meta.item_count = 0)
+    SET v_html_text = TRIM(reply->status.message, 3)
+    IF (v_html_text = "")
+        SET v_html_text = "No Active Infusions Found"
+    ENDIF
+    SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+    SET v_html_idx = v_html_idx + 1
+    SET stat = ALTERLIST(reply->ui.html_parts, v_html_idx)
+    SET reply->ui.html_parts[v_html_idx].text = BUILD2("<tr><td class='no-data' colspan='3'>", v_html_text, "</td></tr>")
+ELSE
+    FOR (i = 1 TO reply->meta.item_count)
+        SET v_html_attr = TRIM(reply->infusions[i].category_color, 3)
+        IF (v_html_attr = "")
+            SET v_html_attr = "#ffffff"
+        ENDIF
+        SET v_html_attr = REPLACE(REPLACE(REPLACE(v_html_attr, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+        SET v_html_attr = REPLACE(v_html_attr, "'", "&#39;", 0)
+
+        SET v_html_text = TRIM(reply->infusions[i].start_dt_tm, 3)
+        SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+
+        SET v_html_attr2 = TRIM(reply->infusions[i].display_name, 3)
+        SET v_html_attr2 = REPLACE(REPLACE(REPLACE(v_html_attr2, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+
+        SET v_html_part = BUILD2(
+            "<tr><td style='background:", v_html_attr, "'>", v_html_text, "</td>"
+            , "<td style='background:", v_html_attr, "'><strong>", v_html_attr2, "</strong></td>"
+            , "<td style='background:", v_html_attr, ";text-align:center;white-space:nowrap;'>"
+        )
+
+        IF (reply->infusions[i].requires_scan = 1)
+            SET v_html_text = TRIM(CNVTSTRING(reply->infusions[i].order_id, 20, 0), 3)
+            SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+            SET v_html_text = REPLACE(v_html_text, "'", "&#39;", 0)
+            SET v_html_part = BUILD2(v_html_part, "<input id='scan-", v_html_text, "' class='scan-input' type='text' size='12' value='Scan Code' style='color:#999;font-style:italic;' />")
+        ENDIF
+
+        SET v_html_text = TRIM(CNVTSTRING(reply->infusions[i].order_id, 20, 0), 3)
+        SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+        SET v_html_text = REPLACE(v_html_text, "'", "&#39;", 0)
+
+        SET v_html_attr2 = TRIM(reply->infusions[i].expected_scan_code, 3)
+        SET v_html_attr2 = REPLACE(REPLACE(REPLACE(v_html_attr2, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+        SET v_html_attr2 = REPLACE(v_html_attr2, "'", "&#39;", 0)
+
+        SET v_html_attr = TRIM(reply->infusions[i].print_program, 3)
+        SET v_html_attr = REPLACE(REPLACE(REPLACE(v_html_attr, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+        SET v_html_attr = REPLACE(v_html_attr, "'", "&#39;", 0)
+
+        SET v_html_part = BUILD2(
+            v_html_part
+            , "<a class='print-btn' href='#' data-order-id='", v_html_text, "'"
+            , " data-expected-scan-code='", v_html_attr2, "'"
+            , " data-print-program='", v_html_attr, "'"
+        )
+
+        SET v_html_attr = TRIM(reply->infusions[i].print_args, 3)
+        SET v_html_attr = REPLACE(REPLACE(REPLACE(v_html_attr, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+        SET v_html_attr = REPLACE(v_html_attr, "'", "&#39;", 0)
+        SET v_html_part = BUILD2(v_html_part, " data-print-args='", v_html_attr, "'")
+
+        SET v_html_attr = TRIM(CNVTSTRING(reply->infusions[i].print_flags, 20, 0), 3)
+        SET v_html_attr = REPLACE(REPLACE(REPLACE(v_html_attr, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+        SET v_html_attr = REPLACE(v_html_attr, "'", "&#39;", 0)
+        SET v_html_part = BUILD2(v_html_part, " data-print-flags='", v_html_attr, "'>")
+
+        SET v_html_text = TRIM(reply->infusions[i].print_label, 3)
+        IF (v_html_text = "")
+            SET v_html_text = "Print Label"
+        ENDIF
+        SET v_html_text = REPLACE(REPLACE(REPLACE(v_html_text, "&", "&amp;", 0), "<", "&lt;", 0), ">", "&gt;", 0)
+        SET v_html_part = BUILD2(v_html_part, v_html_text, "</a></td></tr>")
+
+        SET v_html_idx = v_html_idx + 1
+        SET stat = ALTERLIST(reply->ui.html_parts, v_html_idx)
+        SET reply->ui.html_parts[v_html_idx].text = v_html_part
+    ENDFOR
+ENDIF
+
+SET v_html_idx = v_html_idx + 1
+SET stat = ALTERLIST(reply->ui.html_parts, v_html_idx)
+SET reply->ui.html_parts[v_html_idx].text = "</table></div></section>"
 
 SET _memory_reply_string = CNVTRECTOJSON(reply)
 END GO
