@@ -1,0 +1,2851 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'/>
+        <meta name='discern' content='XMLCCLREQUEST,APPLINK,CCLLINK'/>
+        <title>Pharmacy SPA Prototype</title>
+        <style>
+            /* Shared shell and utility styles */
+            *,*::before,*::after {
+                box-sizing: border-box
+            }
+
+            body {
+                margin: 0;
+                height: 100vh;
+                overflow: hidden;
+                font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+                font-size: 13px;
+                background: #f4f5f7;
+                color: #333;
+                display: flex;
+                flex-direction: column;
+            }
+
+            a {
+                color: #005b8f;
+                text-decoration: none
+            }
+
+            a:hover {
+                text-decoration: underline
+            }
+
+            .nav-bar {
+                display: flex;
+                align-items: flex-end;
+                background: #fff;
+                border-bottom: 2px solid #ddd;
+                padding: 0 8px;
+                flex-shrink: 0
+            }
+
+            .nav-btn {
+                padding: 8px 16px;
+                margin-right: 4px;
+                cursor: pointer;
+                background: transparent;
+                border: none;
+                border-bottom: 3px solid transparent;
+                color: #666;
+                font-size: 13px;
+                font-family: inherit;
+                white-space: nowrap;
+                outline: none;
+                position: relative;
+                bottom: -2px
+            }
+
+            .nav-btn:hover {
+                background: #f0f4f8;
+                color: #333
+            }
+
+            .nav-btn.active {
+                border-bottom: 3px solid #006f99;
+                color: #006f99;
+                font-weight: 600;
+                background: #fff
+            }
+
+            .status-banner {
+                display: none;
+                padding: 6px 10px;
+                background: #fff;
+                color: #777;
+                font-size: 12px;
+                border-bottom: 1px solid #ddd;
+                flex-shrink: 0
+            }
+
+            .status-banner.visible {
+                display: block
+            }
+
+            .status-banner.error {
+                color: #a12622;
+                background: #fff5f5
+            }
+
+            .status-banner.info {
+                color: #666
+            }
+
+            #app-root {
+                flex: 1;
+                padding: 12px;
+                background: #f4f5f7;
+                overflow: auto
+            }
+
+            .panel {
+                background: #fff;
+                border: 0;
+                box-shadow: none;
+                overflow: hidden
+            }
+
+            .module-shell {
+                width: 100%;
+                margin-right: auto
+            }
+
+            .module-anvs {
+                max-width: 100%;
+                height: 100%
+            }
+
+            .module-search {
+                max-width: 1040px
+            }
+
+            .module-micro {
+                max-width: 100%
+            }
+
+            .module-nicu {
+                max-width: 850px
+            }
+
+            .panel-head {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                padding: 0 0 8px;
+                border-bottom: 0
+            }
+
+            .panel-head h2 {
+                margin: 0;
+                font-size: 18px;
+                color: #005b8f
+            }
+
+            .panel-head p {
+                margin: 4px 0 0;
+                color: #555;
+                font-size: 12px
+            }
+
+            .panel-body {
+                padding: 0
+            }
+
+            .pill,.pill-num {
+                display: inline-block;
+                min-width: 22px;
+                padding: 1px 8px;
+                font-size: 11px;
+                line-height: 16px;
+                background: #eceef1;
+                color: #555;
+                border: 1px solid #d2d6da;
+                border-radius: 999px;
+                text-align: center
+            }
+
+            .sub {
+                color: #444;
+                margin: 4px 0 12px;
+                font-size: 12px
+            }
+
+            .empty-state {
+                padding: 18px 10px;
+                color: #666;
+                font-style: italic
+            }
+
+            .error-state {
+                padding: 20px;
+                background: #fff;
+                border: 1px solid #e4caca;
+                color: #7f1d1d
+            }
+
+            .error-state h2 {
+                margin: 0 0 6px;
+                font-size: 18px;
+                color: #a12622
+            }
+
+            .error-state p {
+                margin: 0;
+                line-height: 1.5
+            }
+
+            .loading {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                min-height: 180px;
+                padding: 28px 12px;
+                color: #666;
+                background: #fff;
+                border: 1px solid #ddd
+            }
+
+            .loading-spinner {
+                width: 18px;
+                height: 18px;
+                border: 3px solid #d7e6ef;
+                border-top-color: #0c7aa6;
+                border-radius: 50%;
+                animation: spin .9s linear infinite
+            }
+
+            table.data-grid,table.legacy-grid,table.chart-tbl,table.data-tbl,table.nicu-tbl {
+                width: 100%;
+                border-collapse: collapse;
+                border: 1px solid #b5b5b5;
+                background: #fff
+            }
+
+            table.data-grid th,table.data-grid td,table.legacy-grid th,table.legacy-grid td,table.chart-tbl th,table.chart-tbl td,table.data-tbl th,table.data-tbl td,table.nicu-tbl th,table.nicu-tbl td {
+                padding: 6px 8px;
+                border: 1px solid #d6d9dd;
+                vertical-align: top;
+                text-align: left;
+                font-size: 12px
+            }
+
+            table.data-grid th,table.legacy-grid th,table.chart-tbl th.label,table.data-tbl th,table.nicu-tbl th {
+                background: #e7eaee;
+                color: #2f3c4b;
+                font-weight: 600
+            }
+
+            table.data-grid tr.even td,table.legacy-grid tr.even td,table.data-tbl tr.even td {
+                background: #fafbfc
+            }
+
+            .doc-block {
+                border: 1px solid #d6d9dd;
+                background: #fff;
+                margin-bottom: 10px
+            }
+
+            .doc-head {
+                padding: 6px 8px;
+                background: #eef3f7;
+                border-bottom: 1px solid #d6d9dd;
+                color: #2f3c4b;
+                font-weight: 600
+            }
+
+            .doc-meta {
+                padding: 4px 8px;
+                color: #666;
+                font-size: 11px;
+                border-bottom: 1px solid #eef1f4
+            }
+
+            .doc-text {
+                padding: 8px;
+                white-space: pre-wrap;
+                line-height: 1.4
+            }
+
+            .search-preview {
+                max-height: 140px;
+                overflow: auto;
+                white-space: pre-wrap;
+                line-height: 1.35
+            }
+
+            .search-bar {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+                align-items: center;
+                margin: 6px 0 10px
+            }
+
+            .filter-pill {
+                display: inline-block;
+                padding: 3px 9px;
+                border: 1px solid #c9d2da;
+                background: #f7f9fb;
+                color: #4d5b67;
+                border-radius: 12px;
+                font-size: 11px
+            }
+
+            .hr-flag {
+                display: inline-block;
+                margin-right: 4px;
+                padding: 1px 6px;
+                background: #fff3cd;
+                border: 1px solid #e0c36f;
+                border-radius: 9px;
+                color: #6a4a00;
+                font-size: 10px
+            }
+
+            .print-btn,.link-btn,.btn-link {
+                display: inline-block;
+                background: #fff;
+                color: #333;
+                border: 1px solid #999;
+                padding: 4px 12px;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 11px;
+                cursor: pointer;
+                vertical-align: middle
+            }
+
+            .print-btn:hover,.link-btn:hover,.btn-link:hover {
+                background: #e6f7ff;
+                border-color: #0066cc;
+                text-decoration: none
+            }
+
+            .link-btn.secondary {
+                background: #fff;
+                color: #005b8f
+            }
+
+            .print-hint {
+                margin-top: 4px;
+                color: #666;
+                font-size: 11px
+            }
+
+            .scan-input {
+                width: 92px;
+                margin-right: 6px;
+                padding: 4px;
+                border: 1px solid #999;
+                font-family: 'Courier New',monospace;
+                font-size: 11px
+            }
+
+            .debug {
+                margin: 0;
+                padding: 12px;
+                background: #1e1e1e;
+                color: #d4d4d4;
+                overflow: auto;
+                font-size: 11px;
+                font-family: monospace
+            }
+
+            /* Antimicrobial module */
+            .module-micro {
+                max-width: 100%
+            }
+
+            .module-micro h1 {
+                font-size: 18px;
+                margin: 0 0 8px;
+                color: #111;
+                font-weight: 400
+            }
+
+            .module-micro h2 {
+                font-size: 15px;
+                margin: 16px 0 8px;
+                padding-top: 0;
+                color: #111
+            }
+
+            .module-micro .legend {
+                margin-top: 6px;
+                color: #555;
+                font-size: 12px
+            }
+
+            .module-micro .chart-wrap {
+                overflow-x: auto;
+                overflow-y: hidden;
+                margin-bottom: 12px;
+                width: 100%;
+                display: block
+            }
+
+            .module-micro .chart-grid {
+                display: grid;
+                background: #fff;
+                width: max-content;
+                border-top: 1px solid #b5b5b5;
+                border-left: 1px solid #b5b5b5;
+                font-size: 12px
+            }
+
+            .module-micro .grid-cell {
+                border-right: 1px solid #b5b5b5;
+                border-bottom: 1px solid #b5b5b5;
+                background: #fff;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                min-width: 0
+            }
+
+            .module-micro .grid-cell.label,.module-micro table.data-tbl th {
+                background: rgba(231,234,238,.85)!important;
+                color: #2f3c4b;
+                font-weight: 600!important;
+                padding: 4px 8px
+            }
+
+            .module-micro .grid-cell.label {
+                min-height: 26px
+            }
+
+            .module-micro .sticky-med {
+                position: sticky;
+                left: 0;
+                z-index: 10;
+                background: #fff;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                width: 180px;
+                min-width: 180px;
+                max-width: 180px
+            }
+
+            .module-micro .sticky-doses {
+                position: sticky;
+                left: 180px;
+                z-index: 10;
+                background: #fff;
+                width: 40px;
+                min-width: 40px;
+                max-width: 40px;
+                text-align: center
+            }
+
+            .module-micro .sticky-dot {
+                position: sticky;
+                left: 220px;
+                z-index: 10;
+                background: #fff;
+                box-shadow: 2px 0 5px -2px rgba(0,0,0,.2);
+                width: 40px;
+                min-width: 40px;
+                max-width: 40px;
+                text-align: center
+            }
+
+            .module-micro .hdr-intersect {
+                z-index: 20!important
+            }
+
+            .module-micro .even-cell {
+                background: #f5f5f5!important
+            }
+
+            .module-micro .even-cell.sticky-med,.module-micro .even-cell.sticky-doses,.module-micro .even-cell.sticky-dot {
+                background: #f5f5f5!important
+            }
+
+            .module-micro .dot-val {
+                text-align: center!important;
+                vertical-align: middle!important;
+                justify-content: center
+            }
+
+            .module-micro .grid-cell.medname {
+                padding: 2px 6px;
+                font-size: 14px!important
+            }
+
+            .module-micro .med-trigger {
+                cursor: pointer;
+                color: #0086ce;
+                transition: background .2s
+            }
+
+            .module-micro .med-trigger:hover {
+                background-color: #e0f0ff!important
+            }
+
+            .module-micro .filter-icon {
+                font-size: 8px;
+                opacity: .5;
+                margin-left: 6px
+            }
+
+            .module-micro .dimmed {
+                opacity: .15;
+                filter: grayscale(100%);
+                pointer-events: none;
+                transition: opacity .3s ease
+            }
+
+            .module-micro .dimmable {
+                transition: opacity .3s ease
+            }
+
+            .module-micro .active-filter {
+                background-color: #e0f0ff!important;
+                font-weight: 700
+            }
+
+            .module-micro .cell,.module-micro .tick {
+                width: 14px;
+                min-width: 14px;
+                max-width: 14px;
+                justify-content: center;
+                font-size: 10px
+            }
+
+            .module-micro .cell {
+                color: transparent
+            }
+
+            .module-micro .tick {
+                height: 30px;
+                position: relative;
+                overflow: visible!important;
+                align-items: flex-end;
+                padding-bottom: 2px;
+                color: #555
+            }
+
+            .module-micro .tick .mo {
+                position: absolute;
+                bottom: 16px;
+                left: 50%;
+                transform: translateX(-50%);
+                color: #555;
+                white-space: nowrap;
+                pointer-events: none
+            }
+
+            .module-micro .grid-cell.axis-header {
+                display: block;
+                line-height: 18px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis
+            }
+
+            .module-micro .cell.on {
+                background: transparent!important;
+                color: #fff!important;
+                font-weight: 600;
+                position: relative;
+                z-index: 1
+            }
+
+            .module-micro .cell.on::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+                width: 14px;
+                height: 14px;
+                background: #0086ce;
+                border-radius: 1px;
+                z-index: -1
+            }
+
+            .module-micro .cell.on:empty::before {
+                content: '1'
+            }
+
+            .module-micro .cell.sum-yes {
+                background: #ed1c24!important
+            }
+
+            .module-micro .cell.sum-no {
+                background: #a8d08d!important
+            }
+
+            .module-micro .sum-border {
+                border-top: 2px solid #a0a0a0!important
+            }
+
+            .module-micro .pill,.module-micro .pill-num {
+                display: inline-block;
+                padding: 2px 6px;
+                border-radius: 12px;
+                background: #eef;
+                color: #334;
+                line-height: 1;
+                border: 0;
+                min-width: 22px;
+                text-align: center
+            }
+
+            .module-micro .cell.enc-c1 {
+                background: #e0f0ff!important
+            }
+
+            .module-micro .cell.enc-c2 {
+                background: #d1e8ff!important
+            }
+
+            .module-micro .cell.enc-c3 {
+                background: #e8f4fd!important
+            }
+
+            .module-micro .cell.enc-c4 {
+                background: #d9f0fa!important
+            }
+
+            .module-micro .enc-border {
+                border-top: 1px solid #c8dff5!important
+            }
+
+            .module-micro .enc-label-cell {
+                font-size: 11px!important
+            }
+
+            .module-micro .enc-label-cell a,.module-micro .fin-link {
+                color: #0086ce;
+                text-decoration: none;
+                font-weight: 600
+            }
+
+            .module-micro .enc-label-cell a:hover,.module-micro .fin-link:hover {
+                text-decoration: underline
+            }
+
+            .module-micro .enc-cell-text {
+                font-size: 8px;
+                font-weight: 700;
+                color: #111;
+                line-height: 1
+            }
+
+            .module-micro .table-wrap {
+                width: 100%;
+                overflow-x: auto;
+                display: block
+            }
+
+            .module-micro table.data-tbl {
+                width: 100%;
+                min-width: 1000px;
+                border-collapse: separate;
+                border-spacing: 0;
+                margin-top: 12px;
+                font-size: 12px;
+                border-top: 1px solid #b5b5b5;
+                border-left: 1px solid #b5b5b5;
+                border-bottom: 2px solid #a0a0a0;
+                table-layout: fixed
+            }
+
+            .module-micro table.data-tbl th,.module-micro table.data-tbl td {
+                border-right: 1px solid #b5b5b5;
+                border-bottom: 1px solid #b5b5b5;
+                padding: 4px 6px;
+                text-align: left;
+                background: #fff;
+                word-break: break-word;
+                overflow-wrap: break-word;
+                overflow: hidden;
+                transition: background-color .2s
+            }
+
+            .module-micro table.data-tbl th:nth-child(1),.module-micro table.data-tbl td:nth-child(1) {
+                box-sizing: border-box!important;
+                width: 180px;
+                min-width: 180px;
+                max-width: 180px
+            }
+
+            .module-micro table.data-tbl th:nth-child(2),.module-micro table.data-tbl td:nth-child(2) {
+                box-sizing: border-box!important;
+                width: 40px;
+                min-width: 40px;
+                max-width: 40px;
+                text-align: center;
+                padding: 4px 0
+            }
+
+            .module-micro table.data-tbl th:nth-child(3),.module-micro table.data-tbl td:nth-child(3) {
+                box-sizing: border-box!important;
+                width: 40px;
+                min-width: 40px;
+                max-width: 40px;
+                text-align: center;
+                padding: 4px 0
+            }
+
+            .module-micro table.data-tbl tr.even td {
+                background: #f5f5f5
+            }
+
+            .module-micro table.data-tbl tbody tr:last-child td {
+                border-bottom: none
+            }
+
+            .module-micro table.data-tbl tbody tr:hover td {
+                background-color: #f0f7ff;
+                cursor: default
+            }
+
+            .module-micro .micro-footer {
+                margin-top: 24px;
+                padding-top: 8px;
+                border-top: 1px solid #ddd;
+                color: #666;
+                font-size: 12px
+            }
+
+            /* NICU module */
+            .hdr-main {
+                background: #2d5f8b;
+                color: #fff;
+                font-size: 14px;
+                font-weight: 700;
+                padding: 10px;
+                border: 1px solid #2d5f8b
+            }
+
+            .hdr-sub {
+                background: #eff6f9;
+                color: #555;
+                font-weight: 700;
+                border: 1px solid #ccc
+            }
+
+            .no-data {
+                background: #fff;
+                color: #555;
+                font-style: italic;
+                text-align: center;
+                padding: 20px
+            }
+
+            /* ANVS module */
+            .gp-container {
+                display: flex;
+                height: 100%;
+                border: 1px solid #ddd;
+                background: #fff
+            }
+
+            .gp-sidebar {
+                width: 160px;
+                min-width: 160px;
+                background: #f8f9fa;
+                border-right: 1px solid #ddd;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column
+            }
+
+            .gp-nav-item {
+                display: block;
+                padding: 9px 12px;
+                color: #333;
+                font-size: 12px;
+                border-bottom: 1px solid #eee;
+                cursor: pointer;
+                line-height: 1.3;
+                position: relative;
+                user-select: none
+            }
+
+            .gp-nav-item:hover {
+                background: #e2e6ea;
+                color: #006f99
+            }
+
+            .gp-nav-item.active-nav {
+                background: #006f99;
+                color: #fff
+            }
+
+            .gp-nav-item.active-nav .nav-rel {
+                color: #cce4f0
+            }
+
+            .nav-date {
+                font-weight: 600;
+                display: block
+            }
+
+            .nav-rel {
+                font-size: 11px;
+                color: #888;
+                display: block;
+                margin-top: 2px
+            }
+
+            .nav-flags {
+                display: flex;
+                gap: 3px;
+                margin-top: 4px;
+                flex-wrap: wrap
+            }
+
+            .nav-flag {
+                font-size: 9px;
+                padding: 1px 4px;
+                border-radius: 3px;
+                font-weight: 700;
+                letter-spacing: .3px
+            }
+
+            .nav-flag-highrisk {
+                background: #fde8e8;
+                color: #c0392b;
+                border: 1px solid #f5c6c6
+            }
+
+            .nav-flag-search {
+                background: #fff3cd;
+                color: #856404;
+                border: 1px solid #ffc107
+            }
+
+            .nav-flag-compare {
+                background: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb
+            }
+
+            .compare-sel {
+                outline: 3px solid #28a745 !important;
+                background: #f0fff4 !important
+            }
+
+            .gp-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                min-width: 0
+            }
+
+            .gp-content-header {
+                background: #f4f6f8;
+                padding: 6px 12px;
+                border-bottom: 1px solid #ddd;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                flex-shrink: 0;
+                flex-wrap: wrap;
+                position: sticky;
+                top: 0;
+                z-index: 2
+            }
+
+            .gp-counter {
+                font-size: 12px;
+                color: #666;
+                white-space: nowrap;
+                margin-right: 4px
+            }
+
+            .gp-content-header .nav-btn,.tool-btn,.match-nav .nav-btn {
+                background: #fff;
+                border: 1px solid #ccc;
+                padding: 5px 10px;
+                cursor: pointer;
+                font-size: 12px;
+                color: #333;
+                border-radius: 3px;
+                white-space: nowrap;
+                bottom: auto;
+                position: static;
+                margin-right: 0
+            }
+
+            .gp-content-header .nav-btn:hover,.tool-btn:hover,.match-nav .nav-btn:hover {
+                background: #e9ecef;
+                color: #333
+            }
+
+            .gp-content-header .nav-btn:disabled,.match-nav .nav-btn:disabled {
+                opacity: .4;
+                cursor: default
+            }
+
+            .tool-btn.active {
+                background: #006f99;
+                color: #fff;
+                border-color: #005a7a
+            }
+
+            .tool-btn.active:hover {
+                background: #005a7a;
+                color: #fff
+            }
+
+            .search-box {
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                padding: 4px 8px;
+                font-size: 12px;
+                outline: none;
+                background: #fff
+            }
+
+            .gp-content-header .search-box {
+                width: 180px
+            }
+
+            .search-box:focus {
+                border-color: #006f99;
+                box-shadow: 0 0 0 2px rgba(0,111,153,.15)
+            }
+
+            .search-info {
+                font-size: 11px;
+                color: #666;
+                white-space: nowrap
+            }
+
+            .header-sep {
+                width: 1px;
+                height: 20px;
+                background: #ddd;
+                margin: 0 2px
+            }
+
+            .compare-banner {
+                background: #d4edda;
+                border-bottom: 1px solid #c3e6cb;
+                padding: 5px 12px;
+                font-size: 12px;
+                color: #155724;
+                display: none;
+                align-items: center;
+                gap: 8px;
+                flex-shrink: 0
+            }
+
+            .compare-banner.visible {
+                display: flex
+            }
+
+            .gp-scroll-main {
+                flex: 1;
+                overflow-y: auto;
+                padding: 20px;
+                padding-bottom: 80vh;
+                background: #fff
+            }
+
+            .compare-pane {
+                display: none;
+                flex: 1;
+                overflow: hidden;
+                background: #fff
+            }
+
+            .compare-pane.visible {
+                display: flex
+            }
+
+            .compare-col {
+                flex: 1;
+                overflow-y: auto;
+                padding: 16px;
+                border-right: 1px solid #ddd
+            }
+
+            .compare-col:last-child {
+                border-right: none
+            }
+
+            .compare-col-header {
+                font-size: 12px;
+                font-weight: 700;
+                color: #006f99;
+                margin-bottom: 12px;
+                padding-bottom: 6px;
+                border-bottom: 2px solid #006f99
+            }
+
+            .blob-record {
+                border: 1px solid #ddd;
+                margin-bottom: 24px;
+                padding: 20px;
+                border-left: 4px solid #6f42c1;
+                background: #fff;
+                border-radius: 3px;
+                box-shadow: 0 1px 3px rgba(0,0,0,.05)
+            }
+
+            .blob-meta {
+                background: #f8f9fa;
+                padding: 10px 15px;
+                font-size: 13px;
+                margin-bottom: 15px;
+                font-weight: 600;
+                color: #444;
+                border: 1px solid #eee;
+                border-radius: 3px
+            }
+
+            .med-section {
+                margin-bottom: 16px
+            }
+
+            .med-section-heading {
+                font-size: 12px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: .5px;
+                color: #555;
+                padding: 4px 0;
+                margin-bottom: 6px;
+                border-bottom: 1px solid #eee
+            }
+
+            .med-section-heading.sec-prescribed {
+                color: #006f99;
+                border-color: #006f99
+            }
+
+            .med-section-heading.sec-discontinued {
+                color: #c0392b;
+                border-color: #c0392b
+            }
+
+            .med-section-heading.sec-vaccination {
+                color: #27ae60;
+                border-color: #27ae60
+            }
+
+            .med-section-heading.sec-other {
+                color: #666;
+                border-color: #ccc
+            }
+
+            .med-section-empty {
+                font-size: 12px;
+                color: #aaa;
+                font-style: italic;
+                padding: 2px 0 4px
+            }
+
+            .med-row {
+                display: flex;
+                align-items: baseline;
+                gap: 6px;
+                padding: 3px 6px;
+                border-radius: 3px;
+                font-size: 13px;
+                line-height: 1.5;
+                color: #222;
+                margin-bottom: 2px
+            }
+
+            .med-row:hover {
+                background: #f5f5f5
+            }
+
+            .med-row.non-dated {
+                padding-left: 6px;
+                color: #555
+            }
+
+            .med-date {
+                font-size: 11px;
+                color: #888;
+                white-space: nowrap;
+                flex-shrink: 0
+            }
+
+            .med-text {
+                flex: 1
+            }
+
+            .highrisk-pill {
+                display: inline-block;
+                font-size: 9px;
+                font-weight: 700;
+                padding: 1px 5px;
+                border-radius: 3px;
+                background: #fde8e8;
+                color: #c0392b;
+                border: 1px solid #f5c6c6;
+                margin-left: 5px;
+                vertical-align: middle;
+                letter-spacing: .3px
+            }
+
+            .search-hit {
+                background: #fff3cd;
+                border-left: 3px solid #ffc107 !important
+            }
+
+            mark {
+                background: #ffc107;
+                color: #000;
+                border-radius: 2px;
+                padding: 0 2px
+            }
+
+            .diff-added {
+                background: #eafaf1 !important;
+                border-left: 3px solid #27ae60
+            }
+
+            .diff-removed {
+                background: #fdf3f2 !important;
+                border-left: 3px solid #e74c3c;
+                text-decoration: line-through;
+                color: #999 !important
+            }
+
+            .diff-changed {
+                background: #fef9ec !important;
+                border-left: 3px solid #f39c12
+            }
+
+            .diff-tag {
+                font-size: 10px;
+                font-weight: 700;
+                padding: 1px 5px;
+                border-radius: 3px;
+                margin-left: 4px;
+                flex-shrink: 0
+            }
+
+            .diff-tag-added {
+                background: #27ae60;
+                color: #fff
+            }
+
+            .diff-tag-removed {
+                background: #e74c3c;
+                color: #fff
+            }
+
+            .diff-tag-changed {
+                background: #f39c12;
+                color: #fff
+            }
+
+            /* Search module */
+            .module-search {
+                max-width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column
+            }
+
+            .search-header {
+                padding: 12px;
+                background: #f4f6f8;
+                border: 1px solid #ddd;
+                border-bottom: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                flex-shrink: 0
+            }
+
+            .search-row-1,.search-row-2 {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex-wrap: wrap
+            }
+
+            .search-wrapper {
+                position: relative;
+                display: inline-flex;
+                align-items: center;
+                max-width: 100%
+            }
+
+            .module-search .search-box {
+                width: 350px;
+                max-width: 100%;
+                padding: 6px 30px 6px 10px;
+                font-size: 13px
+            }
+
+            .clear-btn {
+                position: absolute;
+                right: 8px;
+                background: transparent;
+                border: none;
+                font-size: 18px;
+                font-weight: 700;
+                color: #999;
+                cursor: pointer;
+                line-height: 1;
+                padding: 0;
+                display: none
+            }
+
+            .clear-btn.visible {
+                display: block
+            }
+
+            .clear-btn:hover {
+                color: #333
+            }
+
+            .search-count {
+                font-size: 12px;
+                color: #666;
+                white-space: nowrap
+            }
+
+            .search-category-bar {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap
+            }
+
+            .module-search .filter-pill {
+                padding: 4px 10px;
+                font-size: 11px;
+                border: 1px solid #ccc;
+                border-radius: 12px;
+                background: #fff;
+                color: #555;
+                cursor: pointer;
+                user-select: none
+            }
+
+            .module-search .filter-pill.active {
+                background: #006f99;
+                color: #fff;
+                border-color: #004c66;
+                font-weight: 600
+            }
+
+            .date-dropdown {
+                padding: 4px 6px;
+                font-size: 11px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                outline: none;
+                background: #fff
+            }
+
+            .search-layout {
+                display: flex;
+                flex: 1;
+                min-height: 520px;
+                border: 1px solid #ddd;
+                background: #fff;
+                overflow: hidden
+            }
+
+            .search-sidebar {
+                width: 300px;
+                min-width: 300px;
+                background: #fafafa;
+                border-right: 1px solid #ddd;
+                overflow-y: auto
+            }
+
+            .doc-item {
+                padding: 10px 12px;
+                border-bottom: 1px solid #eee;
+                cursor: pointer
+            }
+
+            .doc-item:hover {
+                background: #e2e6ea
+            }
+
+            .doc-item.active {
+                background: #006f99;
+                color: #fff
+            }
+
+            .doc-item.active .doc-meta {
+                color: #cce4f0
+            }
+
+            .doc-meta {
+                font-size: 11px;
+                color: #666;
+                margin-bottom: 4px;
+                line-height: 1.35
+            }
+
+            .doc-title {
+                font-size: 13px;
+                font-weight: 600;
+                line-height: 1.35
+            }
+
+            .raw-title {
+                vertical-align: middle
+            }
+
+            .doc-preview {
+                font-size: 12px;
+                color: #444;
+                line-height: 1.35;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                margin-top: 4px
+            }
+
+            .doc-item.active .doc-preview {
+                color: #f3fbff
+            }
+
+            .viewer-container {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                background: #fff;
+                min-width: 0
+            }
+
+            .match-nav {
+                padding: 8px 15px;
+                background: #e2f0f5;
+                border-bottom: 1px solid #b3d4e0;
+                display: none;
+                align-items: center;
+                gap: 10px;
+                font-size: 12px;
+                flex-shrink: 0
+            }
+
+            .viewer {
+                flex: 1;
+                padding: 20px;
+                overflow-y: auto;
+                line-height: 1.5;
+                font-size: 13px
+            }
+
+            .search-doc-header {
+                padding-bottom: 12px;
+                margin-bottom: 16px;
+                border-bottom: 1px solid #ddd
+            }
+
+            .search-doc-title {
+                font-size: 18px;
+                color: #005b8f;
+                margin: 0 0 6px
+            }
+
+            .search-doc-meta {
+                font-size: 12px;
+                color: #555;
+                line-height: 1.5
+            }
+
+            .search-doc-body {
+                white-space: pre-wrap;
+                line-height: 1.5;
+                font-size: 13px;
+                color: #222
+            }
+
+            .search-empty {
+                padding: 18px 14px;
+                color: #666;
+                font-style: italic
+            }
+
+            .type-badge {
+                display: inline-block;
+                font-size: 9px;
+                padding: 1px 4px;
+                border-radius: 3px;
+                background: #e0e0e0;
+                color: #333;
+                margin-right: 5px;
+                vertical-align: middle
+            }
+
+            .viewer mark.active-match {
+                background: #ff9800;
+                color: #fff;
+                box-shadow: 0 0 0 1px #e65100
+            }
+
+            .legend {
+                margin-top: 6px;
+                color: #555;
+                font-size: 12px
+            }
+
+            /* Responsive helpers */
+            @media (max-width: 1100px) {
+                .search-layout,.gp-container {
+                    flex-direction:column
+                }
+
+                .search-sidebar,.gp-sidebar {
+                    width: 100%;
+                    min-width: 0;
+                    max-height: 220px;
+                    border-right: 0;
+                    border-bottom: 1px solid #ddd
+                }
+
+                .compare-pane.visible {
+                    flex-direction: column
+                }
+
+                .compare-col {
+                    border-right: 0;
+                    border-bottom: 1px solid #ddd
+                }
+
+                .gp-scroll-main,.viewer {
+                    padding: 12px
+                }
+
+                .module-search .search-box {
+                    width: 100%
+                }
+            }
+
+            @keyframes spin {
+                from {
+                    transform: rotate(0deg)
+                }
+
+                to {
+                    transform: rotate(360deg)
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class='nav-bar'>
+            <button class='nav-btn' data-module='ANVS' onclick="loadTab('ANVS')">GP Meds</button>
+            <button class='nav-btn' data-module='SEARCH' onclick="loadTab('SEARCH')">Search</button>
+            <button class='nav-btn' data-module='MICRO' onclick="loadTab('MICRO')">Antimicrobial</button>
+            <button class='nav-btn' data-module='NICU' onclick="loadTab('NICU')">NICU Labels</button>
+        </div>
+        <div id='app-status' class='status-banner' aria-live='polite'></div>
+        <div id='app-root'></div>
+        <script>
+            /* Bootstrap and shell config */
+            var USER_ID = 180876.00;
+            var PATIENT_ID = 12690542.00;
+            var ENCNTR_ID = 28648630.00;
+            var TAB_CONFIG = {
+                ANVS: {
+                    label: 'GP Meds',
+                    program: '01_meds_pharm_anvs:group1'
+                },
+                SEARCH: {
+                    label: 'Chart Search',
+                    program: '01_meds_pharm_search:group1',
+                    params: function() {
+                        return '^MINE^,' + USER_ID + '.0,' + PATIENT_ID + '.0,' + ENCNTR_ID + '.0';
+                    }
+                },
+                MICRO: {
+                    label: 'Antimicrobial',
+                    program: '01_meds_pharm_antimicrobial:group1',
+                    params: function() {
+                        return '^MINE^,' + PATIENT_ID + '.0,180';
+                    }
+                },
+                NICU: {
+                    label: 'NICU Labels',
+                    program: '01_meds_pharm_NICU_Inf:group1',
+                    params: function() {
+                        return '^MINE^,' + PATIENT_ID + '.0';
+                    }
+                }
+            };
+            /* Shared shell helpers */
+            function setStatus(message, tone) {
+                var node = document.getElementById('app-status');
+                var classes = ['status-banner'];
+                if (message) {
+                    classes.push('visible');
+                    if (tone) {
+                        classes.push(tone);
+                    }
+                }
+                node.className = classes.join(' ');
+                node.textContent = message || '';
+            }
+            function escapeHtml(value) {
+                return String(value == null ? '' : value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            }
+            function escapeAttr(value) {
+                return escapeHtml(value);
+            }
+            function normalizeScan(value) {
+                return String(value || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+            }
+            function normalizePayload(payload) {
+                function lowerKeys(value) {
+                    var key;
+                    var result;
+                    if (value === null || value === undefined) {
+                        return value;
+                    }
+                    if (Object.prototype.toString.call(value) === '[object Array]') {
+                        result = [];
+                        for (var i = 0; i < value.length; i++) {
+                            result.push(lowerKeys(value[i]));
+                        }
+                        return result;
+                    }
+                    if (typeof value === 'object') {
+                        result = {};
+                        for (key in value) {
+                            if (Object.prototype.hasOwnProperty.call(value, key)) {
+                                result[String(key).toLowerCase()] = lowerKeys(value[key]);
+                            }
+                        }
+                        return result;
+                    }
+                    return value;
+                }
+                var normalized = lowerKeys(payload || {});
+                return normalized.reply || normalized;
+            }
+            /* Shared medication parsing helpers */
+            var SPA_STATE = {
+                anvs: null,
+                search: null,
+                micro: null
+            };
+            var HIGH_RISK_GROUPS = [{
+                label: 'LMWH',
+                terms: ['tinzaparin', 'enoxaparin', 'dalteparin', 'heparin', 'fragmin', 'innohep', 'clexane']
+            }, {
+                label: 'ANTICOAG',
+                terms: ['warfarin', 'apixaban', 'rivaroxaban', 'dabigatran', 'edoxaban', 'coumadin', 'xarelto', 'eliquis', 'pradaxa', 'lixiana']
+            }, {
+                label: 'VALPROATE',
+                terms: ['valproate', 'sodium valproate', 'valproic', 'epilim', 'depakote', 'convulex']
+            }, {
+                label: 'TOPIRAMATE',
+                terms: ['topiramate', 'topamax']
+            }, {
+                label: 'AED',
+                terms: ['levetiracetam', 'carbamazepine', 'phenytoin', 'lamotrigine', 'keppra', 'tegretol', 'epanutin', 'lamictal', 'phenobarbitone', 'phenobarbital']
+            }, {
+                label: 'IMMUNOSUPP',
+                terms: ['methotrexate', 'azathioprine', 'mycophenolate', 'ciclosporin', 'tacrolimus', 'sirolimus', 'everolimus', 'imurel', 'cellcept', 'neoral', 'prograf']
+            }, {
+                label: 'LITHIUM',
+                terms: ['lithium', 'priadel', 'liskonum']
+            }, {
+                label: 'CLOZAPINE',
+                terms: ['clozapine', 'clozaril', 'denzapine']
+            }, {
+                label: 'ISOTRET',
+                terms: ['isotretinoin', 'roaccutane', 'accutane']
+            }, {
+                label: 'THALID',
+                terms: ['thalidomide', 'lenalidomide', 'pomalidomide', 'revlimid', 'imnovid']
+            }, {
+                label: 'AMIODARONE',
+                terms: ['amiodarone', 'cordarone']
+            }, {
+                label: 'DIGOXIN',
+                terms: ['digoxin', 'lanoxin']
+            }, {
+                label: 'INSULIN',
+                terms: ['insulin', 'novorapid', 'lantus', 'humalog', 'levemir', 'tresiba', 'toujeo', 'apidra', 'humulin', 'mixtard', 'novomix']
+            }];
+            var ANVS_SECTION_PATTERNS = [{
+                re: /prescribed med/i,
+                key: 'prescribed',
+                label: 'Prescribed Medications',
+                cls: 'sec-prescribed'
+            }, {
+                re: /discontinued med/i,
+                key: 'discontinued',
+                label: 'Discontinued Medications',
+                cls: 'sec-discontinued'
+            }, {
+                re: /vaccination/i,
+                key: 'vaccination',
+                label: 'Vaccination History',
+                cls: 'sec-vaccination'
+            }];
+            var ANVS_DATE_RE = /^(\d{2}\/\d{2}\/\d{4})\s+(.+)$/;
+            function parseLegacyDateTime(value) {
+                var text = String(value || '').trim();
+                var match = /^(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?$/.exec(text);
+                if (!match) {
+                    return null;
+                }
+                return new Date(Number(match[3]),Number(match[2]) - 1,Number(match[1]),Number(match[4] || 0),Number(match[5] || 0),0,0);
+            }
+            function relativeDateLabel(value) {
+                var dt = parseLegacyDateTime(value);
+                if (!dt) {
+                    return '';
+                }
+                var now = new Date();
+                var diffDays = Math.floor((now.getTime() - dt.getTime()) / 86400000);
+                if (diffDays < 1) {
+                    return 'Today';
+                }
+                if (diffDays < 7) {
+                    return diffDays + ' day' + (diffDays === 1 ? '' : 's') + ' ago';
+                }
+                if (diffDays < 31) {
+                    var weeks = Math.floor(diffDays / 7);
+                    return weeks + ' week' + (weeks === 1 ? '' : 's') + ' ago';
+                }
+                if (diffDays < 365) {
+                    var months = Math.round(diffDays / 30.5);
+                    return months + ' month' + (months === 1 ? '' : 's') + ' ago';
+                }
+                var years = Math.floor(diffDays / 365.25);
+                var remMonths = Math.round((diffDays - (years * 365.25)) / 30.5);
+                return remMonths > 0 ? years + ' yr ' + remMonths + ' mo ago' : years + ' yr' + (years === 1 ? '' : 's') + ' ago';
+            }
+            function getHighRiskMatchesText(text) {
+                var lower = String(text || '').toLowerCase();
+                var hits = [];
+                for (var i = 0; i < HIGH_RISK_GROUPS.length; i++) {
+                    for (var j = 0; j < HIGH_RISK_GROUPS[i].terms.length; j++) {
+                        if (lower.indexOf(HIGH_RISK_GROUPS[i].terms[j]) >= 0) {
+                            hits.push(HIGH_RISK_GROUPS[i].label);
+                            break;
+                        }
+                    }
+                }
+                return hits;
+            }
+            function highlightText(text, term) {
+                var safe = escapeHtml(text || '');
+                if (!term) {
+                    return safe;
+                }
+                var search = String(term).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                return safe.replace(new RegExp('(' + search + ')','gi'), '<mark>$1</mark>');
+            }
+            function decodeTextEntities(value) {
+                return String(value || '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+            }
+            function parseBlobSections(rawText) {
+                var lines = String(rawText || '').replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+                var sections = [];
+                var current = null;
+                for (var i = 0; i < lines.length; i++) {
+                    var line = decodeTextEntities(lines[i]).trim();
+                    var isHeader = false;
+                    if (!line) {
+                        continue;
+                    }
+                    for (var s = 0; s < ANVS_SECTION_PATTERNS.length; s++) {
+                        if (ANVS_SECTION_PATTERNS[s].re.test(line)) {
+                            if (current) {
+                                sections.push(current);
+                            }
+                            current = {
+                                key: ANVS_SECTION_PATTERNS[s].key,
+                                label: ANVS_SECTION_PATTERNS[s].label,
+                                cls: ANVS_SECTION_PATTERNS[s].cls,
+                                rows: []
+                            };
+                            isHeader = true;
+                            break;
+                        }
+                    }
+                    if (isHeader) {
+                        continue;
+                    }
+                    if (!current) {
+                        current = {
+                            key: 'other',
+                            label: '',
+                            cls: 'sec-other',
+                            rows: []
+                        };
+                    }
+                    var match = ANVS_DATE_RE.exec(line);
+                    if (match) {
+                        current.rows.push({
+                            date: match[1],
+                            text: match[2]
+                        });
+                    } else {
+                        current.rows.push({
+                            date: '',
+                            text: line
+                        });
+                    }
+                }
+                if (current) {
+                    sections.push(current);
+                }
+                return sections;
+            }
+            function extractDrugKey(text) {
+                var tokens = String(text || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim().split(/\s+/);
+                var stopWords = ['mg', 'ml', 'mcg', 'ug', 'g', 'tablet', 'tablets', 'capsule', 'capsules', 'injection', 'solution', 'cream', 'ointment', 'patch', 'spray', 'inhaler', 'drops', 'puff', 'puffs', 'unit', 'units', 'iu'];
+                var key = [];
+                for (var i = 0; i < Math.min(tokens.length, 6); i++) {
+                    if (!tokens[i]) {
+                        continue;
+                    }
+                    if (/^\d/.test(tokens[i]) || stopWords.indexOf(tokens[i]) >= 0) {
+                        break;
+                    }
+                    key.push(tokens[i]);
+                    if (key.length >= 3) {
+                        break;
+                    }
+                }
+                return key.join(' ');
+            }
+            function diffAnvsItems(itemA, itemB) {
+                function getSectionRows(item, key) {
+                    for (var i = 0; i < item.sections.length; i++) {
+                        if (item.sections[i].key === key) {
+                            return item.sections[i].rows;
+                        }
+                    }
+                    return [];
+                }
+                function normalizeRowText(text) {
+                    return String(text || '').replace(/\s+/g, ' ').trim().toLowerCase();
+                }
+                function diffSectionRows(rowsA, rowsB) {
+                    var metaA = [];
+                    var metaB = [];
+                    var exactB = {};
+                    var keyB = {};
+                    var diffA = [];
+                    var diffB = [];
+                    for (var a = 0; a < rowsA.length; a++) {
+                        metaA.push({
+                            norm: normalizeRowText(rowsA[a].text),
+                            key: extractDrugKey(rowsA[a].text) || normalizeRowText(rowsA[a].text)
+                        });
+                    }
+                    for (var b = 0; b < rowsB.length; b++) {
+                        metaB.push({
+                            norm: normalizeRowText(rowsB[b].text),
+                            key: extractDrugKey(rowsB[b].text) || normalizeRowText(rowsB[b].text)
+                        });
+                        if (!exactB[metaB[b].norm]) {
+                            exactB[metaB[b].norm] = [];
+                        }
+                        exactB[metaB[b].norm].push(b);
+                    }
+                    for (var x = 0; x < metaA.length; x++) {
+                        var exactMatches = exactB[metaA[x].norm];
+                        if (exactMatches && exactMatches.length) {
+                            var exactIndex = exactMatches.shift();
+                            diffA[x] = {
+                                type: 'unchanged'
+                            };
+                            diffB[exactIndex] = {
+                                type: 'unchanged'
+                            };
+                        }
+                    }
+                    for (var y = 0; y < metaB.length; y++) {
+                        if (diffB[y]) {
+                            continue;
+                        }
+                        if (!keyB[metaB[y].key]) {
+                            keyB[metaB[y].key] = [];
+                        }
+                        keyB[metaB[y].key].push(y);
+                    }
+                    for (var c = 0; c < metaA.length; c++) {
+                        if (diffA[c]) {
+                            continue;
+                        }
+                        var keyMatches = keyB[metaA[c].key];
+                        if (keyMatches && keyMatches.length) {
+                            var keyIndex = keyMatches.shift();
+                            diffA[c] = {
+                                type: 'changed'
+                            };
+                            diffB[keyIndex] = {
+                                type: 'changed'
+                            };
+                        } else {
+                            diffA[c] = {
+                                type: 'added'
+                            };
+                        }
+                    }
+                    for (var d = 0; d < metaB.length; d++) {
+                        if (!diffB[d]) {
+                            diffB[d] = {
+                                type: 'removed'
+                            };
+                        }
+                    }
+                    return {
+                        diffA: diffA,
+                        diffB: diffB
+                    };
+                }
+                var sectionKeys = {};
+                var diffABySection = {};
+                var diffBBySection = {};
+                for (var i = 0; i < itemA.sections.length; i++) {
+                    if (itemA.sections[i].key && itemA.sections[i].key !== 'other') {
+                        sectionKeys[itemA.sections[i].key] = 1;
+                    }
+                }
+                for (var j = 0; j < itemB.sections.length; j++) {
+                    if (itemB.sections[j].key && itemB.sections[j].key !== 'other') {
+                        sectionKeys[itemB.sections[j].key] = 1;
+                    }
+                }
+                for (var key in sectionKeys) {
+                    if (Object.prototype.hasOwnProperty.call(sectionKeys, key)) {
+                        var sectionDiff = diffSectionRows(getSectionRows(itemA, key), getSectionRows(itemB, key));
+                        diffABySection[key] = sectionDiff.diffA;
+                        diffBBySection[key] = sectionDiff.diffB;
+                    }
+                }
+                return {
+                    diffA: diffABySection,
+                    diffB: diffBBySection
+                };
+            }
+            function matchesSearchRange(result, days) {
+                if (!days || Number(days) <= 0) {
+                    return true;
+                }
+                var dt = parseLegacyDateTime(result.event_dt_tm || result.dt_tm || '');
+                if (!dt) {
+                    return false;
+                }
+                return ((new Date()).getTime() - dt.getTime()) <= (Number(days) * 86400000);
+            }
+            function getFilteredSearchResults(state) {
+                var term = String(state.searchTerm || '').toLowerCase();
+                var filtered = [];
+                for (var i = 0; i < state.results.length; i++) {
+                    var result = state.results[i];
+                    if (state.categoryCode !== 'ALL' && String(result.category || '') !== state.categoryCode) {
+                        continue;
+                    }
+                    if (!matchesSearchRange(result, state.rangeDays)) {
+                        continue;
+                    }
+                    if (term) {
+                        var haystack = [result.title || '', result.doc_text || '', result.authored_by || '', result.category || ''].join(' ').toLowerCase();
+                        if (haystack.indexOf(term) < 0) {
+                            continue;
+                        }
+                    }
+                    filtered.push(result);
+                }
+                return filtered;
+            }
+            function setActiveButton(module) {
+                var buttons = document.querySelectorAll('.nav-btn');
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].className = buttons[i].getAttribute('data-module') === module ? 'nav-btn active' : 'nav-btn';
+                }
+            }
+            function showLoading(label) {
+                document.getElementById('app-root').innerHTML = '<section class="panel"><div class="loading"><div class="loading-spinner"></div><div>Loading ' + escapeHtml(label) + '...</div></div></section>';
+            }
+            function renderShellError(label, message) {
+                document.getElementById('app-root').innerHTML = '<section class="panel"><div class="error-state"><h2>' + escapeHtml(label || 'Unable to load module') + '</h2><p>' + escapeHtml(message || 'Unable to load module.') + '</p></div></section>';
+            }
+            function configParams(program) {
+                for (var key in TAB_CONFIG) {
+                    if (Object.prototype.hasOwnProperty.call(TAB_CONFIG, key) && TAB_CONFIG[key].program === program) {
+                        if (typeof TAB_CONFIG[key].params === 'function') {
+                            return TAB_CONFIG[key].params();
+                        }
+                        break;
+                    }
+                }
+                return '^MINE^,' + PATIENT_ID + '.0,' + ENCNTR_ID + '.0';
+            }
+            function callCCL(program) {
+                return new Promise(function(resolve, reject) {
+                    if (!window.external || !window.external.XMLCclRequest) {
+                        reject(new Error('XMLCclRequest is unavailable.'));
+                        return;
+                    }
+                    var xcr = window.external.XMLCclRequest();
+                    xcr.open('GET', program, true);
+                    xcr.onreadystatechange = function() {
+                        if (xcr.readyState !== 4) {
+                            return;
+                        }
+                        if (xcr.status !== 200) {
+                            reject(new Error('CCL request failed for ' + program + ' (' + xcr.status + ').'));
+                            return;
+                        }
+                        var raw = xcr.responseText || '';
+                        if (!raw) {
+                            reject(new Error(program + ' returned an empty response.'));
+                            return;
+                        }
+                        try {
+                            resolve(normalizePayload(JSON.parse(raw)));
+                        } catch (error) {
+                            reject(new Error('Invalid JSON from ' + program + '.'));
+                        }
+                    }
+                    ;
+                    xcr.send(configParams(program));
+                }
+                );
+            }
+            function invokePrint(program, args, flags) {
+                try {
+                    if (typeof window.CCLLINK === 'function') {
+                        window.CCLLINK(program, args, Number(flags || 0));
+                        return true;
+                    }
+                    if (window.external && typeof window.external.CCLLINK === 'function') {
+                        window.external.CCLLINK(program, args, Number(flags || 0));
+                        return true;
+                    }
+                } catch (error) {}
+                setStatus('Printing is unavailable in this context.', 'error');
+                return false;
+            }
+            function invokeAppLink(app, args) {
+                try {
+                    if (typeof window.APPLINK === 'function') {
+                        window.APPLINK(0, app, args);
+                        return true;
+                    }
+                    if (window.external && typeof window.external.APPLINK === 'function') {
+                        window.external.APPLINK(0, app, args);
+                        return true;
+                    }
+                } catch (error) {}
+                setStatus('Chart navigation is unavailable in this context.', 'error');
+                return false;
+            }
+            function handleAppLink(button) {
+                return invokeAppLink(button.getAttribute('data-app'), button.getAttribute('data-args'));
+            }
+            function handleNicuPrint(button) {
+                var expected = normalizeScan(button.getAttribute('data-expected-scan-code'));
+                var orderId = button.getAttribute('data-order-id');
+                if (expected) {
+                    var input = document.getElementById('scan-' + orderId);
+                    var actual = normalizeScan(input ? input.value : '');
+                    if (!(actual === expected || actual.indexOf(expected) === 0)) {
+                        setStatus('Scan does not match the expected PN code.', 'error');
+                        if (input) {
+                            input.value = '';
+                            input.focus();
+                        }
+                        return false;
+                    }
+                }
+                setStatus('');
+                return invokePrint(button.getAttribute('data-print-program'), button.getAttribute('data-print-args'), button.getAttribute('data-print-flags'));
+            }
+            function renderPlaceholder(data, target) {
+                var title = ((data.meta || {}).title) || 'Module Prototype';
+                var message = ((data.status || {}).message) || 'Backend migration is pending.';
+                target.innerHTML = '<section class="panel"><div class="panel-head"><div><h2>' + escapeHtml(title) + '</h2><p>Shell prototype active.</p></div><span class="pill">Stub</span></div><div class="panel-body"><div class="empty-state">' + escapeHtml(message) + '</div></div></section>';
+            }
+            function renderDebug(program, data, target) {
+                target.innerHTML = '<section class="panel"><div class="panel-head"><div><h2>' + escapeHtml(program) + '</h2><p>Debug JSON view</p></div></div><pre class="debug">' + escapeHtml(JSON.stringify(data, null, 2)) + '</pre></section>';
+            }
+            /* ANVS module */
+            function buildAnvsNavHtml(state) {
+                var html = [];
+                if (!state.items.length) {
+                    return '<div class="gp-nav-item" style="color:#888;">No records found</div>';
+                }
+                for (var i = 0; i < state.items.length; i++) {
+                    var item = state.items[i];
+                    var classes = ['gp-nav-item'];
+                    var matchCount = 0;
+                    var flags = [];
+                    if (item.index === state.current) {
+                        classes.push('active-nav');
+                    }
+                    if (state.compareSelected.indexOf(item.index) >= 0) {
+                        classes.push('compare-sel');
+                        flags.push('<span class="nav-flag nav-flag-compare">COMPARE</span>');
+                    }
+                    for (var s = 0; s < item.sections.length; s++) {
+                        for (var r = 0; r < item.sections[s].rows.length; r++) {
+                            if (state.searchTerm && item.sections[s].rows[r].text.toLowerCase().indexOf(state.searchTerm) >= 0) {
+                                matchCount = matchCount + 1;
+                            }
+                        }
+                    }
+                    for (var h = 0; h < item.highRisk.length; h++) {
+                        flags.push('<span class="nav-flag nav-flag-highrisk">' + escapeHtml(item.highRisk[h]) + '</span>');
+                    }
+                    if (matchCount > 0) {
+                        flags.push('<span class="nav-flag nav-flag-search">MATCH</span>');
+                    }
+                    html.push('<div id="nav-' + item.index + '" class="' + classes.join(' ') + '" onclick="handleAnvsNavClick(' + item.index + ')"><span class="nav-date">' + escapeHtml(item.dt_tm || '') + '</span><span class="nav-rel">' + escapeHtml(relativeDateLabel(item.dt_tm || '')) + '</span>' + (flags.length ? '<div class="nav-flags">' + flags.join('') + '</div>' : '') + '</div>');
+                }
+                return html.join('');
+            }
+            function renderAnvsSectionHtml(item, term, diffRows) {
+                var html = [];
+                if (!item.sections.length) {
+                    return '<em style="color:#aaa">No content</em>';
+                }
+                for (var s = 0; s < item.sections.length; s++) {
+                    var section = item.sections[s];
+                    html.push('<div class="med-section">');
+                    if (section.label) {
+                        html.push('<div class="med-section-heading ' + escapeHtml(section.cls || 'sec-other') + '">' + escapeHtml(section.label) + '</div>');
+                    }
+                    if (!section.rows.length) {
+                        html.push('<div class="med-section-empty">None recorded</div>');
+                    }
+                    for (var r = 0; r < section.rows.length; r++) {
+                        var row = section.rows[r];
+                        var sectionDiffRows = diffRows && section.key ? diffRows[section.key] : null;
+                        var diffInfo = sectionDiffRows && sectionDiffRows[r] ? sectionDiffRows[r] : null;
+                        var classes = ['med-row'];
+                        if (!row.date) {
+                            classes.push('non-dated');
+                        }
+                        if (diffInfo && diffInfo.type && diffInfo.type !== 'unchanged') {
+                            classes.push('diff-' + diffInfo.type);
+                        }
+                        if (term && row.text.toLowerCase().indexOf(term) >= 0) {
+                            classes.push('search-hit');
+                        }
+                        html.push('<div class="' + classes.join(' ') + '" data-medtext="' + escapeAttr(row.text || '') + '">');
+                        if (row.date) {
+                            html.push('<span class="med-date">' + escapeHtml(row.date) + '</span>');
+                        }
+                        html.push('<span class="med-text">' + highlightText(row.text || '', term));
+                        var hits = getHighRiskMatchesText(row.text || '');
+                        for (var h = 0; h < hits.length; h++) {
+                            html.push('<span class="highrisk-pill">' + escapeHtml(hits[h]) + '</span>');
+                        }
+                        html.push('</span>');
+                        if (diffInfo && diffInfo.type && diffInfo.type !== 'unchanged') {
+                            html.push('<span class="diff-tag diff-tag-' + diffInfo.type + '">' + escapeHtml(diffInfo.type.toUpperCase()) + '</span>');
+                        }
+                        html.push('</div>');
+                    }
+                    html.push('</div>');
+                }
+                return html.join('');
+            }
+            function buildAnvsListHtml(state) {
+                var html = [];
+                for (var i = 0; i < state.items.length; i++) {
+                    var item = state.items[i];
+                    var diffRows = null;
+                    if (state.diffMode && i < state.items.length - 1) {
+                        diffRows = diffAnvsItems(item, state.items[i + 1]).diffA;
+                    }
+                    html.push('<div id="blob-' + item.index + '" class="blob-record" data-idx="' + item.index + '"><div class="blob-meta">Performed: <span id="blob-meta-text-' + item.index + '">' + escapeHtml(item.dt_tm || '') + ' by ' + escapeHtml(item.prsnl || '') + '</span></div><div id="blob-body-' + item.index + '">' + renderAnvsSectionHtml(item, state.searchTerm, diffRows) + '</div></div>');
+                }
+                if (!state.items.length) {
+                    html.push('<p style="color:#666;font-style:italic;padding:20px;">No GP Medication Details available for this patient.</p>');
+                }
+                return html.join('');
+            }
+            function updateAnvsControls(state) {
+                var counter = document.getElementById('anvs-counter');
+                if (counter) {
+                    counter.textContent = state.items.length ? (state.current + ' of ' + state.items.length) : '0 of 0';
+                }
+                var prev = document.getElementById('btn-prev');
+                var next = document.getElementById('btn-next');
+                if (prev) {
+                    prev.disabled = state.current <= 1;
+                }
+                if (next) {
+                    next.disabled = state.current >= state.items.length;
+                }
+                var diff = document.getElementById('btn-diff');
+                var compare = document.getElementById('btn-compare');
+                if (diff) {
+                    diff.className = state.diffMode ? 'tool-btn active' : 'tool-btn';
+                }
+                if (compare) {
+                    compare.className = state.compareMode ? 'tool-btn active' : 'tool-btn';
+                    compare.textContent = state.compareMode ? 'Exit Compare' : 'Compare';
+                }
+                var info = document.getElementById('anvs-search-info');
+                if (info) {
+                    var matches = 0;
+                    var recordMatches = 0;
+                    for (var i = 0; i < state.items.length; i++) {
+                        var itemMatched = false;
+                        for (var s = 0; s < state.items[i].sections.length; s++) {
+                            for (var r = 0; r < state.items[i].sections[s].rows.length; r++) {
+                                if (state.searchTerm && state.items[i].sections[s].rows[r].text.toLowerCase().indexOf(state.searchTerm) >= 0) {
+                                    matches = matches + 1;
+                                    itemMatched = true;
+                                }
+                            }
+                        }
+                        if (itemMatched) {
+                            recordMatches = recordMatches + 1;
+                        }
+                    }
+                    info.textContent = state.searchTerm ? (matches + ' match' + (matches === 1 ? '' : 'es') + ' in ' + recordMatches + ' record' + (recordMatches === 1 ? '' : 's')) : '';
+                }
+            }
+            function refreshAnvsCompareView(state) {
+                var pane = document.getElementById('anvs-compare-pane');
+                var scrollMain = document.getElementById('anvs-scroll-main');
+                var banner = document.getElementById('compare-banner');
+                if (!pane || !scrollMain || !banner) {
+                    return;
+                }
+                if (state.compareMode && state.compareSelected.length === 2) {
+                    var itemA = state.items[state.compareSelected[0] - 1];
+                    var itemB = state.items[state.compareSelected[1] - 1];
+                    var diff = diffAnvsItems(itemA, itemB);
+                    scrollMain.style.display = 'none';
+                    pane.className = 'compare-pane visible';
+                    banner.className = 'compare-banner visible';
+                    banner.innerHTML = 'Comparing records ' + state.compareSelected[0] + ' and ' + state.compareSelected[1] + ' <button class="tool-btn" onclick="exitAnvsCompareView()">Exit Compare</button>';
+                    document.getElementById('compare-header-a').textContent = itemA.dt_tm + ' by ' + itemA.prsnl;
+                    document.getElementById('compare-header-b').textContent = itemB.dt_tm + ' by ' + itemB.prsnl;
+                    document.getElementById('compare-col-a').innerHTML = renderAnvsSectionHtml(itemA, state.searchTerm, diff.diffA);
+                    document.getElementById('compare-col-b').innerHTML = renderAnvsSectionHtml(itemB, state.searchTerm, diff.diffB);
+                } else {
+                    scrollMain.style.display = '';
+                    pane.className = 'compare-pane';
+                    banner.className = state.compareMode && state.compareSelected.length === 1 ? 'compare-banner visible' : 'compare-banner';
+                    banner.textContent = state.compareMode && state.compareSelected.length === 1 ? 'Compare mode: 1 selected - click another record' : '';
+                }
+            }
+            function refreshAnvsNav(state) {
+                var nav = document.getElementById('anvs-nav');
+                if (nav) {
+                    nav.innerHTML = buildAnvsNavHtml(state);
+                }
+            }
+            function refreshAnvsUI() {
+                var state = SPA_STATE.anvs;
+                if (!state) {
+                    return;
+                }
+                refreshAnvsNav(state);
+                var scrollMain = document.getElementById('anvs-scroll-main');
+                if (scrollMain) {
+                    scrollMain.innerHTML = buildAnvsListHtml(state);
+                }
+                updateAnvsControls(state);
+                refreshAnvsCompareView(state);
+            }
+            function bindAnvsScrollSpy() {
+                var scroller = document.getElementById('anvs-scroll-main');
+                if (!scroller || scroller.getAttribute('data-bound') === '1') {
+                    return;
+                }
+                scroller.setAttribute('data-bound', '1');
+                scroller.addEventListener('scroll', function() {
+                    var state = SPA_STATE.anvs;
+                    if (!state || state.compareMode || Date.now() < Number(state.scrollLockUntil || 0)) {
+                        return;
+                    }
+                    var cards = scroller.querySelectorAll('.blob-record');
+                    var nextCurrent = state.current;
+                    for (var i = 0; i < cards.length; i++) {
+                        if ((cards[i].offsetTop - scroller.scrollTop) <= 40) {
+                            nextCurrent = Number(cards[i].getAttribute('data-idx'));
+                        }
+                    }
+                    if (nextCurrent !== state.current) {
+                        state.current = nextCurrent;
+                        refreshAnvsNav(state);
+                        updateAnvsControls(state);
+                    }
+                });
+            }
+            function handleAnvsNavClick(index) {
+                var state = SPA_STATE.anvs;
+                if (!state) {
+                    return;
+                }
+                if (state.compareMode) {
+                    if (state.compareSelected.indexOf(index) >= 0) {
+                        state.compareSelected.splice(state.compareSelected.indexOf(index), 1);
+                    } else if (state.compareSelected.length < 2) {
+                        state.compareSelected.push(index);
+                    }
+                    refreshAnvsNav(state);
+                    updateAnvsControls(state);
+                    refreshAnvsCompareView(state);
+                    return;
+                }
+                state.current = index;
+                state.scrollLockUntil = Date.now() + 450;
+                refreshAnvsNav(state);
+                updateAnvsControls(state);
+                var card = document.getElementById('blob-' + index);
+                var scroller = document.getElementById('anvs-scroll-main');
+                var anchor = card ? (card.querySelector('.blob-meta') || card) : null;
+                if (anchor && scroller) {
+                    var targetTop = scroller.scrollTop + anchor.getBoundingClientRect().top - scroller.getBoundingClientRect().top - 8;
+                    scroller.scrollTo({
+                        top: Math.max(0, targetTop),
+                        behavior: 'smooth'
+                    });
+                }
+            }
+            function goToAnvsBlob(index) {
+                handleAnvsNavClick(index);
+            }
+            function prevAnvsBlob() {
+                var state = SPA_STATE.anvs;
+                if (state && state.current > 1) {
+                    handleAnvsNavClick(state.current - 1);
+                }
+            }
+            function nextAnvsBlob() {
+                var state = SPA_STATE.anvs;
+                if (state && state.current < state.items.length) {
+                    handleAnvsNavClick(state.current + 1);
+                }
+            }
+            function toggleAnvsDiff() {
+                var state = SPA_STATE.anvs;
+                if (!state) {
+                    return;
+                }
+                state.diffMode = !state.diffMode;
+                refreshAnvsUI();
+            }
+            function toggleAnvsCompare() {
+                var state = SPA_STATE.anvs;
+                if (!state) {
+                    return;
+                }
+                state.compareMode = !state.compareMode;
+                state.compareSelected = [];
+                refreshAnvsUI();
+            }
+            function exitAnvsCompareView() {
+                var state = SPA_STATE.anvs;
+                if (!state) {
+                    return;
+                }
+                state.compareMode = false;
+                state.compareSelected = [];
+                refreshAnvsUI();
+            }
+            function onAnvsSearchInput(value) {
+                var state = SPA_STATE.anvs;
+                if (!state) {
+                    return;
+                }
+                clearTimeout(state.searchTimer);
+                state.searchTimer = setTimeout(function() {
+                    state.searchTerm = String(value || '').toLowerCase();
+                    refreshAnvsUI();
+                    if (state.searchTerm) {
+                        for (var i = 0; i < state.items.length; i++) {
+                            var matched = false;
+                            for (var s = 0; s < state.items[i].sections.length; s++) {
+                                for (var r = 0; r < state.items[i].sections[s].rows.length; r++) {
+                                    if (state.items[i].sections[s].rows[r].text.toLowerCase().indexOf(state.searchTerm) >= 0) {
+                                        matched = true;
+                                        break;
+                                    }
+                                }
+                                if (matched) {
+                                    break;
+                                }
+                            }
+                            if (matched) {
+                                handleAnvsNavClick(state.items[i].index);
+                                break;
+                            }
+                        }
+                    }
+                }, 250);
+            }
+            function renderAnvs(data, target) {
+                var meta = data.meta || {};
+                var items = data.medications || [];
+                var state = {
+                    items: [],
+                    current: 1,
+                    diffMode: false,
+                    compareMode: false,
+                    compareSelected: [],
+                    searchTerm: '',
+                    searchTimer: 0,
+                    scrollLockUntil: 0
+                };
+                for (var i = 0; i < items.length; i++) {
+                    state.items.push({
+                        index: i + 1,
+                        event_id: items[i].event_id,
+                        dt_tm: items[i].dt_tm || '',
+                        prsnl: items[i].prsnl || '',
+                        blob_text: items[i].blob_text || '',
+                        sections: parseBlobSections(items[i].blob_text || ''),
+                        highRisk: getHighRiskMatchesText(items[i].blob_text || '')
+                    });
+                }
+                SPA_STATE.anvs = state;
+                var html = [];
+                html.push('<section class="panel module-shell module-anvs"><div class="gp-container"><div id="anvs-nav" class="gp-sidebar"></div><div class="gp-content"><div class="gp-content-header"><span id="anvs-counter" class="gp-counter"></span><button id="btn-prev" class="nav-btn" onclick="prevAnvsBlob()">&laquo; Previous</button><button id="btn-next" class="nav-btn" onclick="nextAnvsBlob()">Next &raquo;</button><div class="header-sep"></div><button id="btn-diff" class="tool-btn" onclick="toggleAnvsDiff()">Diff</button><button id="btn-compare" class="tool-btn" onclick="toggleAnvsCompare()">Compare</button><div class="header-sep"></div><input id="anvs-search-box" class="search-box" type="search" placeholder="Search medications..." oninput="onAnvsSearchInput(this.value)" /><span id="anvs-search-info" class="search-info"></span></div><div id="compare-banner" class="compare-banner"></div><div id="anvs-compare-pane" class="compare-pane"><div class="compare-col"><div id="compare-header-a" class="compare-col-header"></div><div id="compare-col-a"></div></div><div class="compare-col"><div id="compare-header-b" class="compare-col-header"></div><div id="compare-col-b"></div></div></div><div id="anvs-scroll-main" class="gp-scroll-main"></div></div></div></section>');
+                target.innerHTML = html.join('');
+                refreshAnvsUI();
+                bindAnvsScrollSpy();
+            }
+            /* Search module */
+            function getSearchFilterCount(state, filter) {
+                var count = 0;
+                for (var i = 0; i < state.results.length; i++) {
+                    if (filter.filter_type === 'category') {
+                        if (filter.code === 'ALL' || String(state.results[i].category || '') === filter.code) {
+                            count = count + 1;
+                        }
+                    } else if (filter.filter_type === 'date_range') {
+                        if (matchesSearchRange(state.results[i], filter.days || 0)) {
+                            count = count + 1;
+                        }
+                    }
+                }
+                return count;
+            }
+            function buildSearchFilterHtml(state, filterType) {
+                var html = [];
+                for (var i = 0; i < state.filters.length; i++) {
+                    var filter = state.filters[i];
+                    if (filter.filter_type !== filterType) {
+                        continue;
+                    }
+                    var isActive = filterType === 'category' ? state.categoryCode === filter.code : Number(state.rangeDays || 0) === Number(filter.days || 0);
+                    var action = filterType === 'category' ? ('setSearchCategory(' + JSON.stringify(String(filter.code || '')).replace(/"/g, '&quot;') + ')') : ('setSearchRange(' + Number(filter.days || 0) + ')');
+                    html.push('<button class="filter-pill' + (isActive ? ' active' : '') + '" onclick="' + action + '">' + escapeHtml(filter.label || filter.code || '') + '</button>');
+                }
+                return html.join('');
+            }
+            function buildSearchDateOptionsHtml(state) {
+                var html = [];
+                for (var i = 0; i < state.filters.length; i++) {
+                    var filter = state.filters[i];
+                    if (filter.filter_type !== 'date_range') {
+                        continue;
+                    }
+                    var selected = Number(state.rangeDays || 0) === Number(filter.days || 0) ? ' selected' : '';
+                    html.push('<option value="' + Number(filter.days || 0) + '"' + selected + '>' + escapeHtml(filter.label || 'All Time') + '</option>');
+                }
+                return html.join('');
+            }
+            function getSearchPreviewText(text) {
+                return decodeTextEntities(String(text || '').replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
+            }
+            function highlightSearchDocHtml(text, term) {
+                var html = String(text || '');
+                if (!term) {
+                    return html;
+                }
+                var search = String(term).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                return html.replace(new RegExp('(' + search + ')','gi'), '<mark>$1</mark>');
+            }
+            function buildSearchSidebarHtml(state, filtered) {
+                if (!filtered.length) {
+                    return '<div class="search-empty">No documents match the current filters.</div>';
+                }
+                var html = [];
+                for (var i = 0; i < filtered.length; i++) {
+                    var result = filtered[i];
+                    var active = result.result_index === state.selectedResultIndex ? ' active' : '';
+                    var previewText = getSearchPreviewText(result.doc_text || '');
+                    var flags = [];
+                    if (result.high_risk_labels) {
+                        var labels = String(result.high_risk_labels).split(',');
+                        for (var h = 0; h < labels.length; h++) {
+                            if (labels[h]) {
+                                flags.push('<span class="hr-flag">' + escapeHtml(labels[h]) + '</span>');
+                            }
+                        }
+                    }
+                    html.push('<div class="doc-item' + active + '" onclick="selectSearchResult(' + result.result_index + ')"><div class="doc-meta">' + escapeHtml(result.event_dt_tm || '') + ' | ' + escapeHtml(result.authored_by || '') + '</div>' + '<div class="doc-title"><span class="type-badge">' + escapeHtml(result.source_type || result.category || 'DOC') + '</span><span class="raw-title">' + highlightText(result.title || '', state.searchTerm) + '</span></div>' + (flags.length ? '<div class="nav-flags">' + flags.join('') + '</div>' : '') + '<div class="doc-preview">' + highlightText(previewText.substring(0, 260), state.searchTerm) + '</div></div>');
+                }
+                return html.join('');
+            }
+            function buildSearchViewerHtml(state, filtered) {
+                if (!filtered.length) {
+                    return '<div class="search-empty">No chart documents match the current filters.</div>';
+                }
+                var current = filtered[0];
+                for (var i = 0; i < filtered.length; i++) {
+                    if (filtered[i].result_index === state.selectedResultIndex) {
+                        current = filtered[i];
+                        break;
+                    }
+                }
+                var flags = [];
+                if (current.high_risk_labels) {
+                    var labels = String(current.high_risk_labels).split(',');
+                    for (var h = 0; h < labels.length; h++) {
+                        if (labels[h]) {
+                            flags.push('<span class="hr-flag">' + escapeHtml(labels[h]) + '</span>');
+                        }
+                    }
+                }
+                return '<div class="search-doc-header"><h3 class="search-doc-title">' + escapeHtml(current.title || '') + '</h3><div class="search-doc-meta"><span class="type-badge">' + escapeHtml(current.source_type || current.category || 'DOC') + '</span>' + '<b>Date/Time:</b> ' + escapeHtml(current.event_dt_tm || '') + ' &nbsp; <b>Author:</b> ' + escapeHtml(current.authored_by || '') + (flags.length ? ' &nbsp; ' + flags.join('') : '') + '</div></div>' + '<div class="search-doc-body">' + highlightSearchDocHtml(current.doc_text || '', state.searchTerm) + '</div>';
+            }
+            function highlightActiveSearchMatch() {
+                var state = SPA_STATE.search;
+                var viewer = document.getElementById('search-document-viewer');
+                if (!state || !viewer) {
+                    return;
+                }
+                var matches = viewer.querySelectorAll('mark');
+                for (var i = 0; i < matches.length; i++) {
+                    matches[i].classList.remove('active-match');
+                }
+                if (!matches.length) {
+                    return;
+                }
+                if (state.matchIndex < 0 || state.matchIndex >= matches.length) {
+                    state.matchIndex = 0;
+                }
+                matches[state.matchIndex].classList.add('active-match');
+                matches[state.matchIndex].scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                document.getElementById('search-match-index').textContent = state.matchIndex + 1;
+            }
+            function syncSearchMatchNav() {
+                var state = SPA_STATE.search;
+                var viewer = document.getElementById('search-document-viewer');
+                var nav = document.getElementById('search-match-nav');
+                if (!state || !viewer || !nav) {
+                    return;
+                }
+                var matches = viewer.querySelectorAll('mark');
+                if (!matches.length) {
+                    state.matchIndex = -1;
+                    nav.style.display = 'none';
+                    document.getElementById('search-match-total').textContent = '0';
+                    document.getElementById('search-match-index').textContent = '0';
+                    return;
+                }
+                if (state.matchIndex < 0 || state.matchIndex >= matches.length) {
+                    state.matchIndex = 0;
+                }
+                nav.style.display = 'flex';
+                document.getElementById('search-match-total').textContent = matches.length;
+                highlightActiveSearchMatch();
+            }
+            function refreshSearchUI() {
+                var state = SPA_STATE.search;
+                if (!state) {
+                    return;
+                }
+                var filtered = getFilteredSearchResults(state);
+                if (!filtered.length) {
+                    state.selectedResultIndex = 0;
+                } else {
+                    var found = false;
+                    for (var i = 0; i < filtered.length; i++) {
+                        if (filtered[i].result_index === state.selectedResultIndex) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        state.selectedResultIndex = filtered[0].result_index;
+                        state.matchIndex = 0;
+                    }
+                }
+                document.getElementById('search-category-filters').innerHTML = buildSearchFilterHtml(state, 'category');
+                document.getElementById('search-range-select').innerHTML = buildSearchDateOptionsHtml(state);
+                document.getElementById('search-results-sidebar').innerHTML = buildSearchSidebarHtml(state, filtered);
+                document.getElementById('search-document-viewer').innerHTML = buildSearchViewerHtml(state, filtered);
+                document.getElementById('search-visible-count').textContent = filtered.length + ' displayed';
+                document.getElementById('search-clear-btn').className = 'clear-btn' + (state.searchTerm ? ' visible' : '');
+                syncSearchMatchNav();
+            }
+            function setSearchCategory(code) {
+                var state = SPA_STATE.search;
+                if (!state) {
+                    return;
+                }
+                state.categoryCode = code;
+                state.matchIndex = 0;
+                refreshSearchUI();
+            }
+            function setSearchRange(days) {
+                var state = SPA_STATE.search;
+                if (!state) {
+                    return;
+                }
+                state.rangeDays = Number(days || 0);
+                state.matchIndex = 0;
+                refreshSearchUI();
+            }
+            function selectSearchResult(index) {
+                var state = SPA_STATE.search;
+                if (!state) {
+                    return;
+                }
+                state.selectedResultIndex = Number(index || 0);
+                state.matchIndex = 0;
+                refreshSearchUI();
+            }
+            function stepSearchMatch(direction) {
+                var state = SPA_STATE.search;
+                var viewer = document.getElementById('search-document-viewer');
+                var matches = viewer ? viewer.querySelectorAll('mark') : [];
+                if (!state || !matches.length) {
+                    return;
+                }
+                state.matchIndex = (state.matchIndex + direction + matches.length) % matches.length;
+                highlightActiveSearchMatch();
+            }
+            function clearSearchTerm() {
+                var input = document.getElementById('search-filter-input');
+                var state = SPA_STATE.search;
+                if (!input || !state) {
+                    return;
+                }
+                input.value = '';
+                state.searchTerm = '';
+                state.matchIndex = 0;
+                refreshSearchUI();
+                input.focus();
+            }
+            function onSearchFilterInput(value) {
+                var state = SPA_STATE.search;
+                if (!state) {
+                    return;
+                }
+                clearTimeout(state.inputTimer);
+                state.inputTimer = setTimeout(function() {
+                    state.searchTerm = String(value || '').toLowerCase();
+                    state.matchIndex = 0;
+                    refreshSearchUI();
+                }, 200);
+            }
+            function renderSearch(data, target) {
+                var results = data.results || [];
+                var filters = data.filters || [];
+                SPA_STATE.search = {
+                    results: results,
+                    filters: filters,
+                    categoryCode: 'ALL',
+                    rangeDays: 0,
+                    searchTerm: '',
+                    selectedResultIndex: results.length ? results[0].result_index : 0,
+                    matchIndex: 0,
+                    inputTimer: 0
+                };
+                var html = [];
+                html.push('<section class="panel module-shell module-search"><div class="search-header"><div class="search-row-1"><div class="search-wrapper"><input id="search-filter-input" class="search-box" type="search" placeholder="Search ' + results.length + ' chart documents..." oninput="onSearchFilterInput(this.value)" />' + '<button id="search-clear-btn" class="clear-btn" type="button" title="Clear search" onclick="clearSearchTerm()">&times;</button></div><span id="search-visible-count" class="search-count"></span></div>');
+                html.push('<div class="search-row-2"><select id="search-range-select" class="date-dropdown" onchange="setSearchRange(this.value)"></select><div id="search-category-filters" class="search-category-bar"></div></div></div>');
+                html.push('<div class="search-layout"><div id="search-results-sidebar" class="search-sidebar"></div><div class="search-viewer viewer-container"><div id="search-match-nav" class="match-nav"><span><b id="search-match-index">0</b> of <span id="search-match-total">0</span> matches</span>' + '<button class="nav-btn" type="button" onclick="stepSearchMatch(-1)">&uarr;</button><button class="nav-btn" type="button" onclick="stepSearchMatch(1)">&darr;</button></div><div id="search-document-viewer" class="viewer"></div></div></div></section>');
+                target.innerHTML = html.join('');
+                refreshSearchUI();
+            }
+            /* NICU module */
+            function renderNicuInfusions(data, target) {
+                var meta = data.meta || {};
+                var items = data.infusions || [];
+                var html = [];
+                html.push('<section class="panel module-shell module-nicu"><div class="panel-body">');
+                html.push('<table class="nicu-tbl">');
+                html.push('<tr><td class="hdr-main" colspan="3">MN-CMS NICU Infusion Labels</td></tr>');
+                html.push('<tr><td class="hdr-sub" colspan="3">Active Infusions</td></tr>');
+                html.push('<tr><th style="width:20%">Start Date/Time</th><th style="width:55%">Infusion</th><th style="width:25%;text-align:center;">Print Label</th></tr>');
+                if (!items.length) {
+                    html.push('<tr><td class="no-data" colspan="3">' + escapeHtml(((data.status || {}).message) || 'No Active Infusions Found') + '</td></tr>');
+                } else {
+                    for (var i = 0; i < items.length; i++) {
+                        var item = items[i];
+                        var bg = item.category_color || '#ffffff';
+                        html.push('<tr>');
+                        html.push('<td style="background:' + escapeAttr(bg) + '">' + escapeHtml(item.start_dt_tm || '') + '</td>');
+                        html.push('<td style="background:' + escapeAttr(bg) + '"><strong>' + escapeHtml(item.display_name || '') + '</strong></td>');
+                        html.push('<td style="background:' + escapeAttr(bg) + ';text-align:center;white-space:nowrap;">');
+                        if (Number(item.requires_scan || 0) === 1) {
+                            html.push('<input id="scan-' + escapeAttr(item.order_id) + '" class="scan-input" type="text" value="Scan Code" />');
+                        }
+                        html.push('<button class="print-btn" data-order-id="' + escapeAttr(item.order_id) + '"' + ' data-expected-scan-code="' + escapeAttr(item.expected_scan_code || '') + '"' + ' data-print-program="' + escapeAttr(item.print_program || '') + '"' + ' data-print-args="' + escapeAttr(item.print_args || '') + '"' + ' data-print-flags="' + escapeAttr(item.print_flags || '0') + '"' + ' onclick="handleNicuPrint(this)">' + escapeHtml(item.print_label || 'Print Label') + '</button>');
+                        html.push('</td></tr>');
+                    }
+                }
+                html.push('</table></div></section>');
+                target.innerHTML = html.join('');
+            }
+            /* Antimicrobial module */
+            function formatMicroAxisDate(isoDate) {
+                var match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(isoDate || ''));
+                var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+                if (!match) {
+                    return String(isoDate || '');
+                }
+                return match[3] + '-' + months[Number(match[2]) - 1] + '-' + match[1];
+            }
+            function formatMicroCellDate(isoDate) {
+                var match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(isoDate || ''));
+                if (!match) {
+                    return String(isoDate || '');
+                }
+                return match[3] + '/' + match[2] + '/' + match[1];
+            }
+            function decodeMicroTitle(value) {
+                return decodeTextEntities(String(value || '').replace(/&#10;/g, '\n').replace(/&#13;/g, ''));
+            }
+            function formatMicroTimestamp(value) {
+                function pad(n) {
+                    return n < 10 ? '0' + n : String(n);
+                }
+                var dt = value instanceof Date ? value : new Date();
+                return dt.getFullYear() + '-' + pad(dt.getMonth() + 1) + '-' + pad(dt.getDate()) + ' ' + pad(dt.getHours()) + ':' + pad(dt.getMinutes()) + ':' + pad(dt.getSeconds());
+            }
+            function buildMicroAppLink(app, args, label, cls) {
+                var classAttr = cls ? ' class="' + cls + '"' : '';
+                return '<a href="#"' + classAttr + ' data-app="' + escapeAttr(app || 'Powerchart.exe') + '" data-args="' + escapeAttr(args || '') + '" onclick="handleAppLink(this); return false;">' + escapeHtml(label || '') + '</a>';
+            }
+            function getMicroEncounterMarker(dayIndex, encounters) {
+                for (var i = 0; i < encounters.length; i++) {
+                    var start = Number(encounters[i].start_idx || -1);
+                    var end = Number(encounters[i].end_idx || -1);
+                    if (dayIndex < start || dayIndex > end) {
+                        continue;
+                    }
+                    if (dayIndex === start && dayIndex === end) {
+                        return '&#9670;';
+                    }
+                    if (dayIndex === start) {
+                        return '&#9650;';
+                    }
+                    if (dayIndex === end) {
+                        return '&#9660;';
+                    }
+                    return '';
+                }
+                return '';
+            }
+            function applyMicroMedicationFilter(root, medication) {
+                if (!root) {
+                    return;
+                }
+                var items = root.querySelectorAll('.dimmable');
+                var triggers = root.querySelectorAll('.med-trigger');
+                for (var i = 0; i < triggers.length; i++) {
+                    triggers[i].classList.remove('active-filter');
+                }
+                if (!medication) {
+                    for (var j = 0; j < items.length; j++) {
+                        items[j].classList.remove('dimmed');
+                    }
+                    return;
+                }
+                for (var k = 0; k < triggers.length; k++) {
+                    if (triggers[k].getAttribute('data-med') === medication) {
+                        triggers[k].classList.add('active-filter');
+                    }
+                }
+                for (var x = 0; x < items.length; x++) {
+                    if (items[x].getAttribute('data-med') === medication || items[x].classList.contains('always-on')) {
+                        items[x].classList.remove('dimmed');
+                    } else {
+                        items[x].classList.add('dimmed');
+                    }
+                }
+            }
+            function toggleMicroMedication(node) {
+                var root = node ? node.closest('.module-micro') : null;
+                if (!root) {
+                    return;
+                }
+                var medication = node.getAttribute('data-med') || '';
+                var nextMedication = node.classList.contains('active-filter') ? '' : medication;
+                if (SPA_STATE.micro && SPA_STATE.micro.target && SPA_STATE.micro.target.contains(root)) {
+                    SPA_STATE.micro.selectedMedication = nextMedication;
+                }
+                applyMicroMedicationFilter(root, nextMedication);
+            }
+            function renderAntimicrobial(data, target) {
+                var previous = SPA_STATE.micro || {};
+                var selectedMedication = previous.target === target ? (previous.selectedMedication || '') : '';
+                var meta = data.meta || {};
+                var headers = data.headers || [];
+                var summaryDays = data.summary_days || [];
+                var timeline = data.timeline || [];
+                var tracks = data.encounter_tracks || [];
+                var orders = data.order_details || [];
+                var html = [];
+                var chartStart = headers.length ? formatMicroAxisDate(headers[0].iso_date) : '';
+                var chartEnd = headers.length ? formatMicroAxisDate(headers[headers.length - 1].iso_date) : '';
+                SPA_STATE.micro = {
+                    data: data,
+                    target: target,
+                    selectedMedication: selectedMedication
+                };
+                html.push('<section class="panel module-shell module-micro"><div class="panel-body">');
+                html.push('<h1>Antimicrobial Administrations by Date</h1>');
+                html.push('<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given.<br/><b>Interactive:</b> Click a medication name to isolate its history across the chart and table.</div>');
+                if (!timeline.length) {
+                    html.push('<div class="empty-state">' + escapeHtml(((data.status || {}).message) || 'No antimicrobial orders found in the selected window.') + '</div>');
+                    target.innerHTML = html.join('') + '</div></section>';
+                    return;
+                }
+                html.push('<div class="chart-wrap">');
+                html.push('<div class="chart-grid" style="grid-template-columns: 180px 40px 40px repeat(' + headers.length + ', 20px);">');
+                html.push('<div class="grid-cell label sticky-med hdr-intersect always-on">Medication</div>');
+                html.push('<div class="grid-cell label sticky-doses hdr-intersect always-on">Doses</div>');
+                html.push('<div class="grid-cell label sticky-dot hdr-intersect always-on">DOT</div>');
+                html.push('<div class="grid-cell label axis-header always-on" style="grid-column: 4 / span ' + headers.length + ';">Days <span style="font-weight:normal;font-size:11px;color:#555;">(Date range: ' + escapeHtml(chartStart) + ' to ' + escapeHtml(chartEnd) + ')</span></div>');
+                html.push('<div class="grid-cell sticky-med hdr-intersect always-on"></div>');
+                html.push('<div class="grid-cell sticky-doses hdr-intersect always-on"></div>');
+                html.push('<div class="grid-cell sticky-dot hdr-intersect always-on"></div>');
+                for (var h = 0; h < headers.length; h++) {
+                    var header = headers[h];
+                    html.push('<div class="grid-cell tick" title="' + escapeAttr(header.iso_date || '') + '">');
+                    if (Number(header.new_month || 0) === 1 && header.month_label) {
+                        html.push('<span class="mo">' + escapeHtml(header.month_label || '') + '</span>');
+                    }
+                    html.push(escapeHtml(header.day_label || '') + '</div>');
+                }
+                for (var i = 0; i < timeline.length; i++) {
+                    var row = timeline[i];
+                    var medName = row.medication_name || '';
+                    var cellBg = i % 2 === 1 ? ' even-cell' : '';
+                    html.push('<div class="grid-cell label medname sticky-med med-trigger dimmable' + cellBg + '" data-med="' + escapeAttr(medName) + '" title="Click to filter by ' + escapeAttr(medName) + '" onclick="toggleMicroMedication(this)">' + escapeHtml(medName) + ' <span class="filter-icon">&#x25BC;</span></div>');
+                    html.push('<div class="grid-cell dot-val sticky-doses dimmable' + cellBg + '" data-med="' + escapeAttr(medName) + '"><span class="pill" title="' + escapeAttr(medName + ' - Total Doses: ' + (row.doses_total || 0)) + '">' + escapeHtml(row.doses_total || 0) + '</span></div>');
+                    html.push('<div class="grid-cell dot-val sticky-dot dimmable' + cellBg + '" data-med="' + escapeAttr(medName) + '"><span class="pill" title="' + escapeAttr(medName + ' - Total Days of Therapy: ' + (row.dot_total || 0)) + '">' + escapeHtml(row.dot_total || 0) + '</span></div>');
+                    for (var d = 0; d < headers.length; d++) {
+                        var day = row.days && row.days[d] ? row.days[d] : null;
+                        var dayTitle = day && day.title ? decodeMicroTitle(day.title) : formatMicroCellDate(headers[d].iso_date || '');
+                        if (day && Number(day.on_ind || 0) === 1) {
+                            html.push('<div class="grid-cell cell on dimmable' + cellBg + '" data-med="' + escapeAttr(medName) + '" title="' + escapeAttr(dayTitle) + '">' + escapeHtml(day.admin_count || '') + '</div>');
+                        } else {
+                            html.push('<div class="grid-cell cell dimmable' + cellBg + '" data-med="' + escapeAttr(medName) + '" title="' + escapeAttr(dayTitle) + '"></div>');
+                        }
+                    }
+                }
+                if (summaryDays.length) {
+                    html.push('<div class="grid-cell label sticky-med sum-border always-on">Antimicrobial Summary</div>');
+                    html.push('<div class="grid-cell label sticky-doses sum-border always-on"></div>');
+                    html.push('<div class="grid-cell label dot-val sticky-dot sum-border always-on"><span class="pill" title="Total Summary Days of Therapy: ' + escapeAttr(meta.grand_total_dot || 0) + '">' + escapeHtml(meta.grand_total_dot || 0) + '</span></div>');
+                    for (var s = 0; s < summaryDays.length; s++) {
+                        var summaryTitle = Number(summaryDays[s].antimicrobial_ind || 0) === 1 ? 'Antimicrobial Administered' : 'No Antimicrobials';
+                        html.push('<div class="grid-cell cell ' + (Number(summaryDays[s].antimicrobial_ind || 0) === 1 ? 'sum-yes' : 'sum-no') + ' sum-border always-on" title="' + escapeAttr(summaryTitle) + '"></div>');
+                    }
+                }
+                for (var t = 0; t < tracks.length; t++) {
+                    var track = tracks[t];
+                    var labelParts = [];
+                    for (var e = 0; e < track.encounters.length; e++) {
+                        labelParts.push(buildMicroAppLink(track.encounters[e].applink_app, track.encounters[e].applink_args, track.encounters[e].fin || '', ''));
+                    }
+                    html.push('<div class="grid-cell label enc-label-cell sticky-med enc-border always-on">' + labelParts.join(', ') + '</div>');
+                    html.push('<div class="grid-cell sticky-doses enc-border always-on"></div>');
+                    html.push('<div class="grid-cell sticky-dot enc-border always-on"></div>');
+                    for (var k = 0; k < headers.length; k++) {
+                        var dayInfo = track.days && track.days[k] ? track.days[k] : null;
+                        var marker = getMicroEncounterMarker(k, track.encounters || []);
+                        var cellClass = dayInfo && dayInfo.cell_class ? dayInfo.cell_class : 'spacer-bit';
+                        var cellTitle = dayInfo && dayInfo.title ? dayInfo.title : '';
+                        html.push('<div class="grid-cell cell enc-border ' + escapeAttr(cellClass) + ' always-on" title="' + escapeAttr(cellTitle) + '"><span class="enc-cell-text">' + marker + '</span></div>');
+                    }
+                }
+                html.push('</div></div>');
+                html.push('<h2>Antimicrobial Order Details</h2>');
+                html.push('<div class="table-wrap"><table class="data-tbl"><colgroup><col style="width:180px"><col style="width:40px"><col style="width:40px"><col style="width:100px"><col style="display:none;"><col style="width:350px"><col style="width:250px"><col style="width:100px"><col style="width:120px"><col style="width:100px"><col style="width:100px"><col style="width:120px"></colgroup>');
+                html.push('<thead><tr><th>Medication</th><th style="text-align:center;">Doses</th><th style="text-align:center;">DOT</th><th>Target Dose</th><th style="display:none;">Dose</th><th>Order Detail</th><th>Indication</th><th>Start Date</th><th>Latest Status</th><th>Status Date</th><th>Order ID</th><th>FIN</th></tr></thead><tbody>');
+                if (!orders.length) {
+                    html.push('<tr><td colspan="11">No antimicrobial orders found in the selected window.</td></tr>');
+                } else {
+                    for (var y = 0; y < orders.length; y++) {
+                        var ord = orders[y];
+                        var orderRowClass = y % 2 === 1 ? ' class="even dimmable"' : ' class="dimmable"';
+                        html.push('<tr' + orderRowClass + ' data-med="' + escapeAttr(ord.medication_name || '') + '">');
+                        html.push('<td>' + escapeHtml(ord.medication_name || '') + (ord.source === 'SN' ? ' <span style="color:#888;font-size:10px;">(Anes)</span>' : '') + '</td>');
+                        html.push('<td class="dot-val"><span class="pill">' + escapeHtml(ord.doses_total || 0) + '</span></td>');
+                        html.push('<td class="dot-val"><span class="pill">' + escapeHtml(ord.dot_total || 0) + '</span></td>');
+                        html.push('<td>' + escapeHtml(ord.target_dose || '') + '</td>');
+                        html.push('<td style="display:none;">' + escapeHtml(ord.actual_dose || '') + '</td>');
+                        html.push('<td>' + escapeHtml(ord.order_detail || '') + '</td>');
+                        html.push('<td>' + escapeHtml(ord.indication || '') + '</td>');
+                        html.push('<td>' + escapeHtml(ord.start_date || '') + '</td>');
+                        html.push('<td>' + escapeHtml(ord.latest_status || '') + '</td>');
+                        html.push('<td>' + escapeHtml(ord.status_date || '') + '</td>');
+                        html.push('<td>' + escapeHtml(ord.order_id || '') + '</td>');
+                        html.push('<td>' + buildMicroAppLink(ord.applink_app, ord.applink_args, ord.fin || '--', 'fin-link') + '</td></tr>');
+                    }
+                }
+                html.push('</tbody></table></div>');
+                html.push('<div class="micro-footer">Generated on ' + formatMicroTimestamp(new Date()) + '.</div>');
+                target.innerHTML = html.join('') + '</div></section>';
+                applyMicroMedicationFilter(target.querySelector('.module-micro'), selectedMedication);
+            }
+            /* Module dispatch and bootstrap */
+            function renderModule(program, data, target) {
+                var code = ((data.status || {}).code || '').toLowerCase();
+                if (code === 'prototype_pending') {
+                    renderPlaceholder(data, target);
+                    return;
+                }
+                if (program === '01_meds_pharm_anvs:group1') {
+                    renderAnvs(data, target);
+                    return;
+                }
+                if (program === '01_meds_pharm_search:group1') {
+                    renderSearch(data, target);
+                    return;
+                }
+                if (program === '01_meds_pharm_antimicrobial:group1') {
+                    renderAntimicrobial(data, target);
+                    return;
+                }
+                if (program === '01_meds_pharm_NICU_Inf:group1') {
+                    renderNicuInfusions(data, target);
+                    return;
+                }
+                renderDebug(program, data, target);
+            }
+            function loadTab(module) {
+                var config = TAB_CONFIG[module];
+                if (!config) {
+                    return;
+                }
+                setActiveButton(module);
+                setStatus('');
+                showLoading(config.label);
+                callCCL(config.program).then(function(data) {
+                    renderModule(config.program, data, document.getElementById('app-root'));
+                }).catch(function(error) {
+                    setStatus(error.message || 'Unable to load module.', 'error');
+                    renderShellError(config.label, error.message || 'Unable to load module.');
+                });
+            }
+            loadTab('NICU');
+        </script>
+    </body>
+</html>
