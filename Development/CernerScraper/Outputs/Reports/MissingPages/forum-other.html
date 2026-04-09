@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Other</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 2rem; color: #222; max-width: 1180px; }
+    h1 { color: #c00; margin-bottom: 0.2rem; }
+    h2 { margin-top: 1.5rem; border-bottom: 2px solid #c00; padding-bottom: 4px; }
+    p { margin: 0.4rem 0 0.8rem; color: #555; font-size: 0.9rem; }
+    a { color: #c00; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .meta { font-size: 0.8rem; color: #888; margin-top: 0.2rem; }
+    .back { font-size: 0.85rem; margin-bottom: 1rem; display: block; }
+    table { border-collapse: collapse; width: 100%; margin-top: 0.5rem; }
+    th { background: #444; color: #fff; text-align: left; padding: 6px 10px; font-size: 0.85rem; }
+    td { padding: 5px 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
+    td.url { font-size: 0.72rem; color: #999; word-break: break-all; max-width: 380px; }
+    td.added, td.ignored { font-size: 0.78rem; color: #666; white-space: nowrap; width: 130px; }
+    td.reason { font-size: 0.78rem; color: #666; max-width: 220px; }
+    td.act { white-space: nowrap; text-align: right; width: 220px; }
+    tr:hover td { background: #fff8f8; }
+    tr.queued-ignore td { background: #fff6df; }
+    tr.queued-restore td { background: #edf8ed; }
+    .btn { display: inline-block; padding: 3px 10px; color: #fff !important; border-radius: 3px; font-size: 0.78rem; text-decoration: none !important; white-space: nowrap; border: none; cursor: pointer; font-family: inherit; }
+    .btn-open { background: #888; }
+    .btn-open:hover { background: #555; }
+    .btn-ignore { background: #b26a00; }
+    .btn-ignore:hover { background: #8c5300; }
+    .btn-restore { background: #2e7d32; }
+    .btn-restore:hover { background: #1f5a23; }
+    .btn-copy { background: #1e6bb8; }
+    .btn-copy:hover { background: #15528e; }
+    .btn-download { background: #5c4db1; }
+    .btn-download:hover { background: #463a8a; }
+    .btn-clear { background: #777; }
+    .btn-clear:hover { background: #555; }
+    .row-actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+    code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 0.85rem; }
+    .badge { background: #c00; color: #fff; border-radius: 10px; padding: 1px 8px; font-size: 0.75rem; margin-left: 6px; }
+    .index-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 1rem; }
+    .index-card { border: 1px solid #ddd; border-radius: 6px; padding: 12px 16px; text-decoration: none !important; color: #222 !important; transition: box-shadow 0.15s; display: block; }
+    .index-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .index-card .title { font-weight: 600; font-size: 0.95rem; color: #c00; }
+    .index-card .count { font-size: 0.82rem; color: #888; margin-top: 4px; }
+    .dta-info { background: #e8f0fb; border: 1px solid #1e6bb8; border-radius: 4px; padding: 10px 16px; margin: 1rem 0; font-size: 0.88rem; }
+    .dta-info ol { margin: 0.4rem 0 0 1.2rem; padding: 0; line-height: 1.9; }
+    .ignore-info { background: #f8efe1; border: 1px solid #c98b2c; border-radius: 4px; padding: 10px 16px; margin: 1rem 0; font-size: 0.88rem; }
+    .ignore-info code { background: #fff7ea; }
+    .search-panel { background: #f7f7f7; border: 1px solid #d7d7d7; border-radius: 4px; padding: 12px 16px; margin: 1rem 0; }
+    .search-input { width: 100%; max-width: 520px; padding: 8px 10px; border: 1px solid #bbb; border-radius: 4px; font-family: inherit; font-size: 0.9rem; }
+    .action-panel { background: #f7f7f7; border: 1px solid #d7d7d7; border-radius: 4px; padding: 12px 16px; margin: 1rem 0; }
+    .action-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 0.8rem; }
+    .action-textarea { width: 100%; min-height: 140px; font-family: Consolas, monospace; font-size: 0.82rem; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; }
+    .muted { font-size: 0.8rem; color: #666; }
+    </style>
+</head>
+<body>
+  <a class="back" href="../../../Missing_Pages.html">&larr; Back to index</a>
+  <h1>Other</h1>
+  <p class="meta">36 page(s) &mdash; Oracle Health Community &nbsp;|&nbsp; Generated: 2026-04-09 16:07</p>
+  <div class="dta-info">
+<strong>DownThemAll! (Firefox):</strong> right-click this page &rarr; DownThemAll &rarr;
+Links tab &rarr; set folder to <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\DownloadedFiles</code> &rarr; Start
+  </div>
+  <div class="ignore-info">
+<strong>Ignore workflow:</strong>
+this page is static HTML, so the buttons below queue PowerShell commands instead of editing the JSON directly.
+Click the button for each link, then <strong>Copy commands</strong> or <strong>Download .ps1</strong>, run the commands, and re-run the scraper.
+  </div>
+  <div class="search-panel">
+<input id="page-search" class="search-input" type="search" placeholder="Search this page by title or URL" oninput="filterPageRows()">
+<div id="search-status" class="muted" style="margin-top: 0.5rem;">Showing all 36 page(s).</div>
+  </div>
+  <div class="action-panel">
+<div class="action-toolbar">
+  <button type="button" class="btn btn-copy" onclick="copyPendingCommands()">Copy commands</button>
+  <button type="button" class="btn btn-download" onclick="downloadPendingCommands()">Download .ps1</button>
+  <button type="button" class="btn btn-clear" onclick="clearPendingCommands()">Clear queue</button>
+  <span id="pending-status" class="muted">No commands queued yet.</span>
+</div>
+<textarea id="pending-commands" class="action-textarea" readonly placeholder="Queued commands will appear here."></textarea>
+<div class="muted">Command target: <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\.venv\Scripts\python.exe</code> <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\Outputs\Tools\manage_missing_links.py</code></div>
+  </div>
+  <table>
+<thead><tr><th>Page</th><th>URL</th><th>First Seen</th><th></th></tr></thead>
+<tbody>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1702301/careaware-connection-june-2023-edition">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1702301/careaware-connection-june-2023-edition" target="_blank" rel="noopener">Careaware Connection June 2023 Edition</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1702301/careaware-connection-june-2023-edition</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1702301/careaware-connection-june-2023-edition" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1702301/careaware-connection-june-2023-edition&quot;, &quot;Careaware Connection June 2023 Edition&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1317436/ccl-discern-explorer-training-for-clients">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1317436/ccl-discern-explorer-training-for-clients" target="_blank" rel="noopener">Ccl Discern Explorer Training For Clients</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1317436/ccl-discern-explorer-training-for-clients</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1317436/ccl-discern-explorer-training-for-clients" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1317436/ccl-discern-explorer-training-for-clients&quot;, &quot;Ccl Discern Explorer Training For Clients&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1410476/custom-table-procedure-used-at-ahs">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1410476/custom-table-procedure-used-at-ahs" target="_blank" rel="noopener">Custom Table Procedure Used At Ahs</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1410476/custom-table-procedure-used-at-ahs</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1410476/custom-table-procedure-used-at-ahs" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1410476/custom-table-procedure-used-at-ahs&quot;, &quot;Custom Table Procedure Used At Ahs&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1785451/dialysis-future-order-activation-and-diagnosis-issue">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1785451/dialysis-future-order-activation-and-diagnosis-issue" target="_blank" rel="noopener">Dialysis Future Order Activation And Diagnosis Issue</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1785451/dialysis-future-order-activation-and-diagnosis-issue</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1785451/dialysis-future-order-activation-and-diagnosis-issue" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1785451/dialysis-future-order-activation-and-diagnosis-issue&quot;, &quot;Dialysis Future Order Activation And Diagnosis Issue&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1784821/documenting-med-history">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1784821/documenting-med-history" target="_blank" rel="noopener">Documenting Med History</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1784821/documenting-med-history</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1784821/documenting-med-history" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1784821/documenting-med-history&quot;, &quot;Documenting Med History&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1275777/example-layout-to-display-multiple-values-selected-at-prompt-or-any">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1275777/example-layout-to-display-multiple-values-selected-at-prompt-or-any" target="_blank" rel="noopener">Example Layout To Display Multiple Values Selected At Prompt Or Any</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1275777/example-layout-to-display-multiple-values-selected-at-prompt-or-any</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1275777/example-layout-to-display-multiple-values-selected-at-prompt-or-any" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1275777/example-layout-to-display-multiple-values-selected-at-prompt-or-any&quot;, &quot;Example Layout To Display Multiple Values Selected At Prompt Or Any&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1275813/example-layout-to-display-multiple-values-selected-at-prompt-or-any-and-qualify-using-operator">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1275813/example-layout-to-display-multiple-values-selected-at-prompt-or-any-and-qualify-using-operator" target="_blank" rel="noopener">Example Layout To Display Multiple Values Selected At Prompt Or Any And Qualify Using Operator</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1275813/example-layout-to-display-multiple-values-selected-at-prompt-or-any-and-qualify-using-operator</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1275813/example-layout-to-display-multiple-values-selected-at-prompt-or-any-and-qualify-using-operator" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1275813/example-layout-to-display-multiple-values-selected-at-prompt-or-any-and-qualify-using-operator&quot;, &quot;Example Layout To Display Multiple Values Selected At Prompt Or Any And Qualify Using Operator&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1266762/examples-to-get-the-most-recent-or-oldest-row">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1266762/examples-to-get-the-most-recent-or-oldest-row" target="_blank" rel="noopener">Examples To Get The Most Recent Or Oldest Row</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1266762/examples-to-get-the-most-recent-or-oldest-row</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1266762/examples-to-get-the-most-recent-or-oldest-row" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1266762/examples-to-get-the-most-recent-or-oldest-row&quot;, &quot;Examples To Get The Most Recent Or Oldest Row&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1785301/exciting-to-see-any-plans-to-build-further-on-this-concept">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1785301/exciting-to-see-any-plans-to-build-further-on-this-concept" target="_blank" rel="noopener">Exciting To See Any Plans To Build Further On This Concept</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1785301/exciting-to-see-any-plans-to-build-further-on-this-concept</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1785301/exciting-to-see-any-plans-to-build-further-on-this-concept" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1785301/exciting-to-see-any-plans-to-build-further-on-this-concept&quot;, &quot;Exciting To See Any Plans To Build Further On This Concept&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1785667/excluding-individual-users-from-an-ekm-rule">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1785667/excluding-individual-users-from-an-ekm-rule" target="_blank" rel="noopener">Excluding Individual Users From An Ekm Rule</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1785667/excluding-individual-users-from-an-ekm-rule</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1785667/excluding-individual-users-from-an-ekm-rule" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1785667/excluding-individual-users-from-an-ekm-rule&quot;, &quot;Excluding Individual Users From An Ekm Rule&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1785516/ftp3-being-replaced-by-ftp4-with-linux-8-upgrade">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1785516/ftp3-being-replaced-by-ftp4-with-linux-8-upgrade" target="_blank" rel="noopener">Ftp3 Being Replaced By Ftp4 With Linux 8 Upgrade</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1785516/ftp3-being-replaced-by-ftp4-with-linux-8-upgrade</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1785516/ftp3-being-replaced-by-ftp4-with-linux-8-upgrade" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1785516/ftp3-being-replaced-by-ftp4-with-linux-8-upgrade&quot;, &quot;Ftp3 Being Replaced By Ftp4 With Linux 8 Upgrade&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1716160/ftp3-cerner-com-ftp4-cerner-com-downtimes-thread">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1716160/ftp3-cerner-com-ftp4-cerner-com-downtimes-thread" target="_blank" rel="noopener">Ftp3 Cerner Com Ftp4 Cerner Com Downtimes Thread</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1716160/ftp3-cerner-com-ftp4-cerner-com-downtimes-thread</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1716160/ftp3-cerner-com-ftp4-cerner-com-downtimes-thread" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1716160/ftp3-cerner-com-ftp4-cerner-com-downtimes-thread&quot;, &quot;Ftp3 Cerner Com Ftp4 Cerner Com Downtimes Thread&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1258725/high-level-process-for-improving-the-efficiency-of-discern-explorer-programs-and-queries">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1258725/high-level-process-for-improving-the-efficiency-of-discern-explorer-programs-and-queries" target="_blank" rel="noopener">High Level Process For Improving The Efficiency Of Discern Explorer Programs And Queries</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1258725/high-level-process-for-improving-the-efficiency-of-discern-explorer-programs-and-queries</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1258725/high-level-process-for-improving-the-efficiency-of-discern-explorer-programs-and-queries" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1258725/high-level-process-for-improving-the-efficiency-of-discern-explorer-programs-and-queries&quot;, &quot;High Level Process For Improving The Efficiency Of Discern Explorer Programs And Queries&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1785749/icd-10-cm-and-icd-10-cm-federal-april-2026">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1785749/icd-10-cm-and-icd-10-cm-federal-april-2026" target="_blank" rel="noopener">Icd 10 Cm And Icd 10 Cm Federal April 2026</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1785749/icd-10-cm-and-icd-10-cm-federal-april-2026</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1785749/icd-10-cm-and-icd-10-cm-federal-april-2026" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1785749/icd-10-cm-and-icd-10-cm-federal-april-2026&quot;, &quot;Icd 10 Cm And Icd 10 Cm Federal April 2026&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1783882/interop-update-from-justin-kirkpatrick-on-12-18-25-georgia-rug">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1783882/interop-update-from-justin-kirkpatrick-on-12-18-25-georgia-rug" target="_blank" rel="noopener">Interop Update From Justin Kirkpatrick On 12 18 25 Georgia Rug</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1783882/interop-update-from-justin-kirkpatrick-on-12-18-25-georgia-rug</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1783882/interop-update-from-justin-kirkpatrick-on-12-18-25-georgia-rug" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1783882/interop-update-from-justin-kirkpatrick-on-12-18-25-georgia-rug&quot;, &quot;Interop Update From Justin Kirkpatrick On 12 18 25 Georgia Rug&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1785494/is-there-a-link-between-bedrock-and-backend-database-connection">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1785494/is-there-a-link-between-bedrock-and-backend-database-connection" target="_blank" rel="noopener">Is There A Link Between Bedrock And Backend Database Connection</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1785494/is-there-a-link-between-bedrock-and-backend-database-connection</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1785494/is-there-a-link-between-bedrock-and-backend-database-connection" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1785494/is-there-a-link-between-bedrock-and-backend-database-connection&quot;, &quot;Is There A Link Between Bedrock And Backend Database Connection&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1669894/launching-a-pm-conversation-from-a-custom-mpage">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1669894/launching-a-pm-conversation-from-a-custom-mpage" target="_blank" rel="noopener">Launching A Pm Conversation From A Custom Mpage</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1669894/launching-a-pm-conversation-from-a-custom-mpage</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1669894/launching-a-pm-conversation-from-a-custom-mpage" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1669894/launching-a-pm-conversation-from-a-custom-mpage&quot;, &quot;Launching A Pm Conversation From A Custom Mpage&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1785186/looking-for-table-and-fields-that-store-the-patent-responsibility">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1785186/looking-for-table-and-fields-that-store-the-patent-responsibility" target="_blank" rel="noopener">Looking For Table And Fields That Store The Patent Responsibility</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1785186/looking-for-table-and-fields-that-store-the-patent-responsibility</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1785186/looking-for-table-and-fields-that-store-the-patent-responsibility" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1785186/looking-for-table-and-fields-that-store-the-patent-responsibility&quot;, &quot;Looking For Table And Fields That Store The Patent Responsibility&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1779300/millennium-cumulative-changes-up-through-2025-3-01">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1779300/millennium-cumulative-changes-up-through-2025-3-01" target="_blank" rel="noopener">Millennium Cumulative Changes Up Through 2025 3 01</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1779300/millennium-cumulative-changes-up-through-2025-3-01</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1779300/millennium-cumulative-changes-up-through-2025-3-01" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1779300/millennium-cumulative-changes-up-through-2025-3-01&quot;, &quot;Millennium Cumulative Changes Up Through 2025 3 01&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1782072/more-conversations-coming-your-way">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1782072/more-conversations-coming-your-way" target="_blank" rel="noopener">More Conversations Coming Your Way</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1782072/more-conversations-coming-your-way</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1782072/more-conversations-coming-your-way" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1782072/more-conversations-coming-your-way&quot;, &quot;More Conversations Coming Your Way&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1782076/more-conversations-coming-your-way">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1782076/more-conversations-coming-your-way" target="_blank" rel="noopener">More Conversations Coming Your Way</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1782076/more-conversations-coming-your-way</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1782076/more-conversations-coming-your-way" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1782076/more-conversations-coming-your-way&quot;, &quot;More Conversations Coming Your Way&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1782079/more-conversations-coming-your-way">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1782079/more-conversations-coming-your-way" target="_blank" rel="noopener">More Conversations Coming Your Way</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1782079/more-conversations-coming-your-way</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1782079/more-conversations-coming-your-way" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1782079/more-conversations-coming-your-way&quot;, &quot;More Conversations Coming Your Way&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1782316/more-conversations-coming-your-way">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1782316/more-conversations-coming-your-way" target="_blank" rel="noopener">More Conversations Coming Your Way</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1782316/more-conversations-coming-your-way</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1782316/more-conversations-coming-your-way" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1782316/more-conversations-coming-your-way&quot;, &quot;More Conversations Coming Your Way&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1782551/more-conversations-coming-your-way">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1782551/more-conversations-coming-your-way" target="_blank" rel="noopener">More Conversations Coming Your Way</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1782551/more-conversations-coming-your-way</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1782551/more-conversations-coming-your-way" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1782551/more-conversations-coming-your-way&quot;, &quot;More Conversations Coming Your Way&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1252333/opening-powerchart-from-discern-explorer-html-output-report">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1252333/opening-powerchart-from-discern-explorer-html-output-report" target="_blank" rel="noopener">Opening Powerchart From Discern Explorer Html Output Report</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1252333/opening-powerchart-from-discern-explorer-html-output-report</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1252333/opening-powerchart-from-discern-explorer-html-output-report" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1252333/opening-powerchart-from-discern-explorer-html-output-report&quot;, &quot;Opening Powerchart From Discern Explorer Html Output Report&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1667291/piece-function-with-inline-tables">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1667291/piece-function-with-inline-tables" target="_blank" rel="noopener">Piece Function With Inline Tables</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1667291/piece-function-with-inline-tables</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1667291/piece-function-with-inline-tables" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1667291/piece-function-with-inline-tables&quot;, &quot;Piece Function With Inline Tables&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1253439/prg-dpb-dvt-dvl-ffl-files-and-other-confusing-things">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1253439/prg-dpb-dvt-dvl-ffl-files-and-other-confusing-things" target="_blank" rel="noopener">Prg Dpb Dvt Dvl Ffl Files And Other Confusing Things</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1253439/prg-dpb-dvt-dvl-ffl-files-and-other-confusing-things</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1253439/prg-dpb-dvt-dvl-ffl-files-and-other-confusing-things" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1253439/prg-dpb-dvt-dvl-ffl-files-and-other-confusing-things&quot;, &quot;Prg Dpb Dvt Dvl Ffl Files And Other Confusing Things&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1785325/pso-and-bed-placement-for-telemetry-monitoring">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1785325/pso-and-bed-placement-for-telemetry-monitoring" target="_blank" rel="noopener">Pso And Bed Placement For Telemetry Monitoring</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1785325/pso-and-bed-placement-for-telemetry-monitoring</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1785325/pso-and-bed-placement-for-telemetry-monitoring" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1785325/pso-and-bed-placement-for-telemetry-monitoring&quot;, &quot;Pso And Bed Placement For Telemetry Monitoring&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/181966/re-cerner-discern-hnam-digest-july-08-2004">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/181966/re-cerner-discern-hnam-digest-july-08-2004" target="_blank" rel="noopener">Re Cerner Discern Hnam Digest July 08 2004</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/181966/re-cerner-discern-hnam-digest-july-08-2004</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/181966/re-cerner-discern-hnam-digest-july-08-2004" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/181966/re-cerner-discern-hnam-digest-july-08-2004&quot;, &quot;Re Cerner Discern Hnam Digest July 08 2004&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/221913/re-cerner-discern-hnam-digest-july-08-2004">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/221913/re-cerner-discern-hnam-digest-july-08-2004" target="_blank" rel="noopener">Re Cerner Discern Hnam Digest July 08 2004</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/221913/re-cerner-discern-hnam-digest-july-08-2004</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/221913/re-cerner-discern-hnam-digest-july-08-2004" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/221913/re-cerner-discern-hnam-digest-july-08-2004&quot;, &quot;Re Cerner Discern Hnam Digest July 08 2004&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1785659/rtf-renders-incorrectly-from-a-smart-template-within-auto-text-but-ok-when-rendering-in-wordpad">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1785659/rtf-renders-incorrectly-from-a-smart-template-within-auto-text-but-ok-when-rendering-in-wordpad" target="_blank" rel="noopener">Rtf Renders Incorrectly From A Smart Template Within Auto Text But Ok When Rendering In Wordpad</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1785659/rtf-renders-incorrectly-from-a-smart-template-within-auto-text-but-ok-when-rendering-in-wordpad</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1785659/rtf-renders-incorrectly-from-a-smart-template-within-auto-text-but-ok-when-rendering-in-wordpad" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1785659/rtf-renders-incorrectly-from-a-smart-template-within-auto-text-but-ok-when-rendering-in-wordpad&quot;, &quot;Rtf Renders Incorrectly From A Smart Template Within Auto Text But Ok When Rendering In Wordpad&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1294826/simple-example-using-operator-to-qualify-multiple-values-or-any-option">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1294826/simple-example-using-operator-to-qualify-multiple-values-or-any-option" target="_blank" rel="noopener">Simple Example Using Operator To Qualify Multiple Values Or Any Option</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1294826/simple-example-using-operator-to-qualify-multiple-values-or-any-option</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1294826/simple-example-using-operator-to-qualify-multiple-values-or-any-option" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1294826/simple-example-using-operator-to-qualify-multiple-values-or-any-option&quot;, &quot;Simple Example Using Operator To Qualify Multiple Values Or Any Option&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1285456/simple-example-using-parser-to-qualify-multiple-prompts-that-use-the-any-option">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1285456/simple-example-using-parser-to-qualify-multiple-prompts-that-use-the-any-option" target="_blank" rel="noopener">Simple Example Using Parser To Qualify Multiple Prompts That Use The Any Option</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1285456/simple-example-using-parser-to-qualify-multiple-prompts-that-use-the-any-option</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1285456/simple-example-using-parser-to-qualify-multiple-prompts-that-use-the-any-option" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1285456/simple-example-using-parser-to-qualify-multiple-prompts-that-use-the-any-option&quot;, &quot;Simple Example Using Parser To Qualify Multiple Prompts That Use The Any Option&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1785758/the-volume-field-auto-calculation-in-dosage-calculator">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1785758/the-volume-field-auto-calculation-in-dosage-calculator" target="_blank" rel="noopener">The Volume Field Auto Calculation In Dosage Calculator</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1785758/the-volume-field-auto-calculation-in-dosage-calculator</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1785758/the-volume-field-auto-calculation-in-dosage-calculator" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1785758/the-volume-field-auto-calculation-in-dosage-calculator&quot;, &quot;The Volume Field Auto Calculation In Dosage Calculator&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1785346/unable-to-import-the-powerform">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1785346/unable-to-import-the-powerform" target="_blank" rel="noopener">Unable To Import The Powerform</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1785346/unable-to-import-the-powerform</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1785346/unable-to-import-the-powerform" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1785346/unable-to-import-the-powerform&quot;, &quot;Unable To Import The Powerform&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://community.oracle.com/oraclehealth/discussion/1259482/working-with-blobs">
+      <td><a href="https://community.oracle.com/oraclehealth/discussion/1259482/working-with-blobs" target="_blank" rel="noopener">Working With Blobs</a></td>
+      <td class="url">https://community.oracle.com/oraclehealth/discussion/1259482/working-with-blobs</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://community.oracle.com/oraclehealth/discussion/1259482/working-with-blobs" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://community.oracle.com/oraclehealth/discussion/1259482/working-with-blobs&quot;, &quot;Working With Blobs&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    </tbody>
+  </table>
+  <script>
+const commandPython = "\\\\PNDCFPRDFS025.HEALTHIRL.NET\\MNCMSNPT$\\Meds Management\\MPage\\Development\\CernerScraper\\.venv\\Scripts\\python.exe";
+const manageScript = "\\\\PNDCFPRDFS025.HEALTHIRL.NET\\MNCMSNPT$\\Meds Management\\MPage\\Development\\CernerScraper\\Outputs\\Tools\\manage_missing_links.py";
+let pendingCommands = [];
+
+function psQuote(value) {
+  return "'" + String(value ?? '').replace(/'/g, "''") + "'";
+}
+
+function setStatus(message) {
+  document.getElementById('pending-status').textContent = message;
+}
+
+function renderCommands() {
+  const textarea = document.getElementById('pending-commands');
+  textarea.value = pendingCommands.map(entry => entry.command).join('\r\n');
+  if (pendingCommands.length) {
+    setStatus(pendingCommands.length + ' command(s) queued.');
+  } else {
+    setStatus('No commands queued yet.');
+  }
+}
+
+function queueLinkAction(button, action, url, title) {
+  const reason = action === 'ignore' ? 'ignored from missing pages UI' : '';
+  const base = '& ' + psQuote(commandPython) + ' ' + psQuote(manageScript) + ' ' + action + ' ' + psQuote(url);
+  const command = action === 'ignore' ? base + ' --reason ' + psQuote(reason) : base;
+  pendingCommands = pendingCommands.filter(entry => entry.url !== url);
+  pendingCommands.push({ action, url, title, reason, command });
+  const row = button.closest('tr');
+  if (row) {
+    row.classList.remove('queued-ignore', 'queued-restore');
+    row.classList.add(action === 'ignore' ? 'queued-ignore' : 'queued-restore');
+  }
+  renderCommands();
+}
+
+function copyPendingCommands() {
+  const textarea = document.getElementById('pending-commands');
+  if (!textarea.value.trim()) {
+    return;
+  }
+  textarea.focus();
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(textarea.value).then(() => setStatus('Commands copied to clipboard.')).catch(() => {
+      document.execCommand('copy');
+      setStatus('Commands copied to clipboard.');
+    });
+    return;
+  }
+  document.execCommand('copy');
+  setStatus('Commands copied to clipboard.');
+}
+
+function downloadPendingCommands() {
+  const textarea = document.getElementById('pending-commands');
+  if (!textarea.value.trim()) {
+    return;
+  }
+  const blob = new Blob([textarea.value + '\r\n'], { type: 'text/plain;charset=utf-8' });
+  const link = document.createElement('a');
+  const href = URL.createObjectURL(blob);
+  link.href = href;
+  link.download = 'missing_pages_actions.ps1';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(href);
+  setStatus('PowerShell script downloaded.');
+}
+
+function clearPendingCommands() {
+  pendingCommands = [];
+  document.querySelectorAll('tr.queued-ignore, tr.queued-restore').forEach(row => row.classList.remove('queued-ignore', 'queued-restore'));
+  renderCommands();
+}
+
+function filterPageRows() {
+  const input = document.getElementById('page-search');
+  const query = (input?.value || '').trim().toLowerCase();
+  const rows = Array.from(document.querySelectorAll('tbody tr'));
+  let visibleCount = 0;
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    const matches = !query || text.includes(query);
+    row.style.display = matches ? '' : 'none';
+    if (matches) {
+      visibleCount += 1;
+    }
+  });
+  const status = document.getElementById('search-status');
+  if (status) {
+    status.textContent = query
+      ? 'Showing ' + visibleCount + ' of ' + rows.length + ' page(s).'
+      : 'Showing all ' + rows.length + ' page(s).';
+  }
+}
+
+renderCommands();
+  </script>
+</body>
+</html>

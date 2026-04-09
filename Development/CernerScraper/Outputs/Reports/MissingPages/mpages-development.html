@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MPages Development</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 2rem; color: #222; max-width: 1180px; }
+    h1 { color: #c00; margin-bottom: 0.2rem; }
+    h2 { margin-top: 1.5rem; border-bottom: 2px solid #c00; padding-bottom: 4px; }
+    p { margin: 0.4rem 0 0.8rem; color: #555; font-size: 0.9rem; }
+    a { color: #c00; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .meta { font-size: 0.8rem; color: #888; margin-top: 0.2rem; }
+    .back { font-size: 0.85rem; margin-bottom: 1rem; display: block; }
+    table { border-collapse: collapse; width: 100%; margin-top: 0.5rem; }
+    th { background: #444; color: #fff; text-align: left; padding: 6px 10px; font-size: 0.85rem; }
+    td { padding: 5px 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
+    td.url { font-size: 0.72rem; color: #999; word-break: break-all; max-width: 380px; }
+    td.added, td.ignored { font-size: 0.78rem; color: #666; white-space: nowrap; width: 130px; }
+    td.reason { font-size: 0.78rem; color: #666; max-width: 220px; }
+    td.act { white-space: nowrap; text-align: right; width: 220px; }
+    tr:hover td { background: #fff8f8; }
+    tr.queued-ignore td { background: #fff6df; }
+    tr.queued-restore td { background: #edf8ed; }
+    .btn { display: inline-block; padding: 3px 10px; color: #fff !important; border-radius: 3px; font-size: 0.78rem; text-decoration: none !important; white-space: nowrap; border: none; cursor: pointer; font-family: inherit; }
+    .btn-open { background: #888; }
+    .btn-open:hover { background: #555; }
+    .btn-ignore { background: #b26a00; }
+    .btn-ignore:hover { background: #8c5300; }
+    .btn-restore { background: #2e7d32; }
+    .btn-restore:hover { background: #1f5a23; }
+    .btn-copy { background: #1e6bb8; }
+    .btn-copy:hover { background: #15528e; }
+    .btn-download { background: #5c4db1; }
+    .btn-download:hover { background: #463a8a; }
+    .btn-clear { background: #777; }
+    .btn-clear:hover { background: #555; }
+    .row-actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+    code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 0.85rem; }
+    .badge { background: #c00; color: #fff; border-radius: 10px; padding: 1px 8px; font-size: 0.75rem; margin-left: 6px; }
+    .index-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 1rem; }
+    .index-card { border: 1px solid #ddd; border-radius: 6px; padding: 12px 16px; text-decoration: none !important; color: #222 !important; transition: box-shadow 0.15s; display: block; }
+    .index-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .index-card .title { font-weight: 600; font-size: 0.95rem; color: #c00; }
+    .index-card .count { font-size: 0.82rem; color: #888; margin-top: 4px; }
+    .dta-info { background: #e8f0fb; border: 1px solid #1e6bb8; border-radius: 4px; padding: 10px 16px; margin: 1rem 0; font-size: 0.88rem; }
+    .dta-info ol { margin: 0.4rem 0 0 1.2rem; padding: 0; line-height: 1.9; }
+    .ignore-info { background: #f8efe1; border: 1px solid #c98b2c; border-radius: 4px; padding: 10px 16px; margin: 1rem 0; font-size: 0.88rem; }
+    .ignore-info code { background: #fff7ea; }
+    .search-panel { background: #f7f7f7; border: 1px solid #d7d7d7; border-radius: 4px; padding: 12px 16px; margin: 1rem 0; }
+    .search-input { width: 100%; max-width: 520px; padding: 8px 10px; border: 1px solid #bbb; border-radius: 4px; font-family: inherit; font-size: 0.9rem; }
+    .action-panel { background: #f7f7f7; border: 1px solid #d7d7d7; border-radius: 4px; padding: 12px 16px; margin: 1rem 0; }
+    .action-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 0.8rem; }
+    .action-textarea { width: 100%; min-height: 140px; font-family: Consolas, monospace; font-size: 0.82rem; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; }
+    .muted { font-size: 0.8rem; color: #666; }
+    </style>
+</head>
+<body>
+  <a class="back" href="../../../Missing_Pages.html">&larr; Back to index</a>
+  <h1>MPages Development</h1>
+  <p class="meta">79 page(s) &mdash; Cerner Wiki &nbsp;|&nbsp; Generated: 2026-04-09 16:07</p>
+  <div class="dta-info">
+<strong>DownThemAll! (Firefox):</strong> right-click this page &rarr; DownThemAll &rarr;
+Links tab &rarr; set folder to <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\DownloadedFiles</code> &rarr; Start
+  </div>
+  <div class="ignore-info">
+<strong>Ignore workflow:</strong>
+this page is static HTML, so the buttons below queue PowerShell commands instead of editing the JSON directly.
+Click the button for each link, then <strong>Copy commands</strong> or <strong>Download .ps1</strong>, run the commands, and re-run the scraper.
+  </div>
+  <div class="search-panel">
+<input id="page-search" class="search-input" type="search" placeholder="Search this page by title or URL" oninput="filterPageRows()">
+<div id="search-status" class="muted" style="margin-top: 0.5rem;">Showing all 79 page(s).</div>
+  </div>
+  <div class="action-panel">
+<div class="action-toolbar">
+  <button type="button" class="btn btn-copy" onclick="copyPendingCommands()">Copy commands</button>
+  <button type="button" class="btn btn-download" onclick="downloadPendingCommands()">Download .ps1</button>
+  <button type="button" class="btn btn-clear" onclick="clearPendingCommands()">Clear queue</button>
+  <span id="pending-status" class="muted">No commands queued yet.</span>
+</div>
+<textarea id="pending-commands" class="action-textarea" readonly placeholder="Queued commands will appear here."></textarea>
+<div class="muted">Command target: <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\.venv\Scripts\python.exe</code> <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\Outputs\Tools\manage_missing_links.py</code></div>
+  </div>
+  <table>
+<thead><tr><th>Page</th><th>URL</th><th>First Seen</th><th></th></tr></thead>
+<tbody>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/about+mpages">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/about+mpages" target="_blank" rel="noopener">About Mpages</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/about+mpages</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/about+mpages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/about+mpages&quot;, &quot;About Mpages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/accessibility+in+mpages">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/accessibility+in+mpages" target="_blank" rel="noopener">Accessibility In Mpages</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/accessibility+in+mpages</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/accessibility+in+mpages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/accessibility+in+mpages&quot;, &quot;Accessibility In Mpages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/accessing+care+team+build+tool">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/accessing+care+team+build+tool" target="_blank" rel="noopener">Accessing Care Team Build Tool</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/accessing+care+team+build+tool</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/accessing+care+team+build+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/accessing+care+team+build+tool&quot;, &quot;Accessing Care Team Build Tool&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/addedd">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/addedd" target="_blank" rel="noopener">Addedd</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/addedd</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/addedd" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/addedd&quot;, &quot;Addedd&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/adding+a+care+team+to+a+medical+service+using+care+team+build+tool">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/adding+a+care+team+to+a+medical+service+using+care+team+build+tool" target="_blank" rel="noopener">Adding A Care Team To A Medical Service Using Care Team Build Tool</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/adding+a+care+team+to+a+medical+service+using+care+team+build+tool</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/adding+a+care+team+to+a+medical+service+using+care+team+build+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/adding+a+care+team+to+a+medical+service+using+care+team+build+tool&quot;, &quot;Adding A Care Team To A Medical Service Using Care Team Build Tool&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshppt/adding+a+medical+service+using+care+team+build+tool">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshppt/adding+a+medical+service+using+care+team+build+tool" target="_blank" rel="noopener">Adding A Medical Service Using Care Team Build Tool</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshppt/adding+a+medical+service+using+care+team+build+tool</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshppt/adding+a+medical+service+using+care+team+build+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshppt/adding+a+medical+service+using+care+team+build+tool&quot;, &quot;Adding A Medical Service Using Care Team Build Tool&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/adding+a+provider+using+care+team+build+tool">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/adding+a+provider+using+care+team+build+tool" target="_blank" rel="noopener">Adding A Provider Using Care Team Build Tool</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/adding+a+provider+using+care+team+build+tool</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/adding+a+provider+using+care+team+build+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/adding+a+provider+using+care+team+build+tool&quot;, &quot;Adding A Provider Using Care Team Build Tool&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/adding+components+to+a+treatment+line+in+a+pathway+using+care+pathways+build+tool">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/adding+components+to+a+treatment+line+in+a+pathway+using+care+pathways+build+tool" target="_blank" rel="noopener">Adding Components To A Treatment Line In A Pathway Using Care Pathways Build Tool</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/adding+components+to+a+treatment+line+in+a+pathway+using+care+pathways+build+tool</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/adding+components+to+a+treatment+line+in+a+pathway+using+care+pathways+build+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/adding+components+to+a+treatment+line+in+a+pathway+using+care+pathways+build+tool&quot;, &quot;Adding Components To A Treatment Line In A Pathway Using Care Pathways Build Tool&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/addmedication">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/addmedication" target="_blank" rel="noopener">Addmedication</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/addmedication</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/addmedication" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/addmedication&quot;, &quot;Addmedication&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/addnewordertoscratchpad">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/addnewordertoscratchpad" target="_blank" rel="noopener">Addnewordertoscratchpad</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/addnewordertoscratchpad</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/addnewordertoscratchpad" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/addnewordertoscratchpad&quot;, &quot;Addnewordertoscratchpad&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/addpowerplanmoew">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/addpowerplanmoew" target="_blank" rel="noopener">Addpowerplanmoew</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/addpowerplanmoew</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/addpowerplanmoew" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/addpowerplanmoew&quot;, &quot;Addpowerplanmoew&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/addpowerplanwithdetails">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/addpowerplanwithdetails" target="_blank" rel="noopener">Addpowerplanwithdetails</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/addpowerplanwithdetails</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/addpowerplanwithdetails" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/addpowerplanwithdetails&quot;, &quot;Addpowerplanwithdetails&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/addpregnancy">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/addpregnancy" target="_blank" rel="noopener">Addpregnancy</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/addpregnancy</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/addpregnancy" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/addpregnancy&quot;, &quot;Addpregnancy&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/addproblem,+adddiagnosis,+addallergy">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/addproblem,+adddiagnosis,+addallergy" target="_blank" rel="noopener">Addproblem, Adddiagnosis, Addallergy</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/addproblem,+adddiagnosis,+addallergy</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/addproblem,+adddiagnosis,+addallergy" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/addproblem,+adddiagnosis,+addallergy&quot;, &quot;Addproblem, Adddiagnosis, Addallergy&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/addresult">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/addresult" target="_blank" rel="noopener">Addresult</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/addresult</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/addresult" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/addresult&quot;, &quot;Addresult&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/august+2011+-+package+52138">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/august+2011+-+package+52138" target="_blank" rel="noopener">August 2011 - Package 52138</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/august+2011+-+package+52138</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/august+2011+-+package+52138" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/august+2011+-+package+52138&quot;, &quot;August 2011 - Package 52138&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/automatically+suggesting+care+pathways+using+care+pathways+build+tool">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/automatically+suggesting+care+pathways+using+care+pathways+build+tool" target="_blank" rel="noopener">Automatically Suggesting Care Pathways Using Care Pathways Build Tool</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/automatically+suggesting+care+pathways+using+care+pathways+build+tool</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/automatically+suggesting+care+pathways+using+care+pathways+build+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/automatically+suggesting+care+pathways+using+care+pathways+build+tool&quot;, &quot;Automatically Suggesting Care Pathways Using Care Pathways Build Tool&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/beginnotefromcopiedforwardnote">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/beginnotefromcopiedforwardnote" target="_blank" rel="noopener">Beginnotefromcopiedforwardnote</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/beginnotefromcopiedforwardnote</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/beginnotefromcopiedforwardnote" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/beginnotefromcopiedforwardnote&quot;, &quot;Beginnotefromcopiedforwardnote&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/beginnotefromencounterpathway">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/beginnotefromencounterpathway" target="_blank" rel="noopener">Beginnotefromencounterpathway</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/beginnotefromencounterpathway</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/beginnotefromencounterpathway" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/beginnotefromencounterpathway&quot;, &quot;Beginnotefromencounterpathway&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/beginnotefromprecompletednote">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/beginnotefromprecompletednote" target="_blank" rel="noopener">Beginnotefromprecompletednote</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/beginnotefromprecompletednote</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/beginnotefromprecompletednote" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/beginnotefromprecompletednote&quot;, &quot;Beginnotefromprecompletednote&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/cancelpregnancy">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/cancelpregnancy" target="_blank" rel="noopener">Cancelpregnancy</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/cancelpregnancy</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/cancelpregnancy" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/cancelpregnancy&quot;, &quot;Cancelpregnancy&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/care+pathways+build+tool+help+pages">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/care+pathways+build+tool+help+pages" target="_blank" rel="noopener">Care Pathways Build Tool Help Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/care+pathways+build+tool+help+pages</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/care+pathways+build+tool+help+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/care+pathways+build+tool+help+pages&quot;, &quot;Care Pathways Build Tool Help Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/care+pathways+build+tool+treatment+assessment+question+and+answer+template">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/care+pathways+build+tool+treatment+assessment+question+and+answer+template" target="_blank" rel="noopener">Care Pathways Build Tool Treatment Assessment Question And Answer Template</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/care+pathways+build+tool+treatment+assessment+question+and+answer+template</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/care+pathways+build+tool+treatment+assessment+question+and+answer+template" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/care+pathways+build+tool+treatment+assessment+question+and+answer+template&quot;, &quot;Care Pathways Build Tool Treatment Assessment Question And Answer Template&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/care+team+build+tool+help">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/care+team+build+tool+help" target="_blank" rel="noopener">Care Team Build Tool Help</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/care+team+build+tool+help</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/care+team+build+tool+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/care+team+build+tool+help&quot;, &quot;Care Team Build Tool Help&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/closepregnancy">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/closepregnancy" target="_blank" rel="noopener">Closepregnancy</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/closepregnancy</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/closepregnancy" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/closepregnancy&quot;, &quot;Closepregnancy&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/configuring+the+care+pathways+treatment+assessment+component+using+care+pathways+build+tool">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/configuring+the+care+pathways+treatment+assessment+component+using+care+pathways+build+tool" target="_blank" rel="noopener">Configuring The Care Pathways Treatment Assessment Component Using Care Pathways Build Tool</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/configuring+the+care+pathways+treatment+assessment+component+using+care+pathways+build+tool</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/configuring+the+care+pathways+treatment+assessment+component+using+care+pathways+build+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/configuring+the+care+pathways+treatment+assessment+component+using+care+pathways+build+tool&quot;, &quot;Configuring The Care Pathways Treatment Assessment Component Using Care Pathways Build Tool&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/createmoew">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/createmoew" target="_blank" rel="noopener">Createmoew</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/createmoew</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/createmoew" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/createmoew&quot;, &quot;Createmoew&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/creating+a+pathway+using+care+pathways+build+tool">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/creating+a+pathway+using+care+pathways+build+tool" target="_blank" rel="noopener">Creating A Pathway Using Care Pathways Build Tool</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/creating+a+pathway+using+care+pathways+build+tool</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/creating+a+pathway+using+care+pathways+build+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/creating+a+pathway+using+care+pathways+build+tool&quot;, &quot;Creating A Pathway Using Care Pathways Build Tool&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/creating+questions+and+answers+using+care+pathways+build+tool">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/creating+questions+and+answers+using+care+pathways+build+tool" target="_blank" rel="noopener">Creating Questions And Answers Using Care Pathways Build Tool</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/creating+questions+and+answers+using+care+pathways+build+tool</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/creating+questions+and+answers+using+care+pathways+build+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/creating+questions+and+answers+using+care+pathways+build+tool&quot;, &quot;Creating Questions And Answers Using Care Pathways Build Tool&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/destroymoew">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/destroymoew" target="_blank" rel="noopener">Destroymoew</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/destroymoew</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/destroymoew" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/destroymoew&quot;, &quot;Destroymoew&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/dischargeprocess">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/dischargeprocess" target="_blank" rel="noopener">Dischargeprocess</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/dischargeprocess</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/dischargeprocess" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/dischargeprocess&quot;, &quot;Dischargeprocess&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/displaymoew">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/displaymoew" target="_blank" rel="noopener">Displaymoew</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/displaymoew</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/displaymoew" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/displaymoew&quot;, &quot;Displaymoew&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/dyndoc">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/dyndoc" target="_blank" rel="noopener">Dyndoc</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/dyndoc</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/dyndoc" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/dyndoc&quot;, &quot;Dyndoc&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/february+2015+-+package+78979">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/february+2015+-+package+78979" target="_blank" rel="noopener">February 2015 - Package 78979</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/february+2015+-+package+78979</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/february+2015+-+package+78979" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/february+2015+-+package+78979&quot;, &quot;February 2015 - Package 78979&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/getavailableorderactions">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/getavailableorderactions" target="_blank" rel="noopener">Getavailableorderactions</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/getavailableorderactions</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/getavailableorderactions" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/getavailableorderactions&quot;, &quot;Getavailableorderactions&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/getconsolidatedroutingoptions">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/getconsolidatedroutingoptions" target="_blank" rel="noopener">Getconsolidatedroutingoptions</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/getconsolidatedroutingoptions</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/getconsolidatedroutingoptions" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/getconsolidatedroutingoptions&quot;, &quot;Getconsolidatedroutingoptions&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/getdefaultroutingdisplay">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/getdefaultroutingdisplay" target="_blank" rel="noopener">Getdefaultroutingdisplay</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/getdefaultroutingdisplay</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/getdefaultroutingdisplay" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/getdefaultroutingdisplay&quot;, &quot;Getdefaultroutingdisplay&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/getdxprobmapping">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/getdxprobmapping" target="_blank" rel="noopener">Getdxprobmapping</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/getdxprobmapping</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/getdxprobmapping" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/getdxprobmapping&quot;, &quot;Getdxprobmapping&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/getvalidencounters">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/getvalidencounters" target="_blank" rel="noopener">Getvalidencounters</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/getvalidencounters</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/getvalidencounters" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/getvalidencounters&quot;, &quot;Getvalidencounters&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/getxmlordersmoew">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/getxmlordersmoew" target="_blank" rel="noopener">Getxmlordersmoew</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/getxmlordersmoew</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/getxmlordersmoew" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/getxmlordersmoew&quot;, &quot;Getxmlordersmoew&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/group+result+viewer">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/group+result+viewer" target="_blank" rel="noopener">Group Result Viewer</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/group+result+viewer</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/group+result+viewer" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/group+result+viewer&quot;, &quot;Group Result Viewer&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/hla+viewer">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/hla+viewer" target="_blank" rel="noopener">Hla Viewer</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/hla+viewer</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/hla+viewer" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/hla+viewer&quot;, &quot;Hla Viewer&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/indexeddoublecollection">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/indexeddoublecollection" target="_blank" rel="noopener">Indexeddoublecollection</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/indexeddoublecollection</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/indexeddoublecollection" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/indexeddoublecollection&quot;, &quot;Indexeddoublecollection&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/invokecanceldcaction">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/invokecanceldcaction" target="_blank" rel="noopener">Invokecanceldcaction</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/invokecanceldcaction</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/invokecanceldcaction" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/invokecanceldcaction&quot;, &quot;Invokecanceldcaction&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/invokecompleteaction">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/invokecompleteaction" target="_blank" rel="noopener">Invokecompleteaction</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/invokecompleteaction</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/invokecompleteaction" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/invokecompleteaction&quot;, &quot;Invokecompleteaction&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/invokerenewaction">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/invokerenewaction" target="_blank" rel="noopener">Invokerenewaction</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/invokerenewaction</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/invokerenewaction" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/invokerenewaction&quot;, &quot;Invokerenewaction&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/invokerenewactionwithrouting">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/invokerenewactionwithrouting" target="_blank" rel="noopener">Invokerenewactionwithrouting</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/invokerenewactionwithrouting</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/invokerenewactionwithrouting" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/invokerenewactionwithrouting&quot;, &quot;Invokerenewactionwithrouting&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/invokeresolveactionmoew">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/invokeresolveactionmoew" target="_blank" rel="noopener">Invokeresolveactionmoew</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/invokeresolveactionmoew</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/invokeresolveactionmoew" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/invokeresolveactionmoew&quot;, &quot;Invokeresolveactionmoew&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/isinfobuttonon">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/isinfobuttonon" target="_blank" rel="noopener">Isinfobuttonon</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/isinfobuttonon</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/isinfobuttonon" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/isinfobuttonon&quot;, &quot;Isinfobuttonon&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/launchfundalheightgraph">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/launchfundalheightgraph" target="_blank" rel="noopener">Launchfundalheightgraph</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/launchfundalheightgraph</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/launchfundalheightgraph" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/launchfundalheightgraph&quot;, &quot;Launchfundalheightgraph&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/launchinfobutton">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/launchinfobutton" target="_blank" rel="noopener">Launchinfobutton</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/launchinfobutton</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/launchinfobutton" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/launchinfobutton&quot;, &quot;Launchinfobutton&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/launchlaborgraph">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/launchlaborgraph" target="_blank" rel="noopener">Launchlaborgraph</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/launchlaborgraph</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/launchlaborgraph" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/launchlaborgraph&quot;, &quot;Launchlaborgraph&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/launchpvresultstoendorseviewer">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/launchpvresultstoendorseviewer" target="_blank" rel="noopener">Launchpvresultstoendorseviewer</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/launchpvresultstoendorseviewer</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/launchpvresultstoendorseviewer" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/launchpvresultstoendorseviewer&quot;, &quot;Launchpvresultstoendorseviewer&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/managing+print+templates+using+mpages+printing+admin+tool">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/managing+print+templates+using+mpages+printing+admin+tool" target="_blank" rel="noopener">Managing Print Templates Using Mpages Printing Admin Tool</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/managing+print+templates+using+mpages+printing+admin+tool</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/managing+print+templates+using+mpages+printing+admin+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/managing+print+templates+using+mpages+printing+admin+tool&quot;, &quot;Managing Print Templates Using Mpages Printing Admin Tool&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/modifyedd">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/modifyedd" target="_blank" rel="noopener">Modifyedd</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/modifyedd</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/modifyedd" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/modifyedd&quot;, &quot;Modifyedd&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/modifyexistingnotebyeventid">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/modifyexistingnotebyeventid" target="_blank" rel="noopener">Modifyexistingnotebyeventid</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/modifyexistingnotebyeventid</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/modifyexistingnotebyeventid" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/modifyexistingnotebyeventid&quot;, &quot;Modifyexistingnotebyeventid&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/modifypregnancy">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/modifypregnancy" target="_blank" rel="noopener">Modifypregnancy</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/modifypregnancy</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/modifypregnancy" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/modifypregnancy&quot;, &quot;Modifypregnancy&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/mpages+foundation+june+2010+package+42453">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/mpages+foundation+june+2010+package+42453" target="_blank" rel="noopener">Mpages Foundation June 2010 Package 42453</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/mpages+foundation+june+2010+package+42453</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/mpages+foundation+june+2010+package+42453" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/mpages+foundation+june+2010+package+42453&quot;, &quot;Mpages Foundation June 2010 Package 42453&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/mpages+web+service+april+package+57589">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/mpages+web+service+april+package+57589" target="_blank" rel="noopener">Mpages Web Service April Package 57589</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/mpages+web+service+april+package+57589</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/mpages+web+service+april+package+57589" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/mpages+web+service+april+package+57589&quot;, &quot;Mpages Web Service April Package 57589&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/openform">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/openform" target="_blank" rel="noopener">Openform</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/openform</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/openform" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/openform&quot;, &quot;Openform&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/openlistmaintenancedialog">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/openlistmaintenancedialog" target="_blank" rel="noopener">Openlistmaintenancedialog</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/openlistmaintenancedialog</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/openlistmaintenancedialog" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/openlistmaintenancedialog&quot;, &quot;Openlistmaintenancedialog&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/orders+methods">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/orders+methods" target="_blank" rel="noopener">Orders Methods</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/orders+methods</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/orders+methods" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/orders+methods&quot;, &quot;Orders Methods&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/package+48270+mpages+web+service">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/package+48270+mpages+web+service" target="_blank" rel="noopener">Package 48270 Mpages Web Service</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/package+48270+mpages+web+service</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/package+48270+mpages+web+service" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/package+48270+mpages+web+service&quot;, &quot;Package 48270 Mpages Web Service&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/package+93087">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/package+93087" target="_blank" rel="noopener">Package 93087</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/package+93087</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/package+93087" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/package+93087&quot;, &quot;Package 93087&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/patienteducation+methods">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/patienteducation+methods" target="_blank" rel="noopener">Patienteducation Methods</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/patienteducation+methods</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/patienteducation+methods" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/patienteducation+methods&quot;, &quot;Patienteducation Methods&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/powerform+methods">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/powerform+methods" target="_blank" rel="noopener">Powerform Methods</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/powerform+methods</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/powerform+methods" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/powerform+methods&quot;, &quot;Powerform Methods&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/powerordersg">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/powerordersg" target="_blank" rel="noopener">Powerordersg</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/powerordersg</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/powerordersg" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/powerordersg&quot;, &quot;Powerordersg&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/pregnancy">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/pregnancy" target="_blank" rel="noopener">Pregnancy</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/pregnancy</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/pregnancy" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/pregnancy&quot;, &quot;Pregnancy&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/procedure+viewer">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/procedure+viewer" target="_blank" rel="noopener">Procedure Viewer</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/procedure+viewer</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/procedure+viewer" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/procedure+viewer&quot;, &quot;Procedure Viewer&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/quick+orders+alias+build+tool+help">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/quick+orders+alias+build+tool+help" target="_blank" rel="noopener">Quick Orders Alias Build Tool Help</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/quick+orders+alias+build+tool+help</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/quick+orders+alias+build+tool+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/quick+orders+alias+build+tool+help&quot;, &quot;Quick Orders Alias Build Tool Help&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/quick+visits+build+tool+help+pages">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/quick+visits+build+tool+help+pages" target="_blank" rel="noopener">Quick Visits Build Tool Help Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/quick+visits+build+tool+help+pages</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/quick+visits+build+tool+help+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/quick+visits+build+tool+help+pages&quot;, &quot;Quick Visits Build Tool Help Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/reminders+viewer">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/reminders+viewer" target="_blank" rel="noopener">Reminders Viewer</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/reminders+viewer</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/reminders+viewer" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/reminders+viewer&quot;, &quot;Reminders Viewer&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/reopenpregnancy">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/reopenpregnancy" target="_blank" rel="noopener">Reopenpregnancy</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/reopenpregnancy</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/reopenpregnancy" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/reopenpregnancy&quot;, &quot;Reopenpregnancy&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/result+viewer">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/result+viewer" target="_blank" rel="noopener">Result Viewer</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/result+viewer</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/result+viewer" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/result+viewer&quot;, &quot;Result Viewer&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/reviewing+and+removing+provider+associations+using+care+team+build+tool">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/reviewing+and+removing+provider+associations+using+care+team+build+tool" target="_blank" rel="noopener">Reviewing And Removing Provider Associations Using Care Team Build Tool</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/reviewing+and+removing+provider+associations+using+care+team+build+tool</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/reviewing+and+removing+provider+associations+using+care+team+build+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/reviewing+and+removing+provider+associations+using+care+team+build+tool&quot;, &quot;Reviewing And Removing Provider Associations Using Care Team Build Tool&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/setinfobuttondata">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/setinfobuttondata" target="_blank" rel="noopener">Setinfobuttondata</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/setinfobuttondata</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/setinfobuttondata" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/setinfobuttondata&quot;, &quot;Setinfobuttondata&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/r1mpageshp/setting+the+pathway+diagram+web+address+using+care+pathways+build+tool">
+      <td><a href="https://wiki.cerner.com/display/r1mpageshp/setting+the+pathway+diagram+web+address+using+care+pathways+build+tool" target="_blank" rel="noopener">Setting The Pathway Diagram Web Address Using Care Pathways Build Tool</a></td>
+      <td class="url">https://wiki.cerner.com/display/r1mpageshp/setting+the+pathway+diagram+web+address+using+care+pathways+build+tool</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/r1mpageshp/setting+the+pathway+diagram+web+address+using+care+pathways+build+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/r1mpageshp/setting+the+pathway+diagram+web+address+using+care+pathways+build+tool&quot;, &quot;Setting The Pathway Diagram Web Address Using Care Pathways Build Tool&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/signorders">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/signorders" target="_blank" rel="noopener">Signorders</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/signorders</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/signorders" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/signorders&quot;, &quot;Signorders&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/taskdoc">
+      <td><a href="https://wiki.cerner.com/display/mpdevwiki/taskdoc" target="_blank" rel="noopener">Taskdoc</a></td>
+      <td class="url">https://wiki.cerner.com/display/mpdevwiki/taskdoc</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/taskdoc" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/taskdoc&quot;, &quot;Taskdoc&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    </tbody>
+  </table>
+  <script>
+const commandPython = "\\\\PNDCFPRDFS025.HEALTHIRL.NET\\MNCMSNPT$\\Meds Management\\MPage\\Development\\CernerScraper\\.venv\\Scripts\\python.exe";
+const manageScript = "\\\\PNDCFPRDFS025.HEALTHIRL.NET\\MNCMSNPT$\\Meds Management\\MPage\\Development\\CernerScraper\\Outputs\\Tools\\manage_missing_links.py";
+let pendingCommands = [];
+
+function psQuote(value) {
+  return "'" + String(value ?? '').replace(/'/g, "''") + "'";
+}
+
+function setStatus(message) {
+  document.getElementById('pending-status').textContent = message;
+}
+
+function renderCommands() {
+  const textarea = document.getElementById('pending-commands');
+  textarea.value = pendingCommands.map(entry => entry.command).join('\r\n');
+  if (pendingCommands.length) {
+    setStatus(pendingCommands.length + ' command(s) queued.');
+  } else {
+    setStatus('No commands queued yet.');
+  }
+}
+
+function queueLinkAction(button, action, url, title) {
+  const reason = action === 'ignore' ? 'ignored from missing pages UI' : '';
+  const base = '& ' + psQuote(commandPython) + ' ' + psQuote(manageScript) + ' ' + action + ' ' + psQuote(url);
+  const command = action === 'ignore' ? base + ' --reason ' + psQuote(reason) : base;
+  pendingCommands = pendingCommands.filter(entry => entry.url !== url);
+  pendingCommands.push({ action, url, title, reason, command });
+  const row = button.closest('tr');
+  if (row) {
+    row.classList.remove('queued-ignore', 'queued-restore');
+    row.classList.add(action === 'ignore' ? 'queued-ignore' : 'queued-restore');
+  }
+  renderCommands();
+}
+
+function copyPendingCommands() {
+  const textarea = document.getElementById('pending-commands');
+  if (!textarea.value.trim()) {
+    return;
+  }
+  textarea.focus();
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(textarea.value).then(() => setStatus('Commands copied to clipboard.')).catch(() => {
+      document.execCommand('copy');
+      setStatus('Commands copied to clipboard.');
+    });
+    return;
+  }
+  document.execCommand('copy');
+  setStatus('Commands copied to clipboard.');
+}
+
+function downloadPendingCommands() {
+  const textarea = document.getElementById('pending-commands');
+  if (!textarea.value.trim()) {
+    return;
+  }
+  const blob = new Blob([textarea.value + '\r\n'], { type: 'text/plain;charset=utf-8' });
+  const link = document.createElement('a');
+  const href = URL.createObjectURL(blob);
+  link.href = href;
+  link.download = 'missing_pages_actions.ps1';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(href);
+  setStatus('PowerShell script downloaded.');
+}
+
+function clearPendingCommands() {
+  pendingCommands = [];
+  document.querySelectorAll('tr.queued-ignore, tr.queued-restore').forEach(row => row.classList.remove('queued-ignore', 'queued-restore'));
+  renderCommands();
+}
+
+function filterPageRows() {
+  const input = document.getElementById('page-search');
+  const query = (input?.value || '').trim().toLowerCase();
+  const rows = Array.from(document.querySelectorAll('tbody tr'));
+  let visibleCount = 0;
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    const matches = !query || text.includes(query);
+    row.style.display = matches ? '' : 'none';
+    if (matches) {
+      visibleCount += 1;
+    }
+  });
+  const status = document.getElementById('search-status');
+  if (status) {
+    status.textContent = query
+      ? 'Showing ' + visibleCount + ' of ' + rows.length + ' page(s).'
+      : 'Showing all ' + rows.length + ' page(s).';
+  }
+}
+
+renderCommands();
+  </script>
+</body>
+</html>

@@ -1,12 +1,10 @@
 Antimicrobial/Troubleshooting/
 Development/*
 !Development/CernerScraper/
-Development/CernerScraper/*
-!Development/CernerScraper/Outputs/
-Development/CernerScraper/Outputs/*
-!Development/CernerScraper/Outputs/Corpus/
-Development/CernerScraper/Outputs/Corpus/*
-!Development/CernerScraper/Outputs/Corpus/mpages_chunks.jsonl
+Development/CernerScraper/.venv/
+Development/CernerScraper/**/__pycache__/
+Development/CernerScraper/DownloadedFiles/
+Development/CernerScraper/Outputs/Archive/
 Antimicrobial/Research/
 Acuity/DVD Query Results.xlsx
 Antimicrobial/Antimicrobial Edge/Edge Troubleshooting/

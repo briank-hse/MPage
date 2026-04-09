@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>HealtheIntent &amp; Care Management</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 2rem; color: #222; max-width: 1180px; }
+    h1 { color: #c00; margin-bottom: 0.2rem; }
+    h2 { margin-top: 1.5rem; border-bottom: 2px solid #c00; padding-bottom: 4px; }
+    p { margin: 0.4rem 0 0.8rem; color: #555; font-size: 0.9rem; }
+    a { color: #c00; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .meta { font-size: 0.8rem; color: #888; margin-top: 0.2rem; }
+    .back { font-size: 0.85rem; margin-bottom: 1rem; display: block; }
+    table { border-collapse: collapse; width: 100%; margin-top: 0.5rem; }
+    th { background: #444; color: #fff; text-align: left; padding: 6px 10px; font-size: 0.85rem; }
+    td { padding: 5px 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
+    td.url { font-size: 0.72rem; color: #999; word-break: break-all; max-width: 380px; }
+    td.added, td.ignored { font-size: 0.78rem; color: #666; white-space: nowrap; width: 130px; }
+    td.reason { font-size: 0.78rem; color: #666; max-width: 220px; }
+    td.act { white-space: nowrap; text-align: right; width: 220px; }
+    tr:hover td { background: #fff8f8; }
+    tr.queued-ignore td { background: #fff6df; }
+    tr.queued-restore td { background: #edf8ed; }
+    .btn { display: inline-block; padding: 3px 10px; color: #fff !important; border-radius: 3px; font-size: 0.78rem; text-decoration: none !important; white-space: nowrap; border: none; cursor: pointer; font-family: inherit; }
+    .btn-open { background: #888; }
+    .btn-open:hover { background: #555; }
+    .btn-ignore { background: #b26a00; }
+    .btn-ignore:hover { background: #8c5300; }
+    .btn-restore { background: #2e7d32; }
+    .btn-restore:hover { background: #1f5a23; }
+    .btn-copy { background: #1e6bb8; }
+    .btn-copy:hover { background: #15528e; }
+    .btn-download { background: #5c4db1; }
+    .btn-download:hover { background: #463a8a; }
+    .btn-clear { background: #777; }
+    .btn-clear:hover { background: #555; }
+    .row-actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+    code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 0.85rem; }
+    .badge { background: #c00; color: #fff; border-radius: 10px; padding: 1px 8px; font-size: 0.75rem; margin-left: 6px; }
+    .index-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 1rem; }
+    .index-card { border: 1px solid #ddd; border-radius: 6px; padding: 12px 16px; text-decoration: none !important; color: #222 !important; transition: box-shadow 0.15s; display: block; }
+    .index-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .index-card .title { font-weight: 600; font-size: 0.95rem; color: #c00; }
+    .index-card .count { font-size: 0.82rem; color: #888; margin-top: 4px; }
+    .dta-info { background: #e8f0fb; border: 1px solid #1e6bb8; border-radius: 4px; padding: 10px 16px; margin: 1rem 0; font-size: 0.88rem; }
+    .dta-info ol { margin: 0.4rem 0 0 1.2rem; padding: 0; line-height: 1.9; }
+    .ignore-info { background: #f8efe1; border: 1px solid #c98b2c; border-radius: 4px; padding: 10px 16px; margin: 1rem 0; font-size: 0.88rem; }
+    .ignore-info code { background: #fff7ea; }
+    .search-panel { background: #f7f7f7; border: 1px solid #d7d7d7; border-radius: 4px; padding: 12px 16px; margin: 1rem 0; }
+    .search-input { width: 100%; max-width: 520px; padding: 8px 10px; border: 1px solid #bbb; border-radius: 4px; font-family: inherit; font-size: 0.9rem; }
+    .action-panel { background: #f7f7f7; border: 1px solid #d7d7d7; border-radius: 4px; padding: 12px 16px; margin: 1rem 0; }
+    .action-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 0.8rem; }
+    .action-textarea { width: 100%; min-height: 140px; font-family: Consolas, monospace; font-size: 0.82rem; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; }
+    .muted { font-size: 0.8rem; color: #666; }
+    </style>
+</head>
+<body>
+  <a class="back" href="../../../Missing_Pages.html">&larr; Back to index</a>
+  <h1>HealtheIntent &amp; Care Management</h1>
+  <p class="meta">25 page(s) &mdash; Cerner Wiki &nbsp;|&nbsp; Generated: 2026-04-09 16:07</p>
+  <div class="dta-info">
+<strong>DownThemAll! (Firefox):</strong> right-click this page &rarr; DownThemAll &rarr;
+Links tab &rarr; set folder to <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\DownloadedFiles</code> &rarr; Start
+  </div>
+  <div class="ignore-info">
+<strong>Ignore workflow:</strong>
+this page is static HTML, so the buttons below queue PowerShell commands instead of editing the JSON directly.
+Click the button for each link, then <strong>Copy commands</strong> or <strong>Download .ps1</strong>, run the commands, and re-run the scraper.
+  </div>
+  <div class="search-panel">
+<input id="page-search" class="search-input" type="search" placeholder="Search this page by title or URL" oninput="filterPageRows()">
+<div id="search-status" class="muted" style="margin-top: 0.5rem;">Showing all 25 page(s).</div>
+  </div>
+  <div class="action-panel">
+<div class="action-toolbar">
+  <button type="button" class="btn btn-copy" onclick="copyPendingCommands()">Copy commands</button>
+  <button type="button" class="btn btn-download" onclick="downloadPendingCommands()">Download .ps1</button>
+  <button type="button" class="btn btn-clear" onclick="clearPendingCommands()">Clear queue</button>
+  <span id="pending-status" class="muted">No commands queued yet.</span>
+</div>
+<textarea id="pending-commands" class="action-textarea" readonly placeholder="Queued commands will appear here."></textarea>
+<div class="muted">Command target: <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\.venv\Scripts\python.exe</code> <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\Outputs\Tools\manage_missing_links.py</code></div>
+  </div>
+  <table>
+<thead><tr><th>Page</th><th>URL</th><th>First Seen</th><th></th></tr></thead>
+<tbody>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+acute+case+management+responsive+mpages+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+acute+case+management+responsive+mpages+worklist" target="_blank" rel="noopener">Configure Acute Case Management Responsive Mpages Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+acute+case+management+responsive+mpages+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+acute+case+management+responsive+mpages+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+acute+case+management+responsive+mpages+worklist&quot;, &quot;Configure Acute Case Management Responsive Mpages Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+acute+case+management+worklists">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+acute+case+management+worklists" target="_blank" rel="noopener">Configure Acute Case Management Worklists</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+acute+case+management+worklists</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+acute+case+management+worklists" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+acute+case+management+worklists&quot;, &quot;Configure Acute Case Management Worklists&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+healthecare+core">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+healthecare+core" target="_blank" rel="noopener">Configure Healthecare Core</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+healthecare+core</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+healthecare+core" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+healthecare+core&quot;, &quot;Configure Healthecare Core&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+mp+ecp+ed+dashboard+components+wsh">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+mp+ecp+ed+dashboard+components+wsh" target="_blank" rel="noopener">Configure Mp Ecp Ed Dashboard Components Wsh</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+mp+ecp+ed+dashboard+components+wsh</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+mp+ecp+ed+dashboard+components+wsh" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+mp+ecp+ed+dashboard+components+wsh&quot;, &quot;Configure Mp Ecp Ed Dashboard Components Wsh&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+dashboard+care+management+referral+component">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+dashboard+care+management+referral+component" target="_blank" rel="noopener">Configure The Dashboard Care Management Referral Component</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+dashboard+care+management+referral+component</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+dashboard+care+management+referral+component" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+dashboard+care+management+referral+component&quot;, &quot;Configure The Dashboard Care Management Referral Component&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+dashboard+cases+by+status+component">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+dashboard+cases+by+status+component" target="_blank" rel="noopener">Configure The Dashboard Cases By Status Component</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+dashboard+cases+by+status+component</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+dashboard+cases+by+status+component" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+dashboard+cases+by+status+component&quot;, &quot;Configure The Dashboard Cases By Status Component&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+dashboard+observation+notifications+component">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+dashboard+observation+notifications+component" target="_blank" rel="noopener">Configure The Dashboard Observation Notifications Component</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+dashboard+observation+notifications+component</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+dashboard+observation+notifications+component" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+dashboard+observation+notifications+component&quot;, &quot;Configure The Dashboard Observation Notifications Component&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+dashboard+potential+cases+component">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+dashboard+potential+cases+component" target="_blank" rel="noopener">Configure The Dashboard Potential Cases Component</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+dashboard+potential+cases+component</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+dashboard+potential+cases+component" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+dashboard+potential+cases+component&quot;, &quot;Configure The Dashboard Potential Cases Component&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+healthecare+case+list+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+healthecare+case+list+worklist" target="_blank" rel="noopener">Configure The Healthecare Case List Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+healthecare+case+list+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+healthecare+case+list+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+healthecare+case+list+worklist&quot;, &quot;Configure The Healthecare Case List Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+healthecare+provider+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+healthecare+provider+worklist" target="_blank" rel="noopener">Configure The Healthecare Provider Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+healthecare+provider+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+healthecare+provider+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+healthecare+provider+worklist&quot;, &quot;Configure The Healthecare Provider Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+potential+cases+column">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+potential+cases+column" target="_blank" rel="noopener">Configure The Potential Cases Column</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+potential+cases+column</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+potential+cases+column" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+potential+cases+column&quot;, &quot;Configure The Potential Cases Column&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/healthecarehp/dashboard+care+management+referral+component+help">
+      <td><a href="https://wiki.cerner.com/display/healthecarehp/dashboard+care+management+referral+component+help" target="_blank" rel="noopener">Dashboard Care Management Referral Component Help</a></td>
+      <td class="url">https://wiki.cerner.com/display/healthecarehp/dashboard+care+management+referral+component+help</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/healthecarehp/dashboard+care+management+referral+component+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/healthecarehp/dashboard+care+management+referral+component+help&quot;, &quot;Dashboard Care Management Referral Component Help&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/healthecarehp/dashboard+care+managers+component+help">
+      <td><a href="https://wiki.cerner.com/display/healthecarehp/dashboard+care+managers+component+help" target="_blank" rel="noopener">Dashboard Care Managers Component Help</a></td>
+      <td class="url">https://wiki.cerner.com/display/healthecarehp/dashboard+care+managers+component+help</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/healthecarehp/dashboard+care+managers+component+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/healthecarehp/dashboard+care+managers+component+help&quot;, &quot;Dashboard Care Managers Component Help&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/healthecarehp/dashboard+cases+by+status+component+help">
+      <td><a href="https://wiki.cerner.com/display/healthecarehp/dashboard+cases+by+status+component+help" target="_blank" rel="noopener">Dashboard Cases By Status Component Help</a></td>
+      <td class="url">https://wiki.cerner.com/display/healthecarehp/dashboard+cases+by+status+component+help</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/healthecarehp/dashboard+cases+by+status+component+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/healthecarehp/dashboard+cases+by+status+component+help&quot;, &quot;Dashboard Cases By Status Component Help&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/healthecarehp/dashboard+potential+cases+component+help">
+      <td><a href="https://wiki.cerner.com/display/healthecarehp/dashboard+potential+cases+component+help" target="_blank" rel="noopener">Dashboard Potential Cases Component Help</a></td>
+      <td class="url">https://wiki.cerner.com/display/healthecarehp/dashboard+potential+cases+component+help</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/healthecarehp/dashboard+potential+cases+component+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/healthecarehp/dashboard+potential+cases+component+help&quot;, &quot;Dashboard Potential Cases Component Help&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/design+mpages+acute+case+management+assignment+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/design+mpages+acute+case+management+assignment+worklist" target="_blank" rel="noopener">Design Mpages Acute Case Management Assignment Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/design+mpages+acute+case+management+assignment+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/design+mpages+acute+case+management+assignment+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/design+mpages+acute+case+management+assignment+worklist&quot;, &quot;Design Mpages Acute Case Management Assignment Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/design+mpages+acute+case+management+notes">
+      <td><a href="https://wiki.cerner.com/display/reference/design+mpages+acute+case+management+notes" target="_blank" rel="noopener">Design Mpages Acute Case Management Notes</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/design+mpages+acute+case+management+notes</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/design+mpages+acute+case+management+notes" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/design+mpages+acute+case+management+notes&quot;, &quot;Design Mpages Acute Case Management Notes&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/design+mpages+acute+case+management+um+assignment+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/design+mpages+acute+case+management+um+assignment+worklist" target="_blank" rel="noopener">Design Mpages Acute Case Management Um Assignment Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/design+mpages+acute+case+management+um+assignment+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/design+mpages+acute+case+management+um+assignment+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/design+mpages+acute+case+management+um+assignment+worklist&quot;, &quot;Design Mpages Acute Case Management Um Assignment Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/healthecarehp/healthecare+help+pages">
+      <td><a href="https://wiki.cerner.com/display/healthecarehp/healthecare+help+pages" target="_blank" rel="noopener">Healthecare Help Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/healthecarehp/healthecare+help+pages</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/healthecarehp/healthecare+help+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/healthecarehp/healthecare+help+pages&quot;, &quot;Healthecare Help Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/healthecare+technical+dependencies">
+      <td><a href="https://wiki.cerner.com/display/reference/healthecare+technical+dependencies" target="_blank" rel="noopener">Healthecare Technical Dependencies</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/healthecare+technical+dependencies</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/healthecare+technical+dependencies" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/healthecare+technical+dependencies&quot;, &quot;Healthecare Technical Dependencies&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/mp+ecp+ed+dashboard+components+example">
+      <td><a href="https://wiki.cerner.com/display/reference/mp+ecp+ed+dashboard+components+example" target="_blank" rel="noopener">Mp Ecp Ed Dashboard Components Example</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/mp+ecp+ed+dashboard+components+example</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/mp+ecp+ed+dashboard+components+example" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/mp+ecp+ed+dashboard+components+example&quot;, &quot;Mp Ecp Ed Dashboard Components Example&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/mp+ecp+ed+dashboard+components+example+-+ed+breaches">
+      <td><a href="https://wiki.cerner.com/display/reference/mp+ecp+ed+dashboard+components+example+-+ed+breaches" target="_blank" rel="noopener">Mp Ecp Ed Dashboard Components Example - Ed Breaches</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/mp+ecp+ed+dashboard+components+example+-+ed+breaches</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/mp+ecp+ed+dashboard+components+example+-+ed+breaches" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/mp+ecp+ed+dashboard+components+example+-+ed+breaches&quot;, &quot;Mp Ecp Ed Dashboard Components Example - Ed Breaches&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/oracle+health+acute+case+management+reference+pages">
+      <td><a href="https://wiki.cerner.com/display/reference/oracle+health+acute+case+management+reference+pages" target="_blank" rel="noopener">Oracle Health Acute Case Management Reference Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/oracle+health+acute+case+management+reference+pages</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/oracle+health+acute+case+management+reference+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/oracle+health+acute+case+management+reference+pages&quot;, &quot;Oracle Health Acute Case Management Reference Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/healtheintenthp/oracle+health+data+intelligence+common+help+pages">
+      <td><a href="https://wiki.cerner.com/display/healtheintenthp/oracle+health+data+intelligence+common+help+pages" target="_blank" rel="noopener">Oracle Health Data Intelligence Common Help Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/healtheintenthp/oracle+health+data+intelligence+common+help+pages</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/healtheintenthp/oracle+health+data+intelligence+common+help+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/healtheintenthp/oracle+health+data+intelligence+common+help+pages&quot;, &quot;Oracle Health Data Intelligence Common Help Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/healtheedwhp/oracle+health+data+warehouse+help+pages">
+      <td><a href="https://wiki.cerner.com/display/healtheedwhp/oracle+health+data+warehouse+help+pages" target="_blank" rel="noopener">Oracle Health Data Warehouse Help Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/healtheedwhp/oracle+health+data+warehouse+help+pages</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/healtheedwhp/oracle+health+data+warehouse+help+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/healtheedwhp/oracle+health+data+warehouse+help+pages&quot;, &quot;Oracle Health Data Warehouse Help Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    </tbody>
+  </table>
+  <script>
+const commandPython = "\\\\PNDCFPRDFS025.HEALTHIRL.NET\\MNCMSNPT$\\Meds Management\\MPage\\Development\\CernerScraper\\.venv\\Scripts\\python.exe";
+const manageScript = "\\\\PNDCFPRDFS025.HEALTHIRL.NET\\MNCMSNPT$\\Meds Management\\MPage\\Development\\CernerScraper\\Outputs\\Tools\\manage_missing_links.py";
+let pendingCommands = [];
+
+function psQuote(value) {
+  return "'" + String(value ?? '').replace(/'/g, "''") + "'";
+}
+
+function setStatus(message) {
+  document.getElementById('pending-status').textContent = message;
+}
+
+function renderCommands() {
+  const textarea = document.getElementById('pending-commands');
+  textarea.value = pendingCommands.map(entry => entry.command).join('\r\n');
+  if (pendingCommands.length) {
+    setStatus(pendingCommands.length + ' command(s) queued.');
+  } else {
+    setStatus('No commands queued yet.');
+  }
+}
+
+function queueLinkAction(button, action, url, title) {
+  const reason = action === 'ignore' ? 'ignored from missing pages UI' : '';
+  const base = '& ' + psQuote(commandPython) + ' ' + psQuote(manageScript) + ' ' + action + ' ' + psQuote(url);
+  const command = action === 'ignore' ? base + ' --reason ' + psQuote(reason) : base;
+  pendingCommands = pendingCommands.filter(entry => entry.url !== url);
+  pendingCommands.push({ action, url, title, reason, command });
+  const row = button.closest('tr');
+  if (row) {
+    row.classList.remove('queued-ignore', 'queued-restore');
+    row.classList.add(action === 'ignore' ? 'queued-ignore' : 'queued-restore');
+  }
+  renderCommands();
+}
+
+function copyPendingCommands() {
+  const textarea = document.getElementById('pending-commands');
+  if (!textarea.value.trim()) {
+    return;
+  }
+  textarea.focus();
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(textarea.value).then(() => setStatus('Commands copied to clipboard.')).catch(() => {
+      document.execCommand('copy');
+      setStatus('Commands copied to clipboard.');
+    });
+    return;
+  }
+  document.execCommand('copy');
+  setStatus('Commands copied to clipboard.');
+}
+
+function downloadPendingCommands() {
+  const textarea = document.getElementById('pending-commands');
+  if (!textarea.value.trim()) {
+    return;
+  }
+  const blob = new Blob([textarea.value + '\r\n'], { type: 'text/plain;charset=utf-8' });
+  const link = document.createElement('a');
+  const href = URL.createObjectURL(blob);
+  link.href = href;
+  link.download = 'missing_pages_actions.ps1';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(href);
+  setStatus('PowerShell script downloaded.');
+}
+
+function clearPendingCommands() {
+  pendingCommands = [];
+  document.querySelectorAll('tr.queued-ignore, tr.queued-restore').forEach(row => row.classList.remove('queued-ignore', 'queued-restore'));
+  renderCommands();
+}
+
+function filterPageRows() {
+  const input = document.getElementById('page-search');
+  const query = (input?.value || '').trim().toLowerCase();
+  const rows = Array.from(document.querySelectorAll('tbody tr'));
+  let visibleCount = 0;
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    const matches = !query || text.includes(query);
+    row.style.display = matches ? '' : 'none';
+    if (matches) {
+      visibleCount += 1;
+    }
+  });
+  const status = document.getElementById('search-status');
+  if (status) {
+    status.textContent = query
+      ? 'Showing ' + visibleCount + ' of ' + rows.length + ' page(s).'
+      : 'Showing all ' + rows.length + ' page(s).';
+  }
+}
+
+renderCommands();
+  </script>
+</body>
+</html>

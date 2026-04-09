@@ -1,0 +1,50 @@
+{
+  "https://wiki.cerner.com/display/reference/all+about+health+expert+rule+builder": {
+    "bucket": "MPages Configuration",
+    "ignored_at": "2026-03-06 15:40",
+    "kind": "wiki",
+    "reason": "ignored from missing pages UI",
+    "title": "All About Health Expert Rule Builder",
+    "url": "https://wiki.cerner.com/display/reference/all+about+health+expert+rule+builder"
+  },
+  "https://wiki.cerner.com/display/reference/all+about+learninglive": {
+    "bucket": "MPages Configuration",
+    "ignored_at": "2026-03-06 15:40",
+    "kind": "wiki",
+    "reason": "ignored from missing pages UI",
+    "title": "All About Learninglive",
+    "url": "https://wiki.cerner.com/display/reference/all+about+learninglive"
+  },
+  "https://wiki.cerner.com/display/reference/all+about+mobile+clinical+review": {
+    "bucket": "MPages Configuration",
+    "ignored_at": "2026-03-06 15:40",
+    "kind": "wiki",
+    "reason": "ignored from missing pages UI",
+    "title": "All About Mobile Clinical Review",
+    "url": "https://wiki.cerner.com/display/reference/all+about+mobile+clinical+review"
+  },
+  "https://wiki.cerner.com/display/reference/all+about+mobile+clinical+summary": {
+    "bucket": "MPages Configuration",
+    "ignored_at": "2026-03-06 15:41",
+    "kind": "wiki",
+    "reason": "ignored from missing pages UI",
+    "title": "All About Mobile Clinical Summary",
+    "url": "https://wiki.cerner.com/display/reference/all+about+mobile+clinical+summary"
+  },
+  "https://wiki.cerner.com/display/reference/all+about+the+results+to+endorse+window": {
+    "bucket": "MPages Configuration",
+    "ignored_at": "2026-03-06 15:41",
+    "kind": "wiki",
+    "reason": "ignored from missing pages UI",
+    "title": "All About The Results To Endorse Window",
+    "url": "https://wiki.cerner.com/display/reference/all+about+the+results+to+endorse+window"
+  },
+  "https://wiki.cerner.com/display/reference/configure+bedrock+to+place+a+healthelife+indicator+in+the+powerchart+demographics+bar": {
+    "bucket": "MPages Configuration",
+    "ignored_at": "2026-03-06 15:41",
+    "kind": "wiki",
+    "reason": "ignored from missing pages UI",
+    "title": "Configure Bedrock To Place A Healthelife Indicator In The Powerchart Demographics Bar",
+    "url": "https://wiki.cerner.com/display/reference/configure+bedrock+to+place+a+healthelife+indicator+in+the+powerchart+demographics+bar"
+  }
+}

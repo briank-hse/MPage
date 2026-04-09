@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MPages Worklists &amp; Organizers</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 2rem; color: #222; max-width: 1180px; }
+    h1 { color: #c00; margin-bottom: 0.2rem; }
+    h2 { margin-top: 1.5rem; border-bottom: 2px solid #c00; padding-bottom: 4px; }
+    p { margin: 0.4rem 0 0.8rem; color: #555; font-size: 0.9rem; }
+    a { color: #c00; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .meta { font-size: 0.8rem; color: #888; margin-top: 0.2rem; }
+    .back { font-size: 0.85rem; margin-bottom: 1rem; display: block; }
+    table { border-collapse: collapse; width: 100%; margin-top: 0.5rem; }
+    th { background: #444; color: #fff; text-align: left; padding: 6px 10px; font-size: 0.85rem; }
+    td { padding: 5px 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
+    td.url { font-size: 0.72rem; color: #999; word-break: break-all; max-width: 380px; }
+    td.added, td.ignored { font-size: 0.78rem; color: #666; white-space: nowrap; width: 130px; }
+    td.reason { font-size: 0.78rem; color: #666; max-width: 220px; }
+    td.act { white-space: nowrap; text-align: right; width: 220px; }
+    tr:hover td { background: #fff8f8; }
+    tr.queued-ignore td { background: #fff6df; }
+    tr.queued-restore td { background: #edf8ed; }
+    .btn { display: inline-block; padding: 3px 10px; color: #fff !important; border-radius: 3px; font-size: 0.78rem; text-decoration: none !important; white-space: nowrap; border: none; cursor: pointer; font-family: inherit; }
+    .btn-open { background: #888; }
+    .btn-open:hover { background: #555; }
+    .btn-ignore { background: #b26a00; }
+    .btn-ignore:hover { background: #8c5300; }
+    .btn-restore { background: #2e7d32; }
+    .btn-restore:hover { background: #1f5a23; }
+    .btn-copy { background: #1e6bb8; }
+    .btn-copy:hover { background: #15528e; }
+    .btn-download { background: #5c4db1; }
+    .btn-download:hover { background: #463a8a; }
+    .btn-clear { background: #777; }
+    .btn-clear:hover { background: #555; }
+    .row-actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+    code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 0.85rem; }
+    .badge { background: #c00; color: #fff; border-radius: 10px; padding: 1px 8px; font-size: 0.75rem; margin-left: 6px; }
+    .index-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 1rem; }
+    .index-card { border: 1px solid #ddd; border-radius: 6px; padding: 12px 16px; text-decoration: none !important; color: #222 !important; transition: box-shadow 0.15s; display: block; }
+    .index-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .index-card .title { font-weight: 600; font-size: 0.95rem; color: #c00; }
+    .index-card .count { font-size: 0.82rem; color: #888; margin-top: 4px; }
+    .dta-info { background: #e8f0fb; border: 1px solid #1e6bb8; border-radius: 4px; padding: 10px 16px; margin: 1rem 0; font-size: 0.88rem; }
+    .dta-info ol { margin: 0.4rem 0 0 1.2rem; padding: 0; line-height: 1.9; }
+    .ignore-info { background: #f8efe1; border: 1px solid #c98b2c; border-radius: 4px; padding: 10px 16px; margin: 1rem 0; font-size: 0.88rem; }
+    .ignore-info code { background: #fff7ea; }
+    .search-panel { background: #f7f7f7; border: 1px solid #d7d7d7; border-radius: 4px; padding: 12px 16px; margin: 1rem 0; }
+    .search-input { width: 100%; max-width: 520px; padding: 8px 10px; border: 1px solid #bbb; border-radius: 4px; font-family: inherit; font-size: 0.9rem; }
+    .action-panel { background: #f7f7f7; border: 1px solid #d7d7d7; border-radius: 4px; padding: 12px 16px; margin: 1rem 0; }
+    .action-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 0.8rem; }
+    .action-textarea { width: 100%; min-height: 140px; font-family: Consolas, monospace; font-size: 0.82rem; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; }
+    .muted { font-size: 0.8rem; color: #666; }
+    </style>
+</head>
+<body>
+  <a class="back" href="../../../Missing_Pages.html">&larr; Back to index</a>
+  <h1>MPages Worklists &amp; Organizers</h1>
+  <p class="meta">28 page(s) &mdash; Cerner Wiki &nbsp;|&nbsp; Generated: 2026-04-09 16:07</p>
+  <div class="dta-info">
+<strong>DownThemAll! (Firefox):</strong> right-click this page &rarr; DownThemAll &rarr;
+Links tab &rarr; set folder to <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\DownloadedFiles</code> &rarr; Start
+  </div>
+  <div class="ignore-info">
+<strong>Ignore workflow:</strong>
+this page is static HTML, so the buttons below queue PowerShell commands instead of editing the JSON directly.
+Click the button for each link, then <strong>Copy commands</strong> or <strong>Download .ps1</strong>, run the commands, and re-run the scraper.
+  </div>
+  <div class="search-panel">
+<input id="page-search" class="search-input" type="search" placeholder="Search this page by title or URL" oninput="filterPageRows()">
+<div id="search-status" class="muted" style="margin-top: 0.5rem;">Showing all 28 page(s).</div>
+  </div>
+  <div class="action-panel">
+<div class="action-toolbar">
+  <button type="button" class="btn btn-copy" onclick="copyPendingCommands()">Copy commands</button>
+  <button type="button" class="btn btn-download" onclick="downloadPendingCommands()">Download .ps1</button>
+  <button type="button" class="btn btn-clear" onclick="clearPendingCommands()">Clear queue</button>
+  <span id="pending-status" class="muted">No commands queued yet.</span>
+</div>
+<textarea id="pending-commands" class="action-textarea" readonly placeholder="Queued commands will appear here."></textarea>
+<div class="muted">Command target: <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\.venv\Scripts\python.exe</code> <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\Outputs\Tools\manage_missing_links.py</code></div>
+  </div>
+  <table>
+<thead><tr><th>Page</th><th>URL</th><th>First Seen</th><th></th></tr></thead>
+<tbody>
+    <tr data-url="https://wiki.cerner.com/display/reference/all+about+clinical+pharmacist+worklist+and+clinical+pharmacist+summary+view">
+      <td><a href="https://wiki.cerner.com/display/reference/all+about+clinical+pharmacist+worklist+and+clinical+pharmacist+summary+view" target="_blank" rel="noopener">All About Clinical Pharmacist Worklist And Clinical Pharmacist Summary View</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/all+about+clinical+pharmacist+worklist+and+clinical+pharmacist+summary+view</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/all+about+clinical+pharmacist+worklist+and+clinical+pharmacist+summary+view" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/all+about+clinical+pharmacist+worklist+and+clinical+pharmacist+summary+view&quot;, &quot;All About Clinical Pharmacist Worklist And Clinical Pharmacist Summary View&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/all+about+dynamic+worklist&#x27;s+registry+list+import">
+      <td><a href="https://wiki.cerner.com/display/reference/all+about+dynamic+worklist&#x27;s+registry+list+import" target="_blank" rel="noopener">All About Dynamic Worklist&#x27;S Registry List Import</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/all+about+dynamic+worklist&#x27;s+registry+list+import</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/all+about+dynamic+worklist&#x27;s+registry+list+import" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/all+about+dynamic+worklist&#x27;s+registry+list+import&quot;, &quot;All About Dynamic Worklist&#x27;S Registry List Import&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/ambulatory+organizer+reference+pages">
+      <td><a href="https://wiki.cerner.com/display/reference/ambulatory+organizer+reference+pages" target="_blank" rel="noopener">Ambulatory Organizer Reference Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/ambulatory+organizer+reference+pages</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/ambulatory+organizer+reference+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/ambulatory+organizer+reference+pages&quot;, &quot;Ambulatory Organizer Reference Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+custom+printing+for+physician+handoff+worklists">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+custom+printing+for+physician+handoff+worklists" target="_blank" rel="noopener">Configure Custom Printing For Physician Handoff Worklists</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+custom+printing+for+physician+handoff+worklists</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+custom+printing+for+physician+handoff+worklists" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+custom+printing+for+physician+handoff+worklists&quot;, &quot;Configure Custom Printing For Physician Handoff Worklists&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+custom+worklist+columns">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+custom+worklist+columns" target="_blank" rel="noopener">Configure Custom Worklist Columns</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+custom+worklist+columns</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+custom+worklist+columns" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+custom+worklist+columns&quot;, &quot;Configure Custom Worklist Columns&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+inventory+management+worklist+mpages+view">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+inventory+management+worklist+mpages+view" target="_blank" rel="noopener">Configure Inventory Management Worklist Mpages View</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+inventory+management+worklist+mpages+view</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+inventory+management+worklist+mpages+view" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+inventory+management+worklist+mpages+view&quot;, &quot;Configure Inventory Management Worklist Mpages View&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+physician+handoff">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+physician+handoff" target="_blank" rel="noopener">Configure Physician Handoff</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+physician+handoff</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+physician+handoff" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+physician+handoff&quot;, &quot;Configure Physician Handoff&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+readmission+prevention+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+readmission+prevention+worklist" target="_blank" rel="noopener">Configure Readmission Prevention Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+readmission+prevention+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+readmission+prevention+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+readmission+prevention+worklist&quot;, &quot;Configure Readmission Prevention Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+rehabilitation+outpatient+organizer">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+rehabilitation+outpatient+organizer" target="_blank" rel="noopener">Configure Rehabilitation Outpatient Organizer</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+rehabilitation+outpatient+organizer</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+rehabilitation+outpatient+organizer" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+rehabilitation+outpatient+organizer&quot;, &quot;Configure Rehabilitation Outpatient Organizer&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+schedule+view+worklists">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+schedule+view+worklists" target="_blank" rel="noopener">Configure Schedule View Worklists</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+schedule+view+worklists</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+schedule+view+worklists" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+schedule+view+worklists&quot;, &quot;Configure Schedule View Worklists&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+anticoagulation+ambulatory+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+anticoagulation+ambulatory+worklist" target="_blank" rel="noopener">Configure The Anticoagulation Ambulatory Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+anticoagulation+ambulatory+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+anticoagulation+ambulatory+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+anticoagulation+ambulatory+worklist&quot;, &quot;Configure The Anticoagulation Ambulatory Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+expanded+view+pane+in+the+physician+handoff+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+expanded+view+pane+in+the+physician+handoff+worklist" target="_blank" rel="noopener">Configure The Expanded View Pane In The Physician Handoff Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+expanded+view+pane+in+the+physician+handoff+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+expanded+view+pane+in+the+physician+handoff+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+expanded+view+pane+in+the+physician+handoff+worklist&quot;, &quot;Configure The Expanded View Pane In The Physician Handoff Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+facility+and+nurse+unit+worklist+filter">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+facility+and+nurse+unit+worklist+filter" target="_blank" rel="noopener">Configure The Facility And Nurse Unit Worklist Filter</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+facility+and+nurse+unit+worklist+filter</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+facility+and+nurse+unit+worklist+filter" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+facility+and+nurse+unit+worklist+filter&quot;, &quot;Configure The Facility And Nurse Unit Worklist Filter&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+mass+vaccination+administration+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+mass+vaccination+administration+worklist" target="_blank" rel="noopener">Configure The Mass Vaccination Administration Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+mass+vaccination+administration+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+mass+vaccination+administration+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+mass+vaccination+administration+worklist&quot;, &quot;Configure The Mass Vaccination Administration Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+multi-disciplinary+rounding+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+multi-disciplinary+rounding+worklist" target="_blank" rel="noopener">Configure The Multi-Disciplinary Rounding Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+multi-disciplinary+rounding+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+multi-disciplinary+rounding+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+multi-disciplinary+rounding+worklist&quot;, &quot;Configure The Multi-Disciplinary Rounding Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+palliative+care+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+palliative+care+worklist" target="_blank" rel="noopener">Configure The Palliative Care Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+palliative+care+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+palliative+care+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+palliative+care+worklist&quot;, &quot;Configure The Palliative Care Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+palliative+performance+scale+(pps)+column">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+palliative+performance+scale+(pps)+column" target="_blank" rel="noopener">Configure The Palliative Performance Scale (Pps) Column</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+palliative+performance+scale+(pps)+column</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+palliative+performance+scale+(pps)+column" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+palliative+performance+scale+(pps)+column&quot;, &quot;Configure The Palliative Performance Scale (Pps) Column&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+pcs+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+pcs+worklist" target="_blank" rel="noopener">Configure The Pcs Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+pcs+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+pcs+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+pcs+worklist&quot;, &quot;Configure The Pcs Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+procurement+worklist+mpages+view">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+procurement+worklist+mpages+view" target="_blank" rel="noopener">Configure The Procurement Worklist Mpages View</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+procurement+worklist+mpages+view</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+procurement+worklist+mpages+view" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+procurement+worklist+mpages+view&quot;, &quot;Configure The Procurement Worklist Mpages View&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+the+research+organizer+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+the+research+organizer+worklist" target="_blank" rel="noopener">Configure The Research Organizer Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+the+research+organizer+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+the+research+organizer+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+the+research+organizer+worklist&quot;, &quot;Configure The Research Organizer Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/configure+worklist+prior+authorization+mpages+view">
+      <td><a href="https://wiki.cerner.com/display/reference/configure+worklist+prior+authorization+mpages+view" target="_blank" rel="noopener">Configure Worklist Prior Authorization Mpages View</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/configure+worklist+prior+authorization+mpages+view</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/configure+worklist+prior+authorization+mpages+view" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/configure+worklist+prior+authorization+mpages+view&quot;, &quot;Configure Worklist Prior Authorization Mpages View&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/design+mpages+documentation+review+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/design+mpages+documentation+review+worklist" target="_blank" rel="noopener">Design Mpages Documentation Review Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/design+mpages+documentation+review+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/design+mpages+documentation+review+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/design+mpages+documentation+review+worklist&quot;, &quot;Design Mpages Documentation Review Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/design+mpages+transition+planning+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/design+mpages+transition+planning+worklist" target="_blank" rel="noopener">Design Mpages Transition Planning Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/design+mpages+transition+planning+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/design+mpages+transition+planning+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/design+mpages+transition+planning+worklist&quot;, &quot;Design Mpages Transition Planning Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/design+mpages+utilization+management+denials+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/design+mpages+utilization+management+denials+worklist" target="_blank" rel="noopener">Design Mpages Utilization Management Denials Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/design+mpages+utilization+management+denials+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/design+mpages+utilization+management+denials+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/design+mpages+utilization+management+denials+worklist&quot;, &quot;Design Mpages Utilization Management Denials Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/design+mpages+utilization+management+worklist">
+      <td><a href="https://wiki.cerner.com/display/reference/design+mpages+utilization+management+worklist" target="_blank" rel="noopener">Design Mpages Utilization Management Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/design+mpages+utilization+management+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/design+mpages+utilization+management+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/design+mpages+utilization+management+worklist&quot;, &quot;Design Mpages Utilization Management Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/reference/overview+of+persisting+worklist+filtering">
+      <td><a href="https://wiki.cerner.com/display/reference/overview+of+persisting+worklist+filtering" target="_blank" rel="noopener">Overview Of Persisting Worklist Filtering</a></td>
+      <td class="url">https://wiki.cerner.com/display/reference/overview+of+persisting+worklist+filtering</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/reference/overview+of+persisting+worklist+filtering" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/reference/overview+of+persisting+worklist+filtering&quot;, &quot;Overview Of Persisting Worklist Filtering&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/performanceimprovementhp/palliative+care+worklist+help">
+      <td><a href="https://wiki.cerner.com/display/performanceimprovementhp/palliative+care+worklist+help" target="_blank" rel="noopener">Palliative Care Worklist Help</a></td>
+      <td class="url">https://wiki.cerner.com/display/performanceimprovementhp/palliative+care+worklist+help</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/performanceimprovementhp/palliative+care+worklist+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/performanceimprovementhp/palliative+care+worklist+help&quot;, &quot;Palliative Care Worklist Help&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/performanceimprovementhp/viewing+and+adding+assessments+in+the+adl+column+in+the+palliative+care+worklist">
+      <td><a href="https://wiki.cerner.com/display/performanceimprovementhp/viewing+and+adding+assessments+in+the+adl+column+in+the+palliative+care+worklist" target="_blank" rel="noopener">Viewing And Adding Assessments In The Adl Column In The Palliative Care Worklist</a></td>
+      <td class="url">https://wiki.cerner.com/display/performanceimprovementhp/viewing+and+adding+assessments+in+the+adl+column+in+the+palliative+care+worklist</td>
+      <td class="added">2026-03-06 14:15</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/performanceimprovementhp/viewing+and+adding+assessments+in+the+adl+column+in+the+palliative+care+worklist" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/performanceimprovementhp/viewing+and+adding+assessments+in+the+adl+column+in+the+palliative+care+worklist&quot;, &quot;Viewing And Adding Assessments In The Adl Column In The Palliative Care Worklist&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    </tbody>
+  </table>
+  <script>
+const commandPython = "\\\\PNDCFPRDFS025.HEALTHIRL.NET\\MNCMSNPT$\\Meds Management\\MPage\\Development\\CernerScraper\\.venv\\Scripts\\python.exe";
+const manageScript = "\\\\PNDCFPRDFS025.HEALTHIRL.NET\\MNCMSNPT$\\Meds Management\\MPage\\Development\\CernerScraper\\Outputs\\Tools\\manage_missing_links.py";
+let pendingCommands = [];
+
+function psQuote(value) {
+  return "'" + String(value ?? '').replace(/'/g, "''") + "'";
+}
+
+function setStatus(message) {
+  document.getElementById('pending-status').textContent = message;
+}
+
+function renderCommands() {
+  const textarea = document.getElementById('pending-commands');
+  textarea.value = pendingCommands.map(entry => entry.command).join('\r\n');
+  if (pendingCommands.length) {
+    setStatus(pendingCommands.length + ' command(s) queued.');
+  } else {
+    setStatus('No commands queued yet.');
+  }
+}
+
+function queueLinkAction(button, action, url, title) {
+  const reason = action === 'ignore' ? 'ignored from missing pages UI' : '';
+  const base = '& ' + psQuote(commandPython) + ' ' + psQuote(manageScript) + ' ' + action + ' ' + psQuote(url);
+  const command = action === 'ignore' ? base + ' --reason ' + psQuote(reason) : base;
+  pendingCommands = pendingCommands.filter(entry => entry.url !== url);
+  pendingCommands.push({ action, url, title, reason, command });
+  const row = button.closest('tr');
+  if (row) {
+    row.classList.remove('queued-ignore', 'queued-restore');
+    row.classList.add(action === 'ignore' ? 'queued-ignore' : 'queued-restore');
+  }
+  renderCommands();
+}
+
+function copyPendingCommands() {
+  const textarea = document.getElementById('pending-commands');
+  if (!textarea.value.trim()) {
+    return;
+  }
+  textarea.focus();
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(textarea.value).then(() => setStatus('Commands copied to clipboard.')).catch(() => {
+      document.execCommand('copy');
+      setStatus('Commands copied to clipboard.');
+    });
+    return;
+  }
+  document.execCommand('copy');
+  setStatus('Commands copied to clipboard.');
+}
+
+function downloadPendingCommands() {
+  const textarea = document.getElementById('pending-commands');
+  if (!textarea.value.trim()) {
+    return;
+  }
+  const blob = new Blob([textarea.value + '\r\n'], { type: 'text/plain;charset=utf-8' });
+  const link = document.createElement('a');
+  const href = URL.createObjectURL(blob);
+  link.href = href;
+  link.download = 'missing_pages_actions.ps1';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(href);
+  setStatus('PowerShell script downloaded.');
+}
+
+function clearPendingCommands() {
+  pendingCommands = [];
+  document.querySelectorAll('tr.queued-ignore, tr.queued-restore').forEach(row => row.classList.remove('queued-ignore', 'queued-restore'));
+  renderCommands();
+}
+
+function filterPageRows() {
+  const input = document.getElementById('page-search');
+  const query = (input?.value || '').trim().toLowerCase();
+  const rows = Array.from(document.querySelectorAll('tbody tr'));
+  let visibleCount = 0;
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    const matches = !query || text.includes(query);
+    row.style.display = matches ? '' : 'none';
+    if (matches) {
+      visibleCount += 1;
+    }
+  });
+  const status = document.getElementById('search-status');
+  if (status) {
+    status.textContent = query
+      ? 'Showing ' + visibleCount + ' of ' + rows.length + ' page(s).'
+      : 'Showing all ' + rows.length + ' page(s).';
+  }
+}
+
+renderCommands();
+  </script>
+</body>
+</html>
