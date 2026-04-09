@@ -49,6 +49,12 @@
     .ignore-info code { background: #fff7ea; }
     .search-panel { background: #f7f7f7; border: 1px solid #d7d7d7; border-radius: 4px; padding: 12px 16px; margin: 1rem 0; }
     .search-input { width: 100%; max-width: 520px; padding: 8px 10px; border: 1px solid #bbb; border-radius: 4px; font-family: inherit; font-size: 0.9rem; }
+    .search-results { margin-top: 1rem; }
+    .search-results table { margin-top: 0.8rem; }
+    .search-results td.title-cell { max-width: 360px; }
+    .search-results td.meta-cell { font-size: 0.78rem; color: #666; white-space: nowrap; }
+    .search-results td.link-cell { white-space: nowrap; text-align: right; }
+    .search-empty { display: none; margin-top: 0.8rem; color: #666; font-size: 0.85rem; }
     .action-panel { background: #f7f7f7; border: 1px solid #d7d7d7; border-radius: 4px; padding: 12px 16px; margin: 1rem 0; }
     .action-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 0.8rem; }
     .action-textarea { width: 100%; min-height: 140px; font-family: Consolas, monospace; font-size: 0.82rem; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; }
@@ -58,10 +64,10 @@
 <body>
   <a class="back" href="../../../Missing_Pages.html">&larr; Back to index</a>
   <h1>MPages Development</h1>
-  <p class="meta">79 page(s) &mdash; Cerner Wiki &nbsp;|&nbsp; Generated: 2026-04-09 16:07</p>
+  <p class="meta">81 page(s) &mdash; Cerner Wiki &nbsp;|&nbsp; Generated: 2026-04-09 17:46</p>
   <div class="dta-info">
 <strong>DownThemAll! (Firefox):</strong> right-click this page &rarr; DownThemAll &rarr;
-Links tab &rarr; set folder to <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\DownloadedFiles</code> &rarr; Start
+Links tab &rarr; set folder to <code>C:\Users\briankehoe\Documents\Work\Python\CernerScraper\Development\CernerScraper\DownloadedFiles</code> &rarr; Start
   </div>
   <div class="ignore-info">
 <strong>Ignore workflow:</strong>
@@ -70,7 +76,7 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
   </div>
   <div class="search-panel">
 <input id="page-search" class="search-input" type="search" placeholder="Search this page by title or URL" oninput="filterPageRows()">
-<div id="search-status" class="muted" style="margin-top: 0.5rem;">Showing all 79 page(s).</div>
+<div id="search-status" class="muted" style="margin-top: 0.5rem;">Showing all 81 page(s).</div>
   </div>
   <div class="action-panel">
 <div class="action-toolbar">
@@ -80,11 +86,29 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
   <span id="pending-status" class="muted">No commands queued yet.</span>
 </div>
 <textarea id="pending-commands" class="action-textarea" readonly placeholder="Queued commands will appear here."></textarea>
-<div class="muted">Command target: <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\.venv\Scripts\python.exe</code> <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\Outputs\Tools\manage_missing_links.py</code></div>
+<div class="muted">Command target: <code>C:\Users\briankehoe\Documents\Work\Python\CernerScraper\Development\CernerScraper\.venv\Scripts\python.exe</code> <code>C:\Users\briankehoe\Documents\Work\Python\CernerScraper\Development\CernerScraper\Outputs\Tools\manage_missing_links.py</code></div>
   </div>
   <table>
 <thead><tr><th>Page</th><th>URL</th><th>First Seen</th><th></th></tr></thead>
 <tbody>
+    <tr data-url="https://wiki.cerner.com/display/dbarchhp/cds+batch+history+purge+-+purge+template+10062">
+      <td><a href="https://wiki.cerner.com/display/dbarchhp/cds+batch+history+purge+-+purge+template+10062" target="_blank" rel="noopener">Cds Batch History Purge - Purge Template 10062</a></td>
+      <td class="url">https://wiki.cerner.com/display/dbarchhp/cds+batch+history+purge+-+purge+template+10062</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/dbarchhp/cds+batch+history+purge+-+purge+template+10062" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/dbarchhp/cds+batch+history+purge+-+purge+template+10062&quot;, &quot;Cds Batch History Purge - Purge Template 10062&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/dbarchhp/mars+merge+-+purge+template+10118">
+      <td><a href="https://wiki.cerner.com/display/dbarchhp/mars+merge+-+purge+template+10118" target="_blank" rel="noopener">Mars Merge - Purge Template 10118</a></td>
+      <td class="url">https://wiki.cerner.com/display/dbarchhp/mars+merge+-+purge+template+10118</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/dbarchhp/mars+merge+-+purge+template+10118" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/dbarchhp/mars+merge+-+purge+template+10118&quot;, &quot;Mars Merge - Purge Template 10118&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/dbarchhp/purge+job+manager+help">
+      <td><a href="https://wiki.cerner.com/display/dbarchhp/purge+job+manager+help" target="_blank" rel="noopener">Purge Job Manager Help</a></td>
+      <td class="url">https://wiki.cerner.com/display/dbarchhp/purge+job+manager+help</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/dbarchhp/purge+job+manager+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/dbarchhp/purge+job+manager+help&quot;, &quot;Purge Job Manager Help&quot;)'>Queue Ignore</button></div></td>
+    </tr>
     <tr data-url="https://wiki.cerner.com/display/r1mpageshp/about+mpages">
       <td><a href="https://wiki.cerner.com/display/r1mpageshp/about+mpages" target="_blank" rel="noopener">About Mpages</a></td>
       <td class="url">https://wiki.cerner.com/display/r1mpageshp/about+mpages</td>
@@ -312,12 +336,6 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
       <td class="url">https://wiki.cerner.com/display/mpdevwiki/getdxprobmapping</td>
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/getdxprobmapping" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/getdxprobmapping&quot;, &quot;Getdxprobmapping&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/mpdevwiki/getvalidencounters">
-      <td><a href="https://wiki.cerner.com/display/mpdevwiki/getvalidencounters" target="_blank" rel="noopener">Getvalidencounters</a></td>
-      <td class="url">https://wiki.cerner.com/display/mpdevwiki/getvalidencounters</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/mpdevwiki/getvalidencounters" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/mpdevwiki/getvalidencounters&quot;, &quot;Getvalidencounters&quot;)'>Queue Ignore</button></div></td>
     </tr>
     <tr data-url="https://wiki.cerner.com/display/mpdevwiki/getxmlordersmoew">
       <td><a href="https://wiki.cerner.com/display/mpdevwiki/getxmlordersmoew" target="_blank" rel="noopener">Getxmlordersmoew</a></td>
@@ -562,12 +580,12 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
     </tbody>
   </table>
   <script>
-const commandPython = "\\\\PNDCFPRDFS025.HEALTHIRL.NET\\MNCMSNPT$\\Meds Management\\MPage\\Development\\CernerScraper\\.venv\\Scripts\\python.exe";
-const manageScript = "\\\\PNDCFPRDFS025.HEALTHIRL.NET\\MNCMSNPT$\\Meds Management\\MPage\\Development\\CernerScraper\\Outputs\\Tools\\manage_missing_links.py";
-let pendingCommands = [];
+var commandPython = "C:\\Users\\briankehoe\\Documents\\Work\\Python\\CernerScraper\\Development\\CernerScraper\\.venv\\Scripts\\python.exe";
+var manageScript = "C:\\Users\\briankehoe\\Documents\\Work\\Python\\CernerScraper\\Development\\CernerScraper\\Outputs\\Tools\\manage_missing_links.py";
+var pendingCommands = [];
 
 function psQuote(value) {
-  return "'" + String(value ?? '').replace(/'/g, "''") + "'";
+  return "'" + String(value == null ? '' : value).replace(/'/g, "''") + "'";
 }
 
 function setStatus(message) {
@@ -575,8 +593,8 @@ function setStatus(message) {
 }
 
 function renderCommands() {
-  const textarea = document.getElementById('pending-commands');
-  textarea.value = pendingCommands.map(entry => entry.command).join('\r\n');
+  var textarea = document.getElementById('pending-commands');
+  textarea.value = pendingCommands.map(function(entry) { return entry.command; }).join('\r\n');
   if (pendingCommands.length) {
     setStatus(pendingCommands.length + ' command(s) queued.');
   } else {
@@ -585,12 +603,12 @@ function renderCommands() {
 }
 
 function queueLinkAction(button, action, url, title) {
-  const reason = action === 'ignore' ? 'ignored from missing pages UI' : '';
-  const base = '& ' + psQuote(commandPython) + ' ' + psQuote(manageScript) + ' ' + action + ' ' + psQuote(url);
-  const command = action === 'ignore' ? base + ' --reason ' + psQuote(reason) : base;
-  pendingCommands = pendingCommands.filter(entry => entry.url !== url);
-  pendingCommands.push({ action, url, title, reason, command });
-  const row = button.closest('tr');
+  var reason = action === 'ignore' ? 'ignored from missing pages UI' : '';
+  var base = '& ' + psQuote(commandPython) + ' ' + psQuote(manageScript) + ' ' + action + ' ' + psQuote(url);
+  var command = action === 'ignore' ? base + ' --reason ' + psQuote(reason) : base;
+  pendingCommands = pendingCommands.filter(function(entry) { return entry.url !== url; });
+  pendingCommands.push({ action: action, url: url, title: title, reason: reason, command: command });
+  var row = button.closest('tr');
   if (row) {
     row.classList.remove('queued-ignore', 'queued-restore');
     row.classList.add(action === 'ignore' ? 'queued-ignore' : 'queued-restore');
@@ -599,7 +617,7 @@ function queueLinkAction(button, action, url, title) {
 }
 
 function copyPendingCommands() {
-  const textarea = document.getElementById('pending-commands');
+  var textarea = document.getElementById('pending-commands');
   if (!textarea.value.trim()) {
     return;
   }
@@ -607,7 +625,7 @@ function copyPendingCommands() {
   textarea.select();
   textarea.setSelectionRange(0, textarea.value.length);
   if (navigator.clipboard && window.isSecureContext) {
-    navigator.clipboard.writeText(textarea.value).then(() => setStatus('Commands copied to clipboard.')).catch(() => {
+    navigator.clipboard.writeText(textarea.value).then(function() { setStatus('Commands copied to clipboard.'); }).catch(function() {
       document.execCommand('copy');
       setStatus('Commands copied to clipboard.');
     });
@@ -618,13 +636,13 @@ function copyPendingCommands() {
 }
 
 function downloadPendingCommands() {
-  const textarea = document.getElementById('pending-commands');
+  var textarea = document.getElementById('pending-commands');
   if (!textarea.value.trim()) {
     return;
   }
-  const blob = new Blob([textarea.value + '\r\n'], { type: 'text/plain;charset=utf-8' });
-  const link = document.createElement('a');
-  const href = URL.createObjectURL(blob);
+  var blob = new Blob([textarea.value + '\r\n'], { type: 'text/plain;charset=utf-8' });
+  var link = document.createElement('a');
+  var href = URL.createObjectURL(blob);
   link.href = href;
   link.download = 'missing_pages_actions.ps1';
   document.body.appendChild(link);
@@ -636,24 +654,26 @@ function downloadPendingCommands() {
 
 function clearPendingCommands() {
   pendingCommands = [];
-  document.querySelectorAll('tr.queued-ignore, tr.queued-restore').forEach(row => row.classList.remove('queued-ignore', 'queued-restore'));
+  Array.prototype.forEach.call(document.querySelectorAll('tr.queued-ignore, tr.queued-restore'), function(row) {
+    row.classList.remove('queued-ignore', 'queued-restore');
+  });
   renderCommands();
 }
 
 function filterPageRows() {
-  const input = document.getElementById('page-search');
-  const query = (input?.value || '').trim().toLowerCase();
-  const rows = Array.from(document.querySelectorAll('tbody tr'));
-  let visibleCount = 0;
-  rows.forEach(row => {
-    const text = row.textContent.toLowerCase();
-    const matches = !query || text.includes(query);
+  var input = document.getElementById('page-search');
+  var query = ((input && input.value) || '').trim().toLowerCase();
+  var rows = document.querySelectorAll('tbody tr');
+  var visibleCount = 0;
+  Array.prototype.forEach.call(rows, function(row) {
+    var text = row.textContent.toLowerCase();
+    var matches = !query || text.indexOf(query) !== -1;
     row.style.display = matches ? '' : 'none';
     if (matches) {
       visibleCount += 1;
     }
   });
-  const status = document.getElementById('search-status');
+  var status = document.getElementById('search-status');
   if (status) {
     status.textContent = query
       ? 'Showing ' + visibleCount + ' of ' + rows.length + ' page(s).'

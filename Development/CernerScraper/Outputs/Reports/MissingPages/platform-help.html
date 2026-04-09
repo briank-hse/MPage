@@ -49,6 +49,12 @@
     .ignore-info code { background: #fff7ea; }
     .search-panel { background: #f7f7f7; border: 1px solid #d7d7d7; border-radius: 4px; padding: 12px 16px; margin: 1rem 0; }
     .search-input { width: 100%; max-width: 520px; padding: 8px 10px; border: 1px solid #bbb; border-radius: 4px; font-family: inherit; font-size: 0.9rem; }
+    .search-results { margin-top: 1rem; }
+    .search-results table { margin-top: 0.8rem; }
+    .search-results td.title-cell { max-width: 360px; }
+    .search-results td.meta-cell { font-size: 0.78rem; color: #666; white-space: nowrap; }
+    .search-results td.link-cell { white-space: nowrap; text-align: right; }
+    .search-empty { display: none; margin-top: 0.8rem; color: #666; font-size: 0.85rem; }
     .action-panel { background: #f7f7f7; border: 1px solid #d7d7d7; border-radius: 4px; padding: 12px 16px; margin: 1rem 0; }
     .action-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 0.8rem; }
     .action-textarea { width: 100%; min-height: 140px; font-family: Consolas, monospace; font-size: 0.82rem; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; }
@@ -58,10 +64,10 @@
 <body>
   <a class="back" href="../../../Missing_Pages.html">&larr; Back to index</a>
   <h1>Platform Help</h1>
-  <p class="meta">112 page(s) &mdash; Cerner Wiki &nbsp;|&nbsp; Generated: 2026-04-09 16:07</p>
+  <p class="meta">126 page(s) &mdash; Cerner Wiki &nbsp;|&nbsp; Generated: 2026-04-09 17:46</p>
   <div class="dta-info">
 <strong>DownThemAll! (Firefox):</strong> right-click this page &rarr; DownThemAll &rarr;
-Links tab &rarr; set folder to <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\DownloadedFiles</code> &rarr; Start
+Links tab &rarr; set folder to <code>C:\Users\briankehoe\Documents\Work\Python\CernerScraper\Development\CernerScraper\DownloadedFiles</code> &rarr; Start
   </div>
   <div class="ignore-info">
 <strong>Ignore workflow:</strong>
@@ -70,7 +76,7 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
   </div>
   <div class="search-panel">
 <input id="page-search" class="search-input" type="search" placeholder="Search this page by title or URL" oninput="filterPageRows()">
-<div id="search-status" class="muted" style="margin-top: 0.5rem;">Showing all 112 page(s).</div>
+<div id="search-status" class="muted" style="margin-top: 0.5rem;">Showing all 126 page(s).</div>
   </div>
   <div class="action-panel">
 <div class="action-toolbar">
@@ -80,11 +86,509 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
   <span id="pending-status" class="muted">No commands queued yet.</span>
 </div>
 <textarea id="pending-commands" class="action-textarea" readonly placeholder="Queued commands will appear here."></textarea>
-<div class="muted">Command target: <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\.venv\Scripts\python.exe</code> <code>\\PNDCFPRDFS025.HEALTHIRL.NET\MNCMSNPT$\Meds Management\MPage\Development\CernerScraper\Outputs\Tools\manage_missing_links.py</code></div>
+<div class="muted">Command target: <code>C:\Users\briankehoe\Documents\Work\Python\CernerScraper\Development\CernerScraper\.venv\Scripts\python.exe</code> <code>C:\Users\briankehoe\Documents\Work\Python\CernerScraper\Development\CernerScraper\Outputs\Tools\manage_missing_links.py</code></div>
   </div>
   <table>
 <thead><tr><th>Page</th><th>URL</th><th>First Seen</th><th></th></tr></thead>
 <tbody>
+    <tr data-url="https://wiki.cerner.com/display/regcom/2015+cehrt+attestation+checklist-obsolete">
+      <td><a href="https://wiki.cerner.com/display/regcom/2015+cehrt+attestation+checklist-obsolete" target="_blank" rel="noopener">2015 Cehrt Attestation Checklist-Obsolete</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/2015+cehrt+attestation+checklist-obsolete</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/2015+cehrt+attestation+checklist-obsolete" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/2015+cehrt+attestation+checklist-obsolete&quot;, &quot;2015 Cehrt Attestation Checklist-Obsolete&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/2025+ipps+key+takeaways">
+      <td><a href="https://wiki.cerner.com/display/regcom/2025+ipps+key+takeaways" target="_blank" rel="noopener">2025 Ipps Key Takeaways</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/2025+ipps+key+takeaways</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/2025+ipps+key+takeaways" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/2025+ipps+key+takeaways&quot;, &quot;2025 Ipps Key Takeaways&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/2025+opps+key+takeaways">
+      <td><a href="https://wiki.cerner.com/display/regcom/2025+opps+key+takeaways" target="_blank" rel="noopener">2025 Opps Key Takeaways</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/2025+opps+key+takeaways</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/2025+opps+key+takeaways" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/2025+opps+key+takeaways&quot;, &quot;2025 Opps Key Takeaways&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/2026+ipps+key+takeaways">
+      <td><a href="https://wiki.cerner.com/display/regcom/2026+ipps+key+takeaways" target="_blank" rel="noopener">2026 Ipps Key Takeaways</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/2026+ipps+key+takeaways</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/2026+ipps+key+takeaways" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/2026+ipps+key+takeaways&quot;, &quot;2026 Ipps Key Takeaways&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/21+cfr+part+11-+use+of+ehr+in+clinical+investigations">
+      <td><a href="https://wiki.cerner.com/display/regcom/21+cfr+part+11-+use+of+ehr+in+clinical+investigations" target="_blank" rel="noopener">21 Cfr Part 11- Use Of Ehr In Clinical Investigations</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/21+cfr+part+11-+use+of+ehr+in+clinical+investigations</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/21+cfr+part+11-+use+of+ehr+in+clinical+investigations" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/21+cfr+part+11-+use+of+ehr+in+clinical+investigations&quot;, &quot;21 Cfr Part 11- Use Of Ehr In Clinical Investigations&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/accessibility:+information+and+communication+technology+(ict)+standards+and+guidelines+(section+508+refresh)+review">
+      <td><a href="https://wiki.cerner.com/display/regcom/accessibility:+information+and+communication+technology+(ict)+standards+and+guidelines+(section+508+refresh)+review" target="_blank" rel="noopener">Accessibility: Information And Communication Technology (Ict) Standards And Guidelines (Section 508 Refresh) Review</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/accessibility:+information+and+communication+technology+(ict)+standards+and+guidelines+(section+508+refresh)+review</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/accessibility:+information+and+communication+technology+(ict)+standards+and+guidelines+(section+508+refresh)+review" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/accessibility:+information+and+communication+technology+(ict)+standards+and+guidelines+(section+508+refresh)+review&quot;, &quot;Accessibility: Information And Communication Technology (Ict) Standards And Guidelines (Section 508 Refresh) Review&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/accountable+care+organization">
+      <td><a href="https://wiki.cerner.com/display/regcom/accountable+care+organization" target="_blank" rel="noopener">Accountable Care Organization</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/accountable+care+organization</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/accountable+care+organization" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/accountable+care+organization&quot;, &quot;Accountable Care Organization&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/help/alphabetic+help+pages+home">
+      <td><a href="https://wiki.cerner.com/display/help/alphabetic+help+pages+home" target="_blank" rel="noopener">Alphabetic Help Pages Home</a></td>
+      <td class="url">https://wiki.cerner.com/display/help/alphabetic+help+pages+home</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/alphabetic+help+pages+home" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/alphabetic+help+pages+home&quot;, &quot;Alphabetic Help Pages Home&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/ambulatory+surgical+centers">
+      <td><a href="https://wiki.cerner.com/display/regcom/ambulatory+surgical+centers" target="_blank" rel="noopener">Ambulatory Surgical Centers</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/ambulatory+surgical+centers</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/ambulatory+surgical+centers" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/ambulatory+surgical+centers&quot;, &quot;Ambulatory Surgical Centers&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/cernercentral/application+access+help">
+      <td><a href="https://wiki.cerner.com/display/cernercentral/application+access+help" target="_blank" rel="noopener">Application Access Help</a></td>
+      <td class="url">https://wiki.cerner.com/display/cernercentral/application+access+help</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/cernercentral/application+access+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/cernercentral/application+access+help&quot;, &quot;Application Access Help&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/alldoc/applications+and+tools+documentation+directory">
+      <td><a href="https://wiki.cerner.com/display/alldoc/applications+and+tools+documentation+directory" target="_blank" rel="noopener">Applications And Tools Documentation Directory</a></td>
+      <td class="url">https://wiki.cerner.com/display/alldoc/applications+and+tools+documentation+directory</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/alldoc/applications+and+tools+documentation+directory" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/alldoc/applications+and+tools+documentation+directory&quot;, &quot;Applications And Tools Documentation Directory&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/appropriate+use+criteria">
+      <td><a href="https://wiki.cerner.com/display/regcom/appropriate+use+criteria" target="_blank" rel="noopener">Appropriate Use Criteria</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/appropriate+use+criteria</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/appropriate+use+criteria" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/appropriate+use+criteria&quot;, &quot;Appropriate Use Criteria&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/associate+and+client+banners">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/associate+and+client+banners" target="_blank" rel="noopener">Associate And Client Banners</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/associate+and+client+banners</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/associate+and+client+banners" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/associate+and+client+banners&quot;, &quot;Associate And Client Banners&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/book+builder+on+oracle+health+wiki">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/book+builder+on+oracle+health+wiki" target="_blank" rel="noopener">Book Builder On Oracle Health Wiki</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/book+builder+on+oracle+health+wiki</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/book+builder+on+oracle+health+wiki" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/book+builder+on+oracle+health+wiki&quot;, &quot;Book Builder On Oracle Health Wiki&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/browser+requirements+for+oracle+health+wiki">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/browser+requirements+for+oracle+health+wiki" target="_blank" rel="noopener">Browser Requirements For Oracle Health Wiki</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/browser+requirements+for+oracle+health+wiki</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/browser+requirements+for+oracle+health+wiki" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/browser+requirements+for+oracle+health+wiki&quot;, &quot;Browser Requirements For Oracle Health Wiki&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/courses/cerner+millennium:+architecture,+troubleshooting,+and+issue+management">
+      <td><a href="https://wiki.cerner.com/display/courses/cerner+millennium:+architecture,+troubleshooting,+and+issue+management" target="_blank" rel="noopener">Cerner Millennium: Architecture, Troubleshooting, And Issue Management</a></td>
+      <td class="url">https://wiki.cerner.com/display/courses/cerner+millennium:+architecture,+troubleshooting,+and+issue+management</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/courses/cerner+millennium:+architecture,+troubleshooting,+and+issue+management" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/courses/cerner+millennium:+architecture,+troubleshooting,+and+issue+management&quot;, &quot;Cerner Millennium: Architecture, Troubleshooting, And Issue Management&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/certified+community+behavioral+health+clinic">
+      <td><a href="https://wiki.cerner.com/display/regcom/certified+community+behavioral+health+clinic" target="_blank" rel="noopener">Certified Community Behavioral Health Clinic</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/certified+community+behavioral+health+clinic</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/certified+community+behavioral+health+clinic" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/certified+community+behavioral+health+clinic&quot;, &quot;Certified Community Behavioral Health Clinic&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/changing+your+cerner+wiki+password">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/changing+your+cerner+wiki+password" target="_blank" rel="noopener">Changing Your Cerner Wiki Password</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/changing+your+cerner+wiki+password</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/changing+your+cerner+wiki+password" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/changing+your+cerner+wiki+password&quot;, &quot;Changing Your Cerner Wiki Password&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/rn/chart+search">
+      <td><a href="https://wiki.cerner.com/display/rn/chart+search" target="_blank" rel="noopener">Chart Search</a></td>
+      <td class="url">https://wiki.cerner.com/display/rn/chart+search</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/rn/chart+search" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/rn/chart+search&quot;, &quot;Chart Search&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/chronic+care+management">
+      <td><a href="https://wiki.cerner.com/display/regcom/chronic+care+management" target="_blank" rel="noopener">Chronic Care Management</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/chronic+care+management</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/chronic+care+management" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/chronic+care+management&quot;, &quot;Chronic Care Management&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/client process for logging a request support">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/client process for logging a request support" target="_blank" rel="noopener">Client Process For Logging A Request Support</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/client process for logging a request support</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/client process for logging a request support" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/client process for logging a request support&quot;, &quot;Client Process For Logging A Request Support&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/clinical+laboratory+fee+schedule">
+      <td><a href="https://wiki.cerner.com/display/regcom/clinical+laboratory+fee+schedule" target="_blank" rel="noopener">Clinical Laboratory Fee Schedule</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/clinical+laboratory+fee+schedule</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/clinical+laboratory+fee+schedule" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/clinical+laboratory+fee+schedule&quot;, &quot;Clinical Laboratory Fee Schedule&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/cms+conditions+of+participation">
+      <td><a href="https://wiki.cerner.com/display/regcom/cms+conditions+of+participation" target="_blank" rel="noopener">Cms Conditions Of Participation</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/cms+conditions+of+participation</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/cms+conditions+of+participation" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/cms+conditions+of+participation&quot;, &quot;Cms Conditions Of Participation&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/comprehensive+primary+care+plus">
+      <td><a href="https://wiki.cerner.com/display/regcom/comprehensive+primary+care+plus" target="_blank" rel="noopener">Comprehensive Primary Care Plus</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/comprehensive+primary+care+plus</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/comprehensive+primary+care+plus" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/comprehensive+primary+care+plus&quot;, &quot;Comprehensive Primary Care Plus&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/hitoolshp/console+help">
+      <td><a href="https://wiki.cerner.com/display/hitoolshp/console+help" target="_blank" rel="noopener">Console Help</a></td>
+      <td class="url">https://wiki.cerner.com/display/hitoolshp/console+help</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/hitoolshp/console+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/hitoolshp/console+help&quot;, &quot;Console Help&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/cernercentral/contacting+cloud+operations">
+      <td><a href="https://wiki.cerner.com/display/cernercentral/contacting+cloud+operations" target="_blank" rel="noopener">Contacting Cloud Operations</a></td>
+      <td class="url">https://wiki.cerner.com/display/cernercentral/contacting+cloud+operations</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/cernercentral/contacting+cloud+operations" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/cernercentral/contacting+cloud+operations&quot;, &quot;Contacting Cloud Operations&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/controlled+document+workflows">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/controlled+document+workflows" target="_blank" rel="noopener">Controlled Document Workflows</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/controlled+document+workflows</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/controlled+document+workflows" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/controlled+document+workflows&quot;, &quot;Controlled Document Workflows&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/copy+of+regulatory+guide">
+      <td><a href="https://wiki.cerner.com/display/regcom/copy+of+regulatory+guide" target="_blank" rel="noopener">Copy Of Regulatory Guide</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/copy+of+regulatory+guide</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/copy+of+regulatory+guide" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/copy+of+regulatory+guide&quot;, &quot;Copy Of Regulatory Guide&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/courses/course+catalog">
+      <td><a href="https://wiki.cerner.com/display/courses/course+catalog" target="_blank" rel="noopener">Course Catalog</a></td>
+      <td class="url">https://wiki.cerner.com/display/courses/course+catalog</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/courses/course+catalog" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/courses/course+catalog&quot;, &quot;Course Catalog&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/help/creating+a+cernercare+account+or+cerner+web+profile">
+      <td><a href="https://wiki.cerner.com/display/help/creating+a+cernercare+account+or+cerner+web+profile" target="_blank" rel="noopener">Creating A Cernercare Account Or Cerner Web Profile</a></td>
+      <td class="url">https://wiki.cerner.com/display/help/creating+a+cernercare+account+or+cerner+web+profile</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/creating+a+cernercare+account+or+cerner+web+profile" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/creating+a+cernercare+account+or+cerner+web+profile&quot;, &quot;Creating A Cernercare Account Or Cerner Web Profile&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/hsdoc/desktop+and+server+planning+guide">
+      <td><a href="https://wiki.cerner.com/display/hsdoc/desktop+and+server+planning+guide" target="_blank" rel="noopener">Desktop And Server Planning Guide</a></td>
+      <td class="url">https://wiki.cerner.com/display/hsdoc/desktop+and+server+planning+guide</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/hsdoc/desktop+and+server+planning+guide" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/hsdoc/desktop+and+server+planning+guide&quot;, &quot;Desktop And Server Planning Guide&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/hsdoc/eagle+2000+reference+pages">
+      <td><a href="https://wiki.cerner.com/display/hsdoc/eagle+2000+reference+pages" target="_blank" rel="noopener">Eagle 2000 Reference Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/hsdoc/eagle+2000+reference+pages</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/hsdoc/eagle+2000+reference+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/hsdoc/eagle+2000+reference+pages&quot;, &quot;Eagle 2000 Reference Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/llstandardlibrary/elearning+library">
+      <td><a href="https://wiki.cerner.com/display/llstandardlibrary/elearning+library" target="_blank" rel="noopener">Elearning Library</a></td>
+      <td class="url">https://wiki.cerner.com/display/llstandardlibrary/elearning+library</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/llstandardlibrary/elearning+library" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/llstandardlibrary/elearning+library&quot;, &quot;Elearning Library&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/emergency+preparedness+requirements+for+medicare+and+medicaid+providers+and+suppliers">
+      <td><a href="https://wiki.cerner.com/display/regcom/emergency+preparedness+requirements+for+medicare+and+medicaid+providers+and+suppliers" target="_blank" rel="noopener">Emergency Preparedness Requirements For Medicare And Medicaid Providers And Suppliers</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/emergency+preparedness+requirements+for+medicare+and+medicaid+providers+and+suppliers</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/emergency+preparedness+requirements+for+medicare+and+medicaid+providers+and+suppliers" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/emergency+preparedness+requirements+for+medicare+and+medicaid+providers+and+suppliers&quot;, &quot;Emergency Preparedness Requirements For Medicare And Medicaid Providers And Suppliers&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/export+wiki+pages+to+pdf+-+scroll+pdf+page+exporter">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/export+wiki+pages+to+pdf+-+scroll+pdf+page+exporter" target="_blank" rel="noopener">Export Wiki Pages To Pdf - Scroll Pdf Page Exporter</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/export+wiki+pages+to+pdf+-+scroll+pdf+page+exporter</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/export+wiki+pages+to+pdf+-+scroll+pdf+page+exporter" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/export+wiki+pages+to+pdf+-+scroll+pdf+page+exporter&quot;, &quot;Export Wiki Pages To Pdf - Scroll Pdf Page Exporter&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/hsdoc/hdx+reference+pages">
+      <td><a href="https://wiki.cerner.com/display/hsdoc/hdx+reference+pages" target="_blank" rel="noopener">Hdx Reference Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/hsdoc/hdx+reference+pages</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/hsdoc/hdx+reference+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/hsdoc/hdx+reference+pages&quot;, &quot;Hdx Reference Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/hitoolshp/healtheintent+tools+help+pages">
+      <td><a href="https://wiki.cerner.com/display/hitoolshp/healtheintent+tools+help+pages" target="_blank" rel="noopener">Healtheintent Tools Help Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/hitoolshp/healtheintent+tools+help+pages</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/hitoolshp/healtheintent+tools+help+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/hitoolshp/healtheintent+tools+help+pages&quot;, &quot;Healtheintent Tools Help Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/home+health+prospective+payment+system">
+      <td><a href="https://wiki.cerner.com/display/regcom/home+health+prospective+payment+system" target="_blank" rel="noopener">Home Health Prospective Payment System</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/home+health+prospective+payment+system</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/home+health+prospective+payment+system" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/home+health+prospective+payment+system&quot;, &quot;Home Health Prospective Payment System&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/se/i.s.h.med+model+system+reference+pages">
+      <td><a href="https://wiki.cerner.com/display/se/i.s.h.med+model+system+reference+pages" target="_blank" rel="noopener">I.S.H.Med Model System Reference Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/se/i.s.h.med+model+system+reference+pages</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/se/i.s.h.med+model+system+reference+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/se/i.s.h.med+model+system+reference+pages&quot;, &quot;I.S.H.Med Model System Reference Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/identify+the+space+administrator+for+an+oracle+health+wiki+space">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/identify+the+space+administrator+for+an+oracle+health+wiki+space" target="_blank" rel="noopener">Identify The Space Administrator For An Oracle Health Wiki Space</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/identify+the+space+administrator+for+an+oracle+health+wiki+space</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/identify+the+space+administrator+for+an+oracle+health+wiki+space" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/identify+the+space+administrator+for+an+oracle+health+wiki+space&quot;, &quot;Identify The Space Administrator For An Oracle Health Wiki Space&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/identify+the+space+key+for+an+oracle+health+wiki+space">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/identify+the+space+key+for+an+oracle+health+wiki+space" target="_blank" rel="noopener">Identify The Space Key For An Oracle Health Wiki Space</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/identify+the+space+key+for+an+oracle+health+wiki+space</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/identify+the+space+key+for+an+oracle+health+wiki+space" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/identify+the+space+key+for+an+oracle+health+wiki+space&quot;, &quot;Identify The Space Key For An Oracle Health Wiki Space&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/importing+a+word+document+to+the+oracle+health+wiki">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/importing+a+word+document+to+the+oracle+health+wiki" target="_blank" rel="noopener">Importing A Word Document To The Oracle Health Wiki</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/importing+a+word+document+to+the+oracle+health+wiki</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/importing+a+word+document+to+the+oracle+health+wiki" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/importing+a+word+document+to+the+oracle+health+wiki&quot;, &quot;Importing A Word Document To The Oracle Health Wiki&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/improving+medicare+post-acute+care+transformation+act">
+      <td><a href="https://wiki.cerner.com/display/regcom/improving+medicare+post-acute+care+transformation+act" target="_blank" rel="noopener">Improving Medicare Post-Acute Care Transformation Act</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/improving+medicare+post-acute+care+transformation+act</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/improving+medicare+post-acute+care+transformation+act" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/improving+medicare+post-acute+care+transformation+act&quot;, &quot;Improving Medicare Post-Acute Care Transformation Act&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/inpatient+prospective+payment+system">
+      <td><a href="https://wiki.cerner.com/display/regcom/inpatient+prospective+payment+system" target="_blank" rel="noopener">Inpatient Prospective Payment System</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/inpatient+prospective+payment+system</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/inpatient+prospective+payment+system" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/inpatient+prospective+payment+system&quot;, &quot;Inpatient Prospective Payment System&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/inpatient+psychiatric+facility+prospective+payment+system+and+quality+reporting+program">
+      <td><a href="https://wiki.cerner.com/display/regcom/inpatient+psychiatric+facility+prospective+payment+system+and+quality+reporting+program" target="_blank" rel="noopener">Inpatient Psychiatric Facility Prospective Payment System And Quality Reporting Program</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/inpatient+psychiatric+facility+prospective+payment+system+and+quality+reporting+program</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/inpatient+psychiatric+facility+prospective+payment+system+and+quality+reporting+program" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/inpatient+psychiatric+facility+prospective+payment+system+and+quality+reporting+program&quot;, &quot;Inpatient Psychiatric Facility Prospective Payment System And Quality Reporting Program&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/inpatient+rehabilitation+facility+prospective+payment+system">
+      <td><a href="https://wiki.cerner.com/display/regcom/inpatient+rehabilitation+facility+prospective+payment+system" target="_blank" rel="noopener">Inpatient Rehabilitation Facility Prospective Payment System</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/inpatient+rehabilitation+facility+prospective+payment+system</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/inpatient+rehabilitation+facility+prospective+payment+system" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/inpatient+rehabilitation+facility+prospective+payment+system&quot;, &quot;Inpatient Rehabilitation Facility Prospective Payment System&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/hsdoc/invision+clinicals+reference+pages">
+      <td><a href="https://wiki.cerner.com/display/hsdoc/invision+clinicals+reference+pages" target="_blank" rel="noopener">Invision Clinicals Reference Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/hsdoc/invision+clinicals+reference+pages</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/hsdoc/invision+clinicals+reference+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/hsdoc/invision+clinicals+reference+pages&quot;, &quot;Invision Clinicals Reference Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/long-term+care+hospital">
+      <td><a href="https://wiki.cerner.com/display/regcom/long-term+care+hospital" target="_blank" rel="noopener">Long-Term Care Hospital</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/long-term+care+hospital</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/long-term+care+hospital" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/long-term+care+hospital&quot;, &quot;Long-Term Care Hospital&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/managing+email+notifications">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/managing+email+notifications" target="_blank" rel="noopener">Managing Email Notifications</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/managing+email+notifications</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/managing+email+notifications" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/managing+email+notifications&quot;, &quot;Managing Email Notifications&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/managing+space+permissions">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/managing+space+permissions" target="_blank" rel="noopener">Managing Space Permissions</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/managing+space+permissions</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/managing+space+permissions" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/managing+space+permissions&quot;, &quot;Managing Space Permissions&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/managing+user+groups">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/managing+user+groups" target="_blank" rel="noopener">Managing User Groups</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/managing+user+groups</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/managing+user+groups" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/managing+user+groups&quot;, &quot;Managing User Groups&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/hsdoc/med+administration+check+reference+pages">
+      <td><a href="https://wiki.cerner.com/display/hsdoc/med+administration+check+reference+pages" target="_blank" rel="noopener">Med Administration Check Reference Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/hsdoc/med+administration+check+reference+pages</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/hsdoc/med+administration+check+reference+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/hsdoc/med+administration+check+reference+pages&quot;, &quot;Med Administration Check Reference Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/hsdoc/medseries4+reference+pages">
+      <td><a href="https://wiki.cerner.com/display/hsdoc/medseries4+reference+pages" target="_blank" rel="noopener">Medseries4 Reference Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/hsdoc/medseries4+reference+pages</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/hsdoc/medseries4+reference+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/hsdoc/medseries4+reference+pages&quot;, &quot;Medseries4 Reference Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/30olympushp/messages+in+olympus">
+      <td><a href="https://wiki.cerner.com/display/30olympushp/messages+in+olympus" target="_blank" rel="noopener">Messages In Olympus</a></td>
+      <td class="url">https://wiki.cerner.com/display/30olympushp/messages+in+olympus</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/30olympushp/messages+in+olympus" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/30olympushp/messages+in+olympus&quot;, &quot;Messages In Olympus&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/help/navigating+oracle+health+wiki">
+      <td><a href="https://wiki.cerner.com/display/help/navigating+oracle+health+wiki" target="_blank" rel="noopener">Navigating Oracle Health Wiki</a></td>
+      <td class="url">https://wiki.cerner.com/display/help/navigating+oracle+health+wiki</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/navigating+oracle+health+wiki" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/navigating+oracle+health+wiki&quot;, &quot;Navigating Oracle Health Wiki&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/new+copy+of+regulatory+guide">
+      <td><a href="https://wiki.cerner.com/display/regcom/new+copy+of+regulatory+guide" target="_blank" rel="noopener">New Copy Of Regulatory Guide</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/new+copy+of+regulatory+guide</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/new+copy+of+regulatory+guide" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/new+copy+of+regulatory+guide&quot;, &quot;New Copy Of Regulatory Guide&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/hsdoc/nextgen+healthcare+solutions+reference+pages">
+      <td><a href="https://wiki.cerner.com/display/hsdoc/nextgen+healthcare+solutions+reference+pages" target="_blank" rel="noopener">Nextgen Healthcare Solutions Reference Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/hsdoc/nextgen+healthcare+solutions+reference+pages</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/hsdoc/nextgen+healthcare+solutions+reference+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/hsdoc/nextgen+healthcare+solutions+reference+pages&quot;, &quot;Nextgen Healthcare Solutions Reference Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/hsdoc/novius+lab+reference+pages">
+      <td><a href="https://wiki.cerner.com/display/hsdoc/novius+lab+reference+pages" target="_blank" rel="noopener">Novius Lab Reference Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/hsdoc/novius+lab+reference+pages</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/hsdoc/novius+lab+reference+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/hsdoc/novius+lab+reference+pages&quot;, &quot;Novius Lab Reference Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/30olympushp/olympus+help">
+      <td><a href="https://wiki.cerner.com/display/30olympushp/olympus+help" target="_blank" rel="noopener">Olympus Help</a></td>
+      <td class="url">https://wiki.cerner.com/display/30olympushp/olympus+help</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/30olympushp/olympus+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/30olympushp/olympus+help&quot;, &quot;Olympus Help&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/30olympushp/olympus+help+pages">
+      <td><a href="https://wiki.cerner.com/display/30olympushp/olympus+help+pages" target="_blank" rel="noopener">Olympus Help Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/30olympushp/olympus+help+pages</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/30olympushp/olympus+help+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/30olympushp/olympus+help+pages&quot;, &quot;Olympus Help Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/30olympushp/operations+in+olympus">
+      <td><a href="https://wiki.cerner.com/display/30olympushp/operations+in+olympus" target="_blank" rel="noopener">Operations In Olympus</a></td>
+      <td class="url">https://wiki.cerner.com/display/30olympushp/operations+in+olympus</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/30olympushp/operations+in+olympus" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/30olympushp/operations+in+olympus&quot;, &quot;Operations In Olympus&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/help/oracle+health+documentation+overview">
+      <td><a href="https://wiki.cerner.com/display/help/oracle+health+documentation+overview" target="_blank" rel="noopener">Oracle Health Documentation Overview</a></td>
+      <td class="url">https://wiki.cerner.com/display/help/oracle+health+documentation+overview</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/oracle+health+documentation+overview" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/oracle+health+documentation+overview&quot;, &quot;Oracle Health Documentation Overview&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/oracle+health+wiki+dashboard">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/oracle+health+wiki+dashboard" target="_blank" rel="noopener">Oracle Health Wiki Dashboard</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/oracle+health+wiki+dashboard</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/oracle+health+wiki+dashboard" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/oracle+health+wiki+dashboard&quot;, &quot;Oracle Health Wiki Dashboard&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/oracle+health+wiki+mobile">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/oracle+health+wiki+mobile" target="_blank" rel="noopener">Oracle Health Wiki Mobile</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/oracle+health+wiki+mobile</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/oracle+health+wiki+mobile" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/oracle+health+wiki+mobile&quot;, &quot;Oracle Health Wiki Mobile&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/oracle+health+wiki+navigation+bars">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/oracle+health+wiki+navigation+bars" target="_blank" rel="noopener">Oracle Health Wiki Navigation Bars</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/oracle+health+wiki+navigation+bars</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/oracle+health+wiki+navigation+bars" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/oracle+health+wiki+navigation+bars&quot;, &quot;Oracle Health Wiki Navigation Bars&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/outpatient+prospective+payment+system">
+      <td><a href="https://wiki.cerner.com/display/regcom/outpatient+prospective+payment+system" target="_blank" rel="noopener">Outpatient Prospective Payment System</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/outpatient+prospective+payment+system</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/outpatient+prospective+payment+system" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/outpatient+prospective+payment+system&quot;, &quot;Outpatient Prospective Payment System&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/hsdoc/overview+of+solution+compatibility+matrix">
+      <td><a href="https://wiki.cerner.com/display/hsdoc/overview+of+solution+compatibility+matrix" target="_blank" rel="noopener">Overview Of Solution Compatibility Matrix</a></td>
+      <td class="url">https://wiki.cerner.com/display/hsdoc/overview+of+solution+compatibility+matrix</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/hsdoc/overview+of+solution+compatibility+matrix" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/hsdoc/overview+of+solution+compatibility+matrix&quot;, &quot;Overview Of Solution Compatibility Matrix&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/hsdoc/pharmacy+reference+pages">
+      <td><a href="https://wiki.cerner.com/display/hsdoc/pharmacy+reference+pages" target="_blank" rel="noopener">Pharmacy Reference Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/hsdoc/pharmacy+reference+pages</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/hsdoc/pharmacy+reference+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/hsdoc/pharmacy+reference+pages&quot;, &quot;Pharmacy Reference Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/physician+fee+schedule">
+      <td><a href="https://wiki.cerner.com/display/regcom/physician+fee+schedule" target="_blank" rel="noopener">Physician Fee Schedule</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/physician+fee+schedule</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/physician+fee+schedule" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/physician+fee+schedule&quot;, &quot;Physician Fee Schedule&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/quality+payment+program+-+mips+and+apm">
+      <td><a href="https://wiki.cerner.com/display/regcom/quality+payment+program+-+mips+and+apm" target="_blank" rel="noopener">Quality Payment Program - Mips And Apm</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/quality+payment+program+-+mips+and+apm</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/quality+payment+program+-+mips+and+apm" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/quality+payment+program+-+mips+and+apm&quot;, &quot;Quality Payment Program - Mips And Apm&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/regstrat_2015+cehrt+cures+update+implementation+checklist_gd-obsolete">
+      <td><a href="https://wiki.cerner.com/display/regcom/regstrat_2015+cehrt+cures+update+implementation+checklist_gd-obsolete" target="_blank" rel="noopener">Regstrat_2015 Cehrt Cures Update Implementation Checklist_Gd-Obsolete</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/regstrat_2015+cehrt+cures+update+implementation+checklist_gd-obsolete</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/regstrat_2015+cehrt+cures+update+implementation+checklist_gd-obsolete" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/regstrat_2015+cehrt+cures+update+implementation+checklist_gd-obsolete&quot;, &quot;Regstrat_2015 Cehrt Cures Update Implementation Checklist_Gd-Obsolete&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/30olympushp/security+navigation+view+in+olympus">
+      <td><a href="https://wiki.cerner.com/display/30olympushp/security+navigation+view+in+olympus" target="_blank" rel="noopener">Security Navigation View In Olympus</a></td>
+      <td class="url">https://wiki.cerner.com/display/30olympushp/security+navigation+view+in+olympus</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/30olympushp/security+navigation+view+in+olympus" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/30olympushp/security+navigation+view+in+olympus&quot;, &quot;Security Navigation View In Olympus&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/skilled+nursing+facility">
+      <td><a href="https://wiki.cerner.com/display/regcom/skilled+nursing+facility" target="_blank" rel="noopener">Skilled Nursing Facility</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/skilled+nursing+facility</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/skilled+nursing+facility" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/skilled+nursing+facility&quot;, &quot;Skilled Nursing Facility&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/solution+name+macro">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/solution+name+macro" target="_blank" rel="noopener">Solution Name Macro</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/solution+name+macro</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/solution+name+macro" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/solution+name+macro&quot;, &quot;Solution Name Macro&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/table+filter+and+chart+macros">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/table+filter+and+chart+macros" target="_blank" rel="noopener">Table Filter And Chart Macros</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/table+filter+and+chart+macros</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/table+filter+and+chart+macros" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/table+filter+and+chart+macros&quot;, &quot;Table Filter And Chart Macros&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/table+of+contents+macro">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/table+of+contents+macro" target="_blank" rel="noopener">Table Of Contents Macro</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/table+of+contents+macro</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/table+of+contents+macro" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/table+of+contents+macro&quot;, &quot;Table Of Contents Macro&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/cls/ulearn+help+pages">
+      <td><a href="https://wiki.cerner.com/display/cls/ulearn+help+pages" target="_blank" rel="noopener">Ulearn Help Pages</a></td>
+      <td class="url">https://wiki.cerner.com/display/cls/ulearn+help+pages</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/cls/ulearn+help+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/cls/ulearn+help+pages&quot;, &quot;Ulearn Help Pages&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/upload+and+manage+client-facing+videos">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/upload+and+manage+client-facing+videos" target="_blank" rel="noopener">Upload And Manage Client-Facing Videos</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/upload+and+manage+client-facing+videos</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/upload+and+manage+client-facing+videos" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/upload+and+manage+client-facing+videos&quot;, &quot;Upload And Manage Client-Facing Videos&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/usage+analytics+for+oracle+health+wiki+spaces">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/usage+analytics+for+oracle+health+wiki+spaces" target="_blank" rel="noopener">Usage Analytics For Oracle Health Wiki Spaces</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/usage+analytics+for+oracle+health+wiki+spaces</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/usage+analytics+for+oracle+health+wiki+spaces" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/usage+analytics+for+oracle+health+wiki+spaces&quot;, &quot;Usage Analytics For Oracle Health Wiki Spaces&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/value+based+payment+modifier">
+      <td><a href="https://wiki.cerner.com/display/regcom/value+based+payment+modifier" target="_blank" rel="noopener">Value Based Payment Modifier</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/value+based+payment+modifier</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/value+based+payment+modifier" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/value+based+payment+modifier&quot;, &quot;Value Based Payment Modifier&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/wiki+book+exports+to+pdf">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/wiki+book+exports+to+pdf" target="_blank" rel="noopener">Wiki Book Exports To Pdf</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/wiki+book+exports+to+pdf</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/wiki+book+exports+to+pdf" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/wiki+book+exports+to+pdf&quot;, &quot;Wiki Book Exports To Pdf&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/your+personal+space">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/your+personal+space" target="_blank" rel="noopener">Your Personal Space</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/your+personal+space</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/your+personal+space" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/your+personal+space&quot;, &quot;Your Personal Space&quot;)'>Queue Ignore</button></div></td>
+    </tr>
+    <tr data-url="https://wiki.cerner.com/display/regcom/yyyy+regname+key+takeaways">
+      <td><a href="https://wiki.cerner.com/display/regcom/yyyy+regname+key+takeaways" target="_blank" rel="noopener">Yyyy Regname Key Takeaways</a></td>
+      <td class="url">https://wiki.cerner.com/display/regcom/yyyy+regname+key+takeaways</td>
+      <td class="added">2026-04-09 16:58</td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/regcom/yyyy+regname+key+takeaways" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/regcom/yyyy+regname+key+takeaways&quot;, &quot;Yyyy Regname Key Takeaways&quot;)'>Queue Ignore</button></div></td>
+    </tr>
     <tr data-url="https://wiki.cerner.com/display/help/a">
       <td><a href="https://wiki.cerner.com/display/help/a" target="_blank" rel="noopener">A</a></td>
       <td class="url">https://wiki.cerner.com/display/help/a</td>
@@ -97,77 +601,11 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/about+help+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/about+help+pages&quot;, &quot;About Help Pages&quot;)'>Queue Ignore</button></div></td>
     </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/about+microbiology+viewer">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/about+microbiology+viewer" target="_blank" rel="noopener">About Microbiology Viewer</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/about+microbiology+viewer</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/about+microbiology+viewer" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/about+microbiology+viewer&quot;, &quot;About Microbiology Viewer&quot;)'>Queue Ignore</button></div></td>
-    </tr>
     <tr data-url="https://wiki.cerner.com/display/help/accessibility+in+oracle+health+millennium+platform+applications">
       <td><a href="https://wiki.cerner.com/display/help/accessibility+in+oracle+health+millennium+platform+applications" target="_blank" rel="noopener">Accessibility In Oracle Health Millennium Platform Applications</a></td>
       <td class="url">https://wiki.cerner.com/display/help/accessibility+in+oracle+health+millennium+platform+applications</td>
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/accessibility+in+oracle+health+millennium+platform+applications" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/accessibility+in+oracle+health+millennium+platform+applications&quot;, &quot;Accessibility In Oracle Health Millennium Platform Applications&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/accessibility+in+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/accessibility+in+patient+list" target="_blank" rel="noopener">Accessibility In Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/accessibility+in+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/accessibility+in+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/accessibility+in+patient+list&quot;, &quot;Accessibility In Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/accessing+patient+list+using+powerchart">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/accessing+patient+list+using+powerchart" target="_blank" rel="noopener">Accessing Patient List Using Powerchart</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/accessing+patient+list+using+powerchart</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/accessing+patient+list+using+powerchart" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/accessing+patient+list+using+powerchart&quot;, &quot;Accessing Patient List Using Powerchart&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/adding+a+component+using+preferences+maintenance+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/adding+a+component+using+preferences+maintenance+tool" target="_blank" rel="noopener">Adding A Component Using Preferences Maintenance Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/adding+a+component+using+preferences+maintenance+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/adding+a+component+using+preferences+maintenance+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/adding+a+component+using+preferences+maintenance+tool&quot;, &quot;Adding A Component Using Preferences Maintenance Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/adding+a+patient+list+using+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/adding+a+patient+list+using+patient+list" target="_blank" rel="noopener">Adding A Patient List Using Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/adding+a+patient+list+using+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/adding+a+patient+list+using+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/adding+a+patient+list+using+patient+list&quot;, &quot;Adding A Patient List Using Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/adding+a+patient+to+a+patient+list+using+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/adding+a+patient+to+a+patient+list+using+patient+list" target="_blank" rel="noopener">Adding A Patient To A Patient List Using Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/adding+a+patient+to+a+patient+list+using+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/adding+a+patient+to+a+patient+list+using+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/adding+a+patient+to+a+patient+list+using+patient+list&quot;, &quot;Adding A Patient To A Patient List Using Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/adding+a+preference+using+preferences+maintenance+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/adding+a+preference+using+preferences+maintenance+tool" target="_blank" rel="noopener">Adding A Preference Using Preferences Maintenance Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/adding+a+preference+using+preferences+maintenance+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/adding+a+preference+using+preferences+maintenance+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/adding+a+preference+using+preferences+maintenance+tool&quot;, &quot;Adding A Preference Using Preferences Maintenance Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/adding+a+tab+using+preferences+maintenance+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/adding+a+tab+using+preferences+maintenance+tool" target="_blank" rel="noopener">Adding A Tab Using Preferences Maintenance Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/adding+a+tab+using+preferences+maintenance+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/adding+a+tab+using+preferences+maintenance+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/adding+a+tab+using+preferences+maintenance+tool&quot;, &quot;Adding A Tab Using Preferences Maintenance Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/applying+filters+to+patient+lists+with+advance+filters+using+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/applying+filters+to+patient+lists+with+advance+filters+using+patient+list" target="_blank" rel="noopener">Applying Filters To Patient Lists With Advance Filters Using Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/applying+filters+to+patient+lists+with+advance+filters+using+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/applying+filters+to+patient+lists+with+advance+filters+using+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/applying+filters+to+patient+lists+with+advance+filters+using+patient+list&quot;, &quot;Applying Filters To Patient Lists With Advance Filters Using Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/assigning+a+relationship+to+another+provider+using+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/assigning+a+relationship+to+another+provider+using+patient+list" target="_blank" rel="noopener">Assigning A Relationship To Another Provider Using Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/assigning+a+relationship+to+another+provider+using+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/assigning+a+relationship+to+another+provider+using+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/assigning+a+relationship+to+another+provider+using+patient+list&quot;, &quot;Assigning A Relationship To Another Provider Using Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/assigning+patient+priority+using+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/assigning+patient+priority+using+patient+list" target="_blank" rel="noopener">Assigning Patient Priority Using Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/assigning+patient+priority+using+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/assigning+patient+priority+using+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/assigning+patient+priority+using+patient+list&quot;, &quot;Assigning Patient Priority Using Patient List&quot;)'>Queue Ignore</button></div></td>
     </tr>
     <tr data-url="https://wiki.cerner.com/display/help/b">
       <td><a href="https://wiki.cerner.com/display/help/b" target="_blank" rel="noopener">B</a></td>
@@ -181,35 +619,11 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/back-end+product+help+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/back-end+product+help+pages&quot;, &quot;Back-End Product Help Pages&quot;)'>Queue Ignore</button></div></td>
     </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/building+a+patient+list+using+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/building+a+patient+list+using+patient+list" target="_blank" rel="noopener">Building A Patient List Using Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/building+a+patient+list+using+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/building+a+patient+list+using+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/building+a+patient+list+using+patient+list&quot;, &quot;Building A Patient List Using Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/building+a+query+patient+list+using+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/building+a+query+patient+list+using+patient+list" target="_blank" rel="noopener">Building A Query Patient List Using Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/building+a+query+patient+list+using+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/building+a+query+patient+list+using+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/building+a+query+patient+list+using+patient+list&quot;, &quot;Building A Query Patient List Using Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
     <tr data-url="https://wiki.cerner.com/display/help/c">
       <td><a href="https://wiki.cerner.com/display/help/c" target="_blank" rel="noopener">C</a></td>
       <td class="url">https://wiki.cerner.com/display/help/c</td>
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/c" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/c&quot;, &quot;C&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/categorizing+application+preferences+using+preferences+maintenance+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/categorizing+application+preferences+using+preferences+maintenance+tool" target="_blank" rel="noopener">Categorizing Application Preferences Using Preferences Maintenance Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/categorizing+application+preferences+using+preferences+maintenance+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/categorizing+application+preferences+using+preferences+maintenance+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/categorizing+application+preferences+using+preferences+maintenance+tool&quot;, &quot;Categorizing Application Preferences Using Preferences Maintenance Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/cda+document+viewer+help">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/cda+document+viewer+help" target="_blank" rel="noopener">Cda Document Viewer Help</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/cda+document+viewer+help</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/cda+document+viewer+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/cda+document+viewer+help&quot;, &quot;Cda Document Viewer Help&quot;)'>Queue Ignore</button></div></td>
     </tr>
     <tr data-url="https://wiki.cerner.com/display/cernercentral/cerner+central+help+pages">
       <td><a href="https://wiki.cerner.com/display/cernercentral/cerner+central+help+pages" target="_blank" rel="noopener">Cerner Central Help Pages</a></td>
@@ -229,95 +643,17 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/changing+your+password+in+oracle+health+millennium+platform+applications" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/changing+your+password+in+oracle+health+millennium+platform+applications&quot;, &quot;Changing Your Password In Oracle Health Millennium Platform Applications&quot;)'>Queue Ignore</button></div></td>
     </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/copying+a+position+using+preferences+maintenance+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/copying+a+position+using+preferences+maintenance+tool" target="_blank" rel="noopener">Copying A Position Using Preferences Maintenance Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/copying+a+position+using+preferences+maintenance+tool</td>
+    <tr data-url="https://wiki.cerner.com/display/wikihelp/client+process+for+logging+a+request+for+ucern+support">
+      <td><a href="https://wiki.cerner.com/display/wikihelp/client+process+for+logging+a+request+for+ucern+support" target="_blank" rel="noopener">Client Process For Logging A Request For Ucern Support</a></td>
+      <td class="url">https://wiki.cerner.com/display/wikihelp/client+process+for+logging+a+request+for+ucern+support</td>
       <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/copying+a+position+using+preferences+maintenance+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/copying+a+position+using+preferences+maintenance+tool&quot;, &quot;Copying A Position Using Preferences Maintenance Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/copying+and+pasting+patient+lists">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/copying+and+pasting+patient+lists" target="_blank" rel="noopener">Copying And Pasting Patient Lists</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/copying+and+pasting+patient+lists</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/copying+and+pasting+patient+lists" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/copying+and+pasting+patient+lists&quot;, &quot;Copying And Pasting Patient Lists&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/creating+an+announcement+using+announcement+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/creating+an+announcement+using+announcement+tool" target="_blank" rel="noopener">Creating An Announcement Using Announcement Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/creating+an+announcement+using+announcement+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/creating+an+announcement+using+announcement+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/creating+an+announcement+using+announcement+tool&quot;, &quot;Creating An Announcement Using Announcement Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/customize+menu+in+preferences+maintenance+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/customize+menu+in+preferences+maintenance+tool" target="_blank" rel="noopener">Customize Menu In Preferences Maintenance Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/customize+menu+in+preferences+maintenance+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/customize+menu+in+preferences+maintenance+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/customize+menu+in+preferences+maintenance+tool&quot;, &quot;Customize Menu In Preferences Maintenance Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/customizing+columns+and+patient+list+tabs">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/customizing+columns+and+patient+list+tabs" target="_blank" rel="noopener">Customizing Columns And Patient List Tabs</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/customizing+columns+and+patient+list+tabs</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/customizing+columns+and+patient+list+tabs" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/customizing+columns+and+patient+list+tabs&quot;, &quot;Customizing Columns And Patient List Tabs&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/customizing+the+chart+summary+view+using+preferences+maintenance+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/customizing+the+chart+summary+view+using+preferences+maintenance+tool" target="_blank" rel="noopener">Customizing The Chart Summary View Using Preferences Maintenance Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/customizing+the+chart+summary+view+using+preferences+maintenance+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/customizing+the+chart+summary+view+using+preferences+maintenance+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/customizing+the+chart+summary+view+using+preferences+maintenance+tool&quot;, &quot;Customizing The Chart Summary View Using Preferences Maintenance Tool&quot;)'>Queue Ignore</button></div></td>
+      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/wikihelp/client+process+for+logging+a+request+for+ucern+support" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/wikihelp/client+process+for+logging+a+request+for+ucern+support&quot;, &quot;Client Process For Logging A Request For Ucern Support&quot;)'>Queue Ignore</button></div></td>
     </tr>
     <tr data-url="https://wiki.cerner.com/display/help/d">
       <td><a href="https://wiki.cerner.com/display/help/d" target="_blank" rel="noopener">D</a></td>
       <td class="url">https://wiki.cerner.com/display/help/d</td>
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/d" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/d&quot;, &quot;D&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/data+reconciliation+mpages+view+help">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/data+reconciliation+mpages+view+help" target="_blank" rel="noopener">Data Reconciliation Mpages View Help</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/data+reconciliation+mpages+view+help</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/data+reconciliation+mpages+view+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/data+reconciliation+mpages+view+help&quot;, &quot;Data Reconciliation Mpages View Help&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/defining+a+new+equation+using+clinical+calculator+equation+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/defining+a+new+equation+using+clinical+calculator+equation+tool" target="_blank" rel="noopener">Defining A New Equation Using Clinical Calculator Equation Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/defining+a+new+equation+using+clinical+calculator+equation+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/defining+a+new+equation+using+clinical+calculator+equation+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/defining+a+new+equation+using+clinical+calculator+equation+tool&quot;, &quot;Defining A New Equation Using Clinical Calculator Equation Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/defining+equation+components+using+clinical+calculator+equation+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/defining+equation+components+using+clinical+calculator+equation+tool" target="_blank" rel="noopener">Defining Equation Components Using Clinical Calculator Equation Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/defining+equation+components+using+clinical+calculator+equation+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/defining+equation+components+using+clinical+calculator+equation+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/defining+equation+components+using+clinical+calculator+equation+tool&quot;, &quot;Defining Equation Components Using Clinical Calculator Equation Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/deleting+a+component+using+preferences+maintenance+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/deleting+a+component+using+preferences+maintenance+tool" target="_blank" rel="noopener">Deleting A Component Using Preferences Maintenance Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/deleting+a+component+using+preferences+maintenance+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/deleting+a+component+using+preferences+maintenance+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/deleting+a+component+using+preferences+maintenance+tool&quot;, &quot;Deleting A Component Using Preferences Maintenance Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/deleting+a+personal+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/deleting+a+personal+patient+list" target="_blank" rel="noopener">Deleting A Personal Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/deleting+a+personal+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/deleting+a+personal+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/deleting+a+personal+patient+list&quot;, &quot;Deleting A Personal Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/deleting+a+preference+using+preferences+maintenance+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/deleting+a+preference+using+preferences+maintenance+tool" target="_blank" rel="noopener">Deleting A Preference Using Preferences Maintenance Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/deleting+a+preference+using+preferences+maintenance+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/deleting+a+preference+using+preferences+maintenance+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/deleting+a+preference+using+preferences+maintenance+tool&quot;, &quot;Deleting A Preference Using Preferences Maintenance Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/deleting+a+tab+using+preferences+maintenance+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/deleting+a+tab+using+preferences+maintenance+tool" target="_blank" rel="noopener">Deleting A Tab Using Preferences Maintenance Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/deleting+a+tab+using+preferences+maintenance+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/deleting+a+tab+using+preferences+maintenance+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/deleting+a+tab+using+preferences+maintenance+tool&quot;, &quot;Deleting A Tab Using Preferences Maintenance Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/deleting+an+equation+using+clinical+calculator+equation+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/deleting+an+equation+using+clinical+calculator+equation+tool" target="_blank" rel="noopener">Deleting An Equation Using Clinical Calculator Equation Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/deleting+an+equation+using+clinical+calculator+equation+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/deleting+an+equation+using+clinical+calculator+equation+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/deleting+an+equation+using+clinical+calculator+equation+tool&quot;, &quot;Deleting An Equation Using Clinical Calculator Equation Tool&quot;)'>Queue Ignore</button></div></td>
     </tr>
     <tr data-url="https://wiki.cerner.com/display/hitoolshp/deleting+announcements+in+announcement+tool">
       <td><a href="https://wiki.cerner.com/display/hitoolshp/deleting+announcements+in+announcement+tool" target="_blank" rel="noopener">Deleting Announcements In Announcement Tool</a></td>
@@ -330,12 +666,6 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
       <td class="url">https://wiki.cerner.com/display/help/e</td>
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/e" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/e&quot;, &quot;E&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/edit+menu+in+the+preferences+maintenance+tool+preference+form+window">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/edit+menu+in+the+preferences+maintenance+tool+preference+form+window" target="_blank" rel="noopener">Edit Menu In The Preferences Maintenance Tool Preference Form Window</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/edit+menu+in+the+preferences+maintenance+tool+preference+form+window</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/edit+menu+in+the+preferences+maintenance+tool+preference+form+window" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/edit+menu+in+the+preferences+maintenance+tool+preference+form+window&quot;, &quot;Edit Menu In The Preferences Maintenance Tool Preference Form Window&quot;)'>Queue Ignore</button></div></td>
     </tr>
     <tr data-url="https://wiki.cerner.com/display/eservicehp/eservice+help+pages">
       <td><a href="https://wiki.cerner.com/display/eservicehp/eservice+help+pages" target="_blank" rel="noopener">Eservice Help Pages</a></td>
@@ -361,35 +691,17 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/g" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/g&quot;, &quot;G&quot;)'>Queue Ignore</button></div></td>
     </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/getting+started+using+preferences+maintenance+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/getting+started+using+preferences+maintenance+tool" target="_blank" rel="noopener">Getting Started Using Preferences Maintenance Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/getting+started+using+preferences+maintenance+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/getting+started+using+preferences+maintenance+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/getting+started+using+preferences+maintenance+tool&quot;, &quot;Getting Started Using Preferences Maintenance Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
     <tr data-url="https://wiki.cerner.com/display/help/h">
       <td><a href="https://wiki.cerner.com/display/help/h" target="_blank" rel="noopener">H</a></td>
       <td class="url">https://wiki.cerner.com/display/help/h</td>
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/h" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/h&quot;, &quot;H&quot;)'>Queue Ignore</button></div></td>
     </tr>
-    <tr data-url="https://wiki.cerner.com/display/help/help+pages+home">
-      <td><a href="https://wiki.cerner.com/display/help/help+pages+home" target="_blank" rel="noopener">Help Pages Home</a></td>
-      <td class="url">https://wiki.cerner.com/display/help/help+pages+home</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/help+pages+home" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/help+pages+home&quot;, &quot;Help Pages Home&quot;)'>Queue Ignore</button></div></td>
-    </tr>
     <tr data-url="https://wiki.cerner.com/display/help/i">
       <td><a href="https://wiki.cerner.com/display/help/i" target="_blank" rel="noopener">I</a></td>
       <td class="url">https://wiki.cerner.com/display/help/i</td>
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/i" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/i&quot;, &quot;I&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/inactivating+a+relationship+using+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/inactivating+a+relationship+using+patient+list" target="_blank" rel="noopener">Inactivating A Relationship Using Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/inactivating+a+relationship+using+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/inactivating+a+relationship+using+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/inactivating+a+relationship+using+patient+list&quot;, &quot;Inactivating A Relationship Using Patient List&quot;)'>Queue Ignore</button></div></td>
     </tr>
     <tr data-url="https://wiki.cerner.com/display/rn/integrated+charting+release+notes">
       <td><a href="https://wiki.cerner.com/display/rn/integrated+charting+release+notes" target="_blank" rel="noopener">Integrated Charting Release Notes</a></td>
@@ -415,29 +727,11 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/l" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/l&quot;, &quot;L&quot;)'>Queue Ignore</button></div></td>
     </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/loading+column+data+using+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/loading+column+data+using+patient+list" target="_blank" rel="noopener">Loading Column Data Using Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/loading+column+data+using+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/loading+column+data+using+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/loading+column+data+using+patient+list&quot;, &quot;Loading Column Data Using Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
     <tr data-url="https://wiki.cerner.com/display/help/m">
       <td><a href="https://wiki.cerner.com/display/help/m" target="_blank" rel="noopener">M</a></td>
       <td class="url">https://wiki.cerner.com/display/help/m</td>
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/m" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/m&quot;, &quot;M&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/microbiology+viewer+help">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/microbiology+viewer+help" target="_blank" rel="noopener">Microbiology Viewer Help</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/microbiology+viewer+help</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/microbiology+viewer+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/microbiology+viewer+help&quot;, &quot;Microbiology Viewer Help&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/modifying+an+equation+using+clinical+calculator+equation+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/modifying+an+equation+using+clinical+calculator+equation+tool" target="_blank" rel="noopener">Modifying An Equation Using Clinical Calculator Equation Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/modifying+an+equation+using+clinical+calculator+equation+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/modifying+an+equation+using+clinical+calculator+equation+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/modifying+an+equation+using+clinical+calculator+equation+tool&quot;, &quot;Modifying An Equation Using Clinical Calculator Equation Tool&quot;)'>Queue Ignore</button></div></td>
     </tr>
     <tr data-url="https://wiki.cerner.com/display/help/n">
       <td><a href="https://wiki.cerner.com/display/help/n" target="_blank" rel="noopener">N</a></td>
@@ -457,95 +751,11 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/o" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/o&quot;, &quot;O&quot;)'>Queue Ignore</button></div></td>
     </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101dynamicdochp/overview+of+basic+dynamic+documentation+reference+templates">
-      <td><a href="https://wiki.cerner.com/display/1101dynamicdochp/overview+of+basic+dynamic+documentation+reference+templates" target="_blank" rel="noopener">Overview Of Basic Dynamic Documentation Reference Templates</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101dynamicdochp/overview+of+basic+dynamic+documentation+reference+templates</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101dynamicdochp/overview+of+basic+dynamic+documentation+reference+templates" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101dynamicdochp/overview+of+basic+dynamic+documentation+reference+templates&quot;, &quot;Overview Of Basic Dynamic Documentation Reference Templates&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/overview+of+confidential+questions+in+social+history">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/overview+of+confidential+questions+in+social+history" target="_blank" rel="noopener">Overview Of Confidential Questions In Social History</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/overview+of+confidential+questions+in+social+history</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/overview+of+confidential+questions+in+social+history" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/overview+of+confidential+questions+in+social+history&quot;, &quot;Overview Of Confidential Questions In Social History&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/overview+of+mass+vaccination+assignment">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/overview+of+mass+vaccination+assignment" target="_blank" rel="noopener">Overview Of Mass Vaccination Assignment</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/overview+of+mass+vaccination+assignment</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/overview+of+mass+vaccination+assignment" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/overview+of+mass+vaccination+assignment&quot;, &quot;Overview Of Mass Vaccination Assignment&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/overview+of+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/overview+of+patient+list" target="_blank" rel="noopener">Overview Of Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/overview+of+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/overview+of+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/overview+of+patient+list&quot;, &quot;Overview Of Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/overview+of+preferences+maintenance+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/overview+of+preferences+maintenance+tool" target="_blank" rel="noopener">Overview Of Preferences Maintenance Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/overview+of+preferences+maintenance+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/overview+of+preferences+maintenance+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/overview+of+preferences+maintenance+tool&quot;, &quot;Overview Of Preferences Maintenance Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/overview+of+sticky+notes">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/overview+of+sticky+notes" target="_blank" rel="noopener">Overview Of Sticky Notes</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/overview+of+sticky+notes</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/overview+of+sticky+notes" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/overview+of+sticky+notes&quot;, &quot;Overview Of Sticky Notes&quot;)'>Queue Ignore</button></div></td>
-    </tr>
     <tr data-url="https://wiki.cerner.com/display/help/p">
       <td><a href="https://wiki.cerner.com/display/help/p" target="_blank" rel="noopener">P</a></td>
       <td class="url">https://wiki.cerner.com/display/help/p</td>
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/p" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/p&quot;, &quot;P&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/patient+chart+toolbar+in+powerchart+framework">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/patient+chart+toolbar+in+powerchart+framework" target="_blank" rel="noopener">Patient Chart Toolbar In Powerchart Framework</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/patient+chart+toolbar+in+powerchart+framework</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/patient+chart+toolbar+in+powerchart+framework" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/patient+chart+toolbar+in+powerchart+framework&quot;, &quot;Patient Chart Toolbar In Powerchart Framework&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/patient+list+menu+in+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/patient+list+menu+in+patient+list" target="_blank" rel="noopener">Patient List Menu In Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/patient+list+menu+in+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/patient+list+menu+in+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/patient+list+menu+in+patient+list&quot;, &quot;Patient List Menu In Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/patient+list+toolbar+in+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/patient+list+toolbar+in+patient+list" target="_blank" rel="noopener">Patient List Toolbar In Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/patient+list+toolbar+in+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/patient+list+toolbar+in+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/patient+list+toolbar+in+patient+list&quot;, &quot;Patient List Toolbar In Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/powerchart+enhanced+view+help">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/powerchart+enhanced+view+help" target="_blank" rel="noopener">Powerchart Enhanced View Help</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/powerchart+enhanced+view+help</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/powerchart+enhanced+view+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/powerchart+enhanced+view+help&quot;, &quot;Powerchart Enhanced View Help&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/powerchart+help+pages">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/powerchart+help+pages" target="_blank" rel="noopener">Powerchart Help Pages</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/powerchart+help+pages</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/powerchart+help+pages" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/powerchart+help+pages&quot;, &quot;Powerchart Help Pages&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/millenniumpmhp/preference+manager+help">
-      <td><a href="https://wiki.cerner.com/display/millenniumpmhp/preference+manager+help" target="_blank" rel="noopener">Preference Manager Help</a></td>
-      <td class="url">https://wiki.cerner.com/display/millenniumpmhp/preference+manager+help</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/millenniumpmhp/preference+manager+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/millenniumpmhp/preference+manager+help&quot;, &quot;Preference Manager Help&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/printing+patient+lists">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/printing+patient+lists" target="_blank" rel="noopener">Printing Patient Lists</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/printing+patient+lists</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/printing+patient+lists" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/printing+patient+lists&quot;, &quot;Printing Patient Lists&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/privilege+maintenance+tool+help">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/privilege+maintenance+tool+help" target="_blank" rel="noopener">Privilege Maintenance Tool Help</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/privilege+maintenance+tool+help</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/privilege+maintenance+tool+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/privilege+maintenance+tool+help&quot;, &quot;Privilege Maintenance Tool Help&quot;)'>Queue Ignore</button></div></td>
     </tr>
     <tr data-url="https://wiki.cerner.com/display/help/q">
       <td><a href="https://wiki.cerner.com/display/help/q" target="_blank" rel="noopener">Q</a></td>
@@ -559,59 +769,17 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/r" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/r&quot;, &quot;R&quot;)'>Queue Ignore</button></div></td>
     </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/referral+management+help">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/referral+management+help" target="_blank" rel="noopener">Referral Management Help</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/referral+management+help</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/referral+management+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/referral+management+help&quot;, &quot;Referral Management Help&quot;)'>Queue Ignore</button></div></td>
-    </tr>
     <tr data-url="https://wiki.cerner.com/display/rn/referral+management+release+notes">
       <td><a href="https://wiki.cerner.com/display/rn/referral+management+release+notes" target="_blank" rel="noopener">Referral Management Release Notes</a></td>
       <td class="url">https://wiki.cerner.com/display/rn/referral+management+release+notes</td>
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/rn/referral+management+release+notes" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/rn/referral+management+release+notes&quot;, &quot;Referral Management Release Notes&quot;)'>Queue Ignore</button></div></td>
     </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/relationship+management+tool+help">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/relationship+management+tool+help" target="_blank" rel="noopener">Relationship Management Tool Help</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/relationship+management+tool+help</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/relationship+management+tool+help" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/relationship+management+tool+help&quot;, &quot;Relationship Management Tool Help&quot;)'>Queue Ignore</button></div></td>
-    </tr>
     <tr data-url="https://wiki.cerner.com/display/rn/release+documentation">
       <td><a href="https://wiki.cerner.com/display/rn/release+documentation" target="_blank" rel="noopener">Release Documentation</a></td>
       <td class="url">https://wiki.cerner.com/display/rn/release+documentation</td>
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/rn/release+documentation" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/rn/release+documentation&quot;, &quot;Release Documentation&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/removing+a+patient+list+using+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/removing+a+patient+list+using+patient+list" target="_blank" rel="noopener">Removing A Patient List Using Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/removing+a+patient+list+using+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/removing+a+patient+list+using+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/removing+a+patient+list+using+patient+list&quot;, &quot;Removing A Patient List Using Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/removing+a+proxy+using+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/removing+a+proxy+using+patient+list" target="_blank" rel="noopener">Removing A Proxy Using Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/removing+a+proxy+using+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/removing+a+proxy+using+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/removing+a+proxy+using+patient+list&quot;, &quot;Removing A Proxy Using Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/removing+and+returning+patients+using+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/removing+and+returning+patients+using+patient+list" target="_blank" rel="noopener">Removing And Returning Patients Using Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/removing+and+returning+patients+using+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/removing+and+returning+patients+using+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/removing+and+returning+patients+using+patient+list&quot;, &quot;Removing And Returning Patients Using Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/renaming+a+patient+list+using+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/renaming+a+patient+list+using+patient+list" target="_blank" rel="noopener">Renaming A Patient List Using Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/renaming+a+patient+list+using+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/renaming+a+patient+list+using+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/renaming+a+patient+list+using+patient+list&quot;, &quot;Renaming A Patient List Using Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/retrieving+patients+in+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/retrieving+patients+in+patient+list" target="_blank" rel="noopener">Retrieving Patients In Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/retrieving+patients+in+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/retrieving+patients+in+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/retrieving+patients+in+patient+list&quot;, &quot;Retrieving Patients In Patient List&quot;)'>Queue Ignore</button></div></td>
     </tr>
     <tr data-url="https://wiki.cerner.com/display/30olympushp/rtms+in+olympus">
       <td><a href="https://wiki.cerner.com/display/30olympushp/rtms+in+olympus" target="_blank" rel="noopener">Rtms In Olympus</a></td>
@@ -631,35 +799,11 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/selecting+role+profiles+in+oracle+health+millennium+platform+applications" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/selecting+role+profiles+in+oracle+health+millennium+platform+applications&quot;, &quot;Selecting Role Profiles In Oracle Health Millennium Platform Applications&quot;)'>Queue Ignore</button></div></td>
     </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/sending+an+announcement+using+announcement+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/sending+an+announcement+using+announcement+tool" target="_blank" rel="noopener">Sending An Announcement Using Announcement Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/sending+an+announcement+using+announcement+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/sending+an+announcement+using+announcement+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/sending+an+announcement+using+announcement+tool&quot;, &quot;Sending An Announcement Using Announcement Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/sorting+columns+in+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/sorting+columns+in+patient+list" target="_blank" rel="noopener">Sorting Columns In Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/sorting+columns+in+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/sorting+columns+in+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/sorting+columns+in+patient+list&quot;, &quot;Sorting Columns In Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
     <tr data-url="https://wiki.cerner.com/display/eservicehp/submitting+a+service+record+in+eservice">
       <td><a href="https://wiki.cerner.com/display/eservicehp/submitting+a+service+record+in+eservice" target="_blank" rel="noopener">Submitting A Service Record In Eservice</a></td>
       <td class="url">https://wiki.cerner.com/display/eservicehp/submitting+a+service+record+in+eservice</td>
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/eservicehp/submitting+a+service+record+in+eservice" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/eservicehp/submitting+a+service+record+in+eservice&quot;, &quot;Submitting A Service Record In Eservice&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/system+messages+in+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/system+messages+in+patient+list" target="_blank" rel="noopener">System Messages In Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/system+messages+in+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/system+messages+in+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/system+messages+in+patient+list&quot;, &quot;System Messages In Patient List&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/system+messages+in+preferences+maintenance+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/system+messages+in+preferences+maintenance+tool" target="_blank" rel="noopener">System Messages In Preferences Maintenance Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/system+messages+in+preferences+maintenance+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/system+messages+in+preferences+maintenance+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/system+messages+in+preferences+maintenance+tool&quot;, &quot;System Messages In Preferences Maintenance Tool&quot;)'>Queue Ignore</button></div></td>
     </tr>
     <tr data-url="https://wiki.cerner.com/display/help/t">
       <td><a href="https://wiki.cerner.com/display/help/t" target="_blank" rel="noopener">T</a></td>
@@ -667,71 +811,17 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/t" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/t&quot;, &quot;T&quot;)'>Queue Ignore</button></div></td>
     </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/task+menu+in+the+preferences+maintenance+tool+preference+form+window">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/task+menu+in+the+preferences+maintenance+tool+preference+form+window" target="_blank" rel="noopener">Task Menu In The Preferences Maintenance Tool Preference Form Window</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/task+menu+in+the+preferences+maintenance+tool+preference+form+window</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/task+menu+in+the+preferences+maintenance+tool+preference+form+window" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/task+menu+in+the+preferences+maintenance+tool+preference+form+window&quot;, &quot;Task Menu In The Preferences Maintenance Tool Preference Form Window&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/tearing+off+a+page+of+the+chart+using+powerchart">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/tearing+off+a+page+of+the+chart+using+powerchart" target="_blank" rel="noopener">Tearing Off A Page Of The Chart Using Powerchart</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/tearing+off+a+page+of+the+chart+using+powerchart</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/tearing+off+a+page+of+the+chart+using+powerchart" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/tearing+off+a+page+of+the+chart+using+powerchart&quot;, &quot;Tearing Off A Page Of The Chart Using Powerchart&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/help/tips+for+searching+in+oracle+health+wiki">
-      <td><a href="https://wiki.cerner.com/display/help/tips+for+searching+in+oracle+health+wiki" target="_blank" rel="noopener">Tips For Searching In Oracle Health Wiki</a></td>
-      <td class="url">https://wiki.cerner.com/display/help/tips+for+searching+in+oracle+health+wiki</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/tips+for+searching+in+oracle+health+wiki" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/tips+for+searching+in+oracle+health+wiki&quot;, &quot;Tips For Searching In Oracle Health Wiki&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/toolbar+in+preferences+maintenance+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/toolbar+in+preferences+maintenance+tool" target="_blank" rel="noopener">Toolbar In Preferences Maintenance Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/toolbar+in+preferences+maintenance+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/toolbar+in+preferences+maintenance+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/toolbar+in+preferences+maintenance+tool&quot;, &quot;Toolbar In Preferences Maintenance Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
     <tr data-url="https://wiki.cerner.com/display/help/u">
       <td><a href="https://wiki.cerner.com/display/help/u" target="_blank" rel="noopener">U</a></td>
       <td class="url">https://wiki.cerner.com/display/help/u</td>
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/u" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/u&quot;, &quot;U&quot;)'>Queue Ignore</button></div></td>
     </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/using+filters+in+the+dynamic+worklist+mpages+view">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/using+filters+in+the+dynamic+worklist+mpages+view" target="_blank" rel="noopener">Using Filters In The Dynamic Worklist Mpages View</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/using+filters+in+the+dynamic+worklist+mpages+view</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/using+filters+in+the+dynamic+worklist+mpages+view" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/using+filters+in+the+dynamic+worklist+mpages+view&quot;, &quot;Using Filters In The Dynamic Worklist Mpages View&quot;)'>Queue Ignore</button></div></td>
-    </tr>
     <tr data-url="https://wiki.cerner.com/display/help/v">
       <td><a href="https://wiki.cerner.com/display/help/v" target="_blank" rel="noopener">V</a></td>
       <td class="url">https://wiki.cerner.com/display/help/v</td>
       <td class="added">2026-03-06 14:15</td>
       <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/help/v" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/help/v&quot;, &quot;V&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/view+menu+in+preferences+maintenance+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/view+menu+in+preferences+maintenance+tool" target="_blank" rel="noopener">View Menu In Preferences Maintenance Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/view+menu+in+preferences+maintenance+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/view+menu+in+preferences+maintenance+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/view+menu+in+preferences+maintenance+tool&quot;, &quot;View Menu In Preferences Maintenance Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/view+menu+in+the+preferences+maintenance+tool+preference+form+window">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/view+menu+in+the+preferences+maintenance+tool+preference+form+window" target="_blank" rel="noopener">View Menu In The Preferences Maintenance Tool Preference Form Window</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/view+menu+in+the+preferences+maintenance+tool+preference+form+window</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/view+menu+in+the+preferences+maintenance+tool+preference+form+window" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/view+menu+in+the+preferences+maintenance+tool+preference+form+window&quot;, &quot;View Menu In The Preferences Maintenance Tool Preference Form Window&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/viewing+preference+information+using+preferences+maintenance+tool">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/viewing+preference+information+using+preferences+maintenance+tool" target="_blank" rel="noopener">Viewing Preference Information Using Preferences Maintenance Tool</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/viewing+preference+information+using+preferences+maintenance+tool</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/viewing+preference+information+using+preferences+maintenance+tool" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/viewing+preference+information+using+preferences+maintenance+tool&quot;, &quot;Viewing Preference Information Using Preferences Maintenance Tool&quot;)'>Queue Ignore</button></div></td>
-    </tr>
-    <tr data-url="https://wiki.cerner.com/display/1101powercharthp/viewing+provider+information+using+patient+list">
-      <td><a href="https://wiki.cerner.com/display/1101powercharthp/viewing+provider+information+using+patient+list" target="_blank" rel="noopener">Viewing Provider Information Using Patient List</a></td>
-      <td class="url">https://wiki.cerner.com/display/1101powercharthp/viewing+provider+information+using+patient+list</td>
-      <td class="added">2026-03-06 14:15</td>
-      <td class="act"><div class="row-actions"><a class="btn btn-open" href="https://wiki.cerner.com/display/1101powercharthp/viewing+provider+information+using+patient+list" target="_blank" rel="noopener">&#8599; Open</a><button type="button" class="btn btn-ignore" onclick='queueLinkAction(this, &quot;ignore&quot;, &quot;https://wiki.cerner.com/display/1101powercharthp/viewing+provider+information+using+patient+list&quot;, &quot;Viewing Provider Information Using Patient List&quot;)'>Queue Ignore</button></div></td>
     </tr>
     <tr data-url="https://wiki.cerner.com/display/help/w">
       <td><a href="https://wiki.cerner.com/display/help/w" target="_blank" rel="noopener">W</a></td>
@@ -760,12 +850,12 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
     </tbody>
   </table>
   <script>
-const commandPython = "\\\\PNDCFPRDFS025.HEALTHIRL.NET\\MNCMSNPT$\\Meds Management\\MPage\\Development\\CernerScraper\\.venv\\Scripts\\python.exe";
-const manageScript = "\\\\PNDCFPRDFS025.HEALTHIRL.NET\\MNCMSNPT$\\Meds Management\\MPage\\Development\\CernerScraper\\Outputs\\Tools\\manage_missing_links.py";
-let pendingCommands = [];
+var commandPython = "C:\\Users\\briankehoe\\Documents\\Work\\Python\\CernerScraper\\Development\\CernerScraper\\.venv\\Scripts\\python.exe";
+var manageScript = "C:\\Users\\briankehoe\\Documents\\Work\\Python\\CernerScraper\\Development\\CernerScraper\\Outputs\\Tools\\manage_missing_links.py";
+var pendingCommands = [];
 
 function psQuote(value) {
-  return "'" + String(value ?? '').replace(/'/g, "''") + "'";
+  return "'" + String(value == null ? '' : value).replace(/'/g, "''") + "'";
 }
 
 function setStatus(message) {
@@ -773,8 +863,8 @@ function setStatus(message) {
 }
 
 function renderCommands() {
-  const textarea = document.getElementById('pending-commands');
-  textarea.value = pendingCommands.map(entry => entry.command).join('\r\n');
+  var textarea = document.getElementById('pending-commands');
+  textarea.value = pendingCommands.map(function(entry) { return entry.command; }).join('\r\n');
   if (pendingCommands.length) {
     setStatus(pendingCommands.length + ' command(s) queued.');
   } else {
@@ -783,12 +873,12 @@ function renderCommands() {
 }
 
 function queueLinkAction(button, action, url, title) {
-  const reason = action === 'ignore' ? 'ignored from missing pages UI' : '';
-  const base = '& ' + psQuote(commandPython) + ' ' + psQuote(manageScript) + ' ' + action + ' ' + psQuote(url);
-  const command = action === 'ignore' ? base + ' --reason ' + psQuote(reason) : base;
-  pendingCommands = pendingCommands.filter(entry => entry.url !== url);
-  pendingCommands.push({ action, url, title, reason, command });
-  const row = button.closest('tr');
+  var reason = action === 'ignore' ? 'ignored from missing pages UI' : '';
+  var base = '& ' + psQuote(commandPython) + ' ' + psQuote(manageScript) + ' ' + action + ' ' + psQuote(url);
+  var command = action === 'ignore' ? base + ' --reason ' + psQuote(reason) : base;
+  pendingCommands = pendingCommands.filter(function(entry) { return entry.url !== url; });
+  pendingCommands.push({ action: action, url: url, title: title, reason: reason, command: command });
+  var row = button.closest('tr');
   if (row) {
     row.classList.remove('queued-ignore', 'queued-restore');
     row.classList.add(action === 'ignore' ? 'queued-ignore' : 'queued-restore');
@@ -797,7 +887,7 @@ function queueLinkAction(button, action, url, title) {
 }
 
 function copyPendingCommands() {
-  const textarea = document.getElementById('pending-commands');
+  var textarea = document.getElementById('pending-commands');
   if (!textarea.value.trim()) {
     return;
   }
@@ -805,7 +895,7 @@ function copyPendingCommands() {
   textarea.select();
   textarea.setSelectionRange(0, textarea.value.length);
   if (navigator.clipboard && window.isSecureContext) {
-    navigator.clipboard.writeText(textarea.value).then(() => setStatus('Commands copied to clipboard.')).catch(() => {
+    navigator.clipboard.writeText(textarea.value).then(function() { setStatus('Commands copied to clipboard.'); }).catch(function() {
       document.execCommand('copy');
       setStatus('Commands copied to clipboard.');
     });
@@ -816,13 +906,13 @@ function copyPendingCommands() {
 }
 
 function downloadPendingCommands() {
-  const textarea = document.getElementById('pending-commands');
+  var textarea = document.getElementById('pending-commands');
   if (!textarea.value.trim()) {
     return;
   }
-  const blob = new Blob([textarea.value + '\r\n'], { type: 'text/plain;charset=utf-8' });
-  const link = document.createElement('a');
-  const href = URL.createObjectURL(blob);
+  var blob = new Blob([textarea.value + '\r\n'], { type: 'text/plain;charset=utf-8' });
+  var link = document.createElement('a');
+  var href = URL.createObjectURL(blob);
   link.href = href;
   link.download = 'missing_pages_actions.ps1';
   document.body.appendChild(link);
@@ -834,24 +924,26 @@ function downloadPendingCommands() {
 
 function clearPendingCommands() {
   pendingCommands = [];
-  document.querySelectorAll('tr.queued-ignore, tr.queued-restore').forEach(row => row.classList.remove('queued-ignore', 'queued-restore'));
+  Array.prototype.forEach.call(document.querySelectorAll('tr.queued-ignore, tr.queued-restore'), function(row) {
+    row.classList.remove('queued-ignore', 'queued-restore');
+  });
   renderCommands();
 }
 
 function filterPageRows() {
-  const input = document.getElementById('page-search');
-  const query = (input?.value || '').trim().toLowerCase();
-  const rows = Array.from(document.querySelectorAll('tbody tr'));
-  let visibleCount = 0;
-  rows.forEach(row => {
-    const text = row.textContent.toLowerCase();
-    const matches = !query || text.includes(query);
+  var input = document.getElementById('page-search');
+  var query = ((input && input.value) || '').trim().toLowerCase();
+  var rows = document.querySelectorAll('tbody tr');
+  var visibleCount = 0;
+  Array.prototype.forEach.call(rows, function(row) {
+    var text = row.textContent.toLowerCase();
+    var matches = !query || text.indexOf(query) !== -1;
     row.style.display = matches ? '' : 'none';
     if (matches) {
       visibleCount += 1;
     }
   });
-  const status = document.getElementById('search-status');
+  var status = document.getElementById('search-status');
   if (status) {
     status.textContent = query
       ? 'Showing ' + visibleCount + ' of ' + rows.length + ' page(s).'

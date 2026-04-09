@@ -68,7 +68,9 @@ def build_index(records: list[dict]) -> dict:
     }
 
     for term_counts in doc_terms:
-        norm = math.sqrt(sum((count * idf.get(term, 0.0)) ** 2 for term, count in term_counts.items())) or 1.0
+        norm = math.sqrt(
+            sum((count * idf.get(term, 0.0)) ** 2 for term, count in term_counts.items())
+        ) or 1.0
         doc_norms.append(norm)
 
     return {
@@ -107,7 +109,9 @@ def search(query: str, records, index: dict, n: int = DEFAULT_N, platform: str |
     doc_norms = index["doc_norms"]
 
     query_terms = Counter(tokenize(query))
-    query_norm = math.sqrt(sum((count * idf.get(term, 0.0)) ** 2 for term, count in query_terms.items())) or 1.0
+    query_norm = math.sqrt(
+        sum((count * idf.get(term, 0.0)) ** 2 for term, count in query_terms.items())
+    ) or 1.0
 
     scores: list[float] = []
     for idx, term_counts in enumerate(doc_terms):

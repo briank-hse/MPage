@@ -225,6 +225,26 @@ def html_to_text(html: str) -> str:
     return normalize_text(h2t.handle(html or ""))
 
 
+def detect_platform(canonical_url: str, source_name: str, html_hint: str = "") -> str:
+    canonical_url = (canonical_url or "").lower()
+    source_name = (source_name or "").lower()
+    html_hint = (html_hint or "").lower()
+
+    if any(host in canonical_url for host in ["wiki.cerner.com", "mpages-dev-docs.cerner.com", "pages.github.cerner.com", "mpages-fusion.cerner.com"]):
+        return "wiki"
+    if "community.oracle.com" in canonical_url:
+        return "forum"
+    if (
+        "cerner wiki" in source_name
+        or ("wiki" in source_name and "oracle" not in source_name)
+        or "custom mpages development" in source_name
+    ):
+        return "wiki"
+    if "oracle health" in source_name or "oraclehealth" in html_hint:
+        return "forum"
+    return "unknown"
+
+
 def chunk_text(text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVERLAP) -> list[str]:
     paragraphs = [p.strip() for p in re.split(r"\n{2,}", normalize_text(text)) if p.strip()]
     chunks, current, current_len = [], [], 0
@@ -660,6 +680,11 @@ def process_local_directory() -> tuple[list[dict], list[dict]]:
                 cached_document = docs_by_source.get(source_path)
                 cached_chunks = chunks_by_source.get(source_path, [])
                 if cached_document and cached_chunks:
+                    platform = detect_platform(cached_document.get("canonical_url", ""), file_path.name)
+                    if cached_document.get("platform") != platform:
+                        cached_document["platform"] = platform
+                        for chunk_record in cached_chunks:
+                            chunk_record["platform"] = platform
                     documents.append(cached_document)
                     chunks.extend(cached_chunks)
                     if file_hash:
@@ -733,19 +758,9 @@ def process_local_directory() -> tuple[list[dict], list[dict]]:
 
             canonical_url = normalize_url(canonical_url)
 
-            if "wiki.cerner.com" in canonical_url:
-                platform = "wiki"
-            elif "community.oracle.com" in canonical_url:
-                platform = "forum"
-            else:
-                name_lower = file_path.name.lower()
-                if "cerner wiki" in name_lower or ("wiki" in name_lower and "oracle" not in name_lower):
-                    platform = "wiki"
-                elif "oracle health" in name_lower or "oraclehealth" in html_content[:2000].lower():
-                    platform = "forum"
-                else:
-                    platform = "unknown"
-                    log.warning("  Could not detect platform for %s - using full page", file_path.name)
+            platform = detect_platform(canonical_url, file_path.name, html_content[:2000])
+            if platform == "unknown":
+                log.warning("  Could not detect platform for %s - using full page", file_path.name)
 
             if platform == "wiki" and not canonical_url:
                 space = "reference"
@@ -1036,21 +1051,55 @@ def _wiki_url_to_title(url: str) -> str | None:
     if m: return unquote(m.group(1).replace("+", " ")).strip().lower()
     return None
 
+def _friendly_slug_title(value: str) -> str:
+    text = value or ""
+    if text.startswith("http"):
+        parsed = urlparse(text)
+        text = parsed.path.rstrip("/").split("/")[-1]
+    text = unquote(text)
+    text = re.sub(r"^\d+[-\s]*", "", text)
+    text = re.sub(r"[_+\-]+", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text.title() if text else "Other"
+
+def _categorise_wiki_space(space: str) -> str | None:
+    space = (space or "").lower()
+    if not space:
+        return None
+
+    if space == "mpdevwiki" or "r1mpageshp" in space or space == "dbarchhp":
+        return "MPages Development"
+    if "bedrockhp" in space:
+        return "Bedrock"
+    if any(x in space for x in ["healthecaehp", "healthcarehp", "healthecare", "healtheintent", "healthintent", "healtheedwhp", "caremanagementhp", "hchp", "hcintelligencehp", "healthedatalabhp", "healtheinsightshp", "healthelifehp", "healtherecordhp", "healtheregistrieshp", "hiriskshp", "mpmhp"]):
+        return "HealtheIntent & Care Management"
+    if space in ("help", "cernercentral", "eservicehp", "hitoolshp", "30olympushp", "rn", "courses", "wikihelp", "alldoc", "cls", "hsdoc", "llstandardlibrary", "regcom", "se"):
+        return "Platform Help"
+    if any(x in space for x in ["discernhp", "discernexperthp", "da2hp", "cernerworksrp", "millenniumopshp", "knowledgeapps", "securityhp", "openlinkimhp", "commonwellhp", "consultingframeworktechnologyhp", "flashhp", "lightsonhp", "blueframehp", "aishp", "calhp", "icommandhp", "iawarehp"]):
+        return "Platform Admin"
+    if any(x in space for x in ["performanceimprovement", "aohp", "carecompasshp", "cmptflowhp", "1101palhp", "staffassignhp", "1101supplychainhp", "cctahp", "groupchartinghp", "patienttimelinehp", "longplanhp", "nutritionaldashboardhp"]):
+        return "MPages Worklists & Organizers"
+    if any(x in space for x in ["maternity", "powertrials", "firstnet", "powerforms", "clinicalnotes", "infectioncontrol", "pharmnetinpatient", "pharmnetretail", "eprescribe", "eutmaterials", "cdcomponentshp", "chartsearchhp", "crdoc", "integratedchartinghp", "smarttemplateshp", "powercharthp", "enterprisemessaging", "millenniumpmhp", "1101dynamicdochp"]):
+        return "Clinical Applications"
+    if space.startswith("1101") or space.endswith("hp") or "hp" in space:
+        return "Clinical Applications"
+    return None
+
 def _categorise_wiki(title: str, url: str) -> str:
     space_m = re.search(r"/display/(?:public/)?([^/]+)/", url)
     space = space_m.group(1).lower() if space_m else ""
     t = title.lower()
+    host = urlparse(url if url.startswith("http") else f"https://wiki.cerner.com{url}").netloc.lower()
 
-    if space == "mpdevwiki" or "r1mpageshp" in space or space == "dbarchhp": return "MPages Development"
-    if "bedrockhp" in space or "bedrock concept" in t: return "Bedrock"
-    if any(x in space for x in ["healthecaehp", "healthcarehp", "healthecare", "healtheintent", "healthintent", "healtheedwhp"]): return "HealtheIntent & Care Management"
-    if space in ("help", "cernercentral", "eservicehp", "hitoolshp", "30olympushp", "rn", "courses"): return "Platform Help"
-    if any(x in space for x in ["discernhp", "discernexperthp", "da2hp", "cernerworksrp", "millenniumopshp"]): return "Platform Admin"
-    if any(x in space for x in ["maternity", "powertrials", "firstnet", "powerforms", "clinicalnotes", "infectioncontrol", "pharmnetinpatient", "pharmnetretail", "eprescribe", "eutmaterials", "cdcomponentshp", "chartsearchhp", "crdoc", "integratedchartinghp", "smarttemplateshp"]): return "Clinical Applications"
-    if any(x in space for x in ["powercharthp", "enterprisemessaging", "millenniumpmhp", "1101dynamicdochp"]): return "Platform Help"
-    if "knowledgeapps" in space: return "Platform Admin"
-    if "performanceimprovement" in space: return "MPages Worklists & Organizers"
-    if space.startswith("1101"): return "Platform Help"
+    space_category = _categorise_wiki_space(space)
+    if space_category:
+        return space_category
+
+    if any(x in host for x in ["mpages-dev-docs.cerner.com", "pages.github.cerner.com", "mpages-fusion.cerner.com"]):
+        if any(x in t for x in ["overview", "prerequisites", "installation", "quick start", "conventions", "custom mpages development"]):
+            return "MPages Configuration"
+        if any(x in t for x in ["bedrock", "custom styling", "fusioncomponent", "frameworklink", "infobutton", "kia", "linter", "listmaintenance", "mpages drivers", "mpages gaia", "native functions", "orders", "patientcontext", "patienteducation", "patientfocus", "patientsearch", "powerform", "powernote", "pregnancy", "scheduling", "taskdoc", "viewers", "workflow component"]):
+            return "MPages Development"
 
     if any(x in t for x in ["dashboard", "healthecare", "care management", "care manager", "cases by status", "potential cases", "referral component", "acute case management"]): return "HealtheIntent & Care Management"
     if any(x in t for x in ["worklist", "organizer", "organiser", "schedule view", "palliative", "handoff", "procurement", "pcs worklist", "record restoration", "patient organizer", "physician handoff"]): return "MPages Worklists & Organizers"
@@ -1060,14 +1109,14 @@ def _categorise_wiki(title: str, url: str) -> str:
     return "Other"
 
 def _check_unknown_spaces(records: list) -> None:
-    KNOWN_SPACE_PATTERNS = ["mpdevwiki", "r1mpageshp", "bedrockhp", "healthecaehp", "healthcarehp", "healthecare", "healtheintent", "healthintent", "healtheedwhp", "help", "courses", "discernhp", "maternity", "powertrials", "firstnet", "powerforms", "reference", "clinicalnotes", "enterprisemessaging", "infectioncontrol", "knowledgeapps", "pharmnetinpatient", "pharmnetretail", "powercharthp", "30olympushp", "cernercentral", "cernerworksrp", "da2hp", "dbarchhp", "discernexperthp", "eprescribe", "eservicehp", "eutmaterials", "hitoolshp", "millenniumopshp", "performanceimprovement", "rn", "1101dynamicdochp", "cdcomponentshp", "chartsearchhp", "crdoc", "integratedchartinghp", "millenniumpmhp", "smarttemplateshp"]
     seen_unknown: dict = {}
     for r in records:
         for url in r.get("links_wiki", []):
             m = re.search(r"/display/(?:public/)?([^/]+)/", url)
             if not m: continue
             space = m.group(1).lower()
-            if not any(p in space for p in KNOWN_SPACE_PATTERNS) and space not in seen_unknown: seen_unknown[space] = url
+            if _categorise_wiki_space(space) is None and space != "reference" and space not in seen_unknown:
+                seen_unknown[space] = url
     if seen_unknown:
         log.warning("Unknown wiki spaces found — consider updating _categorise_wiki:")
         for space, example_url in sorted(seen_unknown.items()): log.warning("  [%s]  e.g. %s", space, example_url)
@@ -1172,10 +1221,12 @@ def generate_discovery_report():
 
     def forum_group_details(url: str) -> tuple[str, str, str]:
         ginfo = GROUP_METADATA.get(url, {})
+        group_url = ginfo.get("group_url", "")
         gname = ginfo.get("group_name") or "Other"
+        if gname.startswith("http"):
+            gname = _friendly_slug_title(group_url or gname)
         title = url.split("/")[-1].replace("-", " ").title()
         title = re.sub(r"^\d+\s+", "", title)
-        group_url = ginfo.get("group_url", "")
         return gname, title, group_url
 
     def build_item(title: str, url: str, kind: str, bucket: str) -> dict:
@@ -1310,6 +1361,12 @@ def generate_discovery_report():
     .ignore-info code { background: #fff7ea; }
     .search-panel { background: #f7f7f7; border: 1px solid #d7d7d7; border-radius: 4px; padding: 12px 16px; margin: 1rem 0; }
     .search-input { width: 100%; max-width: 520px; padding: 8px 10px; border: 1px solid #bbb; border-radius: 4px; font-family: inherit; font-size: 0.9rem; }
+    .search-results { margin-top: 1rem; }
+    .search-results table { margin-top: 0.8rem; }
+    .search-results td.title-cell { max-width: 360px; }
+    .search-results td.meta-cell { font-size: 0.78rem; color: #666; white-space: nowrap; }
+    .search-results td.link-cell { white-space: nowrap; text-align: right; }
+    .search-empty { display: none; margin-top: 0.8rem; color: #666; font-size: 0.85rem; }
     .action-panel { background: #f7f7f7; border: 1px solid #d7d7d7; border-radius: 4px; padding: 12px 16px; margin: 1rem 0; }
     .action-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 0.8rem; }
     .action-textarea { width: 100%; min-height: 140px; font-family: Consolas, monospace; font-size: 0.82rem; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; }
@@ -1411,12 +1468,12 @@ Click the button for each link, then <strong>Copy commands</strong> or <strong>D
 {rows}    </tbody>
   </table>
   <script>
-const commandPython = {command_python_js};
-const manageScript = {manage_script_js};
-let pendingCommands = [];
+var commandPython = {command_python_js};
+var manageScript = {manage_script_js};
+var pendingCommands = [];
 
 function psQuote(value) {{
-  return "'" + String(value ?? '').replace(/'/g, "''") + "'";
+  return "'" + String(value == null ? '' : value).replace(/'/g, "''") + "'";
 }}
 
 function setStatus(message) {{
@@ -1424,8 +1481,8 @@ function setStatus(message) {{
 }}
 
 function renderCommands() {{
-  const textarea = document.getElementById('pending-commands');
-  textarea.value = pendingCommands.map(entry => entry.command).join('\\r\\n');
+  var textarea = document.getElementById('pending-commands');
+  textarea.value = pendingCommands.map(function(entry) {{ return entry.command; }}).join('\\r\\n');
   if (pendingCommands.length) {{
     setStatus(pendingCommands.length + ' command(s) queued.');
   }} else {{
@@ -1434,12 +1491,12 @@ function renderCommands() {{
 }}
 
 function queueLinkAction(button, action, url, title) {{
-  const reason = action === 'ignore' ? 'ignored from missing pages UI' : '';
-  const base = '& ' + psQuote(commandPython) + ' ' + psQuote(manageScript) + ' ' + action + ' ' + psQuote(url);
-  const command = action === 'ignore' ? base + ' --reason ' + psQuote(reason) : base;
-  pendingCommands = pendingCommands.filter(entry => entry.url !== url);
-  pendingCommands.push({{ action, url, title, reason, command }});
-  const row = button.closest('tr');
+  var reason = action === 'ignore' ? 'ignored from missing pages UI' : '';
+  var base = '& ' + psQuote(commandPython) + ' ' + psQuote(manageScript) + ' ' + action + ' ' + psQuote(url);
+  var command = action === 'ignore' ? base + ' --reason ' + psQuote(reason) : base;
+  pendingCommands = pendingCommands.filter(function(entry) {{ return entry.url !== url; }});
+  pendingCommands.push({{ action: action, url: url, title: title, reason: reason, command: command }});
+  var row = button.closest('tr');
   if (row) {{
     row.classList.remove('queued-ignore', 'queued-restore');
     row.classList.add(action === 'ignore' ? 'queued-ignore' : 'queued-restore');
@@ -1448,7 +1505,7 @@ function queueLinkAction(button, action, url, title) {{
 }}
 
 function copyPendingCommands() {{
-  const textarea = document.getElementById('pending-commands');
+  var textarea = document.getElementById('pending-commands');
   if (!textarea.value.trim()) {{
     return;
   }}
@@ -1456,7 +1513,7 @@ function copyPendingCommands() {{
   textarea.select();
   textarea.setSelectionRange(0, textarea.value.length);
   if (navigator.clipboard && window.isSecureContext) {{
-    navigator.clipboard.writeText(textarea.value).then(() => setStatus('Commands copied to clipboard.')).catch(() => {{
+    navigator.clipboard.writeText(textarea.value).then(function() {{ setStatus('Commands copied to clipboard.'); }}).catch(function() {{
       document.execCommand('copy');
       setStatus('Commands copied to clipboard.');
     }});
@@ -1467,13 +1524,13 @@ function copyPendingCommands() {{
 }}
 
 function downloadPendingCommands() {{
-  const textarea = document.getElementById('pending-commands');
+  var textarea = document.getElementById('pending-commands');
   if (!textarea.value.trim()) {{
     return;
   }}
-  const blob = new Blob([textarea.value + '\\r\\n'], {{ type: 'text/plain;charset=utf-8' }});
-  const link = document.createElement('a');
-  const href = URL.createObjectURL(blob);
+  var blob = new Blob([textarea.value + '\\r\\n'], {{ type: 'text/plain;charset=utf-8' }});
+  var link = document.createElement('a');
+  var href = URL.createObjectURL(blob);
   link.href = href;
   link.download = 'missing_pages_actions.ps1';
   document.body.appendChild(link);
@@ -1485,24 +1542,26 @@ function downloadPendingCommands() {{
 
 function clearPendingCommands() {{
   pendingCommands = [];
-  document.querySelectorAll('tr.queued-ignore, tr.queued-restore').forEach(row => row.classList.remove('queued-ignore', 'queued-restore'));
+  Array.prototype.forEach.call(document.querySelectorAll('tr.queued-ignore, tr.queued-restore'), function(row) {{
+    row.classList.remove('queued-ignore', 'queued-restore');
+  }});
   renderCommands();
 }}
 
 function filterPageRows() {{
-  const input = document.getElementById('page-search');
-  const query = (input?.value || '').trim().toLowerCase();
-  const rows = Array.from(document.querySelectorAll('tbody tr'));
-  let visibleCount = 0;
-  rows.forEach(row => {{
-    const text = row.textContent.toLowerCase();
-    const matches = !query || text.includes(query);
+  var input = document.getElementById('page-search');
+  var query = ((input && input.value) || '').trim().toLowerCase();
+  var rows = document.querySelectorAll('tbody tr');
+  var visibleCount = 0;
+  Array.prototype.forEach.call(rows, function(row) {{
+    var text = row.textContent.toLowerCase();
+    var matches = !query || text.indexOf(query) !== -1;
     row.style.display = matches ? '' : 'none';
     if (matches) {{
       visibleCount += 1;
     }}
   }});
-  const status = document.getElementById('search-status');
+  var status = document.getElementById('search-status');
   if (status) {{
     status.textContent = query
       ? 'Showing ' + visibleCount + ' of ' + rows.length + ' page(s).'
@@ -1517,6 +1576,7 @@ renderCommands();
         (out_dir / filename).write_text(page, encoding="utf-8")
 
     sections_meta: list[dict] = []
+    root_search_items: list[dict] = []
     for cat in ordered_wiki_cats:
         active_items = active_wiki_by_cat.get(cat, [])
         ignored_items = ignored_wiki_by_cat.get(cat, [])
@@ -1525,10 +1585,30 @@ renderCommands();
             fname = f"{cat_slug}.html"
             _write_subpage(fname, cat, active_items, subtitle="Cerner Wiki")
             sections_meta.append({"title": cat, "file": fname, "count": len(active_items), "type": "wiki"})
+            for item in active_items:
+                root_search_items.append({
+                    "title": item["title"],
+                    "url": item["url"],
+                    "bucket": cat,
+                    "kind": "Cerner Wiki",
+                    "status": "Active",
+                    "section_file": fname,
+                    "section_title": cat,
+                })
         if ignored_items:
             fname = f"ignored-{cat_slug}.html"
             _write_subpage(fname, f"Ignored - {cat}", ignored_items, subtitle="Cerner Wiki", ignored=True)
             sections_meta.append({"title": cat, "file": fname, "count": len(ignored_items), "type": "wiki-ignored"})
+            for item in ignored_items:
+                root_search_items.append({
+                    "title": item["title"],
+                    "url": item["url"],
+                    "bucket": cat,
+                    "kind": "Cerner Wiki",
+                    "status": "Ignored",
+                    "section_file": fname,
+                    "section_title": f"Ignored - {cat}",
+                })
 
     for gname in ordered_forum_cats:
         active_items = active_forum_by_group.get(gname, [])
@@ -1538,10 +1618,30 @@ renderCommands();
             fname = f"forum-{group_slug}.html"
             _write_subpage(fname, gname, active_items, subtitle="Oracle Health Community", group_url=group_page_urls.get(gname, ""))
             sections_meta.append({"title": gname, "file": fname, "count": len(active_items), "type": "forum"})
+            for item in active_items:
+                root_search_items.append({
+                    "title": item["title"],
+                    "url": item["url"],
+                    "bucket": gname,
+                    "kind": "Oracle Health Community",
+                    "status": "Active",
+                    "section_file": fname,
+                    "section_title": gname,
+                })
         if ignored_items:
             fname = f"ignored-forum-{group_slug}.html"
             _write_subpage(fname, f"Ignored - {gname}", ignored_items, subtitle="Oracle Health Community", group_url=group_page_urls.get(gname, ""), ignored=True)
             sections_meta.append({"title": gname, "file": fname, "count": len(ignored_items), "type": "forum-ignored"})
+            for item in ignored_items:
+                root_search_items.append({
+                    "title": item["title"],
+                    "url": item["url"],
+                    "bucket": gname,
+                    "kind": "Oracle Health Community",
+                    "status": "Ignored",
+                    "section_file": fname,
+                    "section_title": f"Ignored - {gname}",
+                })
 
     def cards(section_type: str) -> str:
         html_cards = ""
@@ -1576,6 +1676,7 @@ renderCommands();
   <p>Ignored forum links stay grouped by the same community group so they can be restored later if needed.</p>
   <div class="index-grid">
 {ignored_forum_cards}  </div>""" if ignored_forum_cards else ""
+    root_search_items_json = html.escape(json.dumps(root_search_items), quote=False)
 
     index_html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -1603,32 +1704,97 @@ category pages now include <strong>Queue Ignore</strong> and <strong>Queue Resto
 Because this report is static HTML, those buttons build PowerShell commands for you to copy or download and run against <code>{manage_script_display}</code>.
   </div>
   <div class="search-panel">
-<input id="index-search" class="search-input" type="search" placeholder="Search categories and groups" oninput="filterIndexCards()">
-<div id="index-search-status" class="muted" style="margin-top: 0.5rem;">Showing all {len(sections_meta)} category card(s).</div>
+<input id="index-search" class="search-input" type="search" placeholder="Search missing page names across all categories" oninput="filterIndexEntries()">
+<div id="index-search-status" class="muted" style="margin-top: 0.5rem;">Search across {len(root_search_items)} missing page(s).</div>
+<div id="index-search-empty" class="search-empty">No matching page titles.</div>
+<div id="index-search-results" class="search-results" style="display:none;">
+  <table>
+    <thead><tr><th>Page</th><th>Category</th><th>Source</th><th>Status</th><th></th></tr></thead>
+    <tbody id="index-search-results-body"></tbody>
+  </table>
+  <div class="muted" style="margin-top:0.5rem;">Results open the original page directly. Use <strong>Category Page</strong> to jump to the grouped report page.</div>
+  </div>
   </div>
 {wiki_section}
 {forum_section}
 {ignored_wiki_section}
 {ignored_forum_section}
   <script>
-function filterIndexCards() {{
-  const input = document.getElementById('index-search');
-  const query = (input?.value || '').trim().toLowerCase();
-  const cards = Array.from(document.querySelectorAll('.index-card'));
-  let visibleCount = 0;
-  cards.forEach(card => {{
-    const text = card.textContent.toLowerCase();
-    const matches = !query || text.includes(query);
-    card.style.display = matches ? '' : 'none';
-    if (matches) {{
-      visibleCount += 1;
+var rootSearchItems = {root_search_items_json};
+
+function escapeHtml(value) {{
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}}
+
+function renderIndexResults(matches) {{
+  var body = document.getElementById('index-search-results-body');
+  var wrapper = document.getElementById('index-search-results');
+  var empty = document.getElementById('index-search-empty');
+  if (!body || !wrapper || !empty) {{
+    return;
+  }}
+  if (!matches.length) {{
+    body.innerHTML = '';
+    wrapper.style.display = 'none';
+    empty.style.display = '';
+    return;
+  }}
+  var rows = [];
+  for (var i = 0; i < matches.length; i += 1) {{
+    var item = matches[i];
+    rows.push(
+      '<tr>' +
+      '<td class="title-cell"><a href="' + escapeHtml(item.url) + '" target="_blank" rel="noopener">' + escapeHtml(item.title) + '</a></td>' +
+      '<td class="meta-cell">' + escapeHtml(item.bucket) + '</td>' +
+      '<td class="meta-cell">' + escapeHtml(item.kind) + '</td>' +
+      '<td class="meta-cell">' + escapeHtml(item.status) + '</td>' +
+      '<td class="link-cell"><a class="btn btn-open" href="{subpages_href_prefix}/' + escapeHtml(item.section_file) + '">Category Page</a></td>' +
+      '</tr>'
+    );
+  }}
+  body.innerHTML = rows.join('');
+  wrapper.style.display = '';
+  empty.style.display = 'none';
+}}
+
+function filterIndexEntries() {{
+  var input = document.getElementById('index-search');
+  var query = ((input && input.value) || '').trim().toLowerCase();
+  var cards = document.querySelectorAll('.index-card');
+  var status = document.getElementById('index-search-status');
+  if (!query) {{
+    Array.prototype.forEach.call(cards, function(card) {{
+      card.style.display = '';
+    }});
+    renderIndexResults([]);
+    if (status) {{
+      status.textContent = 'Search across ' + rootSearchItems.length + ' missing page(s).';
     }}
+    return;
+  }}
+
+  var matches = [];
+  for (var i = 0; i < rootSearchItems.length; i += 1) {{
+    var item = rootSearchItems[i];
+    var haystack = (item.title + ' ' + item.bucket + ' ' + item.kind + ' ' + item.status).toLowerCase();
+    if (haystack.indexOf(query) !== -1) {{
+      matches.push(item);
+    }}
+  }}
+  matches.sort(function(a, b) {{
+    return a.title.toLowerCase() < b.title.toLowerCase() ? -1 : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : 0;
   }});
-  const status = document.getElementById('index-search-status');
+  Array.prototype.forEach.call(cards, function(card) {{
+    card.style.display = 'none';
+  }});
+  renderIndexResults(matches.slice(0, 250));
   if (status) {{
-    status.textContent = query
-      ? 'Showing ' + visibleCount + ' of ' + cards.length + ' category card(s).'
-      : 'Showing all ' + cards.length + ' category card(s).';
+    status.textContent = 'Showing ' + matches.length + ' matching page(s).' + (matches.length > 250 ? ' Displaying first 250.' : '');
   }}
 }}
   </script>
@@ -1679,7 +1845,11 @@ def print_corpus_summary() -> None:
     for cat in sorted(wiki_by_cat.keys(), key=lambda c: CATEGORY_ORDER.index(c) if c in CATEGORY_ORDER else 99): log.info(f"    {wiki_by_cat[cat]:4d}  {cat}")
 
     forum_by_group: defaultdict[str, int] = defaultdict(int)
-    for r in forum_files: forum_by_group[r.get("group_name") or "Other (group unknown)"] += 1
+    for r in forum_files:
+        group_name = r.get("group_name") or "Other (group unknown)"
+        if group_name.startswith("http"):
+            group_name = _friendly_slug_title(group_name)
+        forum_by_group[group_name] += 1
 
     log.info(f"\n  Oracle Health Community  ({len(forum_files)} files)")
     for gname in sorted(forum_by_group.keys(), key=lambda g: ("other" in g.lower(), g.lower())): log.info(f"    {forum_by_group[gname]:4d}  {gname}")
