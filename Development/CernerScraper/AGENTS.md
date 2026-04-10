@@ -87,7 +87,7 @@ Useful filters:
 Use different modes depending on the investigation:
 
 - `hybrid`: best default for most questions
-- `semantic`: wider recall based on weighted token overlap
+- `overlap`: wider recall based on weighted token overlap
 - `exact`: literal phrase or all-terms matching
 - `regex`: pattern matching for template names, event names, code markers, or record members
 
@@ -96,7 +96,7 @@ Examples:
 ```powershell
 python .\Outputs\Tools\agent_corpus_search.py --query "EKS_ALERT_FLEX_A" --mode exact
 python .\Outputs\Tools\agent_corpus_search.py --query "EKS_.*_L" --mode regex
-python .\Outputs\Tools\agent_corpus_search.py --query "patient source synonym" --mode semantic
+python .\Outputs\Tools\agent_corpus_search.py --query "patient source synonym" --mode overlap
 ```
 
 ### 4. Prefer section extraction for answering

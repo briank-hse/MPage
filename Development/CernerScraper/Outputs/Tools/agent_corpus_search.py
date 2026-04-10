@@ -9,6 +9,7 @@ Examples:
     python Outputs/Tools/agent_corpus_search.py --query "MPAGES_EVENT orders" --mode hybrid
     python Outputs/Tools/agent_corpus_search.py --query "POWERPLANFLEX" --mode exact --platform forum
     python Outputs/Tools/agent_corpus_search.py --query "EKS_ALERT.*SIGNORDER" --mode regex
+    python Outputs/Tools/agent_corpus_search.py --query "patient source synonym" --mode overlap
     python Outputs/Tools/agent_corpus_search.py --expand-doc-id forum_223440 --format text
 """
 
@@ -34,6 +35,10 @@ DOC_FIELDS = (
     ("integration_pattern", 1.5, lambda r: r.get("integration_pattern") or ""),
     ("output_pattern", 1.25, lambda r: r.get("output_pattern") or ""),
     ("runtime_context", 1.25, lambda r: r.get("runtime_context") or ""),
+    ("search_terms", 1.75, lambda r: r.get("search_terms") or []),
+    ("exact_terms", 2.25, lambda r: r.get("exact_terms") or []),
+    ("topic_tags", 1.5, lambda r: r.get("topic_tags") or []),
+    ("linked_wiki_titles", 1.5, lambda r: r.get("linked_wiki_titles") or []),
     ("body_preview", 1.5, lambda r: r.get("body_preview") or ""),
 )
 
@@ -45,6 +50,10 @@ CHUNK_FIELDS = (
     ("product_area", 1.0, lambda r: r.get("product_area") or ""),
     ("integration_pattern", 1.0, lambda r: r.get("integration_pattern") or ""),
     ("artifact_type", 1.0, lambda r: r.get("artifact_type") or ""),
+    ("search_terms", 1.75, lambda r: r.get("search_terms") or []),
+    ("exact_terms", 2.25, lambda r: r.get("exact_terms") or []),
+    ("topic_tags", 1.5, lambda r: r.get("topic_tags") or []),
+    ("linked_wiki_titles", 1.5, lambda r: r.get("linked_wiki_titles") or []),
     ("body", 1.0, lambda r: r.get("body") or ""),
 )
 
@@ -90,7 +99,7 @@ def overlap_score(query_counter: Counter, text: str) -> float:
     if not bag:
         return 0.0
     matched = sum(min(query_counter[token], bag[token]) for token in query_counter if token in bag)
-    return matched / max(len(bag), 4)
+    return matched / (max(len(bag), 4) ** 0.5)
 
 
 def exact_score(query_text: str, query_terms: set[str], text: str) -> float:
@@ -113,12 +122,19 @@ def score_record(record: dict, field_specs, query_counter: Counter, query_text: 
             hits = len(pattern.findall(text))
             total += weight * hits
             continue
-        if mode in {"semantic", "hybrid"}:
+        if mode in {"overlap", "hybrid"}:
             total += weight * overlap_score(query_counter, text)
         if mode in {"exact", "hybrid"}:
             total += weight * exact_score(query_text, query_terms, text)
         if mode == "hybrid" and query_text and query_text in norm(text) and field_name in {"title", "section_title"}:
             total += weight * 2.0
+    if record.get("is_accepted_answer"):
+        if mode == "exact":
+            total += 3.0
+        elif mode == "regex":
+            total += 2.0
+        else:
+            total += 2.5
     return total
 
 
@@ -268,6 +284,8 @@ def search(args) -> dict:
     query_text = norm(args.query)
     query_counter = Counter(tokens(args.query))
     query_terms = set(words(args.query))
+    if args.mode == "semantic":
+        args.mode = "overlap"
     pattern = re.compile(args.query, 0 if args.case_sensitive else re.IGNORECASE) if args.mode == "regex" else None
     document_by_id = {record.get("doc_id") or "": record for record in documents}
     sections_by_key, chunk_to_section = build_section_maps(chunks)
@@ -354,6 +372,7 @@ def search(args) -> dict:
                 "integration_pattern": chunk.get("integration_pattern"),
                 "runtime_context": chunk.get("runtime_context"),
                 "artifact_type": chunk.get("artifact_type"),
+                "is_accepted_answer": bool(chunk.get("is_accepted_answer")),
                 "canonical_url": chunk.get("canonical_url"),
                 "matched_terms": term_hits,
                 "extract_type": args.extract,
@@ -403,6 +422,8 @@ def format_text(payload: dict) -> str:
             lines.append(f"   section: {item['section_title']}")
         if item.get("speaker"):
             lines.append(f"   speaker: {item['speaker']}")
+        if item.get("is_accepted_answer"):
+            lines.append("   accepted_answer: true")
         if item.get("matched_terms"):
             lines.append(f"   matched_terms: {', '.join(item['matched_terms'])}")
         if item.get("canonical_url"):
@@ -424,10 +445,9 @@ def format_text(payload: dict) -> str:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="General agent-oriented corpus search")
     parser.add_argument("--query", help="Search query")
-    parser.add_argument("--mode", choices=["hybrid", "semantic", "exact", "regex"], default="hybrid")
+    parser.add_argument("--mode", choices=["hybrid", "overlap", "semantic", "exact", "regex"], default="hybrid")
     parser.add_argument("--scope", choices=["doc", "chunk"], default="doc")
     parser.add_argument("--limit", type=int, default=6)
-    parser.add_argument("--doc-candidates", type=int, default=30)
     parser.add_argument("--platform", choices=["wiki", "forum"])
     parser.add_argument("--group")
     parser.add_argument("--speaker")
@@ -451,7 +471,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--chunks-jsonl", default=str(CHUNKS_JSONL))
     args = parser.parse_args()
     args.limit = max(1, min(args.limit, 50))
-    args.doc_candidates = max(1, args.doc_candidates)
     return args
 
 

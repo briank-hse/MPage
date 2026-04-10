@@ -994,6 +994,13 @@
       "size": 1023724,
       "status": "processed"
     },
+    "DownloadedFiles/Application level ACK_NACK and interface functioning \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1506272/application-level-ack-nack-and-interface-functioning",
+      "file_hash": "d67a04256a834afa536c670388939f56",
+      "mtime_ns": 1775821564029501100,
+      "size": 1020280,
+      "status": "processed"
+    },
     "DownloadedFiles/Applink _FIRSTTAB =^ contains a \uff02_\uff02 \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/369473/applink-firsttab-contains-a",
       "file_hash": "97681c137cc2a2b8607cb96a201a0532",
@@ -3724,6 +3731,13 @@
       "size": 525968,
       "status": "processed"
     },
+    "DownloadedFiles/Can OPENLINK create a pdf file from an inbound HL7 base 64 encoded report\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/857765/can-openlink-create-a-pdf-file-from-an-inbound-hl7-base-64-encoded-report",
+      "file_hash": "0a253669919f94148c1bd96e1d76da2f",
+      "mtime_ns": 1775821563720161500,
+      "size": 1051467,
+      "status": "processed"
+    },
     "DownloadedFiles/Can a Powerplan alert happen when originally selected and can entire plan be removed\uff1f \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1773662/can-a-powerplan-alert-happen-when-originally-selected-and-can-entire-plan-be-removed",
       "file_hash": "e6f7c78e663b2eae9357c9b979269134",
@@ -3806,6 +3820,13 @@
       "file_hash": "b8f877cfd2fe587f7d869ac5cddd68d1",
       "mtime_ns": 1772903664000000000,
       "size": 803007,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner OPENLink version 24.1 is now GA. \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/831113/cerner-openlink-version-24-1-is-now-ga",
+      "file_hash": "a7d580797df6b69c6ba6172e757e778c",
+      "mtime_ns": 1775821564314578000,
+      "size": 990585,
       "status": "processed"
     },
     "DownloadedFiles/Cerner Standard Content Library \u2014 Oracle Health.html": {
@@ -5145,6 +5166,76 @@
       "size": 184088,
       "status": "processed"
     },
+    "DownloadedFiles/Creating Alerts Reports for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Creating+Alerts+Reports+for+OPENLink",
+      "file_hash": "2b42e03b0efc2caec33aa139d175e584",
+      "mtime_ns": 1775821970187658300,
+      "size": 185136,
+      "status": "processed"
+    },
+    "DownloadedFiles/Creating Application Reports for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Creating+Application+Reports+for+OPENLink",
+      "file_hash": "59d6d120992116eec189a8233615c204",
+      "mtime_ns": 1775821840697555900,
+      "size": 186092,
+      "status": "processed"
+    },
+    "DownloadedFiles/Creating Event Path Table Reports for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Creating+Event+Path+Table+Reports+for+OPENLink",
+      "file_hash": "231b1ea03d68e04bf46073bf74d66299",
+      "mtime_ns": 1775821977737228800,
+      "size": 186471,
+      "status": "processed"
+    },
+    "DownloadedFiles/Creating File Connection Reports for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Creating+File+Connection+Reports+for+OPENLink",
+      "file_hash": "570c24b7e9bf2dbd113604aa442253da",
+      "mtime_ns": 1775821981481419100,
+      "size": 185325,
+      "status": "processed"
+    },
+    "DownloadedFiles/Creating Interface Association Reports for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Creating+Interface+Association+Reports+for+OPENLink",
+      "file_hash": "ab4fa7216949964a43c4f3dbe05287a6",
+      "mtime_ns": 1775821986240791600,
+      "size": 185439,
+      "status": "processed"
+    },
+    "DownloadedFiles/Creating LU 6.2 Connection Reports for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Creating+LU+6.2+Connection+Reports+for+OPENLink",
+      "file_hash": "cc08bf41175e6640ad768a6e37fa3b7c",
+      "mtime_ns": 1775821987429249000,
+      "size": 185292,
+      "status": "processed"
+    },
+    "DownloadedFiles/Creating SNA Connection Reports for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Creating+SNA+Connection+Reports+for+OPENLink",
+      "file_hash": "49e37604a3d00be344ec673a72b2cbcc",
+      "mtime_ns": 1775821992976553000,
+      "size": 185404,
+      "status": "processed"
+    },
+    "DownloadedFiles/Creating Table Reports for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Creating+Table+Reports+for+OPENLink",
+      "file_hash": "d850a3388094683007e40458bd20f1c0",
+      "mtime_ns": 1775821847997377900,
+      "size": 185563,
+      "status": "processed"
+    },
+    "DownloadedFiles/Creating Transaction Reports for OPENLink Maps - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Creating+Transaction+Reports+for+OPENLink+Maps",
+      "file_hash": "6d41d466c92906f8511b2fb17771f582",
+      "mtime_ns": 1775821842651787800,
+      "size": 185648,
+      "status": "processed"
+    },
+    "DownloadedFiles/Creating User Exit Reports for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Creating+User+Exit+Reports+for+OPENLink",
+      "file_hash": "267c19a2bd07cc9aca5f44d07eb7f6b1",
+      "mtime_ns": 1775821994394526000,
+      "size": 186033,
+      "status": "processed"
+    },
     "DownloadedFiles/Creating a Static MPage \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/350155/creating-a-static-mpage",
       "file_hash": "fc0c228c4a65417321daa88913c47118",
@@ -5165,6 +5256,13 @@
       "mtime_ns": 1775752764803133200,
       "size": 1001327,
       "status": "duplicate_url"
+    },
+    "DownloadedFiles/Creating and Using Reports From OPENLink Databases - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Creating+and+Using+Reports+From+OPENLink+Databases",
+      "file_hash": "a8e817a0d58e12b902a807eb92e2625e",
+      "mtime_ns": 1775821973923403700,
+      "size": 191596,
+      "status": "processed"
     },
     "DownloadedFiles/Creating+Complex+Files+Using+DDL+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
@@ -7007,6 +7105,13 @@
       "size": 805093,
       "status": "duplicate_url"
     },
+    "DownloadedFiles/Downloading a Report in OPENLink Validation Tool - OPENLink Integration Manager Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/OPENLinkIMHP/Downloading+a+Report+in+OPENLink+Validation+Tool",
+      "file_hash": "701111bbf5850a615c80dee56e47c19a",
+      "mtime_ns": 1775821832956246000,
+      "size": 187738,
+      "status": "processed"
+    },
     "DownloadedFiles/Downloading+Data+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Downloading+Data+Using+Discern+Explorer",
       "file_hash": "2291d438e4e533bdb0dda8c3b32596f4",
@@ -8645,6 +8750,13 @@
       "size": 999233,
       "status": "processed"
     },
+    "DownloadedFiles/Getting more out of the OPENLink reporting tool \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1287694/getting-more-out-of-the-openlink-reporting-tool",
+      "file_hash": "9471420d3df3558d362881e50fb35a95",
+      "mtime_ns": 1775821582648504700,
+      "size": 989197,
+      "status": "processed"
+    },
     "DownloadedFiles/Getting+Started+With+Example+Programs+Using+Visual+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Getting+Started+With+Example+Programs+Using+Visual+Explorer",
       "file_hash": "7601f820d426b562054ec946fad75ac5",
@@ -10197,6 +10309,13 @@
       "file_hash": "69c6caca675bed930a8730b61f85f775",
       "mtime_ns": 1772781765160786600,
       "size": 1023574,
+      "status": "processed"
+    },
+    "DownloadedFiles/Looking for ways to automate the tracking and reporting of OpenLink interface statuses monthly. \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1777145/looking-for-ways-to-automate-the-tracking-and-reporting-of-openlink-interface-statuses-monthly",
+      "file_hash": "ab1b5170438dd8830299bc6014a49cf4",
+      "mtime_ns": 1775821584446951800,
+      "size": 959434,
       "status": "processed"
     },
     "DownloadedFiles/MACRO+Using+Discern+Explorer.html": {
@@ -13146,6 +13265,13 @@
       "size": 2252,
       "status": "duplicate_hash"
     },
+    "DownloadedFiles/NACK Processing Question \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/640589/nack-processing-question",
+      "file_hash": "bce217251b4d860dfddcb99e82306b32",
+      "mtime_ns": 1775821563387037300,
+      "size": 992731,
+      "status": "processed"
+    },
     "DownloadedFiles/NEGATE(+)+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/NEGATE%28+%29+Using+Discern+Explorer",
       "file_hash": "2bc2d58f0fea114d178af5bac2e14acd",
@@ -13515,6 +13641,20 @@
       "file_hash": "204590454ecf74697831eed20fb4268b",
       "mtime_ns": 1772782543782756500,
       "size": 1011453,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Integration Manager Reference Pages - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Integration+Manager+Reference+Pages",
+      "file_hash": "b19bd275ca145ef5e4821a9049f2adc1",
+      "mtime_ns": 1775821997766728200,
+      "size": 190772,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Report in V24.1 not working from GUI \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/831907/openlink-report-in-v24-1-not-working-from-gui",
+      "file_hash": "07463038135ef35f43444bcc54d4a06b",
+      "mtime_ns": 1775821582927776100,
+      "size": 1002319,
       "status": "processed"
     },
     "DownloadedFiles/OPERATOR+Using+Discern+Explorer.html": {
@@ -15407,6 +15547,13 @@
       "size": 796472,
       "status": "processed"
     },
+    "DownloadedFiles/QRY^A19 Question \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1768931/qry-a19-question",
+      "file_hash": "b5be95f15bdafe483638c76d06a94f39",
+      "mtime_ns": 1775821561359887800,
+      "size": 961905,
+      "status": "processed"
+    },
     "DownloadedFiles/Qualification+Selection+Using+Visual+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Qualification+Selection+Using+Visual+Explorer",
       "file_hash": "fd93a1571105f247319a42c874837db1",
@@ -16322,6 +16469,13 @@
       "file_hash": "f006a1b408f32a21c6b3baff63036355",
       "mtime_ns": 1772366892000000000,
       "size": 508786,
+      "status": "processed"
+    },
+    "DownloadedFiles/Reporting Tool Utility Overview for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Reporting+Tool+Utility+Overview+for+OPENLink",
+      "file_hash": "385bc2831d8a9dcff226b0b29f7c69dd",
+      "mtime_ns": 1775821700020492600,
+      "size": 194848,
       "status": "processed"
     },
     "DownloadedFiles/Reporting from Powernote \u2014 Oracle Health.html": {
@@ -17274,6 +17428,13 @@
       "file_hash": "3b0237976295ab3d2af6fc3dbccd6fd8",
       "mtime_ns": 1772980050000000000,
       "size": 63715,
+      "status": "processed"
+    },
+    "DownloadedFiles/Scheduling an ESI Validation Log Report in OPENLink Validation Tool - OPENLink Integration Manager Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/OPENLinkIMHP/Scheduling+an+ESI+Validation+Log+Report+in+OPENLink+Validation+Tool",
+      "file_hash": "bbffe838df3974dbdf52c0874f694f29",
+      "mtime_ns": 1775822001258012700,
+      "size": 195541,
       "status": "processed"
     },
     "DownloadedFiles/Scheduling_Custom_MPages_Development__04b1515ebc.html": {
@@ -20398,6 +20559,13 @@
       "size": 997486,
       "status": "processed"
     },
+    "DownloadedFiles/Working with OPENLink Databases - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Working+with+OPENLink+Databases",
+      "file_hash": "6395253dcc55f5c4b166d5bfbcca0da6",
+      "mtime_ns": 1775822004721871000,
+      "size": 185707,
+      "status": "processed"
+    },
     "DownloadedFiles/Would like to see compacted information \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1529870/would-like-to-see-compacted-information",
       "file_hash": "747ef3f639cf94d54057eb1ca745ea9b",
@@ -21208,6 +21376,13 @@
       "file_hash": "bf58cb3d3f1e227508efc90543f930f4",
       "mtime_ns": 1772969262000000000,
       "size": 211285,
+      "status": "processed"
+    },
+    "DownloadedFiles/get NAK to stop interface \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/887658/get-nak-to-stop-interface",
+      "file_hash": "45ea7eb63c420ddeba70c261b68c12d5",
+      "mtime_ns": 1775821564855629500,
+      "size": 954619,
       "status": "processed"
     },
     "DownloadedFiles/getting started \u2014 Oracle Health.html": {
