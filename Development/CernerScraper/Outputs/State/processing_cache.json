@@ -91,6 +91,13 @@
       "size": 186929,
       "status": "processed"
     },
+    "DownloadedFiles/ACK OPENLink Error \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1012845/ack-openlink-error",
+      "file_hash": "b51e95ec129835bae283c8d80544f404",
+      "mtime_ns": 1775824096514852200,
+      "size": 1030135,
+      "status": "processed"
+    },
     "DownloadedFiles/ADATE+Using+Discern+Explorer(1).html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ADATE+Using+Discern+Explorer",
       "file_hash": "3aad35e2e19cdc3161b767b47d0f9e6b",
@@ -439,6 +446,13 @@
       "file_hash": "d3a7826154b16bb938bd49adfd6d07e2",
       "mtime_ns": 1772384592684023200,
       "size": 1005620,
+      "status": "processed"
+    },
+    "DownloadedFiles/Activation, Event-based Routing, Mapping, and Multi-Decode Eligibility in OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Activation%2C+Event-based+Routing%2C+Mapping%2C+and+Multi-Decode+Eligibility+in+OPENLink",
+      "file_hash": "4c4f8f3d5e7ba7b273ed41f0565605f0",
+      "mtime_ns": 1775822817713815600,
+      "size": 186949,
       "status": "processed"
     },
     "DownloadedFiles/Active Forms \u2014 Oracle Health.html": {
@@ -992,6 +1006,13 @@
       "file_hash": "ba568a673881aa95aae054f5db4a7e76",
       "mtime_ns": 1772384592950440900,
       "size": 1023724,
+      "status": "processed"
+    },
+    "DownloadedFiles/Application Level ACKs \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/846703/application-level-acks",
+      "file_hash": "4d2b1bf8d9e3b0f617372bc364550d1f",
+      "mtime_ns": 1775824096187768000,
+      "size": 1013206,
       "status": "processed"
     },
     "DownloadedFiles/Application level ACK_NACK and interface functioning \u2014 Oracle Health.html": {
@@ -4557,11 +4578,32 @@
       "size": 996070,
       "status": "processed"
     },
+    "DownloadedFiles/Configure OPENLink Integration Engine - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Configure+OPENLink+Integration+Engine",
+      "file_hash": "501c43789cf894ae6d05a279c969275b",
+      "mtime_ns": 1775822519874173500,
+      "size": 315465,
+      "status": "processed"
+    },
     "DownloadedFiles/Configure PowerChart Framework - Reference Pages - Cerner Wiki.htm": {
       "dedup_key": "https://wiki.cerner.com/display/reference/Configure+PowerChart+Framework",
       "file_hash": "6b1b3eb1813a916c537915efce62a563",
       "mtime_ns": 1772718850462756400,
       "size": 229240,
+      "status": "processed"
+    },
+    "DownloadedFiles/Configure Statistics Collection in OPENLink 25.0 and Later - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Configure+Statistics+Collection+in+OPENLink+25.0+and+Later",
+      "file_hash": "8267802a9bc9408f456b95baa68e4263",
+      "mtime_ns": 1775824149899967100,
+      "size": 200367,
+      "status": "processed"
+    },
+    "DownloadedFiles/Configure Statistics Transaction Type or Event Type in a Segment or Node Definition - Release Notes - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/RN/Configure+Statistics+Transaction+Type+or+Event+Type+in+a+Segment+or+Node+Definition",
+      "file_hash": "8d01986eeae856e576daa130293ce842",
+      "mtime_ns": 1775824155029015700,
+      "size": 184815,
       "status": "processed"
     },
     "DownloadedFiles/Configure+Automatic+Discharge.html": {
@@ -5213,6 +5255,13 @@
       "file_hash": "49e37604a3d00be344ec673a72b2cbcc",
       "mtime_ns": 1775821992976553000,
       "size": 185404,
+      "status": "processed"
+    },
+    "DownloadedFiles/Creating Segment_Node Reports for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/pages/viewpage.action",
+      "file_hash": "a3638257ba8f74dabf239cfb50bb5f98",
+      "mtime_ns": 1775824454071290900,
+      "size": 186962,
       "status": "processed"
     },
     "DownloadedFiles/Creating Table Reports for OPENLink - Reference Pages - Cerner Wiki.html": {
@@ -7238,11 +7287,39 @@
       "size": 189965,
       "status": "processed"
     },
+    "DownloadedFiles/ESI Troubleshooting Tools - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/ESI+Troubleshooting+Tools",
+      "file_hash": "42e05ca5f15d60557685cbc8d984de22",
+      "mtime_ns": 1775823601795791400,
+      "size": 199425,
+      "status": "processed"
+    },
+    "DownloadedFiles/ESI in Olympus - 3.0 Olympus Help Spanish - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/30olympusHPES/ESI+in+Olympus",
+      "file_hash": "f5c611c25a344f44c1dd3297e09414a7",
+      "mtime_ns": 1775823620370064400,
+      "size": 170939,
+      "status": "processed"
+    },
     "DownloadedFiles/ESI+Troubleshooting+Tools.html": {
       "dedup_key": "https://wiki.cerner.com/display/reference/ESI+Troubleshooting+Tools",
       "file_hash": "cf5171503522ee9b22cc2d1d4846b00d",
       "mtime_ns": 1773000172000000000,
       "size": 202610,
+      "status": "processed"
+    },
+    "DownloadedFiles/ESO Troubleshooting Tools - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/ESO+Troubleshooting+Tools",
+      "file_hash": "6b614c4a23daa7fdb20c4f9943daa3d1",
+      "mtime_ns": 1775823599437010900,
+      "size": 187854,
+      "status": "processed"
+    },
+    "DownloadedFiles/ESO in Olympus - 3.0 Olympus Help Spanish - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/30olympusHPES/ESO+in+Olympus",
+      "file_hash": "caa8d1faf0bf8ebde279225bbd232a6a",
+      "mtime_ns": 1775823623882484200,
+      "size": 167232,
       "status": "processed"
     },
     "DownloadedFiles/EVALUATE+2+Using+Discern+Explorer.html": {
@@ -7733,6 +7810,13 @@
       "file_hash": "3f338ba626da3e82360e8c67db2f7b01",
       "mtime_ns": 1773001360000000000,
       "size": 375055,
+      "status": "processed"
+    },
+    "DownloadedFiles/Establishing OPENLink Users and Groups for Your Site - An Example - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Establishing+OPENLink+Users+and+Groups+for+Your+Site+-+An+Example",
+      "file_hash": "684518b1d7fd3d11bf0715e2f723036f",
+      "mtime_ns": 1775822843611299000,
+      "size": 187720,
       "status": "processed"
     },
     "DownloadedFiles/Evaluating MPages for compatibility with the Edge Browser \u2014 Oracle Health.html": {
@@ -8302,6 +8386,13 @@
       "size": 194352,
       "status": "processed"
     },
+    "DownloadedFiles/File Pass Thru Mode in OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/File+Pass+Thru+Mode+in+OPENLink",
+      "file_hash": "50ca78955bcbc8188ee4173b4becc49d",
+      "mtime_ns": 1775822848465262400,
+      "size": 192567,
+      "status": "processed"
+    },
     "DownloadedFiles/File size limit using CCLIO \u2014 Oracle Health.htm": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/651477/file-size-limit-using-cclio",
       "file_hash": "2da96e38289501a2fd11b467cd4790d7",
@@ -8736,6 +8827,13 @@
       "size": 165769,
       "status": "processed"
     },
+    "DownloadedFiles/Getting Started With OPENLink Session - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Getting+Started+With+OPENLink+Session",
+      "file_hash": "26b3c7e03b13f5ac1cae5f41b3e5ef19",
+      "mtime_ns": 1775822995955153300,
+      "size": 187195,
+      "status": "processed"
+    },
     "DownloadedFiles/Getting error when executing program with javascript in report writer section \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/412448/getting-error-when-executing-program-with-javascript-in-report-writer-section",
       "file_hash": "ffad6b8154169d5565b853636f2afc09",
@@ -9078,6 +9176,13 @@
       "mtime_ns": 1772723974929532900,
       "size": 2252,
       "status": "duplicate_hash"
+    },
+    "DownloadedFiles/How To Export OPENLink Pages as a PDF - Oracle Health Interface Engine Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/OPENLinkEngineHP/How+To+Export+OPENLink+Pages+as+a+PDF",
+      "file_hash": "65f212388ae36da18e04b5828cf78f6d",
+      "mtime_ns": 1775823001319694300,
+      "size": 190572,
+      "status": "processed"
     },
     "DownloadedFiles/How can I check if a variable is empty\uff1f \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/421457/how-can-i-check-if-a-variable-is-empty",
@@ -9450,6 +9555,13 @@
       "size": 190783,
       "status": "processed"
     },
+    "DownloadedFiles/Import XML Transactions to OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Import+XML+Transactions+to+OPENLink",
+      "file_hash": "811cbe54a3b0c7399a45abbbeaf5db64",
+      "mtime_ns": 1775823006447667600,
+      "size": 187583,
+      "status": "processed"
+    },
     "DownloadedFiles/Import+Prompt+Control+in+Discern+Prompt+Library.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Import+Prompt+Control+in+Discern+Prompt+Library",
       "file_hash": "055d862bb9fbb4083bd25ccb4217d4e3",
@@ -9511,6 +9623,13 @@
       "file_hash": "ec5e181a860ca1343750720365782996",
       "mtime_ns": 1772722676767986900,
       "size": 803045,
+      "status": "processed"
+    },
+    "DownloadedFiles/Inbound Archiving for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Inbound+Archiving+for+OPENLink",
+      "file_hash": "0089da89186cecb8b06361cd13edb797",
+      "mtime_ns": 1775823008113715200,
+      "size": 207890,
       "status": "processed"
     },
     "DownloadedFiles/Include+Files+Dialog+Box+in+Discern+Program+Wizard.html": {
@@ -9581,6 +9700,13 @@
       "file_hash": "7d175e23ec5510cff540429ad41bc82f",
       "mtime_ns": 1772995304000000000,
       "size": 49316,
+      "status": "processed"
+    },
+    "DownloadedFiles/Init-File, Pre-File Processing, and Post-File Processing in OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Init-File%2C+Pre-File+Processing%2C+and+Post-File+Processing+in+OPENLink",
+      "file_hash": "f2d25e67ed7b88758769f51becf3667a",
+      "mtime_ns": 1775823011447820300,
+      "size": 190487,
       "status": "processed"
     },
     "DownloadedFiles/Initializing a component within custom-components.js \u2014 Oracle Health.html": {
@@ -9693,6 +9819,13 @@
       "file_hash": "75f706eb7dad39400cecd69a803d0842",
       "mtime_ns": 1772979982000000000,
       "size": 18966,
+      "status": "processed"
+    },
+    "DownloadedFiles/Introduction to Creating OPENLink Transaction Records - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Introduction+to+Creating+OPENLink+Transaction+Records",
+      "file_hash": "2d02a7210dde9d103f75310fb0091bc1",
+      "mtime_ns": 1775823016947635900,
+      "size": 189438,
       "status": "processed"
     },
     "DownloadedFiles/Introduction+to+Discern+Prompt+Library.html": {
@@ -9938,6 +10071,13 @@
       "file_hash": "a20055b6ff3ae27cd737159065a4b153",
       "mtime_ns": 1772372444000000000,
       "size": 163603,
+      "status": "processed"
+    },
+    "DownloadedFiles/Key Terms for OPENLink File Processing - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Key+Terms+for+OPENLink+File+Processing",
+      "file_hash": "96b84737fe659d24a86871deb1f9bf13",
+      "mtime_ns": 1775823020464936800,
+      "size": 185269,
       "status": "processed"
     },
     "DownloadedFiles/KiaCrossMapping_Custom_MPages_Development__5f66efb572.html": {
@@ -12831,11 +12971,25 @@
       "size": 1017674,
       "status": "processed"
     },
+    "DownloadedFiles/Map Definition Overview for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Map+Definition+Overview+for+OPENLink",
+      "file_hash": "0b3490d1e5185cec2036716cb227afcb",
+      "mtime_ns": 1775823024631305300,
+      "size": 184634,
+      "status": "processed"
+    },
     "DownloadedFiles/Map+Fonts+Dialog+Box+Using+Discern+Layout+Builder.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Map+Fonts+Dialog+Box+Using+Discern+Layout+Builder",
       "file_hash": "4ea94ad85c0d5f61de928f32e4e0f8c9",
       "mtime_ns": 1773001390000000000,
       "size": 186328,
+      "status": "processed"
+    },
+    "DownloadedFiles/Mapping Features and the Map Action Box in OPENLink Transaction - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Mapping+Features+and+the+Map+Action+Box+in+OPENLink+Transaction",
+      "file_hash": "f3a613392dbe6299b55ca62ae5941719",
+      "mtime_ns": 1775823035018353600,
+      "size": 192297,
       "status": "processed"
     },
     "DownloadedFiles/Mapping+Oracle+Health+Millennium+Platform+Reference+Data+to+CMT.html": {
@@ -13053,6 +13207,27 @@
       "file_hash": "dd203717760250a5b4dd078559f62a46",
       "mtime_ns": 1772904646000000000,
       "size": 817269,
+      "status": "processed"
+    },
+    "DownloadedFiles/Model Alert Codes Used in OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Model+Alert+Codes+Used+in+OPENLink",
+      "file_hash": "dd857da131281717e359c05f9de004bd",
+      "mtime_ns": 1775823026187008000,
+      "size": 185733,
+      "status": "processed"
+    },
+    "DownloadedFiles/Model User Exits in OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Model+User+Exits+in+OPENLink",
+      "file_hash": "7c24c0f3022866cf0a81e56131b53089",
+      "mtime_ns": 1775823031144220700,
+      "size": 198428,
+      "status": "processed"
+    },
+    "DownloadedFiles/Model User Names, Types and Groups for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Model+User+Names%2C+Types+and+Groups+for+OPENLink",
+      "file_hash": "cb30d08c2f8d97d3618ac49f23bd49bc",
+      "mtime_ns": 1775823036484532400,
+      "size": 186337,
       "status": "processed"
     },
     "DownloadedFiles/Modify+Dialog+Box+Using+Explorer+Menu.html": {
@@ -13440,6 +13615,13 @@
       "size": 187039,
       "status": "processed"
     },
+    "DownloadedFiles/Naming Conventions for OPENLink Definitions - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Naming+Conventions+for+OPENLink+Definitions",
+      "file_hash": "295791cfb6f670bc8249c4ce79d82b50",
+      "mtime_ns": 1775823042755016700,
+      "size": 185905,
+      "status": "processed"
+    },
     "DownloadedFiles/Naming Conventions \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/253188/naming-conventions",
       "file_hash": "147dcb64e96a61a2485eec79f2a59a8d",
@@ -13473,6 +13655,13 @@
       "file_hash": "18d2d3b615f49ffe1fc763875249f102",
       "mtime_ns": 1772995350000000000,
       "size": 31213,
+      "status": "processed"
+    },
+    "DownloadedFiles/Navigating in the OPENLink Administration Function - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Navigating+in+the+OPENLink+Administration+Function",
+      "file_hash": "797edf5eb854cd93047704bafe342fd9",
+      "mtime_ns": 1775823044155488100,
+      "size": 187202,
       "status": "processed"
     },
     "DownloadedFiles/Near_Real-time_Processing_Over_Hadoop_and_HBase_Engineering_Health__9957982357.html": {
@@ -13643,6 +13832,55 @@
       "size": 1011453,
       "status": "processed"
     },
+    "DownloadedFiles/OPENLink Alert Process Setup in the Engine Definition - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Alert+Process+Setup+in+the+Engine+Definition",
+      "file_hash": "0d15be9b7455893fb060b501407c6776",
+      "mtime_ns": 1775823049460365600,
+      "size": 210627,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Configurable Alerts Overview - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Configurable+Alerts+Overview",
+      "file_hash": "808a1d692ec0a0ef74ef241791760d8b",
+      "mtime_ns": 1775823050565218300,
+      "size": 185884,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Configurable Error Log Overview - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Configurable+Error+Log+Overview",
+      "file_hash": "f2cd4c1d77980bbecb83a08fc88b35a8",
+      "mtime_ns": 1775823054295875800,
+      "size": 194739,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink File Processing Error Messages and Actions - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+File+Processing+Error+Messages+and+Actions",
+      "file_hash": "8c348c31e5ef1bd77964df3308d19bda",
+      "mtime_ns": 1775823057003180900,
+      "size": 190334,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink File Processing Overview - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+File+Processing+Overview",
+      "file_hash": "996806d8d56e81bacf39e7715963a262",
+      "mtime_ns": 1775823060184054600,
+      "size": 190351,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink File Processing Setup - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+File+Processing+Setup",
+      "file_hash": "35679286567b42597ef7ffdb2974d472",
+      "mtime_ns": 1775823063411497900,
+      "size": 188057,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Functions - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Functions",
+      "file_hash": "e78184593dff24b5cc4583f32db4cce4",
+      "mtime_ns": 1775823066675244200,
+      "size": 198385,
+      "status": "processed"
+    },
     "DownloadedFiles/OPENLink Integration Manager Reference Pages - Reference Pages - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Integration+Manager+Reference+Pages",
       "file_hash": "b19bd275ca145ef5e4821a9049f2adc1",
@@ -13655,6 +13893,20 @@
       "file_hash": "07463038135ef35f43444bcc54d4a06b",
       "mtime_ns": 1775821582927776100,
       "size": 1002319,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Transaction Record Formats - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Transaction+Record+Formats",
+      "file_hash": "fd67678f01c7a5eb556e87e7a8760824",
+      "mtime_ns": 1775823070093594300,
+      "size": 183031,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink strange formatted ACK \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/719904/openlink-strange-formatted-ack",
+      "file_hash": "e16a6a044803ca72bbb90e6fa186b0df",
+      "mtime_ns": 1775824095698217400,
+      "size": 999114,
       "status": "processed"
     },
     "DownloadedFiles/OPERATOR+Using+Discern+Explorer.html": {
@@ -14117,6 +14369,34 @@
       "file_hash": "a642a038648a0e89f263feec4eced4f4",
       "mtime_ns": 1772905078000000000,
       "size": 17205,
+      "status": "processed"
+    },
+    "DownloadedFiles/Overview of AVAILABILITY and CONNECTION Statistical Collection Tables and Software Version Statistics in OPENLink - Oracle Health Interface Engine Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/OPENLinkEngineHP/Overview+of+AVAILABILITY+and+CONNECTION+Statistical+Collection+Tables+and+Software+Version+Statistics+in+OPENLink",
+      "file_hash": "5b944df58b757b311ec60a324bb26dfe",
+      "mtime_ns": 1775824144598027700,
+      "size": 189592,
+      "status": "processed"
+    },
+    "DownloadedFiles/Overview of OPENLink Dashboard - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Overview+of+OPENLink+Dashboard",
+      "file_hash": "b427e4e45c08141a50a48dee5f588f80",
+      "mtime_ns": 1775824160115019700,
+      "size": 215288,
+      "status": "processed"
+    },
+    "DownloadedFiles/Overview of OPENLink Statistics Collection Transaction Type or Event Type in the Toolkit Node Definition - Release Notes - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/RN/Overview+of+OPENLink+Statistics+Collection+Transaction+Type+or+Event+Type+in+the+Toolkit+Node+Definition",
+      "file_hash": "3ea9b1e41938b821596cd32ffba3e07c",
+      "mtime_ns": 1775824138738191800,
+      "size": 196269,
+      "status": "processed"
+    },
+    "DownloadedFiles/Overview of Statistical Collection Using OPENLink Engine 25.0 - Release Notes - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/RN/Overview+of+Statistical+Collection+Using+OPENLink+Engine+25.0",
+      "file_hash": "cd82fc7d96d672be409ac8eac33eb815",
+      "mtime_ns": 1775824152109703800,
+      "size": 191184,
       "status": "processed"
     },
     "DownloadedFiles/Overview \uff5c Custom MPages Development(1).html": {
@@ -15174,6 +15454,13 @@
       "file_hash": "47bfc02475e3696b444802b7847d9f08",
       "mtime_ns": 1775751044282382000,
       "size": 1008863,
+      "status": "processed"
+    },
+    "DownloadedFiles/PowerShell Integration \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1054662/powershell-integration",
+      "file_hash": "3922d2cabac2bbbad813871c0a7e810c",
+      "mtime_ns": 1775824096041263300,
+      "size": 996729,
       "status": "processed"
     },
     "DownloadedFiles/Powerchart not recognizing custom-components.js changes. \u2014 Oracle Health.html": {
@@ -17346,6 +17633,13 @@
       "size": 184893,
       "status": "processed"
     },
+    "DownloadedFiles/Sample XSLTFILE File - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Sample+XSLTFILE+File",
+      "file_hash": "8db53286409e28e91ec124a1499b1687",
+      "mtime_ns": 1775822531735947600,
+      "size": 185427,
+      "status": "processed"
+    },
     "DownloadedFiles/Sample+DIO+Programs+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
@@ -19075,6 +19369,13 @@
       "size": 191659,
       "status": "processed"
     },
+    "DownloadedFiles/Troubleshoot ESO - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Troubleshoot+ESO",
+      "file_hash": "e8631cad818f81934ed60ea9a0354999",
+      "mtime_ns": 1775823541103981100,
+      "size": 303594,
+      "status": "processed"
+    },
     "DownloadedFiles/Troubleshoot MPages Static Content Enterprise Appliance - Reference Pages - Cerner Wiki.htm": {
       "dedup_key": "https://wiki.cerner.com/display/reference/Troubleshoot+MPages+Static+Content+Enterprise+Appliance",
       "file_hash": "42b9091954a636c2d01d123b631d745f",
@@ -19291,6 +19592,13 @@
       "mtime_ns": 1772723989034318200,
       "size": 2252,
       "status": "duplicate_hash"
+    },
+    "DownloadedFiles/Troubleshooting Web Services for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Troubleshooting+Web+Services+for+OPENLink",
+      "file_hash": "db60822b95014b9e75a8b6221c33ee9b",
+      "mtime_ns": 1775822533576064000,
+      "size": 186988,
+      "status": "processed"
     },
     "DownloadedFiles/Troubleshooting+and+Debugging+in+Discern+Prompt+Library.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Troubleshooting+and+Debugging+in+Discern+Prompt+Library",
@@ -19530,6 +19838,13 @@
       "size": 829567,
       "status": "processed"
     },
+    "DownloadedFiles/Understand Auditing Validation Tool Activity in OPENLink Validation Tool - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Understand+Auditing+Validation+Tool+Activity+in+OPENLink+Validation+Tool",
+      "file_hash": "48a1f53812c5bf68533e3d61e2cc6077",
+      "mtime_ns": 1775823073297038900,
+      "size": 187324,
+      "status": "processed"
+    },
     "DownloadedFiles/Understand Custom MPages Component Content - Reference Pages - Cerner Wiki.htm": {
       "dedup_key": "https://wiki.cerner.com/display/reference/Understand+Custom+MPages+Component+Content",
       "file_hash": "9edceabc3e3fbd0e25675a78fc53bfba",
@@ -19549,6 +19864,13 @@
       "file_hash": "d57b15ab7408e89ac6acb54631ac6a9e",
       "mtime_ns": 1772010716625857900,
       "size": 205525,
+      "status": "processed"
+    },
+    "DownloadedFiles/Understand Statistics Collection in OPENLink Engine 25.0 and Later - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Understand+Statistics+Collection+in+OPENLink+Engine+25.0+and+Later",
+      "file_hash": "ca28d92420c782eaf92427473406e2bf",
+      "mtime_ns": 1775824141335911300,
+      "size": 210295,
       "status": "processed"
     },
     "DownloadedFiles/Understand the Dynamic Worklist MPages View - Reference Pages - Cerner Wiki.htm": {
@@ -19740,6 +20062,13 @@
       "size": 225475,
       "status": "processed"
     },
+    "DownloadedFiles/User and Group Reports for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/User+and+Group+Reports+for+OPENLink",
+      "file_hash": "2034df4bf60d7d705ec25c3e334ccb8d",
+      "mtime_ns": 1775823078191093000,
+      "size": 192013,
+      "status": "processed"
+    },
     "DownloadedFiles/User+Access+Routine+Help+in+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/User+Access+Routine+Help+in+Discern+Explorer",
       "file_hash": "66032d96d139d4dab4f249e31f6f95d0",
@@ -19760,6 +20089,13 @@
       "mtime_ns": 1772723989773521200,
       "size": 2252,
       "status": "duplicate_hash"
+    },
+    "DownloadedFiles/Using ACKs, NAKs, and WAKs for OPENLink - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Using+ACKs%2C+NAKs%2C+and+WAKs+for+OPENLink",
+      "file_hash": "1dcb463739be55b0b4a3de76fee4a879",
+      "mtime_ns": 1775823081857368000,
+      "size": 209851,
+      "status": "processed"
     },
     "DownloadedFiles/Using APPLINK to launch specific modules in PowerChart\uff1f \u2014 Oracle Health(1).html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1775349/using-applink-to-launch-specific-modules-in-powerchart",
@@ -20158,6 +20494,13 @@
       "file_hash": "da08f150236a4a0b2e7f58ae8ca2c0b9",
       "mtime_ns": 1773000318000000000,
       "size": 189343,
+      "status": "processed"
+    },
+    "DownloadedFiles/View HL7 interface ACK for message sent outbound in OPENLink \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1727801/view-hl7-interface-ack-for-message-sent-outbound-in-openlink",
+      "file_hash": "b38a570646d3c6e4c10a05c3270ba21d",
+      "mtime_ns": 1775824096123738700,
+      "size": 999149,
       "status": "processed"
     },
     "DownloadedFiles/View+Code+Set+Details+Window+in+Visual+Explorer.html": {

@@ -15,6 +15,7 @@ Run:
 import html
 import json
 import logging
+import os
 import re
 import hashlib
 import unicodedata
@@ -59,6 +60,29 @@ REFERENCE_DOMAINS = {"developer.mozilla.org", "docs.oracle.com", "flashes.cerner
 
 # Chunking config
 
+
+def _fs_path(path: str | Path) -> str:
+    raw = os.fspath(path)
+    if os.name != "nt":
+        return raw
+
+    absolute = os.path.abspath(raw)
+    if absolute.startswith("\\\\?\\"):
+        return absolute
+    if absolute.startswith("\\\\"):
+        return "\\\\?\\UNC\\" + absolute[2:]
+    return "\\\\?\\" + absolute
+
+
+def _read_text_file(path: str | Path, *, encoding: str = "utf-8", errors: str = "ignore") -> str:
+    with open(_fs_path(path), "r", encoding=encoding, errors=errors) as handle:
+        return handle.read()
+
+
+def _read_bytes_file(path: str | Path) -> bytes:
+    with open(_fs_path(path), "rb") as handle:
+        return handle.read()
+
 CHUNK_SIZE = 400   # target words per chunk
 CHUNK_OVERLAP = 40    # overlap words between chunks
 
@@ -100,7 +124,7 @@ def load_group_metadata() -> dict[str, dict]:
 
     for fpath in html_files:
         try:
-            html = fpath.read_text(encoding="utf-8", errors="ignore")
+            html = _read_text_file(fpath, encoding="utf-8", errors="ignore")
             soup = BeautifulSoup(html, "html.parser")
             all_links = [
                 (a.get_text(strip=True), a["href"])
@@ -295,7 +319,7 @@ def decode_html_bytes(raw: bytes) -> str:
 
 
 def read_html_from_file(path: str) -> str:
-    raw = Path(path).read_bytes()
+    raw = _read_bytes_file(path)
     if path.lower().endswith(".mhtml"):
         import email as _email
         msg = _email.message_from_bytes(raw)
@@ -623,7 +647,7 @@ def build_segments(platform: str, content_html: str) -> list[dict]:
 
 def get_file_hash(file_path: Path) -> str:
     hasher = hashlib.md5()
-    hasher.update(file_path.read_bytes())
+    hasher.update(_read_bytes_file(file_path))
     return hasher.hexdigest()
 
 
@@ -649,7 +673,7 @@ def process_local_directory() -> tuple[list[dict], list[dict]]:
     html_files = sorted(folder.rglob("*.[hH][tT][mM]*"), key=lambda p: str(p).lower())
     for file_path in html_files:
         source_path = file_path.relative_to(BASE_DIR).as_posix()
-        stat = file_path.stat()
+        stat = os.stat(_fs_path(file_path))
         cache_entry = processing_cache.get(source_path, {})
         cache_hit = (
             isinstance(cache_entry, dict)
@@ -1073,10 +1097,12 @@ def _categorise_wiki_space(space: str) -> str | None:
         return "Bedrock"
     if any(x in space for x in ["healthecaehp", "healthcarehp", "healthecare", "healtheintent", "healthintent", "healtheedwhp", "caremanagementhp", "hchp", "hcintelligencehp", "healthedatalabhp", "healtheinsightshp", "healthelifehp", "healtherecordhp", "healtheregistrieshp", "hiriskshp", "mpmhp"]):
         return "HealtheIntent & Care Management"
-    if space in ("help", "cernercentral", "eservicehp", "hitoolshp", "30olympushp", "rn", "courses", "wikihelp", "alldoc", "cls", "hsdoc", "llstandardlibrary", "regcom", "se"):
+    if space in ("help", "helpnl", "cernercentral", "eservicehp", "hitoolshp", "30olympushp", "rn", "courses", "wikihelp", "alldoc", "cls", "hsdoc", "llstandardlibrary", "regcom", "se"):
         return "Platform Help"
-    if any(x in space for x in ["discernhp", "discernexperthp", "da2hp", "cernerworksrp", "millenniumopshp", "knowledgeapps", "securityhp", "openlinkimhp", "commonwellhp", "consultingframeworktechnologyhp", "flashhp", "lightsonhp", "blueframehp", "aishp", "calhp", "icommandhp", "iawarehp"]):
+    if any(x in space for x in ["discernhp", "discernexperthp", "da2hp", "cernerworksrp", "cernerworks", "millenniumopshp", "knowledgeapps", "securityhp", "openlinkimhp", "commonwellhp", "consultingframeworktechnologyhp", "flashhp", "lightsonhp", "blueframehp", "aishp", "calhp", "icommandhp", "iawarehp", "mpipg", "physiciananalytics"]):
         return "Platform Admin"
+    if "initiativedetail" in space or space.startswith("{"):
+        return "Other"
     if any(x in space for x in ["performanceimprovement", "aohp", "carecompasshp", "cmptflowhp", "1101palhp", "staffassignhp", "1101supplychainhp", "cctahp", "groupchartinghp", "patienttimelinehp", "longplanhp", "nutritionaldashboardhp"]):
         return "MPages Worklists & Organizers"
     if any(x in space for x in ["maternity", "powertrials", "firstnet", "powerforms", "clinicalnotes", "infectioncontrol", "pharmnetinpatient", "pharmnetretail", "eprescribe", "eutmaterials", "cdcomponentshp", "chartsearchhp", "crdoc", "integratedchartinghp", "smarttemplateshp", "powercharthp", "enterprisemessaging", "millenniumpmhp", "1101dynamicdochp"]):
@@ -1104,7 +1130,7 @@ def _categorise_wiki(title: str, url: str) -> str:
     if any(x in t for x in ["dashboard", "healthecare", "care management", "care manager", "cases by status", "potential cases", "referral component", "acute case management"]): return "HealtheIntent & Care Management"
     if any(x in t for x in ["worklist", "organizer", "organiser", "schedule view", "palliative", "handoff", "procurement", "pcs worklist", "record restoration", "patient organizer", "physician handoff"]): return "MPages Worklists & Organizers"
     if any(x in t for x in ["configure", "install", "define", "design", "overview of", "understand", "all about", "patient list", "clinical event", "add a patient", "mpages reference", "implement"]): return "MPages Configuration"
-    if any(x in t for x in ["enterprise java", "edge", "zoom level", "discern", "output viewer", "troubleshoot", "maintain", "servers and", "when to cycle", "millennium openid", "openid provider", "millennium operations", "enterprise appliance reference", "back-end products", "utilities reference", "contributor system", "cpm script", "millennium platform", "server 79"]): return "Platform Admin"
+    if any(x in t for x in ["enterprise java", "edge", "zoom level", "discern", "output viewer", "troubleshoot", "maintain", "servers and", "when to cycle", "millennium openid", "openid provider", "millennium operations", "enterprise appliance reference", "back-end products", "utilities reference", "contributor system", "cpm script", "millennium platform", "server 79", "businessobjects", "business objects", "reporting portal", "functional reports", "physician analytics", "openlink"]): return "Platform Admin"
     if any(x in t for x in ["pharmacy", "medication administration", "mar reference", "charge", "medical specialties", "powerorders", "plans reference", "laboratory", "preferences for common"]): return "Clinical Applications"
     return "Other"
 
@@ -1115,6 +1141,8 @@ def _check_unknown_spaces(records: list) -> None:
             m = re.search(r"/display/(?:public/)?([^/]+)/", url)
             if not m: continue
             space = m.group(1).lower()
+            if space.startswith("{"):
+                continue
             if _categorise_wiki_space(space) is None and space != "reference" and space not in seen_unknown:
                 seen_unknown[space] = url
     if seen_unknown:
