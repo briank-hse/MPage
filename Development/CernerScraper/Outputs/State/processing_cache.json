@@ -56,6 +56,13 @@
       "size": 980866,
       "status": "processed"
     },
+    "DownloadedFiles/2132_Ensure Rows are written to ESI_LOG-WI - Proactive Services - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/Proactive/2132_Ensure+Rows+are+written+to+ESI_LOG-WI",
+      "file_hash": "2ae0b2bad448c89080981fb028674fb2",
+      "mtime_ns": 1776417142181086100,
+      "size": 181374,
+      "status": "processed"
+    },
     "DownloadedFiles/2_5_Coding_Competition_2017_32_lines_or_less_Engineering_Health__a3c9bb7b9e.html": {
       "dedup_key": "https://engineering.cerner.com/blog/2-to-the-5th-coding-competition-2017",
       "file_hash": "f68ffd635f15463f1de54d6e34834bbe",
@@ -406,6 +413,13 @@
       "size": 192064,
       "status": "processed"
     },
+    "DownloadedFiles/Accessing the OPENLink Event Path Table - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Accessing+the+OPENLink+Event+Path+Table",
+      "file_hash": "f13b7f01bd231fb44b3818a07b5caba0",
+      "mtime_ns": 1776422338557349500,
+      "size": 189925,
+      "status": "processed"
+    },
     "DownloadedFiles/Accessing+Discern+Explorer+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
@@ -462,6 +476,13 @@
       "size": 1043023,
       "status": "processed"
     },
+    "DownloadedFiles/Ad hoc forms \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/367035/ad-hoc-forms",
+      "file_hash": "676886f2cdfa4efccd6562d061c63d55",
+      "mtime_ns": 1777019927529946300,
+      "size": 1000196,
+      "status": "processed"
+    },
     "DownloadedFiles/Ad+Hoc+Query+Control+Options+in+Discern+Visual+Developer(1).html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Ad+Hoc+Query+Control+Options+in+Discern+Visual+Developer",
       "file_hash": "e0530f88bd27882c6abd1f344d4ef227",
@@ -489,6 +510,13 @@
       "mtime_ns": 1772998476000000000,
       "size": 149062,
       "status": "duplicate_url"
+    },
+    "DownloadedFiles/Add an End of Block _ EOB character at the end of a text line instead of CR \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/289503/add-an-end-of-block-eob-character-at-the-end-of-a-text-line-instead-of-cr",
+      "file_hash": "2fdaeec8b0a89c845f42f46010cc840e",
+      "mtime_ns": 1776415523673456200,
+      "size": 803794,
+      "status": "processed"
     },
     "DownloadedFiles/Add+-+Remove+Favorites+Dialog+Box+in+Visual+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+-+Remove+Favorites+Dialog+Box+in+Visual+Explorer",
@@ -973,6 +1001,13 @@
       "size": 2252,
       "status": "duplicate_hash"
     },
+    "DownloadedFiles/Analysis of the OPENLink Transaction Record - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Analysis+of+the+OPENLink+Transaction+Record",
+      "file_hash": "28c4726b80406c15b1de0ef4dd11f7ba",
+      "mtime_ns": 1776184162816705600,
+      "size": 191868,
+      "status": "processed"
+    },
     "DownloadedFiles/Announcing Ext.Direct for MPages (massive callback support) \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/337846/announcing-ext-direct-for-mpages-massive-callback-support",
       "file_hash": "fe1b380c57c41c4f888d88ad42b3b819",
@@ -1001,6 +1036,13 @@
       "size": 795694,
       "status": "processed"
     },
+    "DownloadedFiles/Anyway to pass a table name as a variable\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/478546/anyway-to-pass-a-table-name-as-a-variable",
+      "file_hash": "203c25bdf0f9df8fc11691282e37a3fc",
+      "mtime_ns": 1776417852088559200,
+      "size": 833806,
+      "status": "processed"
+    },
     "DownloadedFiles/Append \uff02action\uff02 of an mPage alert to the Dialogue Alert Audit \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/524823/append-action-of-an-mpage-alert-to-the-dialogue-alert-audit",
       "file_hash": "ba568a673881aa95aae054f5db4a7e76",
@@ -1027,6 +1069,20 @@
       "file_hash": "97681c137cc2a2b8607cb96a201a0532",
       "mtime_ns": 1772707901563467500,
       "size": 809626,
+      "status": "processed"
+    },
+    "DownloadedFiles/Apply Statistics Definitions and Begin Collection in OPENLink Engine 25.0 and Later Design Server - Release Notes - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/RN/Apply+Statistics+Definitions+and+Begin+Collection+in+OPENLink+Engine+25.0+and+Later+Design+Server",
+      "file_hash": "61945a317f1c0eaf44896dcc83c636d9",
+      "mtime_ns": 1776184151115428000,
+      "size": 208557,
+      "status": "processed"
+    },
+    "DownloadedFiles/Are outbound ADT HL7 messages stored in a table\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/798274/are-outbound-adt-hl7-messages-stored-in-a-table",
+      "file_hash": "765982898a64f1426977d9a94a98acfb",
+      "mtime_ns": 1776415520955771400,
+      "size": 810292,
       "status": "processed"
     },
     "DownloadedFiles/Arithmetic+Operators+Using+Discern+Explorer.html": {
@@ -1090,6 +1146,13 @@
       "file_hash": "d1c408957b31351ba5bfe3dc5699e43a",
       "mtime_ns": 1772722759770855000,
       "size": 795602,
+      "status": "processed"
+    },
+    "DownloadedFiles/Audit Info for Cerner Form \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1686429/audit-info-for-cerner-form",
+      "file_hash": "7dd60da91e34d6f5641396b768f00523",
+      "mtime_ns": 1777019925784724400,
+      "size": 1004606,
       "status": "processed"
     },
     "DownloadedFiles/Authenticating+Code+Values+Using+Core+Code+Builder.html": {
@@ -1869,6 +1932,13 @@
       "size": 1011918,
       "status": "processed"
     },
+    "DownloadedFiles/CCL backend cmdline for CURDATE and CURTIME \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1781737/ccl-backend-cmdline-for-curdate-and-curtime",
+      "file_hash": "8f3ce4480733263043c88a9ede48ed57",
+      "mtime_ns": 1776415497123882200,
+      "size": 924358,
+      "status": "processed"
+    },
     "DownloadedFiles/CCL causing cer_temp directory to fill up \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1630307/ccl-causing-cer-temp-directory-to-fill-up",
       "file_hash": "6d38f91eee329e0266ce247129acbcb3",
@@ -1909,6 +1979,20 @@
       "file_hash": "c8e15641b58498e389f6a71771cc436c",
       "mtime_ns": 1772782497622521300,
       "size": 1041576,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCL query question \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/741730/ccl-query-question",
+      "file_hash": "7f4ecb271ba22fa6ba5102aee7e53dc3",
+      "mtime_ns": 1776417842071579400,
+      "size": 812780,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCL query to identify ad hoc forms pts using them \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/549355/ccl-query-to-identify-ad-hoc-forms-pts-using-them",
+      "file_hash": "812e389e4d9f752e0518401b99762668",
+      "mtime_ns": 1777019902229109900,
+      "size": 1009218,
       "status": "processed"
     },
     "DownloadedFiles/CCL report calling application \u2014 Oracle Health.html": {
@@ -2918,6 +3002,20 @@
       "mtime_ns": 1772753797405739300,
       "size": 1008170,
       "status": "processed"
+    },
+    "DownloadedFiles/CCL\uff1a Tie DCP_FORMS to CE_EVENT_PRSNL Action \u2014 Oracle Health (1).html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/461163/ccl-tie-dcp-forms-to-ce-event-prsnl-action",
+      "file_hash": "47ce21cda70204243f1e5f3d00ce6cb4",
+      "mtime_ns": 1777019901891466400,
+      "size": 1016538,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCL\uff1a Tie DCP_FORMS to CE_EVENT_PRSNL Action \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/461163/ccl-tie-dcp-forms-to-ce-event-prsnl-action",
+      "file_hash": "aeab16519a555b8ca1219999a3363192",
+      "mtime_ns": 1777019884986670400,
+      "size": 1016624,
+      "status": "duplicate_url"
     },
     "DownloadedFiles/CEIL+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CEIL+Using+Discern+Explorer",
@@ -4109,6 +4207,13 @@
       "size": 184858,
       "status": "duplicate_url"
     },
+    "DownloadedFiles/Check Interface Tablespace using System Integration Manager - Foreign System Interfaces Help Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/1101fsiHP/Check+Interface+Tablespace+using+System+Integration+Manager",
+      "file_hash": "816f6a7907f66ee5b6cbe267b56ad1bc",
+      "mtime_ns": 1776417329054617100,
+      "size": 186635,
+      "status": "processed"
+    },
     "DownloadedFiles/Check+Box+Control+in+Discern+Prompt+Library.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Check+Box+Control+in+Discern+Prompt+Library",
       "file_hash": "c115194a26aa75593e799cf4889baf18",
@@ -4170,6 +4275,13 @@
       "file_hash": "251ef3bfb0b1235cfdc17ffcde1c45dd",
       "mtime_ns": 1772781398368687200,
       "size": 1019879,
+      "status": "processed"
+    },
+    "DownloadedFiles/Clinical FSI MT Final Activity - Client Releasable Documentation - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/CRDOC/Clinical+FSI+MT+Final+Activity",
+      "file_hash": "326854f98b144482b070bf6216158d92",
+      "mtime_ns": 1776417403092240000,
+      "size": 168719,
       "status": "processed"
     },
     "DownloadedFiles/Clinical Note Audit \u2014 Oracle Health.html": {
@@ -4457,6 +4569,20 @@
       "file_hash": "423aa1fe1b27d8229a3d5007fe8616c5",
       "mtime_ns": 1773001278000000000,
       "size": 189376,
+      "status": "processed"
+    },
+    "DownloadedFiles/Communication Step Errors Using Open View - Foreign System Interfaces Help Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/1101fsiHP/Communication+Step+Errors+Using+Open+View",
+      "file_hash": "3cef7971ac35f24f66d7143082f7e649",
+      "mtime_ns": 1776417367779735300,
+      "size": 278229,
+      "status": "processed"
+    },
+    "DownloadedFiles/CommunityWorks Reporting DA2 Metadata, Queries, Report Updates - CommunityWorks Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/CommWksClientReference/CommunityWorks+Reporting+DA2+Metadata%2C+Queries%2C+Report+Updates",
+      "file_hash": "0e7c4be7cd49ef4d850a0f0877bab459",
+      "mtime_ns": 1776417438170682700,
+      "size": 553231,
       "status": "processed"
     },
     "DownloadedFiles/Complete+Reportwriter+Example+Using+Discern+Explorer.html": {
@@ -5075,11 +5201,25 @@
       "size": 1015041,
       "status": "processed"
     },
+    "DownloadedFiles/Connect Outbound Message ID to Encntr_ID \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/634753/connect-outbound-message-id-to-encntr-id",
+      "file_hash": "6a7948796eebfac320758ab274ebe6fe",
+      "mtime_ns": 1776415520414236500,
+      "size": 811094,
+      "status": "processed"
+    },
     "DownloadedFiles/Connect PowerNote Query Builder to Record Structure \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/947269/connect-powernote-query-builder-to-record-structure",
       "file_hash": "5c2c2746700e63623063fcbfdfd7ccd4",
       "mtime_ns": 1772722760431760200,
       "size": 806482,
+      "status": "processed"
+    },
+    "DownloadedFiles/Connecting the Orders table and OEN_TX_LOG table \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1587885/connecting-the-orders-table-and-oen-tx-log-table",
+      "file_hash": "ff4c3cc00cb403be089f5a8892e04021",
+      "mtime_ns": 1776415591069369300,
+      "size": 820712,
       "status": "processed"
     },
     "DownloadedFiles/Context Variables - MPages Development Wiki - Cerner Wiki.htm": {
@@ -5150,6 +5290,13 @@
       "file_hash": "1c44e0e06153a28b99d81ff644f58116",
       "mtime_ns": 1773001286000000000,
       "size": 185068,
+      "status": "processed"
+    },
+    "DownloadedFiles/Controlling time of Script execution \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/624152/controlling-time-of-script-execution",
+      "file_hash": "57692f856dc84c68789d8875c2052f5e",
+      "mtime_ns": 1776418389042031900,
+      "size": 821359,
       "status": "processed"
     },
     "DownloadedFiles/Conventions_Custom_MPages_Development__2dc9b5198e.html": {
@@ -5234,6 +5381,13 @@
       "file_hash": "570c24b7e9bf2dbd113604aa442253da",
       "mtime_ns": 1775821981481419100,
       "size": 185325,
+      "status": "processed"
+    },
+    "DownloadedFiles/Creating HL7 text file from CCL \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/147530/creating-hl7-text-file-from-ccl",
+      "file_hash": "77db09fcd716969db011568f3734c7fe",
+      "mtime_ns": 1776415520629445200,
+      "size": 816636,
       "status": "processed"
     },
     "DownloadedFiles/Creating Interface Association Reports for OPENLink - Reference Pages - Cerner Wiki.html": {
@@ -6076,6 +6230,13 @@
       "size": 185144,
       "status": "processed"
     },
+    "DownloadedFiles/DUMMYT can't access my custom table\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/314297/dummyt-cant-access-my-custom-table",
+      "file_hash": "4343ffa7023205cf4c422bd0680109a1",
+      "mtime_ns": 1776415488762731600,
+      "size": 842043,
+      "status": "processed"
+    },
     "DownloadedFiles/DUPREPORT+Control+Option+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/DUPREPORT+Control+Option+Using+Discern+Explorer",
       "file_hash": "602297c909f5204986f17eb37375bff5",
@@ -6594,6 +6755,13 @@
       "size": 1029896,
       "status": "processed"
     },
+    "DownloadedFiles/Discern Output Viewer and middleware communication layers \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/354064/discern-output-viewer-and-middleware-communication-layers",
+      "file_hash": "9849eabca5a804ec192492d3908acf74",
+      "mtime_ns": 1776415541444175200,
+      "size": 835813,
+      "status": "processed"
+    },
     "DownloadedFiles/Discern Report Viewer - MPages Development Wiki - Cerner Wiki.htm": {
       "dedup_key": "https://wiki.cerner.com/display/MPDEVWIKI/Discern+Report+Viewer",
       "file_hash": "a0c1dc77cb46f419a82cd0d1aee33102",
@@ -6951,6 +7119,13 @@
       "size": 16547,
       "status": "processed"
     },
+    "DownloadedFiles/Display Current CQM State using System Integration Manager - Foreign System Interfaces Help Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/1101fsiHP/Display+Current+CQM+State+using+System+Integration+Manager",
+      "file_hash": "6492e32ffcec2680d5db0ccd92c0470e",
+      "mtime_ns": 1776417308923512400,
+      "size": 188892,
+      "status": "processed"
+    },
     "DownloadedFiles/Display+Format+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Display+Format+Using+Discern+Explorer",
       "file_hash": "2a4e11bf3cebd7a94e69dfe9f10be455",
@@ -7138,6 +7313,20 @@
       "file_hash": "5d3a8c4839e3220b732b0ee1df274527",
       "mtime_ns": 1772753143569105000,
       "size": 995724,
+      "status": "processed"
+    },
+    "DownloadedFiles/Does anyone pull a report out of the OEN_txlog\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/502908/does-anyone-pull-a-report-out-of-the-oen-txlog",
+      "file_hash": "ca1227ba0bbf542ab40db740a74ad8ba",
+      "mtime_ns": 1776415586171137700,
+      "size": 810427,
+      "status": "processed"
+    },
+    "DownloadedFiles/Does cclora from ssh\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/776277/does-cclora-from-ssh",
+      "file_hash": "6b050bb7c7ac6b2c9fa44c3ae5435ac7",
+      "mtime_ns": 1776415544860207300,
+      "size": 855017,
       "status": "processed"
     },
     "DownloadedFiles/Doubt regarding json output recieving \u2014 Oracle Health(1).html": {
@@ -7385,6 +7574,13 @@
       "size": 203105,
       "status": "processed"
     },
+    "DownloadedFiles/Easy way to get the second most recent date for recurring event\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/512421/easy-way-to-get-the-second-most-recent-date-for-recurring-event",
+      "file_hash": "c4b37b536652341b658a97b21c2893a8",
+      "mtime_ns": 1777019919306328600,
+      "size": 1032510,
+      "status": "processed"
+    },
     "DownloadedFiles/Edge Caching - CSS and JS \u2014 Oracle Health.htm": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1784039/edge-caching-css-and-js",
       "file_hash": "2430476a1e8b46bc68a9d31266663a7d",
@@ -7560,6 +7756,13 @@
       "size": 187459,
       "status": "processed"
     },
+    "DownloadedFiles/Editing OPENLink Transactions in the Archive File - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Editing+OPENLink+Transactions+in+the+Archive+File",
+      "file_hash": "1f19b40d2c6dcc9fdc24cea2ba98b883",
+      "mtime_ns": 1776184228743870500,
+      "size": 189401,
+      "status": "processed"
+    },
     "DownloadedFiles/Editing+A+Template+Using+Template+Editor.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Editing+A+Template+Using+Template+Editor",
       "file_hash": "ccd0027a57b4e6c158e26c1db6dafcab",
@@ -7630,6 +7833,13 @@
       "size": 1074338,
       "status": "processed"
     },
+    "DownloadedFiles/Email spreadsheet from the backend using CCL \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/641063/email-spreadsheet-from-the-backend-using-ccl",
+      "file_hash": "22169a7f84a1352d3903514c87d4b516",
+      "mtime_ns": 1776415571213201900,
+      "size": 805452,
+      "status": "processed"
+    },
     "DownloadedFiles/Embedded IE in PowerChart\uff1f \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/861884/embedded-ie-in-powerchart",
       "file_hash": "ff7b5f0ab74931e3553563c8b7366883",
@@ -7684,6 +7894,13 @@
       "file_hash": "35a733cecdd8b2bb22686ad579445511",
       "mtime_ns": 1772753827536598100,
       "size": 981259,
+      "status": "processed"
+    },
+    "DownloadedFiles/End of record \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/225037/end-of-record",
+      "file_hash": "da0878f881a3e672f85f3612b680a13a",
+      "mtime_ns": 1776415520530971600,
+      "size": 808423,
       "status": "processed"
     },
     "DownloadedFiles/Engineering_Health__48b9cadbb2.html": {
@@ -7749,6 +7966,20 @@
       "size": 191413,
       "status": "processed"
     },
+    "DownloadedFiles/Error Recovery Table Values in OpenView - Foreign System Interfaces Help Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/1101fsiHP/Error+Recovery+Table+Values+in+OpenView",
+      "file_hash": "ea2ec1fb2aa2aaf777431cc30efe5985",
+      "mtime_ns": 1776421811893039600,
+      "size": 290712,
+      "status": "processed"
+    },
+    "DownloadedFiles/Error Report for ESI database rejections \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/245664/error-report-for-esi-database-rejections",
+      "file_hash": "fd8269e15e789061d8fc57606a8752f8",
+      "mtime_ns": 1776416096025055100,
+      "size": 819701,
+      "status": "processed"
+    },
     "DownloadedFiles/Error executing script with Javascript in report writer section \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/412801/error-executing-script-with-javascript-in-report-writer-section",
       "file_hash": "d18f43e6c17227995ed5d3e76b0552e5",
@@ -7796,6 +8027,13 @@
       "file_hash": "951b0f71db0331cd728be6fd2d227fb6",
       "mtime_ns": 1772973766000000000,
       "size": 829812,
+      "status": "processed"
+    },
+    "DownloadedFiles/Error with Union Query \uff1a160417\uff1a2052{}[ORA-00907]ORA-00907\uff1a missing right parenthesis \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/697845/error-with-union-query-160417-2052-ora-00907-ora-00907-missing-right-parenthesis",
+      "file_hash": "d460ab8eab29093897210379a361a872",
+      "mtime_ns": 1776418391831298900,
+      "size": 831741,
       "status": "processed"
     },
     "DownloadedFiles/Error+Message+Overview+Using+Discern+Explorer.html": {
@@ -8001,12 +8239,26 @@
       "size": 191336,
       "status": "processed"
     },
+    "DownloadedFiles/Exiting oen_txlog_view \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/626653/exiting-oen-txlog-view",
+      "file_hash": "697dc071abde139f4499358febcc3ff5",
+      "mtime_ns": 1776415494902542200,
+      "size": 831106,
+      "status": "processed"
+    },
     "DownloadedFiles/Exiting+Discern+Explorer+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
       "mtime_ns": 1772723973318019900,
       "size": 2252,
       "status": "duplicate_hash"
+    },
+    "DownloadedFiles/Expand Function and Wildcard Charaters \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/414449/expand-function-and-wildcard-charaters",
+      "file_hash": "7d476089a75674899cbe9de033485b50",
+      "mtime_ns": 1776417868668836000,
+      "size": 829432,
+      "status": "processed"
     },
     "DownloadedFiles/Expand Function in CCL \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/267004/expand-function-in-ccl",
@@ -8020,6 +8272,13 @@
       "file_hash": "39f62117371bf6ce9946be8be4b0cb12",
       "mtime_ns": 1772781732876120600,
       "size": 1005800,
+      "status": "processed"
+    },
+    "DownloadedFiles/Expand function help \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/254358/expand-function-help",
+      "file_hash": "3b7a0db16e7c10d3c821e9e23ff4b508",
+      "mtime_ns": 1777019930249897500,
+      "size": 1044577,
       "status": "processed"
     },
     "DownloadedFiles/Explorer+Menu+Main+Window+in+Explorer+Menu.html": {
@@ -8511,6 +8770,13 @@
       "mtime_ns": 1772723974152535500,
       "size": 2252,
       "status": "duplicate_hash"
+    },
+    "DownloadedFiles/Find cancelled eprescribe orders \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/938246/find-cancelled-eprescribe-orders",
+      "file_hash": "581162356190394546a1f149b30b65b3",
+      "mtime_ns": 1776416006828428400,
+      "size": 865147,
+      "status": "processed"
     },
     "DownloadedFiles/Find+Dialog+Box+Using+Discern+Output+Viewer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Find+Dialog+Box+Using+Discern+Output+Viewer",
@@ -9037,6 +9303,20 @@
       "size": 2252,
       "status": "duplicate_hash"
     },
+    "DownloadedFiles/HL7 Parsing \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/251202/hl7-parsing",
+      "file_hash": "6a84f0bc1ea9f93d76d7cfb305f71911",
+      "mtime_ns": 1776415569612611100,
+      "size": 837067,
+      "status": "processed"
+    },
+    "DownloadedFiles/HL7 exports to TXT file \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/547105/hl7-exports-to-txt-file",
+      "file_hash": "7a0b5aa6accf090a3084a51bed065cae",
+      "mtime_ns": 1776415523592826300,
+      "size": 811266,
+      "status": "processed"
+    },
     "DownloadedFiles/HNAM win32 components for Clinical Note\uff1f \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/636168/hnam-win32-components-for-clinical-note",
       "file_hash": "0efa00a490a9dfe665a56a4f407728fc",
@@ -9133,6 +9413,13 @@
       "file_hash": "b19369fa2faaf7f8d3cead44b20f0843",
       "mtime_ns": 1772782558282246400,
       "size": 1045729,
+      "status": "processed"
+    },
+    "DownloadedFiles/Help with Select IF \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/372409/help-with-select-if",
+      "file_hash": "e5a385bf4bfcea37ae7b912c2298abd4",
+      "mtime_ns": 1776415562309472500,
+      "size": 850142,
       "status": "processed"
     },
     "DownloadedFiles/Help with calling subroutine with multiple input parms and one output parm \u2014 Oracle Health.html": {
@@ -9331,6 +9618,13 @@
       "size": 989840,
       "status": "processed"
     },
+    "DownloadedFiles/How to get the description of the flag value in a query \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/972992/how-to-get-the-description-of-the-flag-value-in-a-query",
+      "file_hash": "17ffc0f183b449aa1d80b55168391bc9",
+      "mtime_ns": 1776417833848249100,
+      "size": 831893,
+      "status": "processed"
+    },
     "DownloadedFiles/How to have a link on a custom mpage that opens up a canned viewpoint using CCLLINK(Edge)_ \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1762615/how-to-have-a-link-on-a-custom-mpage-that-opens-up-a-canned-viewpoint-using-ccllink-edge",
       "file_hash": "c5e17767a8c8b764fa41db102ddf3b17",
@@ -9352,6 +9646,27 @@
       "size": 996872,
       "status": "processed"
     },
+    "DownloadedFiles/How to perform count on a group \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/924378/how-to-perform-count-on-a-group",
+      "file_hash": "19d6579f8a45a8c1b2ff71bdbd623fce",
+      "mtime_ns": 1776417833856867900,
+      "size": 827993,
+      "status": "processed"
+    },
+    "DownloadedFiles/How to select Most Recent from a number of active rows \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/230674/how-to-select-most-recent-from-a-number-of-active-rows",
+      "file_hash": "e44b8e3b36882bba3ec762ae9fa1983a",
+      "mtime_ns": 1777019900463723500,
+      "size": 1026708,
+      "status": "processed"
+    },
+    "DownloadedFiles/How to select the root event_id from the clinical_event table when you have a child event_id \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/274545/how-to-select-the-root-event-id-from-the-clinical-event-table-when-you-have-a-child-event-id",
+      "file_hash": "3e27f716c53b9270830ba1f0c211271a",
+      "mtime_ns": 1777019920067255400,
+      "size": 1006421,
+      "status": "processed"
+    },
     "DownloadedFiles/How to set up REPORT_NAME and REPORT_PARAM prefs for an HTML report \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1692134/how-to-set-up-report-name-and-report-param-prefs-for-an-html-report",
       "file_hash": "616e2e4fe1583b27af09a65cf247cc1f",
@@ -9364,6 +9679,20 @@
       "file_hash": "22c2b2042ecad6e94b15711d5636b7c7",
       "mtime_ns": 1772719151309600300,
       "size": 854117,
+      "status": "processed"
+    },
+    "DownloadedFiles/How to write to CMB log files \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/922295/how-to-write-to-cmb-log-files",
+      "file_hash": "97763c939b87d72a0fe24fba192d753b",
+      "mtime_ns": 1776415533409838900,
+      "size": 827589,
+      "status": "processed"
+    },
+    "DownloadedFiles/How's to display date in 24 hours format \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/916502/hows-to-display-date-in-24-hours-format",
+      "file_hash": "6548a43a5c5df43df618488a6a19431c",
+      "mtime_ns": 1776417850280084300,
+      "size": 869981,
       "status": "processed"
     },
     "DownloadedFiles/How+To+Guide+In+Discern+Prompt+Library.html": {
@@ -9385,6 +9714,13 @@
       "file_hash": "ae01feb8366eb39f797b5b995207949f",
       "mtime_ns": 1772723081066822000,
       "size": 806405,
+      "status": "processed"
+    },
+    "DownloadedFiles/I need to write a CCL report and capture data entered into a Powerform by the Performed on date. \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/439526/i-need-to-write-a-ccl-report-and-capture-data-entered-into-a-powerform-by-the-performed-on-date",
+      "file_hash": "24a2e526d3d8898d455d075c7ed89554",
+      "mtime_ns": 1777019916399373600,
+      "size": 1018340,
       "status": "processed"
     },
     "DownloadedFiles/IBM+Licensing.html": {
@@ -9597,6 +9933,13 @@
       "size": 996880,
       "status": "processed"
     },
+    "DownloadedFiles/Improving dcp_forms_activity queries in a CBO environment \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/478843/improving-dcp-forms-activity-queries-in-a-cbo-environment",
+      "file_hash": "d0c8e6a756e7aa523453fc2131d723da",
+      "mtime_ns": 1777019928274963100,
+      "size": 1045243,
+      "status": "processed"
+    },
     "DownloadedFiles/In 2018 codebase, PVNOTES 'In Error' pop up dialog missing when calling LaunchDocViewer API \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/988396/in-2018-codebase-pvnotes-039-in-error-039-pop-up-dialog-missing-when-calling-launchdocviewer-api",
       "file_hash": "d7541074fa316308b66b0e1a910b6354",
@@ -9658,6 +10001,13 @@
       "file_hash": "db21b9273f91b83290ac9740abae2783",
       "mtime_ns": 1772781089503356200,
       "size": 1021616,
+      "status": "processed"
+    },
+    "DownloadedFiles/Inconsistent datatype error, this time in the join portion \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/340309/inconsistent-datatype-error-this-time-in-the-join-portion",
+      "file_hash": "441fc6daad4b5ac2c7630bdfb616d38e",
+      "mtime_ns": 1776415496216010900,
+      "size": 812914,
       "status": "processed"
     },
     "DownloadedFiles/Index+Character+Column+Using+Discern+Explorer.html": {
@@ -9793,6 +10143,13 @@
       "size": 13936,
       "status": "processed"
     },
+    "DownloadedFiles/Interface states - Tables \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/830160/interface-states-tables",
+      "file_hash": "4f10161ec04e41d78f4b326c9f629276",
+      "mtime_ns": 1776418189748066000,
+      "size": 838644,
+      "status": "processed"
+    },
     "DownloadedFiles/Intern_HackFest_2014_Engineering_Health__f043b1f888.html": {
       "dedup_key": "https://engineering.cerner.com/blog/intern-hackfest-2014",
       "file_hash": "531352b3dff1fd751604d33ac8c906ee",
@@ -9889,6 +10246,13 @@
       "file_hash": "a10cadca152f13bc7e71fe8082b0e0bf",
       "mtime_ns": 1772781394964057500,
       "size": 1020397,
+      "status": "processed"
+    },
+    "DownloadedFiles/Is it possible to know on which form an event_cd was documented\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/839778/is-it-possible-to-know-on-which-form-an-event-cd-was-documented",
+      "file_hash": "f1b48c617e3c5bfac0315ca7e7a96bb4",
+      "mtime_ns": 1777019930482767000,
+      "size": 1005713,
       "status": "processed"
     },
     "DownloadedFiles/Is it possible when in DVD, in a multi-app node domain, to select a specific app node to run \uff1f \u2014 Oracle Health.html": {
@@ -10031,6 +10395,13 @@
       "size": 1012087,
       "status": "processed"
     },
+    "DownloadedFiles/Join provider selection on powerform to prsnl table \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/534719/join-provider-selection-on-powerform-to-prsnl-table",
+      "file_hash": "0aa1f0224c436e62c6d7946d5ff69693",
+      "mtime_ns": 1777019898576425500,
+      "size": 993215,
+      "status": "processed"
+    },
     "DownloadedFiles/Join+Lab+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Join+Lab+Using+Discern+Explorer",
       "file_hash": "18fa6dd430c49e3202235cd796858af1",
@@ -10043,6 +10414,13 @@
       "file_hash": "83cf0ca7426b89939adc44ffde3bb1b0",
       "mtime_ns": 1772781373592166900,
       "size": 1051283,
+      "status": "processed"
+    },
+    "DownloadedFiles/Joining the oen_txlog table to oen_procinfo to get the most recent message date and time \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1776788/joining-the-oen-txlog-table-to-oen-procinfo-to-get-the-most-recent-message-date-and-time",
+      "file_hash": "2364d12a2fe1baf495c2cb22e94207f5",
+      "mtime_ns": 1776415592819992000,
+      "size": 851016,
       "status": "processed"
     },
     "DownloadedFiles/Joining+to+a+Table+Twice+Using+Discern+Explorer.html": {
@@ -10339,6 +10717,20 @@
       "size": 1025421,
       "status": "processed"
     },
+    "DownloadedFiles/Link between PowerForm and DTA_Clinical Event \u2014 Oracle Health (1).html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/851851/link-between-powerform-and-dta-clinical-event",
+      "file_hash": "44197d278ab3ac55c0f1af3fcdb70345",
+      "mtime_ns": 1777019932729476900,
+      "size": 1000341,
+      "status": "processed"
+    },
+    "DownloadedFiles/Link between PowerForm and DTA_Clinical Event \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/851851/link-between-powerform-and-dta-clinical-event",
+      "file_hash": "fd33e0a540a41fea8554e3ccc35e11d7",
+      "mtime_ns": 1777019914071948700,
+      "size": 1000222,
+      "status": "duplicate_url"
+    },
     "DownloadedFiles/Link to an Mpage \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/616172/link-to-an-mpage",
       "file_hash": "ac020ac9183c4ca7ee7efae5fc51db24",
@@ -10631,6 +11023,20 @@
       "file_hash": "33c5d06a687c00d15f48ae218c6f5b9c",
       "mtime_ns": 1772969318000000000,
       "size": 187121,
+      "status": "processed"
+    },
+    "DownloadedFiles/MODULE Using Discern Explorer - Discern Help Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/MODULE+Using+Discern+Explorer",
+      "file_hash": "6bd5160424d9ef6a5d29e99bd183b745",
+      "mtime_ns": 1776417333638596200,
+      "size": 187861,
+      "status": "processed"
+    },
+    "DownloadedFiles/MODULE in Discern Explorer - Discern - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHPDE/MODULE+in+Discern+Explorer",
+      "file_hash": "3e126136bd012b6bc552c7246f0e2c67",
+      "mtime_ns": 1776417324187826100,
+      "size": 165150,
       "status": "processed"
     },
     "DownloadedFiles/MODULE+Using+Discern+Explorer.html": {
@@ -12880,6 +13286,13 @@
       "size": 190475,
       "status": "processed"
     },
+    "DownloadedFiles/Maintain FSI Performance - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Maintain+FSI+Performance",
+      "file_hash": "30492b4d5235ec0cabc363f5edebea1f",
+      "mtime_ns": 1776417076522890800,
+      "size": 288519,
+      "status": "processed"
+    },
     "DownloadedFiles/Maintain MPages Static Content - Reference Pages - Cerner Wiki.htm": {
       "dedup_key": "https://wiki.cerner.com/display/reference/Maintain+MPages+Static+Content",
       "file_hash": "a85fe68e33b7b1025613365b18076295",
@@ -13095,6 +13508,13 @@
       "file_hash": "698d0a80e7c301dfe7fe83904c935356",
       "mtime_ns": 1773001394000000000,
       "size": 188227,
+      "status": "processed"
+    },
+    "DownloadedFiles/Message Control IDs - Outbound Interface \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1009968/message-control-ids-outbound-interface",
+      "file_hash": "decd5cf74a79d189f99be2d353b4ef07",
+      "mtime_ns": 1776415496207501100,
+      "size": 816929,
       "status": "processed"
     },
     "DownloadedFiles/Microbiology+Viewer.html": {
@@ -13671,6 +14091,13 @@
       "size": 26880,
       "status": "processed"
     },
+    "DownloadedFiles/Need a Script or solution to write all the queued transactions into one single disk file \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1519570/need-a-script-or-solution-to-write-all-the-queued-transactions-into-one-single-disk-file",
+      "file_hash": "9582d497737750351756752833afe5aa",
+      "mtime_ns": 1776415590169086200,
+      "size": 833737,
+      "status": "processed"
+    },
     "DownloadedFiles/Need a query for PowerNote workflow \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/380911/need-a-query-for-powernote-workflow",
       "file_hash": "c166edcfe11c7c48a6fabb26febc66c0",
@@ -13718,6 +14145,13 @@
       "file_hash": "20c3fb112192083e8990f45e4eee5ee9",
       "mtime_ns": 1772782560009346900,
       "size": 1065348,
+      "status": "processed"
+    },
+    "DownloadedFiles/Need help with substring function \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/239903/need-help-with-substring-function",
+      "file_hash": "dbb1d7d6dae3c104ff5482220fa27087",
+      "mtime_ns": 1776415589254393300,
+      "size": 854067,
       "status": "processed"
     },
     "DownloadedFiles/Nesting+Group+Expressions+Using+Discern+Explorer.html": {
@@ -13832,11 +14266,60 @@
       "size": 1011453,
       "status": "processed"
     },
+    "DownloadedFiles/OEN Purge Transaction Event Log - Purge Template 89 - Database Architecture Help Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/dbarchHP/OEN+Purge+Transaction+Event+Log+-+Purge+Template+89",
+      "file_hash": "7c24726020a26f90b84b53af0eddc380",
+      "mtime_ns": 1776421828622343400,
+      "size": 190599,
+      "status": "processed"
+    },
+    "DownloadedFiles/OEN Purge Transaction Log - Purge Template 88 - Database Architecture Help Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/dbarchHP/OEN+Purge+Transaction+Log+-+Purge+Template+88",
+      "file_hash": "807bccd844e22a51628a82fdfe8d8d21",
+      "mtime_ns": 1776417408836596400,
+      "size": 196686,
+      "status": "processed"
+    },
+    "DownloadedFiles/OEN Router Server (SCP 245) - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/pages/viewpage.action",
+      "file_hash": "8c925192a383e2dc800e9ed67d2f98d6",
+      "mtime_ns": 1776417062237124000,
+      "size": 253806,
+      "status": "duplicate_url"
+    },
+    "DownloadedFiles/OEN_PRUNELOG Manual Run Using Open View - Foreign System Interfaces Help Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/1101fsiHP/OEN_PRUNELOG+Manual+Run+Using+Open+View",
+      "file_hash": "017ff779fcc94125a29ace2f18e692d9",
+      "mtime_ns": 1776417427543856300,
+      "size": 187357,
+      "status": "processed"
+    },
+    "DownloadedFiles/OEN_TX_LOG - Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/search",
+      "file_hash": "48682858072bc838f3a0b3e72fcfca00",
+      "mtime_ns": 1776415471516300800,
+      "size": 578468,
+      "status": "duplicate_url"
+    },
     "DownloadedFiles/OPENLink Alert Process Setup in the Engine Definition - Reference Pages - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Alert+Process+Setup+in+the+Engine+Definition",
       "file_hash": "0d15be9b7455893fb060b501407c6776",
       "mtime_ns": 1775823049460365600,
       "size": 210627,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Application Status Table - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Application+Status+Table",
+      "file_hash": "233ad3f5f654c2ca9af884b876048608",
+      "mtime_ns": 1776422357215535100,
+      "size": 193063,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Archive File Maintenance and Rebuild - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Archive+File+Maintenance+and+Rebuild",
+      "file_hash": "1056c22b51c7c816f4e0229f7c86d5ea",
+      "mtime_ns": 1776422377079013500,
+      "size": 195880,
       "status": "processed"
     },
     "DownloadedFiles/OPENLink Configurable Alerts Overview - Reference Pages - Cerner Wiki.html": {
@@ -13851,6 +14334,13 @@
       "file_hash": "f2cd4c1d77980bbecb83a08fc88b35a8",
       "mtime_ns": 1775823054295875800,
       "size": 194739,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Event Path Table Overview - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Event+Path+Table+Overview",
+      "file_hash": "c53403f56df986f61dfa5b0a04c3eabc",
+      "mtime_ns": 1776422342408021100,
+      "size": 190008,
       "status": "processed"
     },
     "DownloadedFiles/OPENLink File Processing Error Messages and Actions - Reference Pages - Cerner Wiki.html": {
@@ -13888,6 +14378,13 @@
       "size": 190772,
       "status": "processed"
     },
+    "DownloadedFiles/OPENLink Map Error Action - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Map+Error+Action",
+      "file_hash": "36bae9640898950ebb35e070f0a20574",
+      "mtime_ns": 1776422317063179300,
+      "size": 189923,
+      "status": "processed"
+    },
     "DownloadedFiles/OPENLink Report in V24.1 not working from GUI \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/831907/openlink-report-in-v24-1-not-working-from-gui",
       "file_hash": "07463038135ef35f43444bcc54d4a06b",
@@ -13895,11 +14392,95 @@
       "size": 1002319,
       "status": "processed"
     },
+    "DownloadedFiles/OPENLink Session Transaction Form - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Session+Transaction+Form",
+      "file_hash": "20c3f04323928e1c86b1f0cc887d87a4",
+      "mtime_ns": 1776422332176813200,
+      "size": 189047,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Spooling Overview - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Spooling+Overview",
+      "file_hash": "68aa059b47483d82cd208348ed443dd9",
+      "mtime_ns": 1776422320740697500,
+      "size": 189674,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Testing and Troubleshooting - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Testing+and+Troubleshooting",
+      "file_hash": "867f3de4750b1ecccc15969b0881617d",
+      "mtime_ns": 1776422355528840400,
+      "size": 297553,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Toolkit Database Queries - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Toolkit+Database+Queries",
+      "file_hash": "be5a05610003e2d600f4c3da261e2ed9",
+      "mtime_ns": 1776422363479683500,
+      "size": 194842,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Transaction Archiving Overview - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Transaction+Archiving+Overview",
+      "file_hash": "a63e3d1ff9f19abc6fb1fffaf08f8ae1",
+      "mtime_ns": 1776184186564114300,
+      "size": 188786,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Transaction Archiving and Spooling Overview - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Transaction+Archiving+and+Spooling+Overview",
+      "file_hash": "96ab83cd71bcc27730a52a5d23062cf7",
+      "mtime_ns": 1776184180339107000,
+      "size": 188575,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Transaction Definition Types - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Transaction+Definition+Types",
+      "file_hash": "7c71c7a5f614e95660b08ed00e20f92a",
+      "mtime_ns": 1776184191500098500,
+      "size": 189953,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Transaction Linking in the Archive Files - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Transaction+Linking+in+the+Archive+Files",
+      "file_hash": "574c2e31c8a67f16ccfaee558566aa7b",
+      "mtime_ns": 1776184203614365200,
+      "size": 199424,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Transaction Mapping - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Transaction+Mapping",
+      "file_hash": "1baf9768782e13b1530f6a65a00fd1c0",
+      "mtime_ns": 1776184206971231900,
+      "size": 188816,
+      "status": "processed"
+    },
     "DownloadedFiles/OPENLink Transaction Record Formats - Reference Pages - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Transaction+Record+Formats",
       "file_hash": "fd67678f01c7a5eb556e87e7a8760824",
       "mtime_ns": 1775823070093594300,
       "size": 183031,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Transaction Record Tasks to Be Performed - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Transaction+Record+Tasks+to+Be+Performed",
+      "file_hash": "3aa1b28ce269ea178f499551ed9d853f",
+      "mtime_ns": 1776184208918110600,
+      "size": 194178,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Transaction Records Formatting - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Transaction+Records+Formatting",
+      "file_hash": "145eef81327bc41c53dbde6690c8b9e9",
+      "mtime_ns": 1776184212551124400,
+      "size": 189857,
+      "status": "processed"
+    },
+    "DownloadedFiles/OPENLink Transaction and Event Path Table Relationship - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/OPENLink+Transaction+and+Event+Path+Table+Relationship",
+      "file_hash": "eb826bb569679d61db762a3367d92c74",
+      "mtime_ns": 1776184176774415300,
+      "size": 189399,
       "status": "processed"
     },
     "DownloadedFiles/OPENLink strange formatted ACK \u2014 Oracle Health.html": {
@@ -13914,6 +14495,20 @@
       "file_hash": "d556b7e0fc7b103a9193a25129aca0a1",
       "mtime_ns": 1772969338000000000,
       "size": 207059,
+      "status": "processed"
+    },
+    "DownloadedFiles/ORA-00904 invalid identifier when specifying column name from a Pivot result set \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/824596/ora-00904-invalid-identifier-when-specifying-column-name-from-a-pivot-result-set",
+      "file_hash": "4b668631baefd2cdcc593b021e3c07d8",
+      "mtime_ns": 1776415564773235100,
+      "size": 827783,
+      "status": "processed"
+    },
+    "DownloadedFiles/ORA-00936\uff1a missing expression \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/579647/ora-00936-missing-expression",
+      "file_hash": "f5b14995579cb288c49ddd8763a23f4b",
+      "mtime_ns": 1776415565379563200,
+      "size": 838877,
       "status": "processed"
     },
     "DownloadedFiles/ORAHINT+Control+Option+Using+Discern+Explorer.html": {
@@ -14000,6 +14595,20 @@
       "size": 186421,
       "status": "processed"
     },
+    "DownloadedFiles/Object CernerOPENLinkInbound - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Object+CernerOPENLinkInbound",
+      "file_hash": "11d3ff93dfe38d1fad8875dfaf69fe95",
+      "mtime_ns": 1776422323065552100,
+      "size": 193410,
+      "status": "processed"
+    },
+    "DownloadedFiles/Object CernerOPENLinkOutbound - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Object+CernerOPENLinkOutbound",
+      "file_hash": "99d0e4a75b64846b2860040ac803eba4",
+      "mtime_ns": 1776422329096666500,
+      "size": 191848,
+      "status": "processed"
+    },
     "DownloadedFiles/Object doesn't support property or method 'XMLCclRequest' \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1017662/object-doesn-039-t-support-property-or-method-039-xmlcclrequest-039",
       "file_hash": "c9df13124ac2b1a71112c5dc0b9d2c47",
@@ -14019,6 +14628,13 @@
       "file_hash": "c49da0a9e312ebd076034dee34a6b968",
       "mtime_ns": 1773000220000000000,
       "size": 192826,
+      "status": "processed"
+    },
+    "DownloadedFiles/Oddity between manual & ops printing \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/269071/oddity-between-manual-ops-printing",
+      "file_hash": "9a767ab3f9cb9215acafad28f8fd30c9",
+      "mtime_ns": 1776415522950190300,
+      "size": 899156,
       "status": "processed"
     },
     "DownloadedFiles/Omitting+Duplicate+Information+With+Distinct+Using+Discern+Explorer.html": {
@@ -14075,6 +14691,27 @@
       "file_hash": "75853a88a7d7d51646a99ff0a2e5dcdb",
       "mtime_ns": 1772781769026605200,
       "size": 1004757,
+      "status": "processed"
+    },
+    "DownloadedFiles/Open Port Advanced Inbound Results - Course Catalog - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/courses/Open+Port+Advanced+Inbound+Results",
+      "file_hash": "21c34d9c33ccb18f703e606819130f6c",
+      "mtime_ns": 1776417116936430000,
+      "size": 183788,
+      "status": "processed"
+    },
+    "DownloadedFiles/Open Port Advanced Logging Settings - Course Catalog - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/courses/Open+Port+Advanced+Logging+Settings",
+      "file_hash": "44818e4ad7f3d753422524398748e3cc",
+      "mtime_ns": 1776417104898370900,
+      "size": 182962,
+      "status": "processed"
+    },
+    "DownloadedFiles/Open Port Advanced Ops Jobs - Course Catalog - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/courses/Open+Port+Advanced+Ops+Jobs",
+      "file_hash": "3f99c9a5147411b4d8a872f52b0ad838",
+      "mtime_ns": 1776421833320417000,
+      "size": 177811,
       "status": "processed"
     },
     "DownloadedFiles/Open Source MPage resources - MPages Development Wiki - Cerner Wiki.html": {
@@ -14147,6 +14784,13 @@
       "size": 1001473,
       "status": "processed"
     },
+    "DownloadedFiles/OpenView Counts and Cycle Times \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/271408/openview-counts-and-cycle-times",
+      "file_hash": "c4b03a23128db9bc741b9fc01df4c9ca",
+      "mtime_ns": 1776417844890631900,
+      "size": 813976,
+      "status": "processed"
+    },
     "DownloadedFiles/Opening MPage or Clinical Notes from Reference Text \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/722668/opening-mpage-or-clinical-notes-from-reference-text",
       "file_hash": "838156c7f61a073c7148028bd5d977bb",
@@ -14215,6 +14859,13 @@
       "file_hash": "4f9b8bcf2d9f1f8163e8e2c43e34041c",
       "mtime_ns": 1772781745975512200,
       "size": 1001049,
+      "status": "processed"
+    },
+    "DownloadedFiles/Oracle 9i at 32 bit \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/225193/oracle-9i-at-32-bit",
+      "file_hash": "8c8e5564a12b8c38afbb2dae7b870bde",
+      "mtime_ns": 1776416072415456800,
+      "size": 808874,
       "status": "processed"
     },
     "DownloadedFiles/Oracle Health.html": {
@@ -14308,6 +14959,20 @@
       "size": 30207,
       "status": "processed"
     },
+    "DownloadedFiles/Outbound Archiving for OPENLink - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Outbound+Archiving+for+OPENLink",
+      "file_hash": "9498940497c0d7da5a0eee4e6a38a52f",
+      "mtime_ns": 1776184173255114100,
+      "size": 205491,
+      "status": "processed"
+    },
+    "DownloadedFiles/Outbound or in-bound transactions count \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/442770/outbound-or-in-bound-transactions-count",
+      "file_hash": "9c7a77d23cfa9b737095060fa2e920ae",
+      "mtime_ns": 1776415488241233100,
+      "size": 833907,
+      "status": "processed"
+    },
     "DownloadedFiles/Output+Device+Control+in+Discern+Prompt+Library.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Output+Device+Control+in+Discern+Prompt+Library",
       "file_hash": "68f451efd7432e89406cb1564b069847",
@@ -14341,6 +15006,13 @@
       "file_hash": "bf91890c942dee10051b5d099655be3a",
       "mtime_ns": 1773000222000000000,
       "size": 188639,
+      "status": "processed"
+    },
+    "DownloadedFiles/Outputting messages to system log \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/708199/outputting-messages-to-system-log",
+      "file_hash": "02bcf10dc819697b557a327f2d30065d",
+      "mtime_ns": 1776416097385981800,
+      "size": 821488,
       "status": "processed"
     },
     "DownloadedFiles/Outside records link will not open with Edge \u2014 Oracle Health.html": {
@@ -14385,6 +15057,13 @@
       "size": 215288,
       "status": "processed"
     },
+    "DownloadedFiles/Overview of OPENLink Statistical DB Tab - Oracle Health Interface Engine Help Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/OPENLinkEngineHP/Overview+of+OPENLink+Statistical+DB+Tab",
+      "file_hash": "42794dfa19d8cee4a02b0dbea83f2849",
+      "mtime_ns": 1776184167909285100,
+      "size": 200111,
+      "status": "processed"
+    },
     "DownloadedFiles/Overview of OPENLink Statistics Collection Transaction Type or Event Type in the Toolkit Node Definition - Release Notes - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/RN/Overview+of+OPENLink+Statistics+Collection+Transaction+Type+or+Event+Type+in+the+Toolkit+Node+Definition",
       "file_hash": "3ea9b1e41938b821596cd32ffba3e07c",
@@ -14397,6 +15076,13 @@
       "file_hash": "cd82fc7d96d672be409ac8eac33eb815",
       "mtime_ns": 1775824152109703800,
       "size": 191184,
+      "status": "processed"
+    },
+    "DownloadedFiles/Overview of Transactions and Data Manipulation in OPENLink - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Overview+of+Transactions+and+Data+Manipulation+in+OPENLink",
+      "file_hash": "f6a72fefc4d55e2be789e31b3ae1baea",
+      "mtime_ns": 1776184216747565300,
+      "size": 190571,
       "status": "processed"
     },
     "DownloadedFiles/Overview \uff5c Custom MPages Development(1).html": {
@@ -15120,6 +15806,13 @@
       "size": 818063,
       "status": "processed"
     },
+    "DownloadedFiles/PathNet Orders & Results NOT transmitted to Cerner Outbound Interfaces \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/583754/pathnet-orders-results-not-transmitted-to-cerner-outbound-interfaces",
+      "file_hash": "ee30d221185f2bea21ee228cec4ec6b0",
+      "mtime_ns": 1776415489521227700,
+      "size": 812328,
+      "status": "processed"
+    },
     "DownloadedFiles/Pathology+Viewer.html": {
       "dedup_key": "https://wiki.cerner.com/display/MPDEVWIKI/Pathology+Viewer",
       "file_hash": "b9f2cab541d27c778646a0f45f4f01fa",
@@ -15344,6 +16037,13 @@
       "size": 201763,
       "status": "processed"
     },
+    "DownloadedFiles/PowerForm Activity - finding data entered into PowerForms \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1602918/powerform-activity-finding-data-entered-into-powerforms",
+      "file_hash": "c9332651e8679070630dc246a06d130e",
+      "mtime_ns": 1777019899501441600,
+      "size": 999121,
+      "status": "processed"
+    },
     "DownloadedFiles/PowerForm_Custom_MPages_Development__ba6ba1dc5f.html": {
       "dedup_key": "https://mpages-dev-docs.cerner.com/vulcan/com/PowerForm",
       "file_hash": "b419de41efea3a68610c143eb31091f5",
@@ -15484,6 +16184,13 @@
       "size": 1000397,
       "status": "processed"
     },
+    "DownloadedFiles/Powerforms displaying blanks \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/226070/powerforms-displaying-blanks",
+      "file_hash": "d734f8be6909d5f328c481009621781c",
+      "mtime_ns": 1777019935224231900,
+      "size": 997803,
+      "status": "processed"
+    },
     "DownloadedFiles/Powerforms_PowerNotes and their Note Types \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/745528/powerforms-powernotes-and-their-note-types",
       "file_hash": "052f9439ae5c4fc6708a89ddae37eac9",
@@ -15617,6 +16324,13 @@
       "size": 188801,
       "status": "processed"
     },
+    "DownloadedFiles/Printing an Operations Activity Report Using OpsView Monitor - Millennium Operations Help Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/millenniumopsHP/Printing+an+Operations+Activity+Report+Using+OpsView+Monitor",
+      "file_hash": "40d2d0a7a9c20c3eab37426a10e828cb",
+      "mtime_ns": 1776422303261897600,
+      "size": 191483,
+      "status": "processed"
+    },
     "DownloadedFiles/Printing+Page+Headers+and+Column+Headings+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
@@ -15645,11 +16359,25 @@
       "size": 184919,
       "status": "processed"
     },
+    "DownloadedFiles/Prior room on when patient is transferred - ADT^A02 \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/874339/prior-room-on-when-patient-is-transferred-adt-a02",
+      "file_hash": "f7f161acdf335231c0c210ef157288c1",
+      "mtime_ns": 1776415560578226600,
+      "size": 817186,
+      "status": "processed"
+    },
     "DownloadedFiles/Priv-Security with MPAGES_EVENT \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/369678/priv-security-with-mpages-event",
       "file_hash": "aa0514a6ff1a83ae10326b082ce45db7",
       "mtime_ns": 1772386592146527400,
       "size": 1009967,
+      "status": "processed"
+    },
+    "DownloadedFiles/Problem Passing Prompts to Data Source Program \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/342480/problem-passing-prompts-to-data-source-program",
+      "file_hash": "0e63a83bb608733f9e03c3549bf0bb24",
+      "mtime_ns": 1776415549036765400,
+      "size": 822570,
       "status": "processed"
     },
     "DownloadedFiles/Problem with XMLCclRequest \u2014 Oracle Health.html": {
@@ -15671,6 +16399,13 @@
       "file_hash": "0de01f7781d09f39e1ec320c02de478f",
       "mtime_ns": 1772781078974228000,
       "size": 1014859,
+      "status": "processed"
+    },
+    "DownloadedFiles/Procedures and the Prsnl that perform them \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/260108/procedures-and-the-prsnl-that-perform-them",
+      "file_hash": "68df55f4b28076d2f76b864e19d02da9",
+      "mtime_ns": 1777019891058845700,
+      "size": 992431,
       "status": "processed"
     },
     "DownloadedFiles/Processing+DIO+Commands+Using+Discern+Explorer.html": {
@@ -15813,6 +16548,27 @@
       "size": 1005512,
       "status": "processed"
     },
+    "DownloadedFiles/PuTTY setup for back-end paint programs \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/707450/putty-setup-for-back-end-paint-programs",
+      "file_hash": "66f7d769f1d2cd614971576c0b0bc06e",
+      "mtime_ns": 1776416092423433500,
+      "size": 833230,
+      "status": "processed"
+    },
+    "DownloadedFiles/Pull events from a specific PowerForm event \u2014 Oracle Health (1).html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1760064/pull-events-from-a-specific-powerform-event",
+      "file_hash": "900b7478d281d20eab8e216b637ec212",
+      "mtime_ns": 1777019904565995300,
+      "size": 1013940,
+      "status": "processed"
+    },
+    "DownloadedFiles/Pull events from a specific PowerForm event \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1760064/pull-events-from-a-specific-powerform-event",
+      "file_hash": "3e98cc11edd8f789b35158b6e9e72b1a",
+      "mtime_ns": 1777019898761513700,
+      "size": 1013889,
+      "status": "duplicate_url"
+    },
     "DownloadedFiles/Pulling A DTA from Clincal Event Table\uff1f \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/184056/pulling-a-dta-from-clincal-event-table",
       "file_hash": "e0034b7e67cc8c0ff3d8334c285f4692",
@@ -15825,6 +16581,13 @@
       "file_hash": "e4469dd93ea7fc4530c6f2f409cabfd2",
       "mtime_ns": 1772722717446884100,
       "size": 810292,
+      "status": "processed"
+    },
+    "DownloadedFiles/Pyxis to Cerner Error Log \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/981798/pyxis-to-cerner-error-log",
+      "file_hash": "6c463855102ee0628237ecddbf21446a",
+      "mtime_ns": 1776415977010964400,
+      "size": 861578,
       "status": "processed"
     },
     "DownloadedFiles/Q. query to list Powernote catalog by position \u2014 Oracle Health.html": {
@@ -16002,6 +16765,20 @@
       "size": 813648,
       "status": "processed"
     },
+    "DownloadedFiles/Query that will show Powerforms documented and details \u2014 Oracle Health (1).html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/416533/query-that-will-show-powerforms-documented-and-details",
+      "file_hash": "890f61e1618954437ff181a1b76d7d15",
+      "mtime_ns": 1777019930038105300,
+      "size": 997988,
+      "status": "processed"
+    },
+    "DownloadedFiles/Query that will show Powerforms documented and details \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/416533/query-that-will-show-powerforms-documented-and-details",
+      "file_hash": "d880996aa7082fce646546c12eaba42a",
+      "mtime_ns": 1777019905423645500,
+      "size": 997869,
+      "status": "duplicate_url"
+    },
     "DownloadedFiles/Query to find modification made to completed Powerform \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1560652/query-to-find-modification-made-to-completed-powerform",
       "file_hash": "c6eedc09d447d0a3a634f43e38fc9cc2",
@@ -16133,6 +16910,27 @@
       "file_hash": "44755ef98208f4f07926da77f9c76b9a",
       "mtime_ns": 1772781742276434500,
       "size": 1049714,
+      "status": "processed"
+    },
+    "DownloadedFiles/Q\uff1a VC32000\uff0b and MAXVARLEN \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1029821/q-vc32000-and-maxvarlen",
+      "file_hash": "3838c8d48b2dcb66ba29fd38da567dfe",
+      "mtime_ns": 1776415525291136900,
+      "size": 829971,
+      "status": "processed"
+    },
+    "DownloadedFiles/Q\uff1a date time math \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1780148/q-date-time-math",
+      "file_hash": "ef3549ef623e62a2d4c2623b7fb4a371",
+      "mtime_ns": 1776417842775141200,
+      "size": 838500,
+      "status": "processed"
+    },
+    "DownloadedFiles/Q\uff1a how to merge a record structure into another \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/993589/q-how-to-merge-a-record-structure-into-another",
+      "file_hash": "19e96c2ae36311906eeacf1fad25ac75",
+      "mtime_ns": 1776415506507577100,
+      "size": 848871,
       "status": "processed"
     },
     "DownloadedFiles/RAND+Using+Discern+Explorer.html": {
@@ -16492,11 +17290,25 @@
       "size": 1081641,
       "status": "processed"
     },
+    "DownloadedFiles/Record Structure - all items not pulling into report \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/315940/record-structure-all-items-not-pulling-into-report",
+      "file_hash": "6057e6edab0d9bf138a198860d1750e7",
+      "mtime_ns": 1777019902575408600,
+      "size": 1029813,
+      "status": "processed"
+    },
     "DownloadedFiles/Record Structure Filtering Question \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1661875/record-structure-filtering-question",
       "file_hash": "df8523e0acb73015626ccae145a28ae0",
       "mtime_ns": 1772781097159440200,
       "size": 1012465,
+      "status": "processed"
+    },
+    "DownloadedFiles/Record Structure not bringing back full data \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/964289/record-structure-not-bringing-back-full-data",
+      "file_hash": "17858232903f22686858d93362565d75",
+      "mtime_ns": 1777019935073965900,
+      "size": 1036959,
       "status": "processed"
     },
     "DownloadedFiles/Record Structures \u2014 Oracle Health.html": {
@@ -16520,6 +17332,13 @@
       "size": 994335,
       "status": "processed"
     },
+    "DownloadedFiles/Record structure \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/305024/record-structure",
+      "file_hash": "d9abcc9deee23d94a26bddafc7a0ffa4",
+      "mtime_ns": 1776416081792098100,
+      "size": 817807,
+      "status": "processed"
+    },
     "DownloadedFiles/Record+Structures+Dialog+Box+in+Discern+Program+Wizard.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Record+Structures+Dialog+Box+in+Discern+Program+Wizard",
       "file_hash": "df4171c7dd4ed69ad0ae4f52f836ba99",
@@ -16539,6 +17358,13 @@
       "file_hash": "76ba5e73b6f4af6b85fbf65eb83e7799",
       "mtime_ns": 1772754137110044700,
       "size": 999749,
+      "status": "processed"
+    },
+    "DownloadedFiles/Reference Lab Network Ambulatory MT Monitoring ESI Log - Client Releasable Documentation - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/CRDOC/Reference+Lab+Network+Ambulatory+MT+Monitoring+ESI+Log",
+      "file_hash": "3772dd93d86002e968e86866a9fa57a4",
+      "mtime_ns": 1776417387935785400,
+      "size": 174976,
       "status": "processed"
     },
     "DownloadedFiles/Reference+Pages+Home.html": {
@@ -16658,6 +17484,13 @@
       "file_hash": "d9154e2b4e4df61ff1b44ef78b54c15d",
       "mtime_ns": 1772366896000000000,
       "size": 529106,
+      "status": "processed"
+    },
+    "DownloadedFiles/Report Writer question \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/241106/report-writer-question",
+      "file_hash": "36aa42836340c23b385df23e1fbd650d",
+      "mtime_ns": 1776418395057508700,
+      "size": 805339,
       "status": "processed"
     },
     "DownloadedFiles/Report time out in 3.33 minutes \u2014 Oracle Health.html": {
@@ -16912,6 +17745,20 @@
       "size": 800895,
       "status": "processed"
     },
+    "DownloadedFiles/Returning clinical events each time a PowerForm is signed \u2014 Oracle Health (1).html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/999998/returning-clinical-events-each-time-a-powerform-is-signed",
+      "file_hash": "e59e33d108566bd3777be7927ff68e65",
+      "mtime_ns": 1777019903490348900,
+      "size": 1052593,
+      "status": "processed"
+    },
+    "DownloadedFiles/Returning clinical events each time a PowerForm is signed \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/999998/returning-clinical-events-each-time-a-powerform-is-signed",
+      "file_hash": "3da91c2f355842fc6343d8234d376b74",
+      "mtime_ns": 1777019903277394500,
+      "size": 1052614,
+      "status": "duplicate_url"
+    },
     "DownloadedFiles/Rev 8 Upgrade Questions \u2014 Oracle Health (1).html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/224428/rev-8-upgrade-questions",
       "file_hash": "9971a582b64dea61c0f6aab02f898d88",
@@ -16994,6 +17841,13 @@
       "file_hash": "40c90d4a224db94726e87b1993b3b9c8",
       "mtime_ns": 1773001220000000000,
       "size": 186743,
+      "status": "processed"
+    },
+    "DownloadedFiles/Run CCL from HPUX commandline with .prg file \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/147961/run-ccl-from-hpux-commandline-with-prg-file",
+      "file_hash": "31bf93ec2e62b450ac5025433e07379e",
+      "mtime_ns": 1776416097848045000,
+      "size": 844353,
       "status": "processed"
     },
     "DownloadedFiles/Run+Prompt+Program+Dialog+Box+in+Discern+Visual+Developer.html": {
@@ -17479,6 +18333,20 @@
       "size": 190455,
       "status": "processed"
     },
+    "DownloadedFiles/SI_TrblShoot Reports - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/SI_TrblShoot+Reports",
+      "file_hash": "9f8a9dfe89e7d04cfa07474b0238f5b6",
+      "mtime_ns": 1776417375131686100,
+      "size": 196062,
+      "status": "processed"
+    },
+    "DownloadedFiles/SI_Troubleshoot Interface CCL \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1004986/si-troubleshoot-interface-ccl",
+      "file_hash": "de7085a73f9ebd32c422087b82a712be",
+      "mtime_ns": 1776415594483449800,
+      "size": 861134,
+      "status": "processed"
+    },
     "DownloadedFiles/SKIP+using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/SKIP+using+Discern+Explorer",
       "file_hash": "4c047b71ea9aa008e19fac2bad8f2d86",
@@ -17633,6 +18501,13 @@
       "size": 184893,
       "status": "processed"
     },
+    "DownloadedFiles/Sample DTA_PowerForm Query \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/440690/sample-dta-powerform-query",
+      "file_hash": "55053b93bdaeaef8d6f053441b6920a8",
+      "mtime_ns": 1777019897703906800,
+      "size": 1004433,
+      "status": "processed"
+    },
     "DownloadedFiles/Sample XSLTFILE File - Reference Pages - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/reference/Sample+XSLTFILE+File",
       "file_hash": "8db53286409e28e91ec124a1499b1687",
@@ -17738,6 +18613,13 @@
       "size": 35773,
       "status": "processed"
     },
+    "DownloadedFiles/Scramble names \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/234744/scramble-names",
+      "file_hash": "d8ececf854f69935c923d7a8e44cc566",
+      "mtime_ns": 1776415541327436700,
+      "size": 824631,
+      "status": "processed"
+    },
     "DownloadedFiles/Screen+Applications+Overview+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
@@ -17750,6 +18632,27 @@
       "file_hash": "61303766b9077d8b24e4430a7096e574",
       "mtime_ns": 1772720187616882600,
       "size": 171066,
+      "status": "processed"
+    },
+    "DownloadedFiles/Searching for special characters \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/240276/searching-for-special-characters",
+      "file_hash": "dfbea633d476b68d93c201acac9e4180",
+      "mtime_ns": 1776415489578528400,
+      "size": 829503,
+      "status": "processed"
+    },
+    "DownloadedFiles/Searching the Open Engine Queues Using SI_TrblShoot - Foreign System Interfaces Help Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/1101fsiHP/Searching+the+Open+Engine+Queues+Using+SI_TrblShoot",
+      "file_hash": "91b00fceec32845840b40b36a28a5d91",
+      "mtime_ns": 1776417338280445600,
+      "size": 194856,
+      "status": "processed"
+    },
+    "DownloadedFiles/Searching the Queues using System Integration Manager - Foreign System Interfaces Help Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/1101fsiHP/Searching+the+Queues+using+System+Integration+Manager",
+      "file_hash": "eeca47a51106e406f8f3686fa7e6b9f1",
+      "mtime_ns": 1776417382689252000,
+      "size": 186910,
       "status": "processed"
     },
     "DownloadedFiles/Searching+for+a+Code+Set+by+Code+Value+Display+Using+Core+Code+Builder.html": {
@@ -17794,6 +18697,13 @@
       "size": 1003160,
       "status": "processed"
     },
+    "DownloadedFiles/Security Audit Log Enabled for OPENLink - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Security+Audit+Log+Enabled+for+OPENLink",
+      "file_hash": "aa56bce1d791829233e3b9f3d8a42563",
+      "mtime_ns": 1776422297054491300,
+      "size": 210090,
+      "status": "processed"
+    },
     "DownloadedFiles/Security around forms for Behavioral Health \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/360228/security-around-forms-for-behavioral-health",
       "file_hash": "908d9317e1912ce7918c30f40a42982c",
@@ -17822,6 +18732,13 @@
       "size": 188610,
       "status": "processed"
     },
+    "DownloadedFiles/Select Distinct \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/247834/select-distinct",
+      "file_hash": "92af08b022bc9532437948c3963707b9",
+      "mtime_ns": 1776415497421971400,
+      "size": 829342,
+      "status": "processed"
+    },
     "DownloadedFiles/Select Into \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/227715/select-into",
       "file_hash": "8b97f088351ee720e93e6a2a91cb699c",
@@ -17834,6 +18751,13 @@
       "file_hash": "f08dac43e933ebc80fb3397a8442c42d",
       "mtime_ns": 1772753753029997400,
       "size": 1066324,
+      "status": "processed"
+    },
+    "DownloadedFiles/Select to display data from a Record Structure not displaying the data when using oen_txlog, however \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/500929/select-to-display-data-from-a-record-structure-not-displaying-the-data-when-using-oen-txlog-however",
+      "file_hash": "f34c65cda7e3e99c5872f3bac3c232af",
+      "mtime_ns": 1776415567845261100,
+      "size": 882029,
       "status": "processed"
     },
     "DownloadedFiles/Select+Data+Source+List+in+Visual+Explorer.html": {
@@ -17932,6 +18856,13 @@
       "file_hash": "7c7a17b0ef3643029407959c06709124",
       "mtime_ns": 1772753140563844500,
       "size": 989106,
+      "status": "processed"
+    },
+    "DownloadedFiles/Server Queue Depth \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/670076/server-queue-depth",
+      "file_hash": "f12afd3565bc44712c4681a72ca7131c",
+      "mtime_ns": 1776417834355962500,
+      "size": 834730,
       "status": "processed"
     },
     "DownloadedFiles/Server-side pagination MPages - Oracle Health.html": {
@@ -18550,6 +19481,13 @@
       "size": 207702,
       "status": "processed"
     },
+    "DownloadedFiles/System Messages in OpsView Monitor - Millennium Operations Help Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/millenniumopsHP/System+Messages+in+OpsView+Monitor",
+      "file_hash": "4f4741003c4e162115d927666f1fcab9",
+      "mtime_ns": 1776422307060806100,
+      "size": 196557,
+      "status": "processed"
+    },
     "DownloadedFiles/System+Messages+in+Discern+Output+Viewer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/System+Messages+in+Discern+Output+Viewer",
       "file_hash": "761082ce4043e8baa0a262c0e886c9eb",
@@ -18870,6 +19808,13 @@
       "file_hash": "2c5c3abfd906181ec873533b5f70f210",
       "mtime_ns": 1772995344000000000,
       "size": 50108,
+      "status": "processed"
+    },
+    "DownloadedFiles/Task_Activity_Forms \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/233456/task-activity-forms",
+      "file_hash": "2cfb6c43e1ee469d2341d988bbd80e7c",
+      "mtime_ns": 1777019926977776600,
+      "size": 1008084,
       "status": "processed"
     },
     "DownloadedFiles/Tasks+Menu+in+OMF+Grouping+Tool.html": {
@@ -19334,6 +20279,27 @@
       "size": 194119,
       "status": "processed"
     },
+    "DownloadedFiles/Tracking ESO Transaction \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1724586/tracking-eso-transaction",
+      "file_hash": "82578b6676f40cdbdb737016666d3c01",
+      "mtime_ns": 1776417841505287100,
+      "size": 827844,
+      "status": "processed"
+    },
+    "DownloadedFiles/Transaction Database Master (SCP 34) and Transaction Database Slave (SCP 35) Servers - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Transaction+Database+Master+%28SCP+34%29+and+Transaction+Database+Slave+%28SCP+35%29+Servers",
+      "file_hash": "568fb8f98b5b6782f0928e96bd735c2a",
+      "mtime_ns": 1776422368214996500,
+      "size": 234846,
+      "status": "processed"
+    },
+    "DownloadedFiles/Transaction Database Viewer (TDBView) Utility - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Transaction+Database+Viewer+%28TDBView%29+Utility",
+      "file_hash": "110b517a5ef09432168a6f2a67a0213b",
+      "mtime_ns": 1776422371551868700,
+      "size": 207432,
+      "status": "processed"
+    },
     "DownloadedFiles/Transfer+Objects+Dialog+Box+in+Discern+Visual+Developer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Transfer+Objects+Dialog+Box+in+Discern+Visual+Developer",
       "file_hash": "6c229f00fc449ffed28a3fd469ac2803",
@@ -19362,11 +20328,32 @@
       "size": 200487,
       "status": "processed"
     },
+    "DownloadedFiles/Trouble joing the oen_txlog table to existing query \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1776726/trouble-joing-the-oen-txlog-table-to-existing-query",
+      "file_hash": "2aa89793c115d72babf8fddb25855fbb",
+      "mtime_ns": 1776415585407853000,
+      "size": 836922,
+      "status": "processed"
+    },
     "DownloadedFiles/Troubleshoot Custom MPages Views - Reference Pages - Cerner Wiki.htm": {
       "dedup_key": "https://wiki.cerner.com/display/reference/Troubleshoot+Custom+MPages+Views",
       "file_hash": "3784182db2a4cbad0847a9ddeca5d3d2",
       "mtime_ns": 1772718875688374200,
       "size": 191659,
+      "status": "processed"
+    },
+    "DownloadedFiles/Troubleshoot ESI - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Troubleshoot+ESI",
+      "file_hash": "79e8a08ccc3f9d1646b70b31c83d3904",
+      "mtime_ns": 1776417399285977500,
+      "size": 222253,
+      "status": "processed"
+    },
+    "DownloadedFiles/Troubleshoot ESO - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Troubleshoot+ESO",
+      "file_hash": "9d68874daf6d5106ce8611818508261f",
+      "mtime_ns": 1776417140111641300,
+      "size": 306895,
       "status": "processed"
     },
     "DownloadedFiles/Troubleshoot ESO - Reference Pages - Cerner Wiki.html": {
@@ -19381,6 +20368,27 @@
       "file_hash": "42b9091954a636c2d01d123b631d745f",
       "mtime_ns": 1772720968634750500,
       "size": 195990,
+      "status": "processed"
+    },
+    "DownloadedFiles/Troubleshoot Using OEN_TXLOG_VIEW - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Troubleshoot+Using+OEN_TXLOG_VIEW",
+      "file_hash": "2b747eefb178962171d332600d49bfcd",
+      "mtime_ns": 1776417434426461900,
+      "size": 188663,
+      "status": "processed"
+    },
+    "DownloadedFiles/Troubleshoot and Monitor OPENLink Engine Operations - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Troubleshoot+and+Monitor+OPENLink+Engine+Operations",
+      "file_hash": "c725a4e0d2e5a9b2be90245a3cbf9143",
+      "mtime_ns": 1776422350738193000,
+      "size": 194331,
+      "status": "processed"
+    },
+    "DownloadedFiles/Troubleshoot the FSI Query Server - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Troubleshoot+the+FSI+Query+Server",
+      "file_hash": "5aa4944a0cb774458a4e2b2a6238d984",
+      "mtime_ns": 1776417073383949900,
+      "size": 329528,
       "status": "processed"
     },
     "DownloadedFiles/Troubleshoot+Automatic+Discharge.html": {
@@ -19593,11 +20601,25 @@
       "size": 2252,
       "status": "duplicate_hash"
     },
+    "DownloadedFiles/Troubleshooting Cerner Hub - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Troubleshooting+Cerner+Hub",
+      "file_hash": "2370ba0d83b1fa8bcb3415e84b4f2563",
+      "mtime_ns": 1776417414367068400,
+      "size": 204699,
+      "status": "processed"
+    },
     "DownloadedFiles/Troubleshooting Web Services for OPENLink - Reference Pages - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/reference/Troubleshooting+Web+Services+for+OPENLink",
       "file_hash": "db60822b95014b9e75a8b6221c33ee9b",
       "mtime_ns": 1775822533576064000,
       "size": 186988,
+      "status": "processed"
+    },
+    "DownloadedFiles/Troubleshooting with the OEN_REPLAY Utility - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Troubleshooting+with+the+OEN_REPLAY+Utility",
+      "file_hash": "e56b2ded64283d3cc3cb89462f587bc6",
+      "mtime_ns": 1776422344556668000,
+      "size": 192617,
       "status": "processed"
     },
     "DownloadedFiles/Troubleshooting+and+Debugging+in+Discern+Prompt+Library.html": {
@@ -19852,6 +20874,20 @@
       "size": 192204,
       "status": "processed"
     },
+    "DownloadedFiles/Understand ESO Interface Prompt Program - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Understand+ESO+Interface+Prompt+Program",
+      "file_hash": "91403b3377a58e1169a724352b226548",
+      "mtime_ns": 1776417379050082600,
+      "size": 192318,
+      "status": "processed"
+    },
+    "DownloadedFiles/Understand File Process Run Time and File Purging Enhancements in OPENLink Engine 25.2 - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Understand+File+Process+Run+Time+and+File+Purging+Enhancements+in+OPENLink+Engine+25.2",
+      "file_hash": "be1064c1e70f905579d1b2f214049a6b",
+      "mtime_ns": 1776422313094014200,
+      "size": 188184,
+      "status": "processed"
+    },
     "DownloadedFiles/Understand MPages With Microsoft Edge - Reference Pages - Cerner Wiki.htm": {
       "dedup_key": "https://wiki.cerner.com/display/reference/Understand+MPages+With+Microsoft+Edge",
       "file_hash": "398830d180a7d4378b5fe8b823b83df9",
@@ -19864,6 +20900,20 @@
       "file_hash": "d57b15ab7408e89ac6acb54631ac6a9e",
       "mtime_ns": 1772010716625857900,
       "size": 205525,
+      "status": "processed"
+    },
+    "DownloadedFiles/Understand OEN with OpenView - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Understand+OEN+with+OpenView",
+      "file_hash": "9ac6ef55f453953b33b98444f0ef8572",
+      "mtime_ns": 1776417317561675900,
+      "size": 243477,
+      "status": "processed"
+    },
+    "DownloadedFiles/Understand Remote IP Address Logging in OPENLink - Reference Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Understand+Remote+IP+Address+Logging+in+OPENLink",
+      "file_hash": "2cc563a1e012e71a680fbe2c20ec1f52",
+      "mtime_ns": 1776422301717126000,
+      "size": 192148,
       "status": "processed"
     },
     "DownloadedFiles/Understand Statistics Collection in OPENLink Engine 25.0 and Later - Reference Pages - Cerner Wiki.html": {
@@ -20039,6 +21089,13 @@
       "file_hash": "db2a39d25aa9fa95da95c2e32bac23e0",
       "mtime_ns": 1772995292000000000,
       "size": 13826,
+      "status": "processed"
+    },
+    "DownloadedFiles/Usage of the PM_Transaction Table \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/270615/usage-of-the-pm-transaction-table",
+      "file_hash": "d33704abedc1104b3e74c9c565ae0205",
+      "mtime_ns": 1776415509537693000,
+      "size": 815604,
       "status": "processed"
     },
     "DownloadedFiles/Use a WHILE loop with EXECUTE statements \u2014 Oracle Health.html": {
@@ -20503,6 +21560,13 @@
       "size": 999149,
       "status": "processed"
     },
+    "DownloadedFiles/View Reports Using SI_TrblShoot - Foreign System Interfaces Help Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/1101fsiHP/View+Reports+Using+SI_TrblShoot",
+      "file_hash": "ac7762659f2f91d8f7d0da864a995d13",
+      "mtime_ns": 1776417319486392800,
+      "size": 190414,
+      "status": "processed"
+    },
     "DownloadedFiles/View+Code+Set+Details+Window+in+Visual+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/View+Code+Set+Details+Window+in+Visual+Explorer",
       "file_hash": "05990be6e0c610c6b4372e9fef4a2aec",
@@ -20797,6 +21861,13 @@
       "size": 800059,
       "status": "processed"
     },
+    "DownloadedFiles/What's wrong with my report head group expression \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/911478/whats-wrong-with-my-report-head-group-expression",
+      "file_hash": "9054cd2f66c59f3bb985eaa9c2b84a43",
+      "mtime_ns": 1776417848464846400,
+      "size": 839965,
+      "status": "processed"
+    },
     "DownloadedFiles/When initiating a Powerplan is this considered at Scratchpad \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/562820/when-initiating-a-powerplan-is-this-considered-at-scratchpad",
       "file_hash": "f44c51123eafb1e0e4a14543431bc868",
@@ -20832,12 +21903,26 @@
       "size": 802003,
       "status": "processed"
     },
+    "DownloadedFiles/Where is stored the information written by a user in a Rich Test DTA\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/750406/where-is-stored-the-information-written-by-a-user-in-a-rich-test-dta",
+      "file_hash": "2ee6ed1e3be40e99d6641dc6c7b09189",
+      "mtime_ns": 1777019933576109300,
+      "size": 1025131,
+      "status": "processed"
+    },
     "DownloadedFiles/Where+Clause+Relational+Operators+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
       "mtime_ns": 1772723992398926800,
       "size": 2252,
       "status": "duplicate_hash"
+    },
+    "DownloadedFiles/Where_How do you chase down error codes \uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/470567/where-how-do-you-chase-down-error-codes",
+      "file_hash": "ec8a29f1a35d9960783ebd8d13ff72b0",
+      "mtime_ns": 1776418392248982400,
+      "size": 815560,
+      "status": "processed"
     },
     "DownloadedFiles/Which CCL query\uff1agroup should a report be created on\uff1f \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1768215/which-ccl-query-group-should-a-report-be-created-on",
@@ -20902,11 +21987,25 @@
       "size": 997486,
       "status": "processed"
     },
+    "DownloadedFiles/Working with Blobs \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1259482/working-with-blobs",
+      "file_hash": "2f871accee9889c3f32a2340ebff25f6",
+      "mtime_ns": 1776418071545666300,
+      "size": 994467,
+      "status": "processed"
+    },
     "DownloadedFiles/Working with OPENLink Databases - Reference Pages - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/reference/Working+with+OPENLink+Databases",
       "file_hash": "6395253dcc55f5c4b166d5bfbcca0da6",
       "mtime_ns": 1775822004721871000,
       "size": 185707,
+      "status": "processed"
+    },
+    "DownloadedFiles/Would count and group by work on this select \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/961798/would-count-and-group-by-work-on-this-select",
+      "file_hash": "f949d1deb661be325056a0e0f7a94744",
+      "mtime_ns": 1776417844602420000,
+      "size": 825520,
       "status": "processed"
     },
     "DownloadedFiles/Would like to see compacted information \u2014 Oracle Health.html": {
@@ -21140,6 +22239,13 @@
       "size": 187620,
       "status": "processed"
     },
+    "DownloadedFiles/aggregate data by date \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/881002/aggregate-data-by-date",
+      "file_hash": "9e74234812bb7b1bd57c93ee6ec2525c",
+      "mtime_ns": 1776417844498842800,
+      "size": 816911,
+      "status": "processed"
+    },
     "DownloadedFiles/apple+technologies.html": {
       "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Apple+Technologies",
       "file_hash": "ddb17ac314bdfe9255f01d5d605684ce",
@@ -21336,6 +22442,13 @@
       "size": 188723,
       "status": "no_text"
     },
+    "DownloadedFiles/cnvtdatetimeutc - does not appear to be pulling correct local time \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/896884/cnvtdatetimeutc-does-not-appear-to-be-pulling-correct-local-time",
+      "file_hash": "f60bb71e15fd21c3df611e65ecfa54dc",
+      "mtime_ns": 1776415559566958200,
+      "size": 819871,
+      "status": "processed"
+    },
     "DownloadedFiles/cnvtnls(++)+in+discern+explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHPDE/CNVTNLS%28++%29+in+Discern+Explorer",
       "file_hash": "5cc23dbcb366eef7ee040c7dd082fdf9",
@@ -21404,6 +22517,13 @@
       "file_hash": "e13a4d0d998199688d4f8650997a4e14",
       "mtime_ns": 1773001534000000000,
       "size": 8338,
+      "status": "processed"
+    },
+    "DownloadedFiles/creating variables within a SELECT \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/414950/creating-variables-within-a-select",
+      "file_hash": "bed741d8254c285ad44226c60640c936",
+      "mtime_ns": 1776415490081536200,
+      "size": 843987,
       "status": "processed"
     },
     "DownloadedFiles/creating+a+favorite+using+discern+reporting+portal.html": {
@@ -21791,6 +22911,13 @@
       "size": 799948,
       "status": "processed"
     },
+    "DownloadedFiles/how to rollup dt_tm to 1-hr, 0.5-hr, 15-min intervals \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/731156/how-to-rollup-dt-tm-to-1-hr-0-5-hr-15-min-intervals",
+      "file_hash": "ec14fd4fafd6ee076538b19643923b99",
+      "mtime_ns": 1776415545348321100,
+      "size": 847180,
+      "status": "processed"
+    },
     "DownloadedFiles/hp+hp-ux.html": {
       "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/HP+HP-UX",
       "file_hash": "4788c779eea9db57a8fe5a971f2de9ff",
@@ -21861,6 +22988,13 @@
       "size": 828354,
       "status": "processed"
     },
+    "DownloadedFiles/inbound interface esi_log to charge table report \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/395690/inbound-interface-esi-log-to-charge-table-report",
+      "file_hash": "249668caeb337d839bb96e9a5f9de3b7",
+      "mtime_ns": 1776415561486897100,
+      "size": 808290,
+      "status": "processed"
+    },
     "DownloadedFiles/index(1).html": {
       "dedup_key": "https://community.oracle.com/oraclehealth",
       "file_hash": "bbc6ba5e969fd4e8cebb2218ed2f4d01",
@@ -21922,6 +23056,13 @@
       "file_hash": "d14c773911aa4639de2b2297e0164953",
       "mtime_ns": 1772752857930950700,
       "size": 1004690,
+      "status": "processed"
+    },
+    "DownloadedFiles/issue with using selectif and dummyt table \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/488395/issue-with-using-selectif-and-dummyt-table",
+      "file_hash": "65d8cb3ecf67c20378fb3c4c64d2f67c",
+      "mtime_ns": 1777019926631107500,
+      "size": 999113,
       "status": "processed"
     },
     "DownloadedFiles/join on a calculated select field \u2014 Oracle Health.html": {
@@ -22176,6 +23317,13 @@
       "size": 1004145,
       "status": "processed"
     },
+    "DownloadedFiles/msg_txt got trucated when I used a record structure \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/568607/msg-txt-got-trucated-when-i-used-a-record-structure",
+      "file_hash": "8fdfe7152aecb51add089a7549922ffa",
+      "mtime_ns": 1776415558838128400,
+      "size": 833629,
+      "status": "processed"
+    },
     "DownloadedFiles/nested query of the weight causes poor performance \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1647759/nested-query-of-the-weight-causes-poor-performance",
       "file_hash": "1a3e2a400b6ca381cc8108b4069dcf6b",
@@ -22302,6 +23450,13 @@
       "size": 769592,
       "status": "duplicate_url"
     },
+    "DownloadedFiles/piece function breaks when a \uff02piece\uff02 begins with a carat \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/529767/piece-function-breaks-when-a-piece-begins-with-a-carat",
+      "file_hash": "b0499295f3834630cd789a681769ba4a",
+      "mtime_ns": 1776415589859378900,
+      "size": 822314,
+      "status": "processed"
+    },
     "DownloadedFiles/piece-function-with-inline-tables.htm": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1667291/piece-function-with-inline-tables",
       "file_hash": "b08d93555b1ebcdfbb80d7730729ae0b",
@@ -22363,6 +23518,13 @@
       "file_hash": "804bbc81837913e0936129de4ec412b6",
       "mtime_ns": 1772973740000000000,
       "size": 861647,
+      "status": "processed"
+    },
+    "DownloadedFiles/qualify on \uff02future\uff02 var definitions \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/420382/qualify-on-future-var-definitions",
+      "file_hash": "2b9815041fb9246f221f69f6f63f84a3",
+      "mtime_ns": 1776415564640522700,
+      "size": 836829,
       "status": "processed"
     },
     "DownloadedFiles/query optimization \u2014 Oracle Health.html": {
@@ -22433,6 +23595,13 @@
       "file_hash": "c0534559f4b10cfe9947b81f3930a49b",
       "mtime_ns": 1772969394000000000,
       "size": 187908,
+      "status": "processed"
+    },
+    "DownloadedFiles/search pattern with or without values \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1769487/search-pattern-with-or-without-values",
+      "file_hash": "b8407f8b974002b32ef90a582ada7835",
+      "mtime_ns": 1776415510344494200,
+      "size": 837717,
       "status": "processed"
     },
     "DownloadedFiles/searching+for+a+report+using+discern+reporting+portal.html": {
@@ -22580,6 +23749,13 @@
       "file_hash": "33679abbd62004c4fa7324299c42d8d0",
       "mtime_ns": 1773000296000000000,
       "size": 189418,
+      "status": "processed"
+    },
+    "DownloadedFiles/trigger_id \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1567034/trigger-id",
+      "file_hash": "b12c6cd60007d8773b3054914079903a",
+      "mtime_ns": 1776417866348630200,
+      "size": 825321,
       "status": "processed"
     },
     "DownloadedFiles/troubleshoot+enterprise+java+server.html": {
@@ -22825,6 +24001,13 @@
       "file_hash": "83a8e9e41b83a797de189331cd5fcaf8",
       "mtime_ns": 1772722778223296200,
       "size": 806439,
+      "status": "processed"
+    },
+    "DownloadedFiles/\uff02select into\uff02 file format \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/242503/select-into-file-format",
+      "file_hash": "a3981045b5cde4f62811639f18abeef4",
+      "mtime_ns": 1776415495471164600,
+      "size": 825154,
       "status": "processed"
     },
     "DownloadedFiles/\uff05CCL-E-351 Ambiguous or duplicate select expression name encountered \u2014 Oracle Health.html": {
