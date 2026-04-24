@@ -48,7 +48,7 @@ CHUNKS_OUTPUT = CORPUS_DIR / "mpages_chunks.jsonl"
 LEGACY_OUTPUT = CORPUS_DIR / "mpages_manual.jsonl"
 INDEX_FILE = STATE_DIR / "search_index.pkl"
 PROCESSING_CACHE_FILE = STATE_DIR / "processing_cache.json"
-PROCESSING_CACHE_VERSION = 1
+PROCESSING_CACHE_VERSION = 2  # bump whenever extract_*, build_segments, chunk_text, or enrichment logic changes
 MISSING_LINK_HISTORY_FILE = STATE_DIR / "missing_links_history.json"
 IGNORED_LINKS_FILE = STATE_DIR / "ignored_links.json"
 LOG_FILE = LOGS_DIR / "scraper.log"
@@ -165,6 +165,55 @@ h2t = html2text.HTML2Text()
 h2t.ignore_links = True
 h2t.ignore_images = True
 h2t.body_width = 0
+
+_CODE_TAG_RE = re.compile(r"<(?:pre|code)\b", re.IGNORECASE)
+_CCL_LANG_RE = re.compile(
+    r"\b(?:subroutine|define\s+script|;go\b|mpages_event|mpages_svc|ccllink|"
+    r"cclnewsessionwindow|xmlcclrequest|record\s+\w+\s*\()",
+    re.IGNORECASE,
+)
+_SQL_LANG_RE = re.compile(
+    r"\b(?:select\s+[\w\*\(]|from\s+\w|group\s+by\b|order\s+by\b|inner\s+join\b|left\s+join\b)",
+    re.IGNORECASE,
+)
+_JS_LANG_RE = re.compile(
+    r"(?:function\s*[\w(]|(?:var|let|const)\s+\w|document\.\w|window\.\w|"
+    r"\.innerHTML\b|=>\s*[{(]|\$\s*\()",
+)
+_HTML_LANG_RE = re.compile(r"<(?:html|body|div|span|table|tr|td|form|input)\b", re.IGNORECASE)
+_CSS_LANG_RE = re.compile(
+    r"(?:font-size\s*:|margin\s*:|padding\s*:|display\s*:|background(?:-color)?\s*:|border\s*:)",
+    re.IGNORECASE,
+)
+
+
+def detect_code_info(html_fragment: str) -> tuple[bool, list[str]]:
+    """Inspect raw HTML for <pre>/<code> blocks before text conversion.
+
+    Returns (contains_code, code_languages).  Must be called on the HTML,
+    not on the already-converted text, because html2text removes the tag markers.
+    """
+    if not html_fragment or not _CODE_TAG_RE.search(html_fragment):
+        return False, []
+    code_soup = BeautifulSoup(html_fragment, "html.parser")
+    blocks = code_soup.find_all(["pre", "code"])
+    if not blocks:
+        return False, []
+    combined = "\n".join(el.get_text() for el in blocks)
+    langs: list[str] = []
+    if _CCL_LANG_RE.search(combined):
+        langs.append("ccl")
+    if _SQL_LANG_RE.search(combined) and "ccl" not in langs:
+        langs.append("sql")
+    if _JS_LANG_RE.search(combined):
+        langs.append("javascript")
+    if _HTML_LANG_RE.search(combined):
+        langs.append("html")
+    if _CSS_LANG_RE.search(combined):
+        langs.append("css")
+    if len(langs) > 1:
+        langs = ["mixed"]
+    return True, langs
 
 
 def _maybe_fix_mojibake(text: str) -> str:
@@ -472,16 +521,306 @@ FORUM_NOISE_CLASSES = [
 
 WIKI_NOISE_CLASSES = ["page-metadata", "plugin_pagetree", "confluence-information-macro"]
 
+# ── Enrichment helpers ────────────────────────────────────────────────────────
+
+_EXACT_TERM_RE = re.compile(r"\b[A-Z][A-Z0-9_]{4,}\b")
+
+# Maps wiki URL space key (lowercase) to product_area vocabulary value
+_WIKI_SPACE_PRODUCT: dict[str, str] = {
+    "mpdevwiki": "mpages",
+    "mpages": "mpages",
+    "mpageschart": "mpages",
+    "mpageschartlevel": "mpages",
+    "bedrockhp": "bedrock",
+    "bedrock": "bedrock",
+    "1101discernhp": "discern",
+    "discernhp": "discern",
+    "discernexperthp": "discern",
+    "da2hp": "discern",
+    "cernerworksrp": "unknown",
+    "reference": "unknown",
+    "powercharthp": "powerchart",
+    "powercharthome": "powerchart",
+}
+
+_PRODUCT_PATTERNS: list[tuple[re.Pattern, str]] = [
+    (re.compile(r"\bmpages?\b|\bcustom\s+mpage\b|\bmpage\b", re.IGNORECASE), "mpages"),
+    (re.compile(r"\bbedrock\b", re.IGNORECASE), "bedrock"),
+    (re.compile(r"\bprefmaint\b|\bpreferences\s+maintenance\b", re.IGNORECASE), "prefmaint"),
+    (re.compile(r"\bdiscern\b|\bccl\b|\bexpert\s+rule\b", re.IGNORECASE), "discern"),
+    (re.compile(r"\bpowerchart\b|\bpowerplan\b|\bpowerorders\b", re.IGNORECASE), "powerchart"),
+]
+
+_GROUP_PRODUCT_PATTERNS: list[tuple[re.Pattern, str]] = [
+    (re.compile(r"mpages?", re.IGNORECASE), "mpages"),
+    (re.compile(r"discern|expert\s+rule|ccl", re.IGNORECASE), "discern"),
+    (re.compile(r"powerchart|powerorders|millennium", re.IGNORECASE), "powerchart"),
+    (re.compile(r"bedrock", re.IGNORECASE), "bedrock"),
+]
+
+_INTEGRATION_PATTERNS: list[tuple[re.Pattern, str]] = [
+    (re.compile(r"\bXMLCCLRequest\b", re.IGNORECASE), "xmlcclrequest"),
+    (re.compile(r"\bXMLHTTPRequest\b", re.IGNORECASE), "xmlcclrequest"),
+    (re.compile(
+        r"\bdiscern.?report\b|\breport\s+viewer\b|\breport_param\b|\breport_name\b",
+        re.IGNORECASE,
+    ), "discern_report"),
+    (re.compile(r"\bjson\b.{0,60}(?:select|from|ccl|subroutine)", re.IGNORECASE | re.DOTALL), "json_from_ccl"),
+]
+
+_RUNTIME_PATTERNS: list[tuple[re.Pattern, str]] = [
+    (re.compile(r"\bwebview.?2\b", re.IGNORECASE), "edge_webview2"),
+    (re.compile(r"\bmicrosoft\s+edge\b|\bedge\s+browser\b|\bswitch.{0,20}(?:ie|edge)\b", re.IGNORECASE), "edge_webview2"),
+    (re.compile(r"\binternet\s+explorer\b|\bie\s*11\b|\bie\.?11\b", re.IGNORECASE), "legacy_ie"),
+    (re.compile(r"\boutside\s+powerchart\b|\bstandalone\s+browser\b", re.IGNORECASE), "outside_powerchart"),
+]
+
+_TOPIC_TAG_PATTERNS: list[tuple[re.Pattern, str]] = [
+    (re.compile(r"\bmpages?\b|\bcustom\s+mpage\b", re.IGNORECASE), "mpages"),
+    (re.compile(r"\bpowerchart\b", re.IGNORECASE), "powerchart"),
+    (re.compile(r"\bedge\b|\bwebview.?2\b", re.IGNORECASE), "edge"),
+    (re.compile(r"\bxmlcclrequest\b|\bxmlhttprequest\b", re.IGNORECASE), "xmlcclrequest"),
+    (re.compile(r"\bprefmaint\b|\bpreferences\s+maintenance\b", re.IGNORECASE), "prefmaint"),
+    (re.compile(r"\bdiscern.?report\b|\breport\s+viewer\b|\breport[_\s]param\b|\breport[_\s]name\b", re.IGNORECASE), "discern-report"),
+    (re.compile(r"\bapplink\b|\bccllink\b|\bframeworklink\b|\bcclnewsessionwindow\b", re.IGNORECASE), "applink"),
+    (re.compile(r"\bhtml.{0,10}output\b|\bhtml.{0,10}report\b|\bfull.{0,10}html\b", re.IGNORECASE), "html-output"),
+    (re.compile(r"\bmpages.?event\b|\bmpages_event\b", re.IGNORECASE), "mpages"),
+    (re.compile(r"\bbedrock\b", re.IGNORECASE), "bedrock"),
+    (re.compile(r"\bdiscern\b", re.IGNORECASE), "discern"),
+    (re.compile(r"\bpowerplan\b|\bpowerorders\b", re.IGNORECASE), "powerchart"),
+]
+
+_SEARCH_STOP_WORDS = frozenset(
+    "with from that this have your using will after when what which into over also they"
+    " just been some then more about only".split()
+)
+
+
+def _detect_product_area(canonical_url: str, title: str, group_name: str) -> str:
+    space_m = re.search(r"/display/(?:public/)?([^/]+)/", canonical_url or "")
+    if space_m:
+        space = space_m.group(1).lower()
+        if space in _WIKI_SPACE_PRODUCT and _WIKI_SPACE_PRODUCT[space] != "unknown":
+            return _WIKI_SPACE_PRODUCT[space]
+    url_lower = (canonical_url or "").lower()
+    if any(host in url_lower for host in ("mpages-dev-docs", "pages.github.cerner", "mpages-fusion")):
+        return "mpages"
+    if group_name:
+        for pat, area in _GROUP_PRODUCT_PATTERNS:
+            if pat.search(group_name):
+                return area
+    for pat, area in _PRODUCT_PATTERNS:
+        if pat.search(title or ""):
+            return area
+    return "unknown"
+
+
+def _detect_integration_pattern(body: str, title: str, contains_code: bool) -> str:
+    combined = (title or "") + " " + (body or "")
+    for pat, result in _INTEGRATION_PATTERNS:
+        if pat.search(combined):
+            return result
+    return "scriptrequest" if contains_code else "static_content"
+
+
+def _detect_output_pattern(body: str, title: str) -> str:
+    combined = ((title or "") + " " + (body or "")).lower()
+    if re.search(r"\bjson\b.{0,40}(?:output|response|return|format)\b", combined) or re.search(r"(?:output|response|return|format).{0,40}\bjson\b", combined):
+        return "json"
+    if re.search(r"full\s+html|html\s+output|html\s+report|html\s+driver", combined):
+        return "full_html"
+    return "unknown"
+
+
+def _detect_runtime_context(body: str, title: str) -> str:
+    combined = (title or "") + " " + (body or "")
+    for pat, result in _RUNTIME_PATTERNS:
+        if pat.search(combined):
+            return result
+    return "unknown"
+
+
+def _detect_artifact_type(section_type: str, contains_code: bool, body: str) -> str:
+    if contains_code:
+        return "code_example"
+    if section_type == "original_post":
+        return "forum_post"
+    if section_type == "comment":
+        return "forum_comment"
+    if re.search(r"\b(?:troubl|workaround|not\s+work|error|issue|broken|fix)\b", (body or "").lower()):
+        return "troubleshooting"
+    return "wiki_section"
+
+
+def _detect_topic_tags(body: str, title: str) -> list[str]:
+    combined = (title or "") + " " + (body or "")
+    tags: list[str] = []
+    seen: set[str] = set()
+    for pat, tag in _TOPIC_TAG_PATTERNS:
+        if tag not in seen and pat.search(combined):
+            tags.append(tag)
+            seen.add(tag)
+    return tags
+
+
+def _detect_exact_terms(body: str) -> list[str]:
+    found = _EXACT_TERM_RE.findall(body or "")
+    filtered = [t for t in dict.fromkeys(found) if len(t) >= 5 and not re.fullmatch(r"[IVX]+", t)]
+    return filtered[:40]
+
+
+def _detect_search_terms(exact_terms: list[str], title: str) -> list[str]:
+    terms = [t.lower() for t in exact_terms]
+    seen = set(terms)
+    for word in re.findall(r"[A-Za-z][A-Za-z0-9_]{3,}", title or ""):
+        lower = word.lower()
+        if lower not in seen and lower not in _SEARCH_STOP_WORDS:
+            terms.append(lower)
+            seen.add(lower)
+    return terms[:50]
+
+
+def build_enrichment(
+    *,
+    canonical_url: str,
+    title: str,
+    section_type: str,
+    body: str,
+    group_name: str,
+    contains_code: bool,
+    code_languages: list[str],
+) -> dict:
+    """Return the 10 enrichment fields for a chunk record."""
+    product_area = _detect_product_area(canonical_url, title, group_name)
+    integration_pattern = _detect_integration_pattern(body, title, contains_code)
+    output_pattern = _detect_output_pattern(body, title)
+    runtime_context = _detect_runtime_context(body, title)
+    artifact_type = _detect_artifact_type(section_type, contains_code, body)
+    topic_tags = _detect_topic_tags(body, title)
+    exact_terms = _detect_exact_terms(body)
+    search_terms = _detect_search_terms(exact_terms, title)
+    return {
+        "product_area": product_area,
+        "integration_pattern": integration_pattern,
+        "output_pattern": output_pattern,
+        "runtime_context": runtime_context,
+        "artifact_type": artifact_type,
+        "search_terms": search_terms,
+        "exact_terms": exact_terms,
+        "topic_tags": topic_tags,
+        "contains_code": contains_code,
+        "code_languages": code_languages if contains_code else [],
+    }
+
+
+def build_document_enrichment(
+    chunk_enrichments: list[dict],
+    canonical_url: str,
+    title: str,
+    group_name: str,
+) -> dict:
+    """Derive document-level enrichment fields from the union of its chunks."""
+    from collections import Counter as _Counter
+
+    if not chunk_enrichments:
+        return build_enrichment(
+            canonical_url=canonical_url,
+            title=title,
+            section_type="content",
+            body="",
+            group_name=group_name,
+            contains_code=False,
+            code_languages=[],
+        )
+
+    def first_nonempty(field: str, exclude: tuple = ("unknown", "", "static_content")) -> str:
+        for e in chunk_enrichments:
+            v = e.get(field, "")
+            if v and v not in exclude:
+                return v
+        return chunk_enrichments[0].get(field, "unknown")
+
+    product_area = first_nonempty("product_area", ("unknown", ""))
+    integration_pattern = first_nonempty("integration_pattern", ("unknown", "static_content", ""))
+    if not integration_pattern or integration_pattern in ("unknown", ""):
+        integration_pattern = "static_content"
+    output_pattern = first_nonempty("output_pattern", ("unknown", ""))
+    if not output_pattern or output_pattern == "":
+        output_pattern = "unknown"
+    runtime_context = first_nonempty("runtime_context", ("unknown", ""))
+    if not runtime_context or runtime_context == "":
+        runtime_context = "unknown"
+
+    ats = [e.get("artifact_type", "wiki_section") for e in chunk_enrichments]
+    artifact_type = _Counter(ats).most_common(1)[0][0] if ats else "wiki_section"
+
+    all_tags: list[str] = []
+    seen_tags: set[str] = set()
+    for e in chunk_enrichments:
+        for tag in e.get("topic_tags", []):
+            if tag not in seen_tags:
+                all_tags.append(tag)
+                seen_tags.add(tag)
+
+    all_exact: list[str] = []
+    seen_exact: set[str] = set()
+    for e in chunk_enrichments:
+        for t in e.get("exact_terms", []):
+            if t not in seen_exact:
+                all_exact.append(t)
+                seen_exact.add(t)
+
+    all_search: list[str] = []
+    seen_search: set[str] = set()
+    for e in chunk_enrichments:
+        for t in e.get("search_terms", []):
+            if t not in seen_search:
+                all_search.append(t)
+                seen_search.add(t)
+
+    contains_code = any(e.get("contains_code") for e in chunk_enrichments)
+    all_langs: list[str] = []
+    seen_langs: set[str] = set()
+    for e in chunk_enrichments:
+        for lang in e.get("code_languages", []):
+            if lang not in seen_langs:
+                all_langs.append(lang)
+                seen_langs.add(lang)
+    if len(all_langs) > 1 and "mixed" not in all_langs:
+        all_langs = ["mixed"]
+
+    return {
+        "product_area": product_area,
+        "integration_pattern": integration_pattern,
+        "output_pattern": output_pattern,
+        "runtime_context": runtime_context,
+        "artifact_type": artifact_type,
+        "search_terms": all_search[:50],
+        "exact_terms": all_exact[:50],
+        "topic_tags": all_tags,
+        "contains_code": contains_code,
+        "code_languages": all_langs if contains_code else [],
+    }
 
 
 def extract_forum_content(soup: BeautifulSoup) -> str:
     parts = []
+    # Save the comments reference before any DOM mutations so we still hold
+    # it after removing the nested element from pagebox.
+    comments = soup.find("ul", class_="Comments")
+
     pagebox = soup.find("section", class_="pageBox")
     if pagebox:
         for noise in pagebox.find_all(class_=FORUM_NOISE_CLASSES):
             noise.extract()
         for el in pagebox(["script", "style", "noscript", "iframe"]):
             el.extract()
+        # ul.Comments is nested inside section.pageBox in Vanilla forum pages.
+        # Removing it here prevents comment text from being emitted twice:
+        # once inside the original_post segment and once per comment segment.
+        nested = pagebox.find("ul", class_="Comments")
+        if nested:
+            nested.extract()
         parts.append(str(pagebox))
     else:
         log.warning("  Forum: could not find section.pageBox - falling back to <main>")
@@ -489,7 +828,6 @@ def extract_forum_content(soup: BeautifulSoup) -> str:
         if fallback:
             parts.append(str(fallback))
 
-    comments = soup.find("ul", class_="Comments")
     if comments:
         for noise in comments.find_all(class_=FORUM_NOISE_CLASSES):
             noise.extract()
@@ -552,13 +890,17 @@ def extract_forum_segments(content_html: str) -> list[dict]:
 
     original = soup.find("section", class_="pageBox") or soup.find("main") or soup.find(class_="MainContent")
     if original:
-        text = html_to_text(str(original))
+        original_html = str(original)
+        has_code, code_langs = detect_code_info(original_html)
+        text = html_to_text(original_html)
         if text:
             segments.append({
                 "section_type": "original_post",
                 "section_title": "Original post",
                 "speaker": extract_author_name(original),
                 "text": text,
+                "_contains_code": has_code,
+                "_code_languages": code_langs,
             })
 
     comments = soup.find("ul", class_="Comments")
@@ -567,7 +909,9 @@ def extract_forum_segments(content_html: str) -> list[dict]:
         if not items:
             items = comments.find_all(["li", "article", "section"], recursive=False)
         for idx, item in enumerate(items, start=1):
-            text = html_to_text(str(item))
+            item_html = str(item)
+            has_code, code_langs = detect_code_info(item_html)
+            text = html_to_text(item_html)
             if not text:
                 continue
             segments.append({
@@ -575,6 +919,8 @@ def extract_forum_segments(content_html: str) -> list[dict]:
                 "section_title": f"Comment {idx}",
                 "speaker": extract_author_name(item),
                 "text": text,
+                "_contains_code": has_code,
+                "_code_languages": code_langs,
             })
 
     return segments
@@ -593,6 +939,7 @@ def extract_wiki_segments(content_html: str) -> list[dict]:
         if not section_html:
             current_parts = []
             return
+        has_code, code_langs = detect_code_info(section_html)
         text = html_to_text(section_html)
         if text:
             segments.append({
@@ -600,6 +947,8 @@ def extract_wiki_segments(content_html: str) -> list[dict]:
                 "section_title": current_title,
                 "speaker": "",
                 "text": text,
+                "_contains_code": has_code,
+                "_code_languages": code_langs,
             })
         current_parts = []
 
@@ -617,6 +966,7 @@ def extract_wiki_segments(content_html: str) -> list[dict]:
     flush()
 
     if not segments:
+        has_code, code_langs = detect_code_info(str(root))
         text = html_to_text(str(root))
         if text:
             segments.append({
@@ -624,6 +974,8 @@ def extract_wiki_segments(content_html: str) -> list[dict]:
                 "section_title": current_title,
                 "speaker": "",
                 "text": text,
+                "_contains_code": has_code,
+                "_code_languages": code_langs,
             })
 
     return segments
@@ -844,6 +1196,7 @@ def process_local_directory() -> tuple[list[dict], list[dict]]:
             doc_id = build_doc_id(platform, canonical_url, file_hash)
 
             chunk_records: list[dict] = []
+            chunk_enrichments: list[dict] = []
             full_text_parts: list[str] = []
             chunk_index = 1
             for section_index, segment in enumerate(segments, start=1):
@@ -851,7 +1204,19 @@ def process_local_directory() -> tuple[list[dict], list[dict]]:
                 if not segment_text:
                     continue
                 full_text_parts.append(segment_text)
+                seg_has_code = segment.get("_contains_code", False)
+                seg_code_langs = segment.get("_code_languages", [])
                 for chunk in chunk_text(segment_text):
+                    enrichment = build_enrichment(
+                        canonical_url=canonical_url,
+                        title=title_clean or title,
+                        section_type=segment.get("section_type", "content"),
+                        body=chunk,
+                        group_name=group_info.get("group_name", ""),
+                        contains_code=seg_has_code,
+                        code_languages=seg_code_langs,
+                    )
+                    chunk_enrichments.append(enrichment)
                     chunk_records.append({
                         "chunk_id": build_chunk_id(doc_id, chunk_index),
                         "doc_id": doc_id,
@@ -875,6 +1240,7 @@ def process_local_directory() -> tuple[list[dict], list[dict]]:
                         "links_wiki": links["wiki"],
                         "links_external": links["reference"],
                         **({k: v for k, v in group_info.items() if v}),
+                        **enrichment,
                     })
                     chunk_index += 1
 
@@ -883,6 +1249,12 @@ def process_local_directory() -> tuple[list[dict], list[dict]]:
                 record["total_chunks"] = total_chunks
 
             full_text = "\n\n".join(full_text_parts)
+            doc_enrichment = build_document_enrichment(
+                chunk_enrichments,
+                canonical_url=canonical_url,
+                title=title_clean or title,
+                group_name=group_info.get("group_name", ""),
+            )
             document_record = {
                 "doc_id": doc_id,
                 "type": "manual_upload_document",
@@ -901,6 +1273,7 @@ def process_local_directory() -> tuple[list[dict], list[dict]]:
                 "word_count": len(full_text.split()),
                 "body_preview": preview_text(full_text, 420),
                 **({k: v for k, v in group_info.items() if v}),
+                **doc_enrichment,
             }
             documents.append(document_record)
             chunks.extend(chunk_records)

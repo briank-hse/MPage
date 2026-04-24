@@ -1594,7 +1594,7 @@
       "file_hash": "335a43d8e255474f3c90b2ccf206e8bf",
       "mtime_ns": 1772386308250739800,
       "size": 188828,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/Building+Discern+Explorer+CCL+Programs+to+Display+HTML+Output+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
@@ -4233,7 +4233,7 @@
       "file_hash": "4d623f082a81ff4599f34bdcbce0d21d",
       "mtime_ns": 1772969116000000000,
       "size": 194607,
-      "status": "no_text"
+      "status": "processed"
     },
     "DownloadedFiles/Citrix.html": {
       "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Citrix",
@@ -4667,7 +4667,7 @@
       "file_hash": "5745c3a5ff811c4a436e793ff172c6ff",
       "mtime_ns": 1772362704000000000,
       "size": 200011,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/Configure MPages Reach Custom Components - Reference Pages - Cerner Wiki.htm": {
       "dedup_key": "https://wiki.cerner.com/display/reference/Configure+MPages+Reach+Custom+Components",
@@ -4751,7 +4751,7 @@
       "file_hash": "a517233458859509e76362d7b096f4ce",
       "mtime_ns": 1772371660000000000,
       "size": 7174,
-      "status": "no_text"
+      "status": "processed"
     },
     "DownloadedFiles/Configure+Clinical+Document+Generator.html": {
       "dedup_key": "https://wiki.cerner.com/display/reference/Configure+Clinical+Document+Generator",
@@ -5241,7 +5241,7 @@
       "file_hash": "6104750dd72c790ff11165863c238eef",
       "mtime_ns": 1772372440000000000,
       "size": 220341,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/Continue+Prompt+in+Visual+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Continue+Prompt+in+Visual+Explorer",
@@ -5682,7 +5682,7 @@
       "file_hash": "db1a65464715a0d5c3f2a1b59774e202",
       "mtime_ns": 1772385055423423900,
       "size": 999091,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/Custom HTML Print Product for Worklist \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1539500/custom-html-print-product-for-worklist",
@@ -6774,7 +6774,7 @@
       "file_hash": "de092bda6d3780802f40a9f2245809c7",
       "mtime_ns": 1772365186000000000,
       "size": 170102,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/Discern Report in FirstNet or PowerChart \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/251726/discern-report-in-firstnet-or-powerchart",
@@ -7495,7 +7495,7 @@
       "file_hash": "cf5171503522ee9b22cc2d1d4846b00d",
       "mtime_ns": 1773000172000000000,
       "size": 202610,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/ESO Troubleshooting Tools - Reference Pages - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/reference/ESO+Troubleshooting+Tools",
@@ -8363,7 +8363,7 @@
       "file_hash": "b5f556e34daab13ed2fe6ff9d1298d89",
       "mtime_ns": 1772722811735147000,
       "size": 879390,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/Extracting+Information+From+Columns+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
@@ -11044,7 +11044,7 @@
       "file_hash": "06e4dcde1ca44803e732566e20748d6a",
       "mtime_ns": 1772969324000000000,
       "size": 187831,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/MONTH+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/MONTH+Using+Discern+Explorer",
@@ -11135,7 +11135,7 @@
       "file_hash": "22672c90726fffc45f2c228796a8b0e6",
       "mtime_ns": 1772011401841296800,
       "size": 170752,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/MPAGES_EVENT - ORDER \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1032276/mpages-event-order",
@@ -11310,7 +11310,7 @@
       "file_hash": "08bd50581c108c416a6af3f2b6ff56ca",
       "mtime_ns": 1772011515245831500,
       "size": 167991,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/MPAGES_SVC_EVENT Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/MPAGES_SVC_EVENT+Using+Discern+Explorer",
@@ -11471,7 +11471,7 @@
       "file_hash": "741d2c7d82aa30128d1b1772d7c6554d",
       "mtime_ns": 1772010322591348000,
       "size": 228589,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/MPages Drivers _ Custom MPages Development.htm": {
       "dedup_key": "https://pages.github.cerner.com/MPagesEcosystem/custom-development-documentation/guides/MPagesDrivers",
@@ -12381,7 +12381,7 @@
       "file_hash": "802dc358c6753c0bfe626dda89aba732",
       "mtime_ns": 1772372448000000000,
       "size": 182590,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/MPages+Worklist+Main+Filter+and+Column+Catalog.html": {
       "dedup_key": "https://wiki.cerner.com/display/reference/MPages+Worklist+Main+Filter+and+Column+Catalog",
@@ -13298,7 +13298,7 @@
       "file_hash": "a85fe68e33b7b1025613365b18076295",
       "mtime_ns": 1772718738279449100,
       "size": 7136,
-      "status": "no_text"
+      "status": "processed"
     },
     "DownloadedFiles/Maintain+Discern+Expert+-+Changing+a+Production+Expert+Module.html": {
       "dedup_key": "https://wiki.cerner.com/display/reference/Maintain+Discern+Expert+-+Changing+a+Production+Expert+Module",
@@ -13501,7 +13501,7 @@
       "file_hash": "fa7c3e749e822ff42f7dc088ba96aac8",
       "mtime_ns": 1772386347344693000,
       "size": 164675,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/Menus+Using+Explorer+Menu.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Menus+Using+Explorer+Menu",
@@ -13536,7 +13536,7 @@
       "file_hash": "cd1bea69c8e89710d3970db9bf4232e8",
       "mtime_ns": 1772386337897887700,
       "size": 173176,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/Microsoft Edge Configuration for Cerner Products - CernerWorks Reference Pages - Cerner Wiki.htm": {
       "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Microsoft+Edge+Configuration+for+Cerner+Products",
@@ -13550,7 +13550,7 @@
       "file_hash": "ca02ab8fd353976582b537056ca6dcd0",
       "mtime_ns": 1772010497888267300,
       "size": 226950,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/Microsoft Edge and Custom Development\uff1a Collaborators Wanted \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1020405/microsoft-edge-and-custom-development-collaborators-wanted",
@@ -15510,7 +15510,7 @@
       "file_hash": "4f21f30ca7cdc5ab615ef182ae19b957",
       "mtime_ns": 1772011636285674400,
       "size": 172464,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/PCUpdateRefreshTime.html": {
       "dedup_key": "https://wiki.cerner.com/display/MPDEVWIKI/PCUpdateRefreshTime",
@@ -15566,7 +15566,7 @@
       "file_hash": "99b992fe194b28c4eb4461d83495ad2c",
       "mtime_ns": 1772372456000000000,
       "size": 165566,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/PEXSCHEDULINGACTIONS - MPages Development Wiki - Cerner Wiki.htm": {
       "dedup_key": "https://wiki.cerner.com/display/MPDEVWIKI/PEXSCHEDULINGACTIONS",
@@ -15580,7 +15580,7 @@
       "file_hash": "ce0e0ac1aa28c9db8b6d850d2b3d23dc",
       "mtime_ns": 1772372456000000000,
       "size": 164973,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/PIECE+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/PIECE+Using+Discern+Explorer",
@@ -15685,7 +15685,7 @@
       "file_hash": "c557fcd3c37bfe0e30285d3df6129ea4",
       "mtime_ns": 1772372460000000000,
       "size": 163688,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/PVFRAMEWORKLINK - MPages Development Wiki - Cerner Wiki.htm": {
       "dedup_key": "https://wiki.cerner.com/display/MPDEVWIKI/PVFRAMEWORKLINK",
@@ -15699,7 +15699,7 @@
       "file_hash": "9bd2aa1ca2229251b81f02703fe8fc69",
       "mtime_ns": 1772009889968312200,
       "size": 165258,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/PVFRAMEWORKLINK.html": {
       "dedup_key": "https://wiki.cerner.com/display/MPDEVWIKI/PVFRAMEWORKLINK",
@@ -16448,7 +16448,7 @@
       "file_hash": "44e27ade3d41ea39114d070e98da838a",
       "mtime_ns": 1772386394663806500,
       "size": 215306,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/Programming+Constructs+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
@@ -18905,7 +18905,7 @@
       "file_hash": "0cd251676579e37e2ad2a956e7e30895",
       "mtime_ns": 1772011354446239600,
       "size": 165745,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/SetStoreInfo - MPages Development Wiki - Cerner Wiki.htm": {
       "dedup_key": "https://wiki.cerner.com/display/MPDEVWIKI/SetStoreInfo",
@@ -19458,7 +19458,7 @@
       "file_hash": "ef3d6ffb9c585b0156cb6e33ba63e8cc",
       "mtime_ns": 1772010238033855700,
       "size": 169607,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/Syntax Help \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1497582/syntax-help",
@@ -20361,7 +20361,7 @@
       "file_hash": "e8631cad818f81934ed60ea9a0354999",
       "mtime_ns": 1775823541103981100,
       "size": 303594,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/Troubleshoot MPages Static Content Enterprise Appliance - Reference Pages - Cerner Wiki.htm": {
       "dedup_key": "https://wiki.cerner.com/display/reference/Troubleshoot+MPages+Static+Content+Enterprise+Appliance",
@@ -20900,7 +20900,7 @@
       "file_hash": "d57b15ab7408e89ac6acb54631ac6a9e",
       "mtime_ns": 1772010716625857900,
       "size": 205525,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/Understand OEN with OpenView - Reference Pages - Cerner Wiki.htm": {
       "dedup_key": "https://wiki.cerner.com/display/reference/Understand+OEN+with+OpenView",
@@ -22055,7 +22055,7 @@
       "file_hash": "4dce887dbaae140557d233991035ce2f",
       "mtime_ns": 1772010253707652100,
       "size": 189219,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/XMLCCLREQUEST returning \uff02pdf\uff02 as responsetext \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/471373/xmlcclrequest-returning-pdf-as-responsetext",
@@ -22083,7 +22083,7 @@
       "file_hash": "4b24074a11a93307710747ae521feb8a",
       "mtime_ns": 1772383926619533800,
       "size": 4197107,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/XMLCCLREQUEST.html": {
       "dedup_key": "https://wiki.cerner.com/display/MPDEVWIKI/XMLCCLREQUEST",
@@ -22440,7 +22440,7 @@
       "file_hash": "5eb438c17780485963c10fef8bd26b98",
       "mtime_ns": 1772999270000000000,
       "size": 188723,
-      "status": "no_text"
+      "status": "processed"
     },
     "DownloadedFiles/cnvtdatetimeutc - does not appear to be pulling correct local time \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/896884/cnvtdatetimeutc-does-not-appear-to-be-pulling-correct-local-time",
@@ -22881,7 +22881,7 @@
       "file_hash": "d88e044c7c1d6d5ed62b69005bd196ac",
       "mtime_ns": 1772383920101282700,
       "size": 4178392,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/how to echo out all in scope record stuctures \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1658245/how-to-echo-out-all-in-scope-record-stuctures",
@@ -23644,7 +23644,7 @@
       "file_hash": "f63facc778ebdd73ba3ba9eca55e0af2",
       "mtime_ns": 1772782547160477100,
       "size": 1027861,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/set+trace+in+discern+explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHPDE/SET+TRACE+in+Discern+Explorer",
@@ -23931,7 +23931,7 @@
       "file_hash": "961d66a85a9daf0126e36a227099bdac",
       "mtime_ns": 1772968356000000000,
       "size": 772538,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/worklist-scheduled-custom-column.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1780406/worklist-scheduled-custom-column",
@@ -23959,7 +23959,7 @@
       "file_hash": "7c7266c06367fc572a9e980738ff5e77",
       "mtime_ns": 1772384595435526600,
       "size": 1042733,
-      "status": "processed"
+      "status": "duplicate_url"
     },
     "DownloadedFiles/{modal\uff1a true} and xmlcclrequest \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/457611/modal-true-and-xmlcclrequest",
@@ -24018,5 +24018,5 @@
       "status": "processed"
     }
   },
-  "version": 1
+  "version": 2
 }

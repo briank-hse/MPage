@@ -133,6 +133,25 @@ If a result is relevant but incomplete, include surrounding chunks:
 python .\Outputs\Tools\agent_corpus_search.py --query "orders for signature" --neighbors 1 --format text
 ```
 
+## Cerner Corpus Search for Source Changes
+
+Use the local Cerner corpus when validating CCL table relationships, query patterns, or Millennium data-model assumptions before changing source queries.
+
+- Corpus path: `Outputs/Corpus`
+- Search helper: `Outputs/Tools/agent_corpus_search.py`
+- Start broad searches with the helper to identify candidate documents, then use `--expand-doc-id <doc_id>` for the promising `forum_*` or `wiki_*` result. Do not rely on snippets alone as proof.
+- Use exact table, column, template, event, or record-member searches for schema-sensitive questions, for example `--query "DCP_FORMS_ACTIVITY_PRSNL" --mode exact --format text`.
+- If a document ID is already known, prefer `--expand-doc-id` over searching for the doc ID as a normal query; ranked search can miss the exact document.
+- Treat raw `rg` over JSONL as a way to find exact terms and document IDs, not as the primary evidence-reading step because output can be noisy.
+- Distinguish terminology carefully. User wording such as `created by`, `performed by`, `saved by`, `signed by`, `updated by`, and `first user` may map to different fields or tables.
+- Keep CCL syntax in CCL form. Do not translate examples into SQL `JOIN ... ON` style when updating `.txt`, `.prg`, or CCL query files; use `JOIN ... WHERE ...` patterns unless the existing query uses another valid CCL construct.
+
+Phrase conclusions by evidence strength:
+
+- `supported by corpus` when expanded documents show the table relationship and intended meaning
+- `likely but needs Cerner validation` when examples imply the pattern but do not define it
+- `not supported` when the corpus only shows a generic pattern such as `UPDT_ID -> PRSNL`
+
 ## Query Design Guidance
 
 Search with both business language and technical language.
@@ -161,6 +180,29 @@ When summarizing corpus findings:
 - prefer answer text over title-only inference
 - state when the corpus shows a workaround rather than a native feature
 - state when evidence is absent rather than assuming impossibility
+
+## Corpus Maintenance
+
+### Cache version discipline
+
+`CernerScraper.py` keeps a `PROCESSING_CACHE_VERSION` constant. Any change to the following must increment that constant so the next run forces a full re-parse:
+
+- Extraction logic (`extract_forum_content`, `extract_wiki_content`, `extract_*_segments`)
+- Segmentation or chunking (`build_segments`, `chunk_text`)
+- Enrichment rules (`build_enrichment`, `build_document_enrichment`)
+- Any field added to or removed from chunk/document records
+
+Bumping the version invalidates all cached parse results, so the next `python CernerScraper.py` re-processes every file.
+
+### QA report
+
+Run before and after any corpus change to measure quality:
+
+```powershell
+python .\Outputs\Tools\corpus_qa.py
+```
+
+Output: `Outputs/Reports/corpus_qa.md`. Tracks forum-duplication counts, enrichment coverage, platform breakdown, unknown-platform counts, and size outliers.
 
 ## Notes
 
