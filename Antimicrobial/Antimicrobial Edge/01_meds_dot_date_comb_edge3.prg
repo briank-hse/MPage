@@ -55,6 +55,7 @@ declare v_grand_total_dot   = i4 with noconstant(0)
 declare v_cell_bg         = vc with noconstant("")
 declare v_indication       = vc with noconstant(""), maxlen=255
 declare v_discontinue_rsn  = vc with noconstant(""), maxlen=255
+declare v_route            = vc with noconstant(""), maxlen=255
 declare v_low_dt      = dq8 with noconstant(null)
 declare v_high_now_dt = dq8 with noconstant(null)
 declare v_today        = dq8 with noconstant(0)
@@ -273,13 +274,15 @@ select into "nl:"
 , mdy = format(admin_rec->qual[d.seq].admin_dt_tm, "YYYYMMDD;;D")
 , indication = substring(1,60,trim(od_indication.oe_field_display_value))
 , discontinue_reason = substring(1,60,trim(od_dcreason.oe_field_display_value))
+, route = substring(1,60,trim(od_route.oe_field_display_value))
 , src_id = admin_rec->qual[d.seq].admin_id
 , admin_src = admin_rec->qual[d.seq].src
-from (dummyt d with seq = admin_rec->cnt), orders o, order_catalog oc, order_detail od_indication, order_detail od_dcreason
+from (dummyt d with seq = admin_rec->cnt), orders o, order_catalog oc, order_detail od_indication, order_detail od_dcreason, order_detail od_route
 plan d join o where o.order_id = admin_rec->qual[d.seq].order_id
 join oc where oc.catalog_cd = o.catalog_cd
 join od_indication where od_indication.order_id = outerjoin(o.order_id) and od_indication.oe_field_meaning = outerjoin("INDICATION")
 join od_dcreason where od_dcreason.order_id = outerjoin(o.order_id) and od_dcreason.oe_field_meaning = outerjoin("DCREASON")
+join od_route where od_route.order_id = outerjoin(o.order_id) and od_route.oe_field_meaning_id = outerjoin(2050)
 order by cnvtupper(trim(oc.primary_mnemonic)), mdy, src_id
 
 head report
@@ -306,7 +309,7 @@ head src_id
 
 foot mdy
   v_dates_kv = concat(v_dates_kv, "~", mdy, ":", cnvtstring(v_cnt_day), "~")
-  v_details_kv = concat(v_details_kv, "~", mdy, ":", indication, "|", discontinue_reason, "~")
+  v_details_kv = concat(v_details_kv, "~", mdy, ":", indication, "|", discontinue_reason, "|", route, "~")
   v_med_dot_total = v_med_dot_total + 1
   if (findstring(concat("~", mdy, "~"), v_all_days_list) = 0)
     v_all_days_list = concat(v_all_days_list, "~", mdy, "~")
@@ -337,6 +340,7 @@ foot med_name
 
       v_indication = ""
       v_discontinue_rsn = ""
+      v_route = ""
       v_findpos = findstring(concat("~", v_key8, ":"), v_details_kv)
       if (v_findpos > 0)
         v_after = substring(v_findpos + 10, textlen(v_details_kv) - (v_findpos + 9), v_details_kv)
@@ -348,14 +352,24 @@ foot med_name
         v_pipe_pos = findstring("|", v_detail_str)
         if (v_pipe_pos > 0)
           v_indication = substring(1, v_pipe_pos - 1, v_detail_str)
-          v_discontinue_rsn = substring(v_pipe_pos + 1, textlen(v_detail_str) - v_pipe_pos, v_detail_str)
+          v_after = substring(v_pipe_pos + 1, textlen(v_detail_str) - v_pipe_pos, v_detail_str)
+          v_pipe_pos = findstring("|", v_after)
+          if (v_pipe_pos > 0)
+            v_discontinue_rsn = substring(1, v_pipe_pos - 1, v_after)
+            v_route = substring(v_pipe_pos + 1, textlen(v_after) - v_pipe_pos, v_after)
+          else
+            v_discontinue_rsn = v_after
+          endif
         else
           v_indication = v_detail_str
         endif
       endif
 
       if (v_count_i > 0)
-        v_title = concat(v_curr_med, " - ", format(v_min_dt + v_i,"DD/MM/YYYY;;D"), " / ", v_count_str, if(v_count_i = 1) " admin" else " admins" endif, "&#10;Indication: ", v_indication, "&#10;Discontinue Reason: ", v_discontinue_rsn)
+        if (trim(v_route, 3) = "")
+          v_route = "--"
+        endif
+        v_title = concat(v_curr_med, " - ", format(v_min_dt + v_i,"DD/MM/YYYY;;D"), " / ", v_count_str, if(v_count_i = 1) " admin" else " admins" endif, "&#10;Indication: ", v_indication, "&#10;Discontinue Reason: ", v_discontinue_rsn, "&#10;Route: ", v_route)
         v_strip = concat(v_strip, '<div class="grid-cell cell on dimmable', v_cell_bg, '"', v_med_attr, ' title="', v_title, '">', trim(v_count_str), '</div>')
       else
         v_strip = concat(v_strip, '<div class="grid-cell cell dimmable', v_cell_bg, '"', v_med_attr, ' title="', format(v_min_dt + v_i,"DD/MM/YYYY;;D"), '"></div>')
@@ -549,7 +563,7 @@ if (admin_rec->cnt > 0)
 select into "nl:"
   med_name = trim(oc.primary_mnemonic)
 , admin_src = admin_rec->qual[d.seq].src
-, day_key = format(admin_rec->qual[d.seq].admin_dt_tm, "yyyymmdd")
+, day_key = format(admin_rec->qual[d.seq].admin_dt_tm, "YYYYMMDD;;D")
 , o.current_start_dt_tm
 , o_order_status_disp = uar_get_code_display(o.order_status_cd)
 , o.status_dt_tm

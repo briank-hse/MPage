@@ -1044,8 +1044,9 @@ def _categorise_wiki(title: str, url: str) -> str:
     if space == "mpdevwiki" or "r1mpageshp" in space or space == "dbarchhp": return "MPages Development"
     if "bedrockhp" in space or "bedrock concept" in t: return "Bedrock"
     if any(x in space for x in ["healthecaehp", "healthcarehp", "healthecare", "healtheintent", "healthintent", "healtheedwhp"]): return "HealtheIntent & Care Management"
-    if space in ("help", "cernercentral", "eservicehp", "hitoolshp", "30olympushp", "rn", "courses"): return "Platform Help"
-    if any(x in space for x in ["discernhp", "discernexperthp", "da2hp", "cernerworksrp", "millenniumopshp"]): return "Platform Admin"
+    if space in ("help", "helpnl", "cernercentral", "eservicehp", "hitoolshp", "30olympushp", "rn", "courses"): return "Platform Help"
+    if any(x in space for x in ["discernhp", "discernexperthp", "da2hp", "cernerworksrp", "cernerworks", "millenniumopshp", "mpipg", "physiciananalytics"]): return "Platform Admin"
+    if "initiativedetail" in space or space.startswith("{"): return "Other"
     if any(x in space for x in ["maternity", "powertrials", "firstnet", "powerforms", "clinicalnotes", "infectioncontrol", "pharmnetinpatient", "pharmnetretail", "eprescribe", "eutmaterials", "cdcomponentshp", "chartsearchhp", "crdoc", "integratedchartinghp", "smarttemplateshp"]): return "Clinical Applications"
     if any(x in space for x in ["powercharthp", "enterprisemessaging", "millenniumpmhp", "1101dynamicdochp"]): return "Platform Help"
     if "knowledgeapps" in space: return "Platform Admin"
@@ -1055,18 +1056,19 @@ def _categorise_wiki(title: str, url: str) -> str:
     if any(x in t for x in ["dashboard", "healthecare", "care management", "care manager", "cases by status", "potential cases", "referral component", "acute case management"]): return "HealtheIntent & Care Management"
     if any(x in t for x in ["worklist", "organizer", "organiser", "schedule view", "palliative", "handoff", "procurement", "pcs worklist", "record restoration", "patient organizer", "physician handoff"]): return "MPages Worklists & Organizers"
     if any(x in t for x in ["configure", "install", "define", "design", "overview of", "understand", "all about", "patient list", "clinical event", "add a patient", "mpages reference", "implement"]): return "MPages Configuration"
-    if any(x in t for x in ["enterprise java", "edge", "zoom level", "discern", "output viewer", "troubleshoot", "maintain", "servers and", "when to cycle", "millennium openid", "openid provider", "millennium operations", "enterprise appliance reference", "back-end products", "utilities reference", "contributor system", "cpm script", "millennium platform", "server 79"]): return "Platform Admin"
+    if any(x in t for x in ["enterprise java", "edge", "zoom level", "discern", "output viewer", "troubleshoot", "maintain", "servers and", "when to cycle", "millennium openid", "openid provider", "millennium operations", "enterprise appliance reference", "back-end products", "utilities reference", "contributor system", "cpm script", "millennium platform", "server 79", "businessobjects", "business objects", "reporting portal", "functional reports", "physician analytics", "openlink"]): return "Platform Admin"
     if any(x in t for x in ["pharmacy", "medication administration", "mar reference", "charge", "medical specialties", "powerorders", "plans reference", "laboratory", "preferences for common"]): return "Clinical Applications"
     return "Other"
 
 def _check_unknown_spaces(records: list) -> None:
-    KNOWN_SPACE_PATTERNS = ["mpdevwiki", "r1mpageshp", "bedrockhp", "healthecaehp", "healthcarehp", "healthecare", "healtheintent", "healthintent", "healtheedwhp", "help", "courses", "discernhp", "maternity", "powertrials", "firstnet", "powerforms", "reference", "clinicalnotes", "enterprisemessaging", "infectioncontrol", "knowledgeapps", "pharmnetinpatient", "pharmnetretail", "powercharthp", "30olympushp", "cernercentral", "cernerworksrp", "da2hp", "dbarchhp", "discernexperthp", "eprescribe", "eservicehp", "eutmaterials", "hitoolshp", "millenniumopshp", "performanceimprovement", "rn", "1101dynamicdochp", "cdcomponentshp", "chartsearchhp", "crdoc", "integratedchartinghp", "millenniumpmhp", "smarttemplateshp"]
+    KNOWN_SPACE_PATTERNS = ["mpdevwiki", "r1mpageshp", "bedrockhp", "healthecaehp", "healthcarehp", "healthecare", "healtheintent", "healthintent", "healtheedwhp", "help", "helpnl", "courses", "discernhp", "maternity", "powertrials", "firstnet", "powerforms", "reference", "clinicalnotes", "enterprisemessaging", "infectioncontrol", "knowledgeapps", "pharmnetinpatient", "pharmnetretail", "powercharthp", "30olympushp", "cernercentral", "cernerworksrp", "cernerworks", "da2hp", "dbarchhp", "discernexperthp", "eprescribe", "eservicehp", "eutmaterials", "hitoolshp", "millenniumopshp", "mpipg", "physiciananalytics", "initiativedetail", "performanceimprovement", "rn", "1101dynamicdochp", "cdcomponentshp", "chartsearchhp", "crdoc", "integratedchartinghp", "millenniumpmhp", "smarttemplateshp"]
     seen_unknown: dict = {}
     for r in records:
         for url in r.get("links_wiki", []):
             m = re.search(r"/display/(?:public/)?([^/]+)/", url)
             if not m: continue
             space = m.group(1).lower()
+            if space.startswith("{"): continue
             if not any(p in space for p in KNOWN_SPACE_PATTERNS) and space not in seen_unknown: seen_unknown[space] = url
     if seen_unknown:
         log.warning("Unknown wiki spaces found — consider updating _categorise_wiki:")
@@ -1310,6 +1312,8 @@ def generate_discovery_report():
     .ignore-info code { background: #fff7ea; }
     .search-panel { background: #f7f7f7; border: 1px solid #d7d7d7; border-radius: 4px; padding: 12px 16px; margin: 1rem 0; }
     .search-input { width: 100%; max-width: 520px; padding: 8px 10px; border: 1px solid #bbb; border-radius: 4px; font-family: inherit; font-size: 0.9rem; }
+    .search-results { margin-top: 1rem; }
+    .search-empty { display: none; margin-top: 0.75rem; font-size: 0.82rem; color: #666; }
     .action-panel { background: #f7f7f7; border: 1px solid #d7d7d7; border-radius: 4px; padding: 12px 16px; margin: 1rem 0; }
     .action-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 0.8rem; }
     .action-textarea { width: 100%; min-height: 140px; font-family: Consolas, monospace; font-size: 0.82rem; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; }
@@ -1517,6 +1521,7 @@ renderCommands();
         (out_dir / filename).write_text(page, encoding="utf-8")
 
     sections_meta: list[dict] = []
+    root_search_items: list[dict] = []
     for cat in ordered_wiki_cats:
         active_items = active_wiki_by_cat.get(cat, [])
         ignored_items = ignored_wiki_by_cat.get(cat, [])
@@ -1525,10 +1530,30 @@ renderCommands();
             fname = f"{cat_slug}.html"
             _write_subpage(fname, cat, active_items, subtitle="Cerner Wiki")
             sections_meta.append({"title": cat, "file": fname, "count": len(active_items), "type": "wiki"})
+            for item in active_items:
+                root_search_items.append({
+                    "title": item["title"],
+                    "url": item["url"],
+                    "bucket": cat,
+                    "kind": "Cerner Wiki",
+                    "status": "Active",
+                    "section_file": fname,
+                    "section_title": cat,
+                })
         if ignored_items:
             fname = f"ignored-{cat_slug}.html"
             _write_subpage(fname, f"Ignored - {cat}", ignored_items, subtitle="Cerner Wiki", ignored=True)
             sections_meta.append({"title": cat, "file": fname, "count": len(ignored_items), "type": "wiki-ignored"})
+            for item in ignored_items:
+                root_search_items.append({
+                    "title": item["title"],
+                    "url": item["url"],
+                    "bucket": cat,
+                    "kind": "Cerner Wiki",
+                    "status": "Ignored",
+                    "section_file": fname,
+                    "section_title": f"Ignored - {cat}",
+                })
 
     for gname in ordered_forum_cats:
         active_items = active_forum_by_group.get(gname, [])
@@ -1538,10 +1563,30 @@ renderCommands();
             fname = f"forum-{group_slug}.html"
             _write_subpage(fname, gname, active_items, subtitle="Oracle Health Community", group_url=group_page_urls.get(gname, ""))
             sections_meta.append({"title": gname, "file": fname, "count": len(active_items), "type": "forum"})
+            for item in active_items:
+                root_search_items.append({
+                    "title": item["title"],
+                    "url": item["url"],
+                    "bucket": gname,
+                    "kind": "Oracle Health Community",
+                    "status": "Active",
+                    "section_file": fname,
+                    "section_title": gname,
+                })
         if ignored_items:
             fname = f"ignored-forum-{group_slug}.html"
             _write_subpage(fname, f"Ignored - {gname}", ignored_items, subtitle="Oracle Health Community", group_url=group_page_urls.get(gname, ""), ignored=True)
             sections_meta.append({"title": gname, "file": fname, "count": len(ignored_items), "type": "forum-ignored"})
+            for item in ignored_items:
+                root_search_items.append({
+                    "title": item["title"],
+                    "url": item["url"],
+                    "bucket": gname,
+                    "kind": "Oracle Health Community",
+                    "status": "Ignored",
+                    "section_file": fname,
+                    "section_title": f"Ignored - {gname}",
+                })
 
     def cards(section_type: str) -> str:
         html_cards = ""
@@ -1577,6 +1622,8 @@ renderCommands();
   <div class="index-grid">
 {ignored_forum_cards}  </div>""" if ignored_forum_cards else ""
 
+    root_search_items_json = json.dumps(root_search_items)
+
     index_html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1603,32 +1650,98 @@ category pages now include <strong>Queue Ignore</strong> and <strong>Queue Resto
 Because this report is static HTML, those buttons build PowerShell commands for you to copy or download and run against <code>{manage_script_display}</code>.
   </div>
   <div class="search-panel">
-<input id="index-search" class="search-input" type="search" placeholder="Search categories and groups" oninput="filterIndexCards()">
-<div id="index-search-status" class="muted" style="margin-top: 0.5rem;">Showing all {len(sections_meta)} category card(s).</div>
+<input id="index-search" class="search-input" type="search" placeholder="Search missing page names across all categories" oninput="filterIndexEntries()">
+<div id="index-search-status" class="muted" style="margin-top: 0.5rem;">Search {len(root_search_items)} page name(s) across all categories.</div>
+<div id="index-search-empty" class="search-empty">No matching page names found.</div>
+<div id="index-search-results" class="search-results" style="display:none;">
+  <table>
+    <thead><tr><th>Page</th><th>Category</th><th>Source</th><th>Status</th><th></th></tr></thead>
+    <tbody id="index-search-results-body"></tbody>
+  </table>
+  <div class="muted" style="margin-top: 0.5rem;">Showing up to 250 matches.</div>
   </div>
+  </div>
+  <div id="index-sections">
 {wiki_section}
 {forum_section}
 {ignored_wiki_section}
 {ignored_forum_section}
+  </div>
   <script>
-function filterIndexCards() {{
-  const input = document.getElementById('index-search');
-  const query = (input?.value || '').trim().toLowerCase();
-  const cards = Array.from(document.querySelectorAll('.index-card'));
-  let visibleCount = 0;
-  cards.forEach(card => {{
-    const text = card.textContent.toLowerCase();
-    const matches = !query || text.includes(query);
-    card.style.display = matches ? '' : 'none';
-    if (matches) {{
-      visibleCount += 1;
+var rootSearchItems = {root_search_items_json};
+
+function escapeHtml(value) {{
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}}
+
+function filterIndexEntries() {{
+  var input = document.getElementById('index-search');
+  var status = document.getElementById('index-search-status');
+  var empty = document.getElementById('index-search-empty');
+  var results = document.getElementById('index-search-results');
+  var body = document.getElementById('index-search-results-body');
+  var sections = document.getElementById('index-sections');
+  var query = '';
+  var matches = [];
+  var i;
+
+  if (input && input.value) {{
+    query = String(input.value).trim().toLowerCase();
+  }}
+
+  if (!query) {{
+    if (sections) {{
+      sections.style.display = '';
     }}
-  }});
-  const status = document.getElementById('index-search-status');
+    if (results) {{
+      results.style.display = 'none';
+    }}
+    if (empty) {{
+      empty.style.display = 'none';
+    }}
+    if (body) {{
+      body.innerHTML = '';
+    }}
+    if (status) {{
+      status.textContent = 'Search {len(root_search_items)} page name(s) across all categories.';
+    }}
+    return;
+  }}
+
+  for (i = 0; i < rootSearchItems.length; i += 1) {{
+    if (String(rootSearchItems[i].title || '').toLowerCase().indexOf(query) !== -1) {{
+      matches.push(rootSearchItems[i]);
+    }}
+  }}
+
+  if (sections) {{
+    sections.style.display = 'none';
+  }}
+  if (body) {{
+    body.innerHTML = '';
+    for (i = 0; i < matches.length && i < 250; i += 1) {{
+      body.innerHTML += '<tr>'
+        + '<td><a href="' + escapeHtml(matches[i].url) + '" target="_blank" rel="noopener">' + escapeHtml(matches[i].title) + '</a></td>'
+        + '<td>' + escapeHtml(matches[i].bucket) + '</td>'
+        + '<td>' + escapeHtml(matches[i].kind) + '</td>'
+        + '<td>' + escapeHtml(matches[i].status) + '</td>'
+        + '<td class="act"><a class="btn btn-open" href="{subpages_href_prefix}/' + escapeHtml(matches[i].section_file) + '">Category Page</a></td>'
+        + '</tr>';
+    }}
+  }}
+  if (results) {{
+    results.style.display = matches.length ? '' : 'none';
+  }}
+  if (empty) {{
+    empty.style.display = matches.length ? 'none' : 'block';
+  }}
   if (status) {{
-    status.textContent = query
-      ? 'Showing ' + visibleCount + ' of ' + cards.length + ' category card(s).'
-      : 'Showing all ' + cards.length + ' category card(s).';
+    status.textContent = 'Found ' + matches.length + ' matching page name(s).';
   }}
 }}
   </script>

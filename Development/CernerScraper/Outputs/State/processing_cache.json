@@ -14,6 +14,20 @@
       "size": 1093623,
       "status": "processed"
     },
+    "DownloadedFiles/(ID279) - CHC 2013 - Building an Agile MPages App Store \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1316165/id279-chc-2013-building-an-agile-mpages-app-store",
+      "file_hash": "a0b45417a97b49f7ba4c41c252fb1a08",
+      "mtime_ns": 1772903676000000000,
+      "size": 762665,
+      "status": "processed"
+    },
+    "DownloadedFiles/(Slash)+Using+Discern+Explorer+Debugger.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/%28Slash%29+Using+Discern+Explorer+Debugger",
+      "file_hash": "076dcf053cee365e2f204812f18bffb4",
+      "mtime_ns": 1772998466000000000,
+      "size": 151825,
+      "status": "processed"
+    },
     "DownloadedFiles/2 subqueries IN clause \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1771702/2-subqueries-in-clause",
       "file_hash": "664f07f697968b5b7d6a623b0c19ce3c",
@@ -21,11 +35,109 @@
       "size": 1013085,
       "status": "processed"
     },
+    "DownloadedFiles/2013_Software_Intern_Hackfest_Engineering_Health__25ae5554cd.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/software-intern-hackfest",
+      "file_hash": "02a3dacd494be3732525ff61b33f729b",
+      "mtime_ns": 1772980000000000000,
+      "size": 25047,
+      "status": "processed"
+    },
+    "DownloadedFiles/2018.16 Upgrade - MPage Component Loading Failures with Custom \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1741677/2018-16-upgrade-mpage-component-loading-failures-with-custom",
+      "file_hash": "30b842c6fba13ba71376f221f138100b",
+      "mtime_ns": 1772901924000000000,
+      "size": 1059993,
+      "status": "processed"
+    },
+    "DownloadedFiles/2024.3_MPages 9.0 Update - Errors displaying in multiple MPages components \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1766187/2024-3-mpages-9-0-update-errors-displaying-in-multiple-mpages-components",
+      "file_hash": "e86dc8a62e64572ec2aeab3178a805f1",
+      "mtime_ns": 1772901878000000000,
+      "size": 980866,
+      "status": "processed"
+    },
+    "DownloadedFiles/2_5_Coding_Competition_2017_32_lines_or_less_Engineering_Health__a3c9bb7b9e.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/2-to-the-5th-coding-competition-2017",
+      "file_hash": "f68ffd635f15463f1de54d6e34834bbe",
+      "mtime_ns": 1772980034000000000,
+      "size": 21477,
+      "status": "processed"
+    },
+    "DownloadedFiles/2_5_Coding_Competition_2018_Engineering_Health__207db03f7f.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/2-to-the-5th-coding-competition-2018",
+      "file_hash": "d109f13a9702100ed4721e882101d152",
+      "mtime_ns": 1772980022000000000,
+      "size": 21711,
+      "status": "processed"
+    },
     "DownloadedFiles/4455 - Patient Information MPage Component - Cummings,Chad - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/~CCummings8/4455+-+Patient+Information+MPage+Component",
       "file_hash": "0ee5317d9b162cf7734a36ac270768e3",
       "mtime_ns": 1772726278970021500,
       "size": 206053,
+      "status": "processed"
+    },
+    "DownloadedFiles/4903,+SYS_RUNCCL+Using+OpsView+Scheduler.html": {
+      "dedup_key": "https://wiki.cerner.com/display/millenniumopsHP/4903%2C+SYS_RUNCCL+Using+OpsView+Scheduler",
+      "file_hash": "2a1181ad5af7df566baf71a892201f9a",
+      "mtime_ns": 1772967624000000000,
+      "size": 198166,
+      "status": "processed"
+    },
+    "DownloadedFiles/ABS+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ABS+Using+Discern+Explorer",
+      "file_hash": "53c5dc1334ffc6e427ba27954f4307a9",
+      "mtime_ns": 1772969028000000000,
+      "size": 186929,
+      "status": "processed"
+    },
+    "DownloadedFiles/ADATE+Using+Discern+Explorer(1).html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ADATE+Using+Discern+Explorer",
+      "file_hash": "3aad35e2e19cdc3161b767b47d0f9e6b",
+      "mtime_ns": 1772998792000000000,
+      "size": 151973,
+      "status": "processed"
+    },
+    "DownloadedFiles/ADATE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ADATE+Using+Discern+Explorer",
+      "file_hash": "b85533985e40adcd362001ae217dbefe",
+      "mtime_ns": 1772998476000000000,
+      "size": 151973,
+      "status": "duplicate_url"
+    },
+    "DownloadedFiles/AESDECRYPT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/AESDECRYPT+Using+Discern+Explorer",
+      "file_hash": "c919404fd017f3d18ef387c119ecd4f7",
+      "mtime_ns": 1772969038000000000,
+      "size": 188130,
+      "status": "processed"
+    },
+    "DownloadedFiles/AESDECRYPTFILE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/AESDECRYPTFILE+Using+Discern+Explorer",
+      "file_hash": "47a650efa730892ec804cef4bdb7765f",
+      "mtime_ns": 1772969038000000000,
+      "size": 192488,
+      "status": "processed"
+    },
+    "DownloadedFiles/AESENCRYPT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/AESENCRYPT+Using+Discern+Explorer",
+      "file_hash": "86e734ca6bfa850eea3ecaed0c439c3a",
+      "mtime_ns": 1772969038000000000,
+      "size": 188553,
+      "status": "processed"
+    },
+    "DownloadedFiles/AESENCRYPTFILE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/AESENCRYPTFILE+Using+Discern+Explorer",
+      "file_hash": "83bd709a0dd18f74d0d857b9a3a43a23",
+      "mtime_ns": 1772969042000000000,
+      "size": 192356,
+      "status": "processed"
+    },
+    "DownloadedFiles/AIX+Baseline+Recommendations.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/AIX+Baseline+Recommendations",
+      "file_hash": "8a6c6ea85d832fe40de43e045bd46571",
+      "mtime_ns": 1772969042000000000,
+      "size": 198920,
       "status": "processed"
     },
     "DownloadedFiles/AJAX XMLCCLRequest from browser \u2014 Oracle Health.html": {
@@ -42,11 +154,67 @@
       "size": 1004304,
       "status": "processed"
     },
+    "DownloadedFiles/ALTER+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ALTER+Using+Discern+Explorer",
+      "file_hash": "22ae4712e3f309c6fe9942b62e733106",
+      "mtime_ns": 1772969046000000000,
+      "size": 190737,
+      "status": "processed"
+    },
+    "DownloadedFiles/ALTER2+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ALTER2+Using+Discern+Explorer",
+      "file_hash": "9aa7e0e42ccdd44a51c437df1d9f6ea6",
+      "mtime_ns": 1772969046000000000,
+      "size": 189047,
+      "status": "processed"
+    },
+    "DownloadedFiles/ALTER3+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ALTER3+Using+Discern+Explorer",
+      "file_hash": "80e5131c77d21276c4c99c8ececc1d87",
+      "mtime_ns": 1772998794000000000,
+      "size": 153180,
+      "status": "processed"
+    },
+    "DownloadedFiles/ALTERLIST+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ALTERLIST+Using+Discern+Explorer",
+      "file_hash": "97526c6e43952826d57ffff5a416cff4",
+      "mtime_ns": 1772967632000000000,
+      "size": 192885,
+      "status": "processed"
+    },
+    "DownloadedFiles/ANSI+JOIN+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ANSI+JOIN+Using+Discern+Explorer",
+      "file_hash": "af65f35fb393a3ed287352322cf0d8c1",
+      "mtime_ns": 1772969046000000000,
+      "size": 201337,
+      "status": "processed"
+    },
+    "DownloadedFiles/AP Report Text Substring from CCL Data Source \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1003134/ap-report-text-substring-from-ccl-data-source",
+      "file_hash": "536ed2163968890f5f5c46010fbaee4e",
+      "mtime_ns": 1772973672000000000,
+      "size": 808454,
+      "status": "processed"
+    },
+    "DownloadedFiles/APPEND+Control+Option+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/APPEND+Control+Option+Using+Discern+Explorer",
+      "file_hash": "9bd6b5faa2ef06bab9125dfcdf989db3",
+      "mtime_ns": 1772969046000000000,
+      "size": 186631,
+      "status": "processed"
+    },
     "DownloadedFiles/APPLINK - MPages Development Wiki - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/MPDEVWIKI/APPLINK",
       "file_hash": "0fa665309577b0d5977b100d578967c0",
       "mtime_ns": 1772011212492486900,
       "size": 190437,
+      "status": "processed"
+    },
+    "DownloadedFiles/APPLINK Suggestions \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1706192/applink-suggestions",
+      "file_hash": "794c10ae052680362c7b6179c7e439e4",
+      "mtime_ns": 1772904492000000000,
+      "size": 798928,
       "status": "processed"
     },
     "DownloadedFiles/APPLINK Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
@@ -98,6 +266,76 @@
       "size": 190822,
       "status": "duplicate_url"
     },
+    "DownloadedFiles/ARCHIVE+Control+Option+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ARCHIVE+Control+Option+Using+Discern+Explorer",
+      "file_hash": "de9f9a9cde282f6dc9d30bb823a9cbb0",
+      "mtime_ns": 1772969050000000000,
+      "size": 186674,
+      "status": "processed"
+    },
+    "DownloadedFiles/ARRAYJOIN+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ARRAYJOIN+Using+Discern+Explorer",
+      "file_hash": "ae1a925d9616a560db1ca5c8c6e3d282",
+      "mtime_ns": 1772998794000000000,
+      "size": 163596,
+      "status": "processed"
+    },
+    "DownloadedFiles/ARRAYSPLIT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ARRAYSPLIT+Using+Discern+Explorer",
+      "file_hash": "f4c0b2ae1d49f57f39c756416e03a99e",
+      "mtime_ns": 1772998796000000000,
+      "size": 158819,
+      "status": "processed"
+    },
+    "DownloadedFiles/ASIS+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ASIS+Using+Discern+Explorer",
+      "file_hash": "5ce5a4841a1af9a07b6e398e7b0e3bfd",
+      "mtime_ns": 1772969048000000000,
+      "size": 187312,
+      "status": "processed"
+    },
+    "DownloadedFiles/ASM+Memory+Tuning.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/ASM+Memory+Tuning",
+      "file_hash": "fdd627ec24ee0b4901be3a1e6ea4bd06",
+      "mtime_ns": 1772999052000000000,
+      "size": 207933,
+      "status": "processed"
+    },
+    "DownloadedFiles/ASSIGN+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ASSIGN+Using+Discern+Explorer",
+      "file_hash": "ca7d3bed90de1eba8b98dae2ab8f1822",
+      "mtime_ns": 1772969052000000000,
+      "size": 188413,
+      "status": "processed"
+    },
+    "DownloadedFiles/ASSIGN2+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ASSIGN2+Using+Discern+Explorer",
+      "file_hash": "c1251c59f2b44ba7f43d24d5cb453bbc",
+      "mtime_ns": 1772969052000000000,
+      "size": 187241,
+      "status": "processed"
+    },
+    "DownloadedFiles/ASSIGN3+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ASSIGN3+Using+Discern+Explorer",
+      "file_hash": "a4ca355a3b8c1a27f583d1b812e8bbe5",
+      "mtime_ns": 1772969054000000000,
+      "size": 187482,
+      "status": "processed"
+    },
+    "DownloadedFiles/AVG+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/AVG+Using+Discern+Explorer",
+      "file_hash": "757502706654e5b0db4524e8f19d7d6a",
+      "mtime_ns": 1772969056000000000,
+      "size": 193479,
+      "status": "processed"
+    },
+    "DownloadedFiles/AWR+Manual+Purge.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/AWR+Manual+Purge",
+      "file_hash": "70e1981402a1dfdd1e255de5c4b56b06",
+      "mtime_ns": 1772999078000000000,
+      "size": 233077,
+      "status": "processed"
+    },
     "DownloadedFiles/Abbreviating+Table+Names+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
@@ -133,6 +371,20 @@
       "size": 528765,
       "status": "processed"
     },
+    "DownloadedFiles/Access+Visual+Explorer+From+the+Cerner+Application+Toolbar+In+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Access+Visual+Explorer+From+the+Cerner+Application+Toolbar+In+Discern+Explorer",
+      "file_hash": "d3f58f5b3091d123572070e6699b19bd",
+      "mtime_ns": 1772969028000000000,
+      "size": 184993,
+      "status": "processed"
+    },
+    "DownloadedFiles/Accessibility+in+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Accessibility+in+Discern+Explorer",
+      "file_hash": "2545d979f6de217892568e5da6af9098",
+      "mtime_ns": 1772969028000000000,
+      "size": 192064,
+      "status": "processed"
+    },
     "DownloadedFiles/Accessing+Discern+Explorer+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
@@ -146,6 +398,13 @@
       "mtime_ns": 1772723963280602600,
       "size": 2252,
       "status": "duplicate_hash"
+    },
+    "DownloadedFiles/Accessing+an+Editor+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Accessing+an+Editor+Using+Discern+Explorer",
+      "file_hash": "7db58c78d74c12ffecfaf99cd17c1669",
+      "mtime_ns": 1772998474000000000,
+      "size": 149041,
+      "status": "processed"
     },
     "DownloadedFiles/Accessing+the+Data+Dictionary+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
@@ -175,6 +434,188 @@
       "size": 1043023,
       "status": "processed"
     },
+    "DownloadedFiles/Ad+Hoc+Query+Control+Options+in+Discern+Visual+Developer(1).html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Ad+Hoc+Query+Control+Options+in+Discern+Visual+Developer",
+      "file_hash": "e0530f88bd27882c6abd1f344d4ef227",
+      "mtime_ns": 1772998792000000000,
+      "size": 154883,
+      "status": "processed"
+    },
+    "DownloadedFiles/Ad+Hoc+Query+Control+Options+in+Discern+Visual+Developer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Ad+Hoc+Query+Control+Options+in+Discern+Visual+Developer",
+      "file_hash": "bd0fae4f0f9c584fb0df15f8141e2f7f",
+      "mtime_ns": 1772998474000000000,
+      "size": 154883,
+      "status": "duplicate_url"
+    },
+    "DownloadedFiles/Ad+Hoc+Query+Example+Using+Discern+Visual+Developer(1).html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Ad+Hoc+Query+Example+Using+Discern+Visual+Developer",
+      "file_hash": "454a3d62e3af1a9dcfb5dc56bcebb80a",
+      "mtime_ns": 1772998792000000000,
+      "size": 149062,
+      "status": "processed"
+    },
+    "DownloadedFiles/Ad+Hoc+Query+Example+Using+Discern+Visual+Developer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Ad+Hoc+Query+Example+Using+Discern+Visual+Developer",
+      "file_hash": "98fa5480abe8fdbea366995c71715a70",
+      "mtime_ns": 1772998476000000000,
+      "size": 149062,
+      "status": "duplicate_url"
+    },
+    "DownloadedFiles/Add+-+Remove+Favorites+Dialog+Box+in+Visual+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+-+Remove+Favorites+Dialog+Box+in+Visual+Explorer",
+      "file_hash": "9d267984e694aefa4a857e4d5ede2ba7",
+      "mtime_ns": 1772998478000000000,
+      "size": 149180,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+-+Remove+TDB+Transaction+Database+Favorites+Dialog+Box+in+Visual+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+-+Remove+TDB+Transaction+Database+Favorites+Dialog+Box+in+Visual+Explorer",
+      "file_hash": "4e45cd21510de3f343b428984e35c696",
+      "mtime_ns": 1772998478000000000,
+      "size": 151282,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+-+Remove+Table+Favorites+Dialog+Box+in+Visual+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+-+Remove+Table+Favorites+Dialog+Box+in+Visual+Explorer",
+      "file_hash": "6ea30ffb3454f5fa10fba5177192cbff",
+      "mtime_ns": 1772998478000000000,
+      "size": 151963,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+Code+Item+Dialog+Box+in+Visual+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+Code+Item+Dialog+Box+in+Visual+Explorer",
+      "file_hash": "dd9c5914a98c0290b4995796ae6eda8f",
+      "mtime_ns": 1772998478000000000,
+      "size": 151673,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+Code+Values+Dialog+Box+in+Visual+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+Code+Values+Dialog+Box+in+Visual+Explorer",
+      "file_hash": "bae4b79206a261ae3534deae2713e2d6",
+      "mtime_ns": 1772998480000000000,
+      "size": 153448,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+Expression+Dialog+Box+in+Discern+Visual+Developer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+Expression+Dialog+Box+in+Discern+Visual+Developer",
+      "file_hash": "539c535ce3099f9bcb5f1059faae0b4e",
+      "mtime_ns": 1773001248000000000,
+      "size": 188987,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+Expression+Dialog+Box+in+Visual+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+Expression+Dialog+Box+in+Visual+Explorer",
+      "file_hash": "fc3f89c9f8026eb6bfee431280e7f7be",
+      "mtime_ns": 1773001250000000000,
+      "size": 189367,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+Folder+Dialog+Box+in+Discern+Visual+Developer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+Folder+Dialog+Box+in+Discern+Visual+Developer",
+      "file_hash": "30d75ae371c92105c5069000faf084e6",
+      "mtime_ns": 1773001250000000000,
+      "size": 186297,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+Include+Files+Dialog+Box+in+Visual+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+Include+Files+Dialog+Box+in+Visual+Explorer",
+      "file_hash": "c85d40f621b6c79eadf784ab1d47deef",
+      "mtime_ns": 1773001250000000000,
+      "size": 186721,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+Program+To+Main+Menu+Dialog+Box+Using+Explorer+Menu.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+Program+To+Main+Menu+Dialog+Box+Using+Explorer+Menu",
+      "file_hash": "31be7f08e954f3117a96d0c3d8fb2a6c",
+      "mtime_ns": 1773001252000000000,
+      "size": 187485,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+Queries+Dialog+Box+Using+Discern+Layout+Builder.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+Queries+Dialog+Box+Using+Discern+Layout+Builder",
+      "file_hash": "b36ad3354dee0e8a95f78a1f0cb44181",
+      "mtime_ns": 1773001252000000000,
+      "size": 188360,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+Query+Dialog+Box+in+Discern+Program+Wizard.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+Query+Dialog+Box+in+Discern+Program+Wizard",
+      "file_hash": "363baf73adc29ef326b3295d3f719da4",
+      "mtime_ns": 1773001252000000000,
+      "size": 186695,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+Record+Structures+Dialog+Box+in+Visual+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+Record+Structures+Dialog+Box+in+Visual+Explorer",
+      "file_hash": "36b8f1cf8b96eccbcbccd5ed84ea761e",
+      "mtime_ns": 1773001252000000000,
+      "size": 187764,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+Records+Dialog+Box+in+Visual+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+Records+Dialog+Box+in+Visual+Explorer",
+      "file_hash": "6d8b1a36800b25d65a7e2a44c7ea8a1e",
+      "mtime_ns": 1773001254000000000,
+      "size": 188104,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+Report+Dialog+Box+in+Discern+Visual+Developer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+Report+Dialog+Box+in+Discern+Visual+Developer",
+      "file_hash": "9bb487d4f88e048822313fb1e2133ff9",
+      "mtime_ns": 1773001254000000000,
+      "size": 186974,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+Select+If+Dialog+Box+in+Discern+Program+Wizard.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+Select+If+Dialog+Box+in+Discern+Program+Wizard",
+      "file_hash": "5b7bad86cd90e893d540fd00175fe05e",
+      "mtime_ns": 1773001256000000000,
+      "size": 186089,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+Subroutine+Dialog+Box+in+Discern+Program+Wizard.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+Subroutine+Dialog+Box+in+Discern+Program+Wizard",
+      "file_hash": "c72f695fd9d8c35c3deca801b3765916",
+      "mtime_ns": 1773001256000000000,
+      "size": 186875,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+User+Program+to+Personal+Menu+Window+in+Explorer+Menu.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+User+Program+to+Personal+Menu+Window+in+Explorer+Menu",
+      "file_hash": "92702ec4c604b7d3f8bbfc419b16ace9",
+      "mtime_ns": 1773001256000000000,
+      "size": 186339,
+      "status": "processed"
+    },
+    "DownloadedFiles/Add+Variable+Dialog+Box+in+Discern+Program+Wizard.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Add+Variable+Dialog+Box+in+Discern+Program+Wizard",
+      "file_hash": "7450a59951e45edcc8e5c55106583ded",
+      "mtime_ns": 1773001256000000000,
+      "size": 188319,
+      "status": "processed"
+    },
+    "DownloadedFiles/AddRemove+TDB+Entries+to+Workspace+Dialog+Box+Using+Discern+Visual+Developer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/AddRemove+TDB+Entries+to+Workspace+Dialog+Box+Using+Discern+Visual+Developer",
+      "file_hash": "947b6b3ea80550514f29695609c484c6",
+      "mtime_ns": 1773001262000000000,
+      "size": 188987,
+      "status": "processed"
+    },
+    "DownloadedFiles/AddRemove+TDB+Favorites+Dialog+Box+Using+Discern+Visual+Developer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/AddRemove+TDB+Favorites+Dialog+Box+Using+Discern+Visual+Developer",
+      "file_hash": "2960badb7ad6ca8dffd47346abe2fbe7",
+      "mtime_ns": 1773001262000000000,
+      "size": 188381,
+      "status": "processed"
+    },
+    "DownloadedFiles/AddRemove+Tables+to+Workspace+Dialog+Box+in+Discern+Visual+Developer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/AddRemove+Tables+to+Workspace+Dialog+Box+in+Discern+Visual+Developer",
+      "file_hash": "3d39e99738256ebc933bdb7d7a9ef7e9",
+      "mtime_ns": 1773001260000000000,
+      "size": 187502,
+      "status": "processed"
+    },
     "DownloadedFiles/Adding a field from registration to an immunization report_query \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1577983/adding-a-field-from-registration-to-an-immunization-report-query",
       "file_hash": "fa720f6f61c435cae38579c4b2b95120",
@@ -189,12 +630,138 @@
       "size": 1002375,
       "status": "processed"
     },
+    "DownloadedFiles/Adding+Custom+Data+Source+Programs+to+List+in+Discern+Prompt+Library.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Adding+Custom+Data+Source+Programs+to+List+in+Discern+Prompt+Library",
+      "file_hash": "247ebe145ea58aee48fc7ab13d806bf7",
+      "mtime_ns": 1772969034000000000,
+      "size": 188451,
+      "status": "processed"
+    },
+    "DownloadedFiles/Adding+Inbound+Code+Value+Aliases+to+a+Single+Code+Value+using+Core+Code+Builder.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101knowledgeappsHP/Adding+Inbound+Code+Value+Aliases+to+a+Single+Code+Value+using+Core+Code+Builder",
+      "file_hash": "e9156d71dc384f4925c07e21af18097e",
+      "mtime_ns": 1772969036000000000,
+      "size": 188813,
+      "status": "processed"
+    },
+    "DownloadedFiles/Adding+Medications+to+an+Antibiotic+Using+EksMicroMed.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Adding+Medications+to+an+Antibiotic+Using+EksMicroMed",
+      "file_hash": "eb931d9ea03a6a90529a9efd9116ebd8",
+      "mtime_ns": 1773001168000000000,
+      "size": 186835,
+      "status": "processed"
+    },
+    "DownloadedFiles/Adding+Members+to+a+Group+Using+OMF+Grouping+Tool.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Adding+Members+to+a+Group+Using+OMF+Grouping+Tool",
+      "file_hash": "5bfea0abdd8eaff6f9fa7c797cbfa53a",
+      "mtime_ns": 1773001168000000000,
+      "size": 187213,
+      "status": "processed"
+    },
+    "DownloadedFiles/Adding+New+Editing+Template+Dialog+Box+in+Template+Editor.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Adding+New+Editing+Template+Dialog+Box+in+Template+Editor",
+      "file_hash": "69fd387ad57d05e3a4f4aae40e0ad034",
+      "mtime_ns": 1773001168000000000,
+      "size": 187736,
+      "status": "processed"
+    },
+    "DownloadedFiles/Adding+Outbound+Code+Value+Aliases+to+One+Code+Value+using+Core+Code+Builder.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101knowledgeappsHP/Adding+Outbound+Code+Value+Aliases+to+One+Code+Value+using+Core+Code+Builder",
+      "file_hash": "42c6395f5ec21c2a2668b257a3db8ec6",
+      "mtime_ns": 1772969036000000000,
+      "size": 188486,
+      "status": "processed"
+    },
+    "DownloadedFiles/Adding+Prompt+Controls+to+an+Existing+Program+Using+Discern+Visual+Developer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Adding+Prompt+Controls+to+an+Existing+Program+Using+Discern+Visual+Developer",
+      "file_hash": "9513ce3966064a4bac2696aa8a2ad119",
+      "mtime_ns": 1773001258000000000,
+      "size": 189772,
+      "status": "processed"
+    },
     "DownloadedFiles/Adding+Rows+to+an+ISAM+User-Defined+File+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
       "mtime_ns": 1772723963849905500,
       "size": 2252,
       "status": "duplicate_hash"
+    },
+    "DownloadedFiles/Adding+a+CDF+Meaning+to+a+Code+Value+Using+Core+Code+Builder.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101knowledgeappsHP/Adding+a+CDF+Meaning+to+a+Code+Value+Using+Core+Code+Builder",
+      "file_hash": "4ffaf6709e05e4d6e16730c1effc7dfc",
+      "mtime_ns": 1772969032000000000,
+      "size": 194032,
+      "status": "processed"
+    },
+    "DownloadedFiles/Adding+a+Code+Set+Extension+using+Core+Code+Builder.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101knowledgeappsHP/Adding+a+Code+Set+Extension+using+Core+Code+Builder",
+      "file_hash": "961a97a693781ed71ad263b47bd8eb63",
+      "mtime_ns": 1772969032000000000,
+      "size": 187788,
+      "status": "processed"
+    },
+    "DownloadedFiles/Adding+a+Code+Value+Extension+Using+Core+Code+Builder.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101knowledgeappsHP/Adding+a+Code+Value+Extension+Using+Core+Code+Builder",
+      "file_hash": "fedf0d537e047c63e9b6a1a91bd94a03",
+      "mtime_ns": 1772969032000000000,
+      "size": 186396,
+      "status": "processed"
+    },
+    "DownloadedFiles/Adding+a+Code+Value+to+a+Code+Set+Using+Core+Code+Builder.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101knowledgeappsHP/Adding+a+Code+Value+to+a+Code+Set+Using+Core+Code+Builder",
+      "file_hash": "0c773a50fa6043c6b786aa2677047ffa",
+      "mtime_ns": 1772969032000000000,
+      "size": 187652,
+      "status": "processed"
+    },
+    "DownloadedFiles/Adding+a+Display+Scheme+Using+Display+Scheme+Tool.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101schedulingHP/Adding+a+Display+Scheme+Using+Display+Scheme+Tool",
+      "file_hash": "9ffab04bdf88c20a77f22eb3f10be959",
+      "mtime_ns": 1773001520000000000,
+      "size": 170694,
+      "status": "processed"
+    },
+    "DownloadedFiles/Adding+a+Menu+Item+Using+Explorer+Menu.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Adding+a+Menu+Item+Using+Explorer+Menu",
+      "file_hash": "8998de01d456bb13b0f6df3ca5a06b2d",
+      "mtime_ns": 1773001258000000000,
+      "size": 185502,
+      "status": "processed"
+    },
+    "DownloadedFiles/Adding+a+New+Template+Using+Template+Editor.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Adding+a+New+Template+Using+Template+Editor",
+      "file_hash": "0b62393acee729caa66c0d8003701928",
+      "mtime_ns": 1773001168000000000,
+      "size": 186601,
+      "status": "processed"
+    },
+    "DownloadedFiles/Adding+a+Program+Item+Using+Explorer+Menu.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Adding+a+Program+Item+Using+Explorer+Menu",
+      "file_hash": "2985489167797fe297fc1ca3cba7c47b",
+      "mtime_ns": 1773001258000000000,
+      "size": 188417,
+      "status": "processed"
+    },
+    "DownloadedFiles/Adding+a+Resource+Using+DB+Resource+Tool.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101schedulingHP/Adding+a+Resource+Using+DB+Resource+Tool",
+      "file_hash": "69fadf97c1eb6087f28dafd1b97f2969",
+      "mtime_ns": 1773001516000000000,
+      "size": 155054,
+      "status": "processed"
+    },
+    "DownloadedFiles/Adding+and+Enhancing+Text+Using+Visual+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Adding+and+Enhancing+Text+Using+Visual+Explorer",
+      "file_hash": "c4fb7dbbe4424226a4d18ae2662623fa",
+      "mtime_ns": 1773001258000000000,
+      "size": 186030,
+      "status": "processed"
+    },
+    "DownloadedFiles/Adding+and+Modifying+Code+Values+in+Content+Manager+using+Core+Code+Builder.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101knowledgeappsHP/Adding+and+Modifying+Code+Values+in+Content+Manager+using+Core+Code+Builder",
+      "file_hash": "56d2fb41024353c3feb849439b496982",
+      "mtime_ns": 1772969034000000000,
+      "size": 186617,
+      "status": "processed"
     },
     "DownloadedFiles/Adding+and+Viewing+Policies+and+Procedures+Documents.html": {
       "dedup_key": "https://wiki.cerner.com/display/help/Adding+and+Viewing+Policies+and+Procedures+Documents",
@@ -210,12 +777,47 @@
       "size": 2252,
       "status": "duplicate_hash"
     },
+    "DownloadedFiles/AdvAPI+Subroutine+Category+in+Discern+Prompt+Library.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/AdvAPI+Subroutine+Category+in+Discern+Prompt+Library",
+      "file_hash": "b0426ff6b595f1b30de2e776a60f0429",
+      "mtime_ns": 1772969038000000000,
+      "size": 186832,
+      "status": "processed"
+    },
     "DownloadedFiles/Aggregate+Functions+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
       "mtime_ns": 1772723964417553900,
       "size": 2252,
       "status": "duplicate_hash"
+    },
+    "DownloadedFiles/Alan_and_Grace_An_Origin_Story_Engineering_Health__e87838b730.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/alan-and-grace-an-origin-story",
+      "file_hash": "4d0100470b0f2e5a566acb5ab5bbf796",
+      "mtime_ns": 1772979990000000000,
+      "size": 22957,
+      "status": "processed"
+    },
+    "DownloadedFiles/Alert,+Confirm,+Prompt,+and+Eval+in+Discern+Prompt+Library.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Alert%2C+Confirm%2C+Prompt%2C+and+Eval+in+Discern+Prompt+Library",
+      "file_hash": "f45143f95f1df1df54f3aaa92f683c76",
+      "mtime_ns": 1772969042000000000,
+      "size": 186648,
+      "status": "processed"
+    },
+    "DownloadedFiles/Alias+Lab+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Alias+Lab+Using+Discern+Explorer",
+      "file_hash": "107fc33e1d108bf963a6fc7c31f23cbe",
+      "mtime_ns": 1773001262000000000,
+      "size": 184466,
+      "status": "processed"
+    },
+    "DownloadedFiles/Aliases+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Aliases+Using+Discern+Explorer",
+      "file_hash": "9dd9215c22e9c8a8ec626b94334b8df9",
+      "mtime_ns": 1772998792000000000,
+      "size": 152767,
+      "status": "processed"
     },
     "DownloadedFiles/All About Discern Explorer Handling of Custom Script Transactions - Reference Pages - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/reference/All+About+Discern+Explorer+Handling+of+Custom+Script+Transactions",
@@ -236,6 +838,13 @@
       "file_hash": "c6d2be78a0115018954efbe214ce1398",
       "mtime_ns": 1772372340000000000,
       "size": 250483,
+      "status": "processed"
+    },
+    "DownloadedFiles/All+About+Load+Balancing.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/All+About+Load+Balancing",
+      "file_hash": "ac3bb5a686aa94ad8ee20546d82875bb",
+      "mtime_ns": 1772969044000000000,
+      "size": 216604,
       "status": "processed"
     },
     "DownloadedFiles/All+About+Patient+List.htm": {
@@ -280,6 +889,20 @@
       "size": 224030,
       "status": "processed"
     },
+    "DownloadedFiles/Allocate+Additional+Memory+for+Session+Graphics.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Allocate+Additional+Memory+for+Session+Graphics",
+      "file_hash": "e80c918ff6581050fee54cc14fc6ef7c",
+      "mtime_ns": 1772998974000000000,
+      "size": 189820,
+      "status": "processed"
+    },
+    "DownloadedFiles/Altering+the+Oracle+Database+Character+Set.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Altering+the+Oracle+Database+Character+Set",
+      "file_hash": "a79af0d7964d0114492edd5f5edf8954",
+      "mtime_ns": 1772999036000000000,
+      "size": 295607,
+      "status": "processed"
+    },
     "DownloadedFiles/Amb Organizer - Report_Name and Report_Param \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/498099/amb-organizer-report-name-and-report-param",
       "file_hash": "69032854eef6afaff9d6edaf510d88be",
@@ -299,6 +922,20 @@
       "file_hash": "fe1b380c57c41c4f888d88ad42b3b819",
       "mtime_ns": 1772385042484871200,
       "size": 1131873,
+      "status": "processed"
+    },
+    "DownloadedFiles/Announcing_Bunsen_FHIR_Data_with_Apache_Spark_Engineering_Health__572741f89a.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/announcing-bunsen-fhir-data-with-apache-spark",
+      "file_hash": "7628c5198149ef9d75a705aad20098b7",
+      "mtime_ns": 1772979968000000000,
+      "size": 30441,
+      "status": "processed"
+    },
+    "DownloadedFiles/Answers+To+Exercises+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Answers+To+Exercises+Using+Discern+Explorer",
+      "file_hash": "fe6fced4be11a4f6df46f6acf4f87235",
+      "mtime_ns": 1773001262000000000,
+      "size": 197665,
       "status": "processed"
     },
     "DownloadedFiles/Anyone reporting on Clinical Notes\uff1f \u2014 Oracle Health.html": {
@@ -329,6 +966,34 @@
       "size": 2252,
       "status": "duplicate_hash"
     },
+    "DownloadedFiles/AsOfSCN+Control+Option+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/AsOfSCN+Control+Option+Using+Discern+Explorer",
+      "file_hash": "1db9d1231ea18a37b7dd4996ca9b78a1",
+      "mtime_ns": 1772969050000000000,
+      "size": 192978,
+      "status": "processed"
+    },
+    "DownloadedFiles/AsOfSCNVersion+Control+Option+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/AsOfSCNVersion+Control+Option+Using+Discern+Explorer",
+      "file_hash": "6033c6ca027168cfc0b49ff55786597a",
+      "mtime_ns": 1772969050000000000,
+      "size": 192391,
+      "status": "processed"
+    },
+    "DownloadedFiles/AsOfTime+Control+Option+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/AsOfTime+Control+Option+Using+Discern+Explorer",
+      "file_hash": "2f6066195dd7978f3e70945d0e390c2c",
+      "mtime_ns": 1772969052000000000,
+      "size": 190729,
+      "status": "processed"
+    },
+    "DownloadedFiles/AsOfTimeVersion+Control+Option+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/AsOfTimeVersion+Control+Option+Using+Discern+Explorer",
+      "file_hash": "0e5a74df77eaa7c110d0187a28ee4d31",
+      "mtime_ns": 1772969052000000000,
+      "size": 189443,
+      "status": "processed"
+    },
     "DownloadedFiles/Assistance Needed to Optimize Query_Scripting Involving Tables with Large Volumes of Data. \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1777519/assistance-needed-to-optimize-query-scripting-involving-tables-with-large-volumes-of-data",
       "file_hash": "90d6b387d2dcebdf2bd10a381c7c2998",
@@ -357,11 +1022,165 @@
       "size": 795602,
       "status": "processed"
     },
+    "DownloadedFiles/Authenticating+Code+Values+Using+Core+Code+Builder.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101knowledgeappsHP/Authenticating+Code+Values+Using+Core+Code+Builder",
+      "file_hash": "a56a99fa3ebb9429ce66c7da50a036f8",
+      "mtime_ns": 1772969054000000000,
+      "size": 185980,
+      "status": "processed"
+    },
+    "DownloadedFiles/Auto submit javascript data \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/400546/auto-submit-javascript-data",
+      "file_hash": "4735ad8a21c08ba3aa4d4e612258b5a3",
+      "mtime_ns": 1772904638000000000,
+      "size": 830152,
+      "status": "processed"
+    },
+    "DownloadedFiles/Auto+Kill+Rogue+Blocking+Sessions.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Auto+Kill+Rogue+Blocking+Sessions",
+      "file_hash": "8eef8e999d7d01d1499ba8221d9ad8c4",
+      "mtime_ns": 1772999064000000000,
+      "size": 211658,
+      "status": "processed"
+    },
+    "DownloadedFiles/AutoSet+Subroutine+Category+in+Discern+Prompt+Library.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/AutoSet+Subroutine+Category+in+Discern+Prompt+Library",
+      "file_hash": "5c7a7773064e0199608347bfa9be2bb0",
+      "mtime_ns": 1772969054000000000,
+      "size": 187428,
+      "status": "processed"
+    },
+    "DownloadedFiles/Automated_Deployment_with_Apache_Kafka_Engineering_Health__0576d40ccd.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/automated-deployment-with-apache-kafka",
+      "file_hash": "dee82f8b6f50f4bf18e5f37837c1fe4a",
+      "mtime_ns": 1772980004000000000,
+      "size": 17995,
+      "status": "processed"
+    },
+    "DownloadedFiles/Available+Code+Sets+Dialog+Box+in+Discern+Program+Wizard.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Available+Code+Sets+Dialog+Box+in+Discern+Program+Wizard",
+      "file_hash": "58fcabf844b235c105907764eccc6595",
+      "mtime_ns": 1773001264000000000,
+      "size": 187818,
+      "status": "processed"
+    },
+    "DownloadedFiles/Available+Code+Sets+Dialog+Box+in+Discern+Prompt+Library.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Available+Code+Sets+Dialog+Box+in+Discern+Prompt+Library",
+      "file_hash": "f48d6a49d67e63df2356011127e741e3",
+      "mtime_ns": 1772969056000000000,
+      "size": 187761,
+      "status": "processed"
+    },
+    "DownloadedFiles/Available+Code+Sets+Dialog+Box+in+Discern+Visual+Developer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Available+Code+Sets+Dialog+Box+in+Discern+Visual+Developer",
+      "file_hash": "fc7f9b3795588cc39cb08fc6f75c602b",
+      "mtime_ns": 1773001264000000000,
+      "size": 188321,
+      "status": "processed"
+    },
+    "DownloadedFiles/Available+Code+Sets+Dialog+Box+in+Visual+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Available+Code+Sets+Dialog+Box+in+Visual+Explorer",
+      "file_hash": "7f90d5994c44fea1bc62f94b65f88c50",
+      "mtime_ns": 1773001264000000000,
+      "size": 188016,
+      "status": "processed"
+    },
+    "DownloadedFiles/BAND+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BAND+Using+Discern+Explorer",
+      "file_hash": "3428bb7f3518bcb6d2acc577e1629ec4",
+      "mtime_ns": 1772969056000000000,
+      "size": 195850,
+      "status": "processed"
+    },
+    "DownloadedFiles/BANNER+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BANNER+Using+Discern+Explorer",
+      "file_hash": "68e88cf8fb3507fe5f6c48027b7138fc",
+      "mtime_ns": 1772969058000000000,
+      "size": 185492,
+      "status": "processed"
+    },
+    "DownloadedFiles/BCRATIO+using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BCRATIO+using+Discern+Explorer",
+      "file_hash": "a4516fe8194ca39a2463757eaf0d42fa",
+      "mtime_ns": 1772998800000000000,
+      "size": 150220,
+      "status": "processed"
+    },
+    "DownloadedFiles/BEDROCK_DOMAIN_IND+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BEDROCK_DOMAIN_IND+Using+Discern+Explorer",
+      "file_hash": "a7c8e0dabb72f518f08f6dac02190757",
+      "mtime_ns": 1772998800000000000,
+      "size": 149930,
+      "status": "processed"
+    },
     "DownloadedFiles/BLOB Text repeating in Record Structure \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/881815/blob-text-repeating-in-record-structure",
       "file_hash": "af811d0b156922704629ce28942fcfb9",
       "mtime_ns": 1772723080103007600,
       "size": 827278,
+      "status": "processed"
+    },
+    "DownloadedFiles/BLOBGET+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BLOBGET+Using+Discern+Explorer",
+      "file_hash": "21d2c72ef13f9c64a391cff042f14f4d",
+      "mtime_ns": 1772967634000000000,
+      "size": 189166,
+      "status": "processed"
+    },
+    "DownloadedFiles/BLOBGETLEN+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BLOBGETLEN+Using+Discern+Explorer",
+      "file_hash": "d10a5c5988682f17aa3d19111d324ca7",
+      "mtime_ns": 1772969058000000000,
+      "size": 186651,
+      "status": "processed"
+    },
+    "DownloadedFiles/BMC+AppSight+Overview.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/BMC+AppSight+Overview",
+      "file_hash": "30523e7cf6edf81af11ea37f851e5fb3",
+      "mtime_ns": 1772999088000000000,
+      "size": 192511,
+      "status": "processed"
+    },
+    "DownloadedFiles/BMC+Performance+Monitor+Overview.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/BMC+Performance+Monitor+Overview",
+      "file_hash": "cfb83066e32383101bde5f6b3502fb09",
+      "mtime_ns": 1772999094000000000,
+      "size": 194198,
+      "status": "processed"
+    },
+    "DownloadedFiles/BNOT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BNOT+Using+Discern+Explorer",
+      "file_hash": "a7773f10a385f409f81f3f564f188e9f",
+      "mtime_ns": 1772969060000000000,
+      "size": 195315,
+      "status": "processed"
+    },
+    "DownloadedFiles/BOLD+using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BOLD+using+Discern+Explorer",
+      "file_hash": "9772fb569e1b4aa02ee1dde09506a835",
+      "mtime_ns": 1772969062000000000,
+      "size": 186045,
+      "status": "processed"
+    },
+    "DownloadedFiles/BOR+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BOR+Using+Discern+Explorer",
+      "file_hash": "2f1004c490ae6bc9ab624e483c171086",
+      "mtime_ns": 1772969062000000000,
+      "size": 195933,
+      "status": "processed"
+    },
+    "DownloadedFiles/BOX+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BOX+Using+Discern+Explorer",
+      "file_hash": "13f2adfd38b76f8f9e900028fa0afe09",
+      "mtime_ns": 1772998802000000000,
+      "size": 150530,
+      "status": "processed"
+    },
+    "DownloadedFiles/BREAK+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BREAK+Using+Discern+Explorer",
+      "file_hash": "0c538488fa133cb08159528becde0de7",
+      "mtime_ns": 1772969062000000000,
+      "size": 185276,
       "status": "processed"
     },
     "DownloadedFiles/BREQ Buffer \u2014 Oracle Health.html": {
@@ -371,12 +1190,103 @@
       "size": 1011111,
       "status": "processed"
     },
+    "DownloadedFiles/BROWSE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BROWSE+Using+Discern+Explorer",
+      "file_hash": "af1edae8b2a7483d053d53962284c8a0",
+      "mtime_ns": 1772969064000000000,
+      "size": 186849,
+      "status": "processed"
+    },
+    "DownloadedFiles/BSHIFT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BSHIFT+Using+Discern+Explorer",
+      "file_hash": "c8270a2c8d679f6245aca67e9801b61f",
+      "mtime_ns": 1772998802000000000,
+      "size": 150097,
+      "status": "processed"
+    },
+    "DownloadedFiles/BTEST+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BTEST+Using+Discern+Explorer",
+      "file_hash": "4e9e07441140d337eed8128004ca05fa",
+      "mtime_ns": 1772969066000000000,
+      "size": 195709,
+      "status": "processed"
+    },
+    "DownloadedFiles/BUILD+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BUILD+Using+Discern+Explorer",
+      "file_hash": "bf2ab3df80fa3140a8e66f482d22c1c2",
+      "mtime_ns": 1772969066000000000,
+      "size": 187907,
+      "status": "processed"
+    },
+    "DownloadedFiles/BUILD2+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BUILD2+Using+Discern+Explorer",
+      "file_hash": "474171987d017a2839d7471d7e081a9f",
+      "mtime_ns": 1772969066000000000,
+      "size": 188958,
+      "status": "processed"
+    },
+    "DownloadedFiles/BUILD2CHK(+)+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BUILD2CHK%28+%29+Using+Discern+Explorer",
+      "file_hash": "4d23f4a3fc6af39d9374aa31469b3960",
+      "mtime_ns": 1772969070000000000,
+      "size": 186099,
+      "status": "processed"
+    },
+    "DownloadedFiles/BUILD3+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BUILD3+Using+Discern+Explorer",
+      "file_hash": "e5771b023d78edca350e1a85e259f9aa",
+      "mtime_ns": 1772998804000000000,
+      "size": 152354,
+      "status": "processed"
+    },
+    "DownloadedFiles/BXOR+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/BXOR+Using+Discern+Explorer",
+      "file_hash": "324d1a08eb48b0e3398d8664aa105f2f",
+      "mtime_ns": 1772969070000000000,
+      "size": 196034,
+      "status": "processed"
+    },
     "DownloadedFiles/Back-End+Products+Reference+Pages+Home.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
       "mtime_ns": 1772723964847279900,
       "size": 2252,
       "status": "duplicate_hash"
+    },
+    "DownloadedFiles/Backstore+Menu+in+Template+Editor.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Backstore+Menu+in+Template+Editor",
+      "file_hash": "37200691aefdad4ef1dcd317c0437a81",
+      "mtime_ns": 1773001170000000000,
+      "size": 188480,
+      "status": "processed"
+    },
+    "DownloadedFiles/Bar+Code+Font+Usage+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Bar+Code+Font+Usage+Using+Discern+Explorer",
+      "file_hash": "62ed7073489859c082e46d4015161372",
+      "mtime_ns": 1772998798000000000,
+      "size": 153208,
+      "status": "processed"
+    },
+    "DownloadedFiles/Bar+Code+Types+Using+Discern+Layout+Builder.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Bar+Code+Types+Using+Discern+Layout+Builder",
+      "file_hash": "1ae9ef6391a2ecc86aa1f5e001cea287",
+      "mtime_ns": 1772998798000000000,
+      "size": 162416,
+      "status": "processed"
+    },
+    "DownloadedFiles/Beadledom_-_Simple_Java_framework_for_building_REST_APIs_Engineering_Health__c589401edb.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/beadledom-simple-java-framework-for-building-rest-apis",
+      "file_hash": "7d2f7523ef6f575ed98b22647104a19e",
+      "mtime_ns": 1772979968000000000,
+      "size": 19727,
+      "status": "processed"
+    },
+    "DownloadedFiles/Bedrock _ Custom MPages Development.htm": {
+      "dedup_key": "https://pages.github.cerner.com/MPagesEcosystem/custom-development-documentation/guides/Bedrock",
+      "file_hash": "2a2b50b61d0af278d053f916aed4472e",
+      "mtime_ns": 1772905094000000000,
+      "size": 20626,
+      "status": "processed"
     },
     "DownloadedFiles/Bedrock+MPages+Setup+Help.htm": {
       "dedup_key": "https://wiki.cerner.com/display/bedrockHP/Bedrock+MPages+Setup+Help",
@@ -390,6 +1300,13 @@
       "file_hash": "e11b8b37a9ed145c3108517bf3906123",
       "mtime_ns": 1772367004000000000,
       "size": 206830,
+      "status": "processed"
+    },
+    "DownloadedFiles/Bedrock_Custom_MPages_Development__f8f4e8d107.html": {
+      "dedup_key": "https://mpages-dev-docs.cerner.com/guides/Bedrock",
+      "file_hash": "93e73b8d6749280c3570fc42620d17d9",
+      "mtime_ns": 1772995234000000000,
+      "size": 20980,
       "status": "processed"
     },
     "DownloadedFiles/Behavioral Health Access issue \u2014 Oracle Health.html": {
@@ -455,6 +1372,13 @@
       "size": 1000277,
       "status": "processed"
     },
+    "DownloadedFiles/Best way to link a custom SQL report parameter to a DA2 query parameter \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/944251/best-way-to-link-a-custom-sql-report-parameter-to-a-da2-query-parameter",
+      "file_hash": "a83d6c9b372610d4697334c59284addc",
+      "mtime_ns": 1772973734000000000,
+      "size": 825748,
+      "status": "processed"
+    },
     "DownloadedFiles/Blob AIX Size error using Layout Builder \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/262400/blob-aix-size-error-using-layout-builder",
       "file_hash": "e75006ddd5519bce759ffd62ba31a019",
@@ -467,6 +1391,13 @@
       "file_hash": "1449317ff64a963c8ef3ad28a78d54ce",
       "mtime_ns": 1772722731392971000,
       "size": 796063,
+      "status": "processed"
+    },
+    "DownloadedFiles/BlobIn for CCLLINK \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1541224/blobin-for-ccllink",
+      "file_hash": "071e74140944e6ff75bee0da0752f168",
+      "mtime_ns": 1772904520000000000,
+      "size": 806792,
       "status": "processed"
     },
     "DownloadedFiles/Blobs and Record Structure \u2014 Oracle Health.html": {
@@ -490,11 +1421,39 @@
       "size": 1014651,
       "status": "processed"
     },
+    "DownloadedFiles/Browse+Dialog+Box+Using+Discern+Visual+Developer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Browse+Dialog+Box+Using+Discern+Visual+Developer",
+      "file_hash": "28b4e23e48664be0b6646a3d387bb302",
+      "mtime_ns": 1772998802000000000,
+      "size": 150906,
+      "status": "processed"
+    },
+    "DownloadedFiles/Bug+28620376+-+dba_segments+view+reports+table+negative+segment+size.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Bug+28620376+-+dba_segments+view+reports+table+negative+segment+size",
+      "file_hash": "52abeafde4e0456ca9675b594f7b8071",
+      "mtime_ns": 1772999112000000000,
+      "size": 198326,
+      "status": "processed"
+    },
+    "DownloadedFiles/Build+Menu+in+Discern+Visual+Developer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Build+Menu+in+Discern+Visual+Developer",
+      "file_hash": "02f5c71e6a0deb6f37f74f835d94c4a4",
+      "mtime_ns": 1773001266000000000,
+      "size": 192232,
+      "status": "processed"
+    },
     "DownloadedFiles/Building Discern Explorer CCL Programs to Display HTML Output Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Building+Discern+Explorer+CCL+Programs+to+Display+HTML+Output+Using+Discern+Explorer",
       "file_hash": "46325432160bc5f1c807fd9d7f6c7251",
       "mtime_ns": 1772386915265734100,
       "size": 187296,
+      "status": "processed"
+    },
+    "DownloadedFiles/Building Web Pages Using XMLCclRequest Using Discern Explorer - Discern Help Pages - Cerner Wiki.htm": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Building+Web+Pages+Using+XMLCclRequest+Using+Discern+Explorer",
+      "file_hash": "9794ae43dfba8c5456299e61ddf3a171",
+      "mtime_ns": 1772903798000000000,
+      "size": 188900,
       "status": "processed"
     },
     "DownloadedFiles/Building Web Pages Using XMLCclRequest Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
@@ -511,6 +1470,13 @@
       "size": 2252,
       "status": "duplicate_hash"
     },
+    "DownloadedFiles/Building+Expressions+Tutorial+Using+Visual+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Building+Expressions+Tutorial+Using+Visual+Explorer",
+      "file_hash": "63f1ed6bff7e9d5a78bf11a4e660a491",
+      "mtime_ns": 1773001268000000000,
+      "size": 192553,
+      "status": "processed"
+    },
     "DownloadedFiles/Building+Web+Pages+Using+XMLCclRequest+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
@@ -518,12 +1484,271 @@
       "size": 2252,
       "status": "duplicate_hash"
     },
+    "DownloadedFiles/Building+a+Query+Tutorial+Using+Visual+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Building+a+Query+Tutorial+Using+Visual+Explorer",
+      "file_hash": "f53821bac159cbef2e2a688c30f4db16",
+      "mtime_ns": 1773001266000000000,
+      "size": 187873,
+      "status": "processed"
+    },
+    "DownloadedFiles/Building+a+Report+Tutorial+Using+Visual+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Building+a+Report+Tutorial+Using+Visual+Explorer",
+      "file_hash": "e3750a77493680434e3d126a51023a33",
+      "mtime_ns": 1773001266000000000,
+      "size": 202988,
+      "status": "processed"
+    },
+    "DownloadedFiles/Button+Control+in+Discern+Prompt+Library.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Button+Control+in+Discern+Prompt+Library",
+      "file_hash": "f88b7bede9f2c184c98c0f2c7bf4f33b",
+      "mtime_ns": 1772969070000000000,
+      "size": 185711,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALCPOS+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALCPOS+Using+Discern+Explorer",
+      "file_hash": "a619cecff15ce97dccd4643680b11f26",
+      "mtime_ns": 1772969072000000000,
+      "size": 187488,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+ACCEPT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+ACCEPT+Using+Discern+Explorer",
+      "file_hash": "285523eb099c5e3f8f13c6b52b03bafd",
+      "mtime_ns": 1772969072000000000,
+      "size": 197366,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+BOX+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+BOX+Using+Discern+Explorer",
+      "file_hash": "2ee515d20a0c8fe29c4dbb074f702edf",
+      "mtime_ns": 1772969072000000000,
+      "size": 186700,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+CANCEL+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+CANCEL+Using+Discern+Explorer",
+      "file_hash": "cb80aad7207380d26d1b75cfeabdbd4d",
+      "mtime_ns": 1772969074000000000,
+      "size": 190435,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+CCLEXCEPTION+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+CCLEXCEPTION+Using+Discern+Explorer",
+      "file_hash": "14d122846ca7ad974c0f01b333396a05",
+      "mtime_ns": 1772969074000000000,
+      "size": 190311,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+CENTER+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+CENTER+Using+Discern+Explorer",
+      "file_hash": "8c6b13460f1c5a25a958d425b20f189c",
+      "mtime_ns": 1772969076000000000,
+      "size": 189210,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+CLEAR+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+CLEAR+Using+Discern+Explorer",
+      "file_hash": "bc0c0088211fe7a35f86a7e4289b1b13",
+      "mtime_ns": 1772969076000000000,
+      "size": 187900,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+COMPILE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+COMPILE+Using+Discern+Explorer",
+      "file_hash": "5f4b64927cca82aa95f674805e6ad59c",
+      "mtime_ns": 1772969078000000000,
+      "size": 188031,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+Command+in+Reportwriter+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+Command+in+Reportwriter+Using+Discern+Explorer",
+      "file_hash": "9670e1f6fe34cd794cb6c19a04e60ce7",
+      "mtime_ns": 1772969076000000000,
+      "size": 185364,
+      "status": "processed"
+    },
     "DownloadedFiles/CALL+Commands+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
       "mtime_ns": 1772723965536764800,
       "size": 2252,
       "status": "duplicate_hash"
+    },
+    "DownloadedFiles/CALL+DCL+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+DCL+Using+Discern+Explorer",
+      "file_hash": "7c4c11da592c83315dfce5888025f478",
+      "mtime_ns": 1772967638000000000,
+      "size": 197154,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+DEBUG+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+DEBUG+Using+Discern+Explorer",
+      "file_hash": "c843dad27e6d3f234e75fcd3e9cd638c",
+      "mtime_ns": 1772969078000000000,
+      "size": 186163,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+ECHO+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+ECHO+Using+Discern+Explorer",
+      "file_hash": "4a8f04c4aeb1e6e2f3c2afd8c823dbd4",
+      "mtime_ns": 1772969078000000000,
+      "size": 189301,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+ECHOJSON+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+ECHOJSON+Using+Discern+Explorer",
+      "file_hash": "82c998f65cf34a628f2f431337691991",
+      "mtime_ns": 1772967638000000000,
+      "size": 192719,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+ECHORECORD+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+ECHORECORD+Using+Discern+Explorer",
+      "file_hash": "00a92e3e7c710ef625272b8e52095066",
+      "mtime_ns": 1772969080000000000,
+      "size": 192701,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+ECHOXML+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+ECHOXML+Using+Discern+Explorer",
+      "file_hash": "527b287d195fba9d7611f1d2b000f858",
+      "mtime_ns": 1772969082000000000,
+      "size": 194277,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+EDIT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+EDIT+Using+Discern+Explorer",
+      "file_hash": "34635b490ee88cf356d263b339429c01",
+      "mtime_ns": 1772969082000000000,
+      "size": 187440,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+LINE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+LINE+Using+Discern+Explorer",
+      "file_hash": "ee854b5fc8a5e371db1a686699b75311",
+      "mtime_ns": 1772969082000000000,
+      "size": 188506,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+PARSER+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+PARSER+Using+Discern+Explorer",
+      "file_hash": "6369d7605fc1c2673015cf7ec3262c48",
+      "mtime_ns": 1772969084000000000,
+      "size": 191405,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+PAUSE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+PAUSE+Using+Discern+Explorer",
+      "file_hash": "1bd8ca403539eccd1f99aeb861a3869c",
+      "mtime_ns": 1772969084000000000,
+      "size": 188576,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+PRINT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+PRINT+Using+Discern+Explorer",
+      "file_hash": "25af9f54d60fa9462fdf82cf44eacb0a",
+      "mtime_ns": 1772969084000000000,
+      "size": 188352,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+PRINTIMAGE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+PRINTIMAGE+Using+Discern+Explorer",
+      "file_hash": "d1bd5e3fd40bf3535d874bd2f72c0c76",
+      "mtime_ns": 1772969084000000000,
+      "size": 189722,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+REPORTMOVE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+REPORTMOVE+Using+Discern+Explorer",
+      "file_hash": "a2c68e03668efe5e99b6db5ca54d758c",
+      "mtime_ns": 1772969086000000000,
+      "size": 188441,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+SCROLLDOWN+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+SCROLLDOWN+Using+Discern+Explorer",
+      "file_hash": "6919a682a99ec2f60bc4456369782b18",
+      "mtime_ns": 1772969088000000000,
+      "size": 189620,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+SCROLLINIT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+SCROLLINIT+Using+Discern+Explorer",
+      "file_hash": "e370be561c3bf444ca964eaa5d47cf25",
+      "mtime_ns": 1772969088000000000,
+      "size": 187079,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+SCROLLTEXT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+SCROLLTEXT+Using+Discern+Explorer",
+      "file_hash": "3f649d0dbbc504fbc5cea121a7925509",
+      "mtime_ns": 1772969088000000000,
+      "size": 188873,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+SCROLLUP+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+SCROLLUP+Using+Discern+Explorer",
+      "file_hash": "484fc3892576194961e1e06a242ee432",
+      "mtime_ns": 1772969090000000000,
+      "size": 189566,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+TEXT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+TEXT+Using+Discern+Explorer",
+      "file_hash": "0442ab2e10b4f06f2d6d1811db313f34",
+      "mtime_ns": 1772969090000000000,
+      "size": 190776,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+TRACE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+TRACE+Using+Discern+Explorer",
+      "file_hash": "0374b297ddb7f826ba6818278ac10a51",
+      "mtime_ns": 1772967640000000000,
+      "size": 195546,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALL+VIDEO+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALL+VIDEO+Using+Discern+Explorer",
+      "file_hash": "04451ed6fd577bb5f490ee88b131787b",
+      "mtime_ns": 1772969090000000000,
+      "size": 188258,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALLPRG+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALLPRG+Using+Discern+Explorer",
+      "file_hash": "0500fe725e92fd6885d74219ae807b0d",
+      "mtime_ns": 1772969090000000000,
+      "size": 187181,
+      "status": "processed"
+    },
+    "DownloadedFiles/CALLR+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CALLR+Using+Discern+Explorer",
+      "file_hash": "8bda55fd89a138f276e256cee623c2b7",
+      "mtime_ns": 1772998806000000000,
+      "size": 151535,
+      "status": "processed"
+    },
+    "DownloadedFiles/CANCEL+Using+Discern+Explorer+Debugger.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CANCEL+Using+Discern+Explorer+Debugger",
+      "file_hash": "4cb9c967a692bb578959d3f8ddcfe81f",
+      "mtime_ns": 1772999124000000000,
+      "size": 186451,
+      "status": "processed"
+    },
+    "DownloadedFiles/CASE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CASE+Using+Discern+Explorer",
+      "file_hash": "63aeec1d8f583f65f0ccf3cf4298b63c",
+      "mtime_ns": 1772967640000000000,
+      "size": 191372,
+      "status": "processed"
+    },
+    "DownloadedFiles/CC+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CC+Using+Discern+Explorer",
+      "file_hash": "11826a48e90be6167e8cb70f2f4bd590",
+      "mtime_ns": 1772998806000000000,
+      "size": 150340,
+      "status": "processed"
     },
     "DownloadedFiles/CCL Functions - MPages Development Wiki - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/MPDEVWIKI/CCL+Functions",
@@ -623,6 +1848,13 @@
       "size": 1006635,
       "status": "processed"
     },
+    "DownloadedFiles/CCL scripts release management solutions \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/420163/ccl-scripts-release-management-solutions",
+      "file_hash": "b28863a34de05b4a1990fc0a4105b7a9",
+      "mtime_ns": 1772973728000000000,
+      "size": 803748,
+      "status": "processed"
+    },
     "DownloadedFiles/CCL side when using XMLCclRequest \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/363207/ccl-side-when-using-xmlcclrequest",
       "file_hash": "355496d26f48edf68f5d222346f943bc",
@@ -672,6 +1904,20 @@
       "size": 811708,
       "status": "processed"
     },
+    "DownloadedFiles/CCL+Dictionary+File+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCL+Dictionary+File+Using+Discern+Explorer",
+      "file_hash": "85816c70c5e8e08c53494bcaa8210483",
+      "mtime_ns": 1772998806000000000,
+      "size": 152156,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCL+Dictionary+Objects+with+RDBMS+Storage+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCL+Dictionary+Objects+with+RDBMS+Storage+Using+Discern+Explorer",
+      "file_hash": "c19b5366a88aa17bb27690650d738b7b",
+      "mtime_ns": 1772998808000000000,
+      "size": 155153,
+      "status": "processed"
+    },
     "DownloadedFiles/CCL+Functions.html": {
       "dedup_key": "https://wiki.cerner.com/display/MPDEVWIKI/CCL+Functions",
       "file_hash": "7508f016051c8b4c28e69dcecdde3be8",
@@ -679,11 +1925,165 @@
       "size": 170731,
       "status": "duplicate_url"
     },
+    "DownloadedFiles/CCL+Preliminary+Concepts+in+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCL+Preliminary+Concepts+in+Discern+Explorer",
+      "file_hash": "3d07cb45c7d4443ab724b570c6df94e3",
+      "mtime_ns": 1772998808000000000,
+      "size": 158641,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCL, Custom MPages and MillObjects \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/405708/ccl-custom-mpages-and-millobjects",
+      "file_hash": "4bc1730ad6e39fa679c73fe29c2d709c",
+      "mtime_ns": 1772973706000000000,
+      "size": 821331,
+      "status": "processed"
+    },
     "DownloadedFiles/CCL, Rule, Clinical Note updation \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/399173/ccl-rule-clinical-note-updation",
       "file_hash": "2bf14dfff6888cf14a28baaeffe423ff",
       "mtime_ns": 1772722767572728800,
       "size": 805684,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLAUDITDIR+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLAUDITDIR+Using+Discern+Explorer",
+      "file_hash": "ab1c800a7dd0691849326ea553719721",
+      "mtime_ns": 1772998814000000000,
+      "size": 152280,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLCNVTAGE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLCNVTAGE+Using+Discern+Explorer",
+      "file_hash": "9d1475ad5edd9724d225485e13e0f859",
+      "mtime_ns": 1772998814000000000,
+      "size": 152243,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLDEFAULT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLDEFAULT+Using+Discern+Explorer",
+      "file_hash": "f516c8f04cf2bb41204b8a7552c5e379",
+      "mtime_ns": 1772998816000000000,
+      "size": 150733,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLDIR+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLDIR+Using+Discern+Explorer",
+      "file_hash": "1028d4043546ee223de2e38a4eefc76f",
+      "mtime_ns": 1772998816000000000,
+      "size": 150936,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLDIR1+and+CCLDIR2+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLDIR1+and+CCLDIR2+Using+Discern+Explorer",
+      "file_hash": "fefbc4a5a6e2890a3965d380629fdf11",
+      "mtime_ns": 1772998816000000000,
+      "size": 151335,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLDIRACCESS+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLDIRACCESS+Using+Discern+Explorer",
+      "file_hash": "cfc7afbfc4835b7220889f4af97846be",
+      "mtime_ns": 1772998818000000000,
+      "size": 155353,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLDIRFLEX+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLDIRFLEX+Using+Discern+Explorer",
+      "file_hash": "a0a725525b7915f6ab9a7d0ef3fa1940",
+      "mtime_ns": 1772969092000000000,
+      "size": 188188,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLEDIT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLEDIT+Using+Discern+Explorer",
+      "file_hash": "bee0f211a5e5c198b5a807a851f4a401",
+      "mtime_ns": 1772998818000000000,
+      "size": 151506,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLEKS+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLEKS+Using+Discern+Explorer",
+      "file_hash": "ebfdb451ec45b3d61e6afa5cfef2b5d2",
+      "mtime_ns": 1772998818000000000,
+      "size": 150355,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLEKS_GET_EVENT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLEKS_GET_EVENT+Using+Discern+Explorer",
+      "file_hash": "f58bfca3f80f29654646f8fa5f97590a",
+      "mtime_ns": 1773001170000000000,
+      "size": 186795,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLEKS_GET_EVOKE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLEKS_GET_EVOKE+Using+Discern+Explorer",
+      "file_hash": "950ec7fad9a8ed2c2388e2231a429c97",
+      "mtime_ns": 1773001170000000000,
+      "size": 186436,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLEKS_GET_KNOWLEDGE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLEKS_GET_KNOWLEDGE+Using+Discern+Explorer",
+      "file_hash": "2e4c00b9ab07482c45eee59a23b7d9c2",
+      "mtime_ns": 1773001170000000000,
+      "size": 187228,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLEKS_GET_LIBRARY+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLEKS_GET_LIBRARY+Using+Discern+Explorer",
+      "file_hash": "1019e4eda2be07c1a5e4b0789030fdc1",
+      "mtime_ns": 1773001172000000000,
+      "size": 185860,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLEKS_GET_MAINTENANCE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLEKS_GET_MAINTENANCE+Using+Discern+Explorer",
+      "file_hash": "2a0ea04c6e0dc4a391e34a67c4b7a874",
+      "mtime_ns": 1773001174000000000,
+      "size": 186025,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLEKS_LOAD+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLEKS_LOAD+Using+Discern+Explorer",
+      "file_hash": "06aa192976be222ae5cc572b6178edf8",
+      "mtime_ns": 1773001172000000000,
+      "size": 187521,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLEKS_POOL_MARK+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLEKS_POOL_MARK+Using+Discern+Explorer",
+      "file_hash": "7e6e6ffa06f0037ec0afd13fa4d663a9",
+      "mtime_ns": 1773001174000000000,
+      "size": 185018,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLEKS_POOL_RELEASE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLEKS_POOL_RELEASE+Using+Discern+Explorer",
+      "file_hash": "a2492dbdf002b537109f4b7e05a308ef",
+      "mtime_ns": 1773001176000000000,
+      "size": 185232,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLEKS_PROCESS_EVOKE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLEKS_PROCESS_EVOKE+Using+Discern+Explorer",
+      "file_hash": "de5a3c4b8f1a43670b85e923b844887f",
+      "mtime_ns": 1773001176000000000,
+      "size": 187405,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLEKS_PROCESS_MODULE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLEKS_PROCESS_MODULE+Using+Discern+Explorer",
+      "file_hash": "e94d14ca54899c35eafc5cc59223c5be",
+      "mtime_ns": 1773001176000000000,
+      "size": 187394,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLERROR+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLERROR+Using+Discern+Explorer",
+      "file_hash": "f72fddc8c8188f25ea1d7b21d38dd1f2",
+      "mtime_ns": 1772998820000000000,
+      "size": 151807,
       "status": "processed"
     },
     "DownloadedFiles/CCLEVENT - MPages Development Wiki - Cerner Wiki.html": {
@@ -714,11 +2114,102 @@
       "size": 176017,
       "status": "duplicate_url"
     },
+    "DownloadedFiles/CCLFMT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLFMT+Using+Discern+Explorer",
+      "file_hash": "6df4273b95adc87d1d9632a4df53e151",
+      "mtime_ns": 1772969092000000000,
+      "size": 186866,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLGLOS+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLGLOS+Using+Discern+Explorer",
+      "file_hash": "8fda47b17e7a4001194c648e6e36c514",
+      "mtime_ns": 1772969094000000000,
+      "size": 196546,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLHELP+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLHELP+Using+Discern+Explorer",
+      "file_hash": "58d3056908ddd32fda14eace30653cbe",
+      "mtime_ns": 1772998820000000000,
+      "size": 159179,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLINIT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLINIT+Using+Discern+Explorer",
+      "file_hash": "5023b730e53ed389af38b7d7807644a2",
+      "mtime_ns": 1772998822000000000,
+      "size": 150055,
+      "status": "processed"
+    },
     "DownloadedFiles/CCLIO File In Out \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/146889/cclio-file-in-out",
       "file_hash": "ba7d34bc350c92b8bc713055c1af94da",
       "mtime_ns": 1772753799177055600,
       "size": 1043022,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLIO(+)+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLIO%28+%29+Using+Discern+Explorer",
+      "file_hash": "9dfedcdef1968036f0e01233298111b4",
+      "mtime_ns": 1772967644000000000,
+      "size": 202307,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLIO+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLIO+Using+Discern+Explorer",
+      "file_hash": "617f22899eabf6a249ad93d31cd27093",
+      "mtime_ns": 1772969096000000000,
+      "size": 188527,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLIO_CLOSE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLIO_CLOSE+Using+Discern+Explorer",
+      "file_hash": "6a798988051969bcfa289f0d5caf5305",
+      "mtime_ns": 1772998822000000000,
+      "size": 151128,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLIO_DELETE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLIO_DELETE+Using+Discern+Explorer",
+      "file_hash": "7551eaa1323ca3c13bc7cc29b54f6b29",
+      "mtime_ns": 1772998822000000000,
+      "size": 149125,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLIO_FIND+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLIO_FIND+Using+Discern+Explorer",
+      "file_hash": "4e00a910003b386b91ceeea784804ebb",
+      "mtime_ns": 1772998824000000000,
+      "size": 149902,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLIO_GET+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLIO_GET+Using+Discern+Explorer",
+      "file_hash": "ad0b0d2bd4bc179a8b46194ef12a9848",
+      "mtime_ns": 1772998824000000000,
+      "size": 149318,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLIO_OPEN+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLIO_OPEN+Using+Discern+Explorer",
+      "file_hash": "9e204f48244170f1df5ce5a47e1c574d",
+      "mtime_ns": 1772998824000000000,
+      "size": 149501,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLIO_UNLOCK+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLIO_UNLOCK+Using+Discern+Explorer",
+      "file_hash": "f63bdf5490473b40785576d93dd37865",
+      "mtime_ns": 1772998826000000000,
+      "size": 151061,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLIO_WRITE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLIO_WRITE+Using+Discern+Explorer",
+      "file_hash": "f49da5496e14a163b8a0d5c879209d65",
+      "mtime_ns": 1772998826000000000,
+      "size": 149649,
       "status": "processed"
     },
     "DownloadedFiles/CCLLINK - MPages Development Wiki - Cerner Wiki.html": {
@@ -733,6 +2224,13 @@
       "file_hash": "76ffb1dd0797b79eaa023e8494d1d75b",
       "mtime_ns": 1772386971334411000,
       "size": 184932,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLLINK issue \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/149837/ccllink-issue",
+      "file_hash": "88337b61b3187ddce8cca77740f6ac30",
+      "mtime_ns": 1772973698000000000,
+      "size": 934779,
       "status": "processed"
     },
     "DownloadedFiles/CCLLINK problem when I update from explorer to edge \u2014 Oracle Health.html": {
@@ -763,6 +2261,13 @@
       "size": 188252,
       "status": "processed"
     },
+    "DownloadedFiles/CCLLINKPOPUP errors out \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/398616/ccllinkpopup-errors-out",
+      "file_hash": "988c02de4ee106b1f32cd11d729c4865",
+      "mtime_ns": 1772973784000000000,
+      "size": 795884,
+      "status": "processed"
+    },
     "DownloadedFiles/CCLLINKPOPUP+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
@@ -776,6 +2281,20 @@
       "mtime_ns": 1772372438000000000,
       "size": 171186,
       "status": "duplicate_url"
+    },
+    "DownloadedFiles/CCLMENU+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLMENU+Using+Discern+Explorer",
+      "file_hash": "5aafd3b6b77841b3eae680c2996d1cd1",
+      "mtime_ns": 1772998826000000000,
+      "size": 152042,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLMODULE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLMODULE+Using+Discern+Explorer",
+      "file_hash": "0ee35379a671dc2bbbefefbca62092b8",
+      "mtime_ns": 1772998826000000000,
+      "size": 150668,
+      "status": "processed"
     },
     "DownloadedFiles/CCLNEWSESSIONWINDOW - MPages Development Wiki - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/MPDEVWIKI/CCLNEWSESSIONWINDOW",
@@ -791,6 +2310,13 @@
       "size": 190675,
       "status": "processed"
     },
+    "DownloadedFiles/CCLNEWSESSIONWINDOW \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/433119/cclnewsessionwindow",
+      "file_hash": "a20c62e8213afb710461d78e247d1f52",
+      "mtime_ns": 1772973806000000000,
+      "size": 812982,
+      "status": "processed"
+    },
     "DownloadedFiles/CCLNEWSESSIONWINDOW+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
@@ -798,11 +2324,347 @@
       "size": 2252,
       "status": "duplicate_hash"
     },
+    "DownloadedFiles/CCLORACONS+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLORACONS+Using+Discern+Explorer",
+      "file_hash": "590585f535a86ac38f5b5a98d0a5f212",
+      "mtime_ns": 1772998828000000000,
+      "size": 155394,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLORADEF+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLORADEF+Using+Discern+Explorer",
+      "file_hash": "d5c02c591424805c331eabf598bffdb0",
+      "mtime_ns": 1772967644000000000,
+      "size": 190016,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLORAINDEX+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLORAINDEX+Using+Discern+Explorer",
+      "file_hash": "f52f7583ea9c83f2163f80a1f4b23236",
+      "mtime_ns": 1772969096000000000,
+      "size": 189216,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLORAPLAN+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLORAPLAN+Using+Discern+Explorer",
+      "file_hash": "07adcbbcac424436094a0d925b8b35f9",
+      "mtime_ns": 1772998828000000000,
+      "size": 153851,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLORATABLE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLORATABLE+Using+Discern+Explorer",
+      "file_hash": "0e3266f8d9f0139c6a8af2ccc3ddff21",
+      "mtime_ns": 1772969096000000000,
+      "size": 187361,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLPARSE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLPARSE+Using+Discern+Explorer",
+      "file_hash": "0bdf5e9a23e273e9be9a5641c533ef79",
+      "mtime_ns": 1772998828000000000,
+      "size": 150661,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLPARSE2+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLPARSE2+Using+Discern+Explorer",
+      "file_hash": "d658706be86163861b82e128dc3f3665",
+      "mtime_ns": 1772998830000000000,
+      "size": 151364,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLPROG+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLPROG+Using+Discern+Explorer",
+      "file_hash": "3f5d58730893cc15722aa7fec38755d2",
+      "mtime_ns": 1772969096000000000,
+      "size": 189559,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLPROT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLPROT+Using+Discern+Explorer",
+      "file_hash": "a31148e6d165190ee48b880b0714a8e5",
+      "mtime_ns": 1772967646000000000,
+      "size": 196634,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLPROTNODE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLPROTNODE+Using+Discern+Explorer",
+      "file_hash": "65784e61c669ae6698fced2e148d21d2",
+      "mtime_ns": 1772967646000000000,
+      "size": 209501,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLQUERY+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLQUERY+Using+Discern+Explorer",
+      "file_hash": "d567f9552652c10357b8484aed50230a",
+      "mtime_ns": 1772969098000000000,
+      "size": 210022,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLRECDEF+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLRECDEF+Using+Discern+Explorer",
+      "file_hash": "92c96c8e415eb0340aa6cd719f4868ae",
+      "mtime_ns": 1772998830000000000,
+      "size": 156022,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLREFLOG+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLREFLOG+Using+Discern+Explorer",
+      "file_hash": "b408b3f413cef133696d89b0aa4d0178",
+      "mtime_ns": 1772998830000000000,
+      "size": 149290,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLREGEXP+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLREGEXP+Using+Discern+Explorer",
+      "file_hash": "ab49c807294663de620fbf564628ea12",
+      "mtime_ns": 1772998832000000000,
+      "size": 169403,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLRESULT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLRESULT+Using+Discern+Explorer",
+      "file_hash": "be16657141f129c7614dd397fc318fb6",
+      "mtime_ns": 1772998832000000000,
+      "size": 150949,
+      "status": "processed"
+    },
     "DownloadedFiles/CCLSCRATCH directory memory issue \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1680915/cclscratch-directory-memory-issue",
       "file_hash": "221df0488622565794ef752a402f3fe0",
       "mtime_ns": 1772782493531237100,
       "size": 994471,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSCRATCH+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSCRATCH+Using+Discern+Explorer",
+      "file_hash": "a13f6a38b8f7af78c82de82e7c4b750c",
+      "mtime_ns": 1772998832000000000,
+      "size": 149255,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSECLOGIN+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSECLOGIN+Using+Discern+Explorer",
+      "file_hash": "5b8c4cd90d62d9221fcdfd60075dedf7",
+      "mtime_ns": 1772998834000000000,
+      "size": 153044,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSEC_PASSWD+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSEC_PASSWD+Using+Discern+Explorer",
+      "file_hash": "1509600948d3e42ff949e9b216c07660",
+      "mtime_ns": 1772998832000000000,
+      "size": 151889,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET+Using+Discern+Explorer",
+      "file_hash": "62203b2575cc26f9021bcb3b9fcf325c",
+      "mtime_ns": 1772998834000000000,
+      "size": 152499,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_CCLAPP+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_CCLAPP+Using+Discern+Explorer",
+      "file_hash": "3c06232231d04d3074e506bea8688816",
+      "mtime_ns": 1773001176000000000,
+      "size": 186501,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_CLIENTCALLOC+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_CLIENTCALLOC+Using+Discern+Explorer",
+      "file_hash": "ef426cbcd8c6a62a12f20afa31341d84",
+      "mtime_ns": 1773001178000000000,
+      "size": 184776,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_CLIENTCFREE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_CLIENTCFREE+Using+Discern+Explorer",
+      "file_hash": "996f6d9843088c7aaff01d5b7d422ab1",
+      "mtime_ns": 1773001178000000000,
+      "size": 184426,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_CLIENTFREE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_CLIENTFREE+Using+Discern+Explorer",
+      "file_hash": "ddb02c461f3929046658d5ab88a4df17",
+      "mtime_ns": 1773001180000000000,
+      "size": 184462,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_CLIENTMALLOC+using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_CLIENTMALLOC+using+Discern+Explorer",
+      "file_hash": "66345253ceab8ded3bf24970583da26d",
+      "mtime_ns": 1773001180000000000,
+      "size": 184519,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_CLIENTREALLOC+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_CLIENTREALLOC+Using+Discern+Explorer",
+      "file_hash": "e152e7c67643fc34509eae41cc5384d7",
+      "mtime_ns": 1773001180000000000,
+      "size": 187102,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_COMMIT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_COMMIT+Using+Discern+Explorer",
+      "file_hash": "faac7551daadd30b6653e6982ea0b68e",
+      "mtime_ns": 1773001182000000000,
+      "size": 187268,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_DBRESET+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_DBRESET+Using+Discern+Explorer",
+      "file_hash": "73136abe2543af770324031bd9c94a9c",
+      "mtime_ns": 1773001182000000000,
+      "size": 184365,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_DBSET+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_DBSET+Using+Discern+Explorer",
+      "file_hash": "5e7443d272928a108e910f8caf06b6fd",
+      "mtime_ns": 1772969098000000000,
+      "size": 184186,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_DIRACCESS+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_DIRACCESS+Using+Discern+Explorer",
+      "file_hash": "36b016b6c69d3a0daf6a4d8ea8d0f010",
+      "mtime_ns": 1772998836000000000,
+      "size": 153220,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_EKSRETURN+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_EKSRETURN+Using+Discern+Explorer",
+      "file_hash": "78d18c04899884913d88ebd9a79d5613",
+      "mtime_ns": 1773001182000000000,
+      "size": 184919,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_ERRHANDLE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_ERRHANDLE+Using+Discern+Explorer",
+      "file_hash": "18f1100c1c80e647d303ad26799851c1",
+      "mtime_ns": 1773001182000000000,
+      "size": 185773,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_MOD+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_MOD+Using+Discern+Explorer",
+      "file_hash": "3735b410d9eb4fe2089861a10d2ce39a",
+      "mtime_ns": 1773001184000000000,
+      "size": 186806,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_PROG+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_PROG+Using+Discern+Explorer",
+      "file_hash": "0a8d8135fa58842ea1da89bcb1552e7d",
+      "mtime_ns": 1773001184000000000,
+      "size": 185679,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_QUERY+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_QUERY+Using+Discern+Explorer",
+      "file_hash": "08775ce6cd0ec5daffb4f97367fc8fed",
+      "mtime_ns": 1773001186000000000,
+      "size": 187202,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_QUERYDET+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_QUERYDET+Using+Discern+Explorer",
+      "file_hash": "1ed17a83cfa322c419e90beab908dc82",
+      "mtime_ns": 1773001186000000000,
+      "size": 185048,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_RDBHANDLE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_RDBHANDLE+Using+Discern+Explorer",
+      "file_hash": "b863ac16ae2ca465d3925a0cf14ee7c8",
+      "mtime_ns": 1773001186000000000,
+      "size": 188145,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_RECORD+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_RECORD+Using+Discern+Explorer",
+      "file_hash": "825e72f8f2ed3ca1944a8cad4d39ef90",
+      "mtime_ns": 1772998836000000000,
+      "size": 155071,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_ROLLBACK+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_ROLLBACK+Using+Discern+Explorer",
+      "file_hash": "06187abf946746d49e44b8a60b949529",
+      "mtime_ns": 1772998836000000000,
+      "size": 149873,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_RTLNAME+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_RTLNAME+Using+Discern+Explorer",
+      "file_hash": "76e05dab32985cdcd5a76bb746c75647",
+      "mtime_ns": 1773001188000000000,
+      "size": 185560,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_SRVREQUEST+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_SRVREQUEST+Using+Discern+Explorer",
+      "file_hash": "ea37e7b16fe843c18b38d1f9ae3de24b",
+      "mtime_ns": 1773001188000000000,
+      "size": 184196,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_STAT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_STAT+Using+Discern+Explorer",
+      "file_hash": "bf119ffb56958863eabb0a87e5644258",
+      "mtime_ns": 1773001188000000000,
+      "size": 188143,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_SYMBOL+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_SYMBOL+Using+Discern+Explorer",
+      "file_hash": "96ad94f50c44120b25679f88f38fd428",
+      "mtime_ns": 1773001188000000000,
+      "size": 185760,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_TREE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_TREE+Using+Discern+Explorer",
+      "file_hash": "bddc97c566c5d570026077f67f0be612",
+      "mtime_ns": 1773001190000000000,
+      "size": 187644,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_UAR+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_UAR+Using+Discern+Explorer",
+      "file_hash": "cb02c1ee2dba5b6ea91c71daf2576561",
+      "mtime_ns": 1773001190000000000,
+      "size": 187503,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_VERSION+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_VERSION+Using+Discern+Explorer",
+      "file_hash": "83166578dac79afa0d0388c856569e05",
+      "mtime_ns": 1773001192000000000,
+      "size": 184656,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSET_WORK+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSET_WORK+Using+Discern+Explorer",
+      "file_hash": "8f2b0753d7332067c29fa66990ff72dc",
+      "mtime_ns": 1773001192000000000,
+      "size": 189089,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSOURCE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSOURCE+Using+Discern+Explorer",
+      "file_hash": "fc9fe5b17472c0987acfb3d36e4ae171",
+      "mtime_ns": 1772998838000000000,
+      "size": 149675,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSQLAREA+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSQLAREA+Using+Discern+Explorer",
+      "file_hash": "cbf274cb74e0c4f1f8ae006ebfc4b0c4",
+      "mtime_ns": 1772998838000000000,
+      "size": 158437,
       "status": "processed"
     },
     "DownloadedFiles/CCLSQL_ procedure performance \u2014 Oracle Health.html": {
@@ -819,12 +2681,159 @@
       "size": 2252,
       "status": "duplicate_hash"
     },
+    "DownloadedFiles/CCLSRVHELP+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSRVHELP+Using+Discern+Explorer",
+      "file_hash": "371182b46c3085f61ffa537ee0fe1263",
+      "mtime_ns": 1772998838000000000,
+      "size": 150709,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSTRLINKADD+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSTRLINKADD+Using+Discern+Explorer",
+      "file_hash": "06c518c13f6d610460d133745936e2e8",
+      "mtime_ns": 1772998840000000000,
+      "size": 151271,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLSTRLINKDEF+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLSTRLINKDEF+Using+Discern+Explorer",
+      "file_hash": "c1df1ddf4393dd8739fe5ed054266ca9",
+      "mtime_ns": 1772998840000000000,
+      "size": 149937,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLTERM+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLTERM+Using+Discern+Explorer",
+      "file_hash": "084acb36ecd1253733a3ae908ae55bee",
+      "mtime_ns": 1772998840000000000,
+      "size": 150180,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLTIMER(+)+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLTIMER%28+%29+Using+Discern+Explorer",
+      "file_hash": "0876b5cdcddc192a8e1dfb9926d1bc70",
+      "mtime_ns": 1772998840000000000,
+      "size": 152743,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLUAF+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLUAF+Using+Discern+Explorer",
+      "file_hash": "8189fe7570e291638088a9b657a9537f",
+      "mtime_ns": 1772998842000000000,
+      "size": 153496,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLUSERDIR+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLUSERDIR+Using+Discern+Explorer",
+      "file_hash": "970816cd6126f82f30fc5288c19c08dd",
+      "mtime_ns": 1772969098000000000,
+      "size": 186736,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLUTIL_WHERE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLUTIL_WHERE+Using+Discern+Explorer",
+      "file_hash": "1ad43123b4e8679e133fd7f48306e59b",
+      "mtime_ns": 1772967646000000000,
+      "size": 198898,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLVARLISTALLOC+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLVARLISTALLOC+Using+Discern+Explorer",
+      "file_hash": "7c8e54e03ddb9266ce4bcc3da20f18f5",
+      "mtime_ns": 1772998842000000000,
+      "size": 149954,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLVARLISTFREE+using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLVARLISTFREE+using+Discern+Explorer",
+      "file_hash": "dcd0fc7d05033ebfee699427cc7fdf49",
+      "mtime_ns": 1772998842000000000,
+      "size": 149956,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCLVARLISTREALLOC+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCLVARLISTREALLOC+Using+Discern+Explorer",
+      "file_hash": "2895ff9a911750d599d8457cb7477738",
+      "mtime_ns": 1772998842000000000,
+      "size": 150134,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCL_DIC_SYNCH_RPT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCL_DIC_SYNCH_RPT+Using+Discern+Explorer",
+      "file_hash": "04a9ad83569e270840ce40cc0b35b1b7",
+      "mtime_ns": 1772998810000000000,
+      "size": 158050,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCL_PROMPT_API_DATASET+Program+Options+and+Subroutines+in+Discern+Prompt+Library.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCL_PROMPT_API_DATASET+Program+Options+and+Subroutines+in+Discern+Prompt+Library",
+      "file_hash": "f2bb736519aca9ee5d57718217fc8fdb",
+      "mtime_ns": 1772969092000000000,
+      "size": 190606,
+      "status": "processed"
+    },
     "DownloadedFiles/CCL_READFILE+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
       "mtime_ns": 1772723965526729300,
       "size": 2252,
       "status": "duplicate_hash"
+    },
+    "DownloadedFiles/CCL_READFILE_NODE++Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCL_READFILE_NODE++Using+Discern+Explorer",
+      "file_hash": "eb57abcbfe832e5ad07ae2e894ce3c1b",
+      "mtime_ns": 1772998810000000000,
+      "size": 155997,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCL_RPT_AUDIT_LOG+using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCL_RPT_AUDIT_LOG+using+Discern+Explorer",
+      "file_hash": "a1b37c1fc75dc9e151a482ec0523df12",
+      "mtime_ns": 1772967644000000000,
+      "size": 193074,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCL_RPT_AUDIT_SUMMARY+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCL_RPT_AUDIT_SUMMARY+Using+Discern+Explorer",
+      "file_hash": "edef524556abb4ba9d82f1876dcc7a6f",
+      "mtime_ns": 1772998810000000000,
+      "size": 156960,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCL_RPT_QUERY+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCL_RPT_QUERY+Using+Discern+Explorer",
+      "file_hash": "3cb1d7b37e8b73fb0b5605aa0479fe6d",
+      "mtime_ns": 1772998810000000000,
+      "size": 157212,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCL_SCRIPTERR+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCL_SCRIPTERR+Using+Discern+Explorer",
+      "file_hash": "39b82c0459e30c66800606c6d459e1fd",
+      "mtime_ns": 1772998812000000000,
+      "size": 149714,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCL_SQLPLAN+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCL_SQLPLAN+Using+Discern+Explorer",
+      "file_hash": "e2fd83c192a8b8aa80dbfc7270d7b46e",
+      "mtime_ns": 1772998812000000000,
+      "size": 150588,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCL_TABLECONS+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CCL_TABLECONS+Using+Discern+Explorer",
+      "file_hash": "efd0ff97f6e5ab80b79e631fff8c5d15",
+      "mtime_ns": 1772998814000000000,
+      "size": 154524,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCL_Unit_and_CCL_Testing_released_to_open_source_Engineering_Health__99e43979f6.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/ccl-unit-and-ccl-testing-released-to-open-source",
+      "file_hash": "3a3abd58d19bc7cf513787cc904663d0",
+      "mtime_ns": 1772979982000000000,
+      "size": 18124,
+      "status": "processed"
     },
     "DownloadedFiles/CCL_WRAP_TEXT_EXAM \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1257418/ccl-wrap-text-exam",
@@ -840,11 +2849,95 @@
       "size": 1008170,
       "status": "processed"
     },
+    "DownloadedFiles/CEIL+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CEIL+Using+Discern+Explorer",
+      "file_hash": "bfc6c655a863f8d18614d68bb94d3926",
+      "mtime_ns": 1772969100000000000,
+      "size": 187022,
+      "status": "processed"
+    },
+    "DownloadedFiles/CENTER+using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CENTER+using+Discern+Explorer",
+      "file_hash": "12dee60d35eee261a9f1b08704d0a1ae",
+      "mtime_ns": 1772998844000000000,
+      "size": 150018,
+      "status": "processed"
+    },
+    "DownloadedFiles/CER_EXAM+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CER_EXAM+Using+Discern+Explorer",
+      "file_hash": "6ee0c9c0ee15995d4c46f01718cb240f",
+      "mtime_ns": 1772998846000000000,
+      "size": 150824,
+      "status": "processed"
+    },
+    "DownloadedFiles/CER_EXE+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CER_EXE+Using+Discern+Explorer",
+      "file_hash": "7e8ff87c1ac85ed709018f5cd965d170",
+      "mtime_ns": 1772998846000000000,
+      "size": 148754,
+      "status": "processed"
+    },
+    "DownloadedFiles/CER_PROC+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CER_PROC+Using+Discern+Explorer",
+      "file_hash": "6b7db2b93ddef9195761048e964c8325",
+      "mtime_ns": 1772998846000000000,
+      "size": 149072,
+      "status": "processed"
+    },
+    "DownloadedFiles/CER_RDBMS_CONNECT+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CER_RDBMS_CONNECT+Using+Discern+Explorer",
+      "file_hash": "e6d3535e0bd25a5b28c0dc3d5ba5a4f2",
+      "mtime_ns": 1772969102000000000,
+      "size": 195276,
+      "status": "processed"
+    },
+    "DownloadedFiles/CER_TEMP+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CER_TEMP+Using+Discern+Explorer",
+      "file_hash": "98be9519340f454a061cdf259d39d4be",
+      "mtime_ns": 1772969100000000000,
+      "size": 186352,
+      "status": "processed"
+    },
     "DownloadedFiles/CE_Blob to PowerNote (Smart Template) using a Record Structure \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1633943/ce-blob-to-powernote-smart-template-using-a-record-structure",
       "file_hash": "9e37f20e8b66f934763006c52b66e835",
       "mtime_ns": 1772722724277774400,
       "size": 837154,
+      "status": "processed"
+    },
+    "DownloadedFiles/CHAR+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CHAR+Using+Discern+Explorer",
+      "file_hash": "dd9961816b4bcaccbc16de8e69a687f4",
+      "mtime_ns": 1772969110000000000,
+      "size": 187802,
+      "status": "processed"
+    },
+    "DownloadedFiles/CHECK+Control+Option+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CHECK+Control+Option+Using+Discern+Explorer",
+      "file_hash": "a8ddcaab03f6b74dd2814282a5934ec5",
+      "mtime_ns": 1772967648000000000,
+      "size": 189805,
+      "status": "processed"
+    },
+    "DownloadedFiles/CHECK+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CHECK+Using+Discern+Explorer",
+      "file_hash": "a81f6e74808055551e07c70be74d6f3e",
+      "mtime_ns": 1772967648000000000,
+      "size": 189467,
+      "status": "processed"
+    },
+    "DownloadedFiles/CHECKDIC(+)+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CHECKDIC%28+%29+Using+Discern+Explorer",
+      "file_hash": "e969cdc7749fbd8d941d8d2e585633ea",
+      "mtime_ns": 1772998850000000000,
+      "size": 150012,
+      "status": "processed"
+    },
+    "DownloadedFiles/CHECKDIC+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CHECKDIC+Using+Discern+Explorer",
+      "file_hash": "6fec662368b0def7c5afed774142767a",
+      "mtime_ns": 1775747921852413200,
+      "size": 187361,
       "status": "processed"
     },
     "DownloadedFiles/CInfoButtonLink.html": {
@@ -903,6 +2996,20 @@
       "size": 2252,
       "status": "duplicate_hash"
     },
+    "DownloadedFiles/Calling CCL from custom component on click event \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1550692/calling-ccl-from-custom-component-on-click-event",
+      "file_hash": "2a74d2466bff69c89b9ea4bd2872100b",
+      "mtime_ns": 1772904510000000000,
+      "size": 822837,
+      "status": "processed"
+    },
+    "DownloadedFiles/Can I display an HTML page within an MPage component\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/951879/can-i-display-an-html-page-within-an-mpage-component",
+      "file_hash": "3091c501cbfd395ad685a1f61888413c",
+      "mtime_ns": 1772901874000000000,
+      "size": 1025723,
+      "status": "processed"
+    },
     "DownloadedFiles/Can I pass a context variable to a CCL script through XMLCCLREQUEST\uff1f \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/620459/can-i-pass-a-context-variable-to-a-ccl-script-through-xmlcclrequest",
       "file_hash": "1c587f2b5992fa96bd249349a3404c9e",
@@ -945,12 +3052,61 @@
       "size": 1000964,
       "status": "processed"
     },
+    "DownloadedFiles/Cannot refresh mPage if another has ongoing query \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/872136/cannot-refresh-mpage-if-another-has-ongoing-query",
+      "file_hash": "22626e5389aa9bfbbd8e60105ba2bda4",
+      "mtime_ns": 1772904538000000000,
+      "size": 807526,
+      "status": "processed"
+    },
     "DownloadedFiles/Capturing+Record+Structure+Status+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
       "mtime_ns": 1772723965411326600,
       "size": 2252,
       "status": "duplicate_hash"
+    },
+    "DownloadedFiles/Carbon_Graphs_An_Open_Source_Visualization_API_Engineering_Health__768ce8784d.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/carbon-graphs-open-source-visualization-api",
+      "file_hash": "71c423cfab1b9c4c51878a5ed6f9bc60",
+      "mtime_ns": 1772979982000000000,
+      "size": 29044,
+      "status": "processed"
+    },
+    "DownloadedFiles/Case statements \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/937024/case-statements",
+      "file_hash": "4aea17aeb831efc39ceb003d92b38a9c",
+      "mtime_ns": 1772973764000000000,
+      "size": 813868,
+      "status": "processed"
+    },
+    "DownloadedFiles/Categories+List+Using+Discern+Visual+Developer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Categories+List+Using+Discern+Visual+Developer",
+      "file_hash": "9a72096d0567c8631ab2fd7474ebad56",
+      "mtime_ns": 1772998806000000000,
+      "size": 153126,
+      "status": "processed"
+    },
+    "DownloadedFiles/Categories+list+in+Visual+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Categories+list+in+Visual+Explorer",
+      "file_hash": "7d657f301057c405ab10c57974a97a75",
+      "mtime_ns": 1773001268000000000,
+      "size": 189052,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner Component Framework vs. Reference Framework \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/400556/cerner-component-framework-vs-reference-framework",
+      "file_hash": "79bc725a21bf46ce757955eca9a4ccf4",
+      "mtime_ns": 1772903678000000000,
+      "size": 817363,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner MPage Components \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/596496/cerner-mpage-components",
+      "file_hash": "b8f877cfd2fe587f7d869ac5cddd68d1",
+      "mtime_ns": 1772903664000000000,
+      "size": 803007,
+      "status": "processed"
     },
     "DownloadedFiles/Cerner Standard Content Library \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/643270/cerner-standard-content-library",
@@ -966,6 +3122,97 @@
       "size": 748410,
       "status": "duplicate_url"
     },
+    "DownloadedFiles/Cerner Wiki Announcement - The Iframe Macro Has Been Upgraded \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1391985/cerner-wiki-announcement-the-iframe-macro-has-been-upgraded",
+      "file_hash": "e2bfca92ea992fcd4fc1b37d29545df3",
+      "mtime_ns": 1772902910000000000,
+      "size": 992509,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner's+Stance+on+Oracle+Advanced+Compression.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Cerner%27s+Stance+on+Oracle+Advanced+Compression",
+      "file_hash": "d655fd9961102a3b22a87ec63ace2ebe",
+      "mtime_ns": 1772999204000000000,
+      "size": 195264,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner's+Stance+on+Oracle+Database+Patches.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Cerner%27s+Stance+on+Oracle+Database+Patches",
+      "file_hash": "205d03e89e8f4635822a33ed092c1897",
+      "mtime_ns": 1772999210000000000,
+      "size": 209793,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner+Defined+Programs+in+Visual+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Cerner+Defined+Programs+in+Visual+Explorer",
+      "file_hash": "1b83984d7d14814f9422d3607d7fe584",
+      "mtime_ns": 1772998846000000000,
+      "size": 154544,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner+Millennium+Database+Virtualization+Whitepaper.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Cerner+Millennium+Database+Virtualization+Whitepaper",
+      "file_hash": "38c7b30a61909f4b573c09e8bba40d18",
+      "mtime_ns": 1772999196000000000,
+      "size": 254944,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner+Millennium+Operations+Jobs+Configuration+Spreadsheet.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Cerner+Millennium+Operations+Jobs+Configuration+Spreadsheet",
+      "file_hash": "baea9062b20e1b3cb3d22b53ce7322ad",
+      "mtime_ns": 1772969102000000000,
+      "size": 188770,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner+Millennium+Technology+Roadmap.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Cerner+Millennium+Technology+Roadmap",
+      "file_hash": "63be906e300cd4865ffcf865aee5eccd",
+      "mtime_ns": 1772969104000000000,
+      "size": 292295,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner+Millennium+application+issues+on+64-bit+Windows+2008+R2.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Cerner+Millennium+application+issues+on+64-bit+Windows+2008+R2",
+      "file_hash": "45d70143f9b8cfa255d92759b311d1d0",
+      "mtime_ns": 1772999190000000000,
+      "size": 209920,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner+Oracle+Java+Policy.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Cerner+Oracle+Java+Policy",
+      "file_hash": "1653b30c9a09766e9a751a67854ae067",
+      "mtime_ns": 1772969104000000000,
+      "size": 198798,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner+Solutions+2012+Technology+Planning+Reference.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Cerner+Solutions+2012+Technology+Planning+Reference",
+      "file_hash": "65caa8e50c3a8a475155564ab9cdda18",
+      "mtime_ns": 1772969106000000000,
+      "size": 401130,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner+Solutions+H2+2010+Supported+Technologies.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Cerner+Solutions+H2+2010+Supported+Technologies",
+      "file_hash": "78eb0dcb6f2c526c8ad087bcce0afe01",
+      "mtime_ns": 1772969108000000000,
+      "size": 591430,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner+Technology+Communications+Guideline.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Cerner+Technology+Communications+Guideline",
+      "file_hash": "5733c032bf6c236c8101cfb1b6fe6a5b",
+      "mtime_ns": 1772969108000000000,
+      "size": 195334,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner+statement+regarding+support+for+Oracle+on+HP-UX.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Cerner+statement+regarding+support+for+Oracle+on+HP-UX",
+      "file_hash": "aad4d38ecfc96ece8a0687724aa9b33b",
+      "mtime_ns": 1772999200000000000,
+      "size": 194455,
+      "status": "processed"
+    },
     "DownloadedFiles/CernerWorks Hosted Clients - Please Check Your MPage Static Content File Paths \u2014 Oracle Health.htm": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/370421/cernerworks-hosted-clients-please-check-your-mpage-static-content-file-paths",
       "file_hash": "e654a76d4d5ec2487e717525512d3953",
@@ -980,6 +3227,83 @@
       "size": 766215,
       "status": "duplicate_url"
     },
+    "DownloadedFiles/CernerWorks+PI+Workplan+Library.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/CernerWorks+PI+Workplan+Library",
+      "file_hash": "13ec6c97cfa8d81429d07b2460d48127",
+      "mtime_ns": 1772969126000000000,
+      "size": 316569,
+      "status": "processed"
+    },
+    "DownloadedFiles/CernerWorks+Scripts+Library.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/CernerWorks+Scripts+Library",
+      "file_hash": "4fd090c5c4ae23bf2668b10552560021",
+      "mtime_ns": 1772969108000000000,
+      "size": 191084,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner_Open_Sources_its_Kafka_Utilities_Engineering_Health__7bb717975b.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/cerner-open-sources-its-kafka-utilities",
+      "file_hash": "b6670d4f05034d849d2957ae3c1aad4b",
+      "mtime_ns": 1772980046000000000,
+      "size": 17872,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner_Tech_Talks_Engineering_Health__c83db75800.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/cerner-tech-talks",
+      "file_hash": "ac1a6f3d3eb0e0de917d804a624f44d6",
+      "mtime_ns": 1772979998000000000,
+      "size": 17071,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner_and_Open_Source_Engineering_Health__023fbe2216.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/cerner-and-open-source",
+      "file_hash": "598426080420ba8e73adc72fa90cf0be",
+      "mtime_ns": 1772979974000000000,
+      "size": 17848,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner_and_Tycho_Engineering_Health__bd7cf222e3.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/cerner-and-tycho",
+      "file_hash": "2a5cecfd924614ffa33ad2234632b64d",
+      "mtime_ns": 1772979996000000000,
+      "size": 24499,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner_and_iControl_Engineering_Health__1834f2f52b.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/cerner-and-icontrol",
+      "file_hash": "b0e4f562d7ea3a2aa45e08b1230ef6b6",
+      "mtime_ns": 1772980040000000000,
+      "size": 32677,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner_and_the_Apache_Software_Foundation_Engineering_Health__bc93164b22.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/cerner-and-the-apache-software-foundation",
+      "file_hash": "bf82245264cbf12f961237d1305755ff",
+      "mtime_ns": 1772979966000000000,
+      "size": 17541,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner_and_the_SDLC_Engineering_Health__64f6bb0ea3.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/cerner-and-the-sdlc",
+      "file_hash": "da47ef865120d62fc60c80543a5fc1fc",
+      "mtime_ns": 1772980050000000000,
+      "size": 26355,
+      "status": "processed"
+    },
+    "DownloadedFiles/Cerner_s_Open_Source_Contributions_for_Interoperability_Developers_Engineering_Health__0a5e692865.html": {
+      "dedup_key": "https://engineering.cerner.com/blog/cerners-open-source-contributions-for-interoperability-developers",
+      "file_hash": "16b4c78a43488146dc1b368252296b4d",
+      "mtime_ns": 1772980016000000000,
+      "size": 23586,
+      "status": "processed"
+    },
+    "DownloadedFiles/Change+Rule+Priorities+Dialog+Box+in+OMF+Turnaround+Time+Tool.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Change+Rule+Priorities+Dialog+Box+in+OMF+Turnaround+Time+Tool",
+      "file_hash": "c2d7f3a5cc1db8b6eb07388f39684179",
+      "mtime_ns": 1773001194000000000,
+      "size": 187024,
+      "status": "processed"
+    },
     "DownloadedFiles/Changing sychronous xmlcclrequest to asychronous - CCL will not execute \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1724597/changing-sychronous-xmlcclrequest-to-asychronous-ccl-will-not-execute",
       "file_hash": "4ef752f55de698d6890ac0f94c468b88",
@@ -987,11 +3311,46 @@
       "size": 4254594,
       "status": "processed"
     },
+    "DownloadedFiles/Changing+Relative+Cost+for+an+Antibiotic+Using+EksMicroMed.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Changing+Relative+Cost+for+an+Antibiotic+Using+EksMicroMed",
+      "file_hash": "b5c62e3023d510107a81fd612a1f2796",
+      "mtime_ns": 1773001194000000000,
+      "size": 185288,
+      "status": "processed"
+    },
     "DownloadedFiles/Changing+Users+in+Oracle+Health+Millennium+Platform+Applications.html": {
       "dedup_key": "https://wiki.cerner.com/display/help/Changing+Users+in+Oracle+Health+Millennium+Platform+Applications",
       "file_hash": "d22b8fa3b60587e674c8161982b63464",
       "mtime_ns": 1772372012000000000,
       "size": 182816,
+      "status": "processed"
+    },
+    "DownloadedFiles/Changing+the+Default+Editor+Using+Discern+Explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Changing+the+Default+Editor+Using+Discern+Explorer",
+      "file_hash": "29185d57463078b69b97c18b18e09450",
+      "mtime_ns": 1773001270000000000,
+      "size": 184142,
+      "status": "processed"
+    },
+    "DownloadedFiles/Changing+the+Priority+of+a+Rule+Using+OMF+Turnaround+Time+Tool.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Changing+the+Priority+of+a+Rule+Using+OMF+Turnaround+Time+Tool",
+      "file_hash": "dcf50554824daf53c5836c2c52f8426f",
+      "mtime_ns": 1773001194000000000,
+      "size": 187133,
+      "status": "processed"
+    },
+    "DownloadedFiles/Character+Set+for+UNIX.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Character+Set+for+UNIX",
+      "file_hash": "68331910949299a75a7f09a1cf638903",
+      "mtime_ns": 1772999226000000000,
+      "size": 196096,
+      "status": "processed"
+    },
+    "DownloadedFiles/Chart+Search+User+Flowchart.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Chart+Search+User+Flowchart",
+      "file_hash": "a00c43f264652d7c63ae2a5cceea5629",
+      "mtime_ns": 1773000492000000000,
+      "size": 189377,
       "status": "processed"
     },
     "DownloadedFiles/Chart-Level MPages Patient List Navigation - MPages Development Wiki - Cerner Wiki.html": {
@@ -1007,6 +3366,13 @@
       "mtime_ns": 1772372440000000000,
       "size": 184858,
       "status": "duplicate_url"
+    },
+    "DownloadedFiles/Check+Box+Control+in+Discern+Prompt+Library.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Check+Box+Control+in+Discern+Prompt+Library",
+      "file_hash": "c115194a26aa75593e799cf4889baf18",
+      "mtime_ns": 1772969110000000000,
+      "size": 185307,
+      "status": "processed"
     },
     "DownloadedFiles/Chromium - identify if loaded in PowerChart \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1601540/chromium-identify-if-loaded-in-powerchart",
@@ -7007,6 +9373,27 @@
       "size": 515752,
       "status": "processed"
     },
+    "DownloadedFiles/accessing+other+reporting+applications+using+discern+reporting+portal.html": {
+      "dedup_key": "https://wiki.cerner.com/display/DA2HP/Accessing+Other+Reporting+Applications+Using+Discern+Reporting+Portal",
+      "file_hash": "8b64706eed5120d85e9fa29c423e6c2f",
+      "mtime_ns": 1772969028000000000,
+      "size": 187620,
+      "status": "processed"
+    },
+    "DownloadedFiles/apple+technologies.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Apple+Technologies",
+      "file_hash": "ddb17ac314bdfe9255f01d5d605684ce",
+      "mtime_ns": 1772969048000000000,
+      "size": 189825,
+      "status": "processed"
+    },
+    "DownloadedFiles/applications+menu+in+discern+reporting+portal.html": {
+      "dedup_key": "https://wiki.cerner.com/display/DA2HP/Applications+Menu+in+Discern+Reporting+Portal",
+      "file_hash": "87dcce5a58af034542ead461cbb6d1c1",
+      "mtime_ns": 1772969048000000000,
+      "size": 185708,
+      "status": "processed"
+    },
     "DownloadedFiles/applink-to-open-organizer-tab-does-not-navigate-to-the-tab.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1781502/applink-to-open-organizer-tab-does-not-navigate-to-the-tab",
       "file_hash": "b471e4bde48880ae427685ee953eac85",
@@ -7014,12 +9401,68 @@
       "size": 514277,
       "status": "duplicate_url"
     },
+    "DownloadedFiles/assets_css_font-awesome.min.css__fa023f4b48.html": {
+      "dedup_key": "https://mpages-dev-docs.cerner.com/assets/css/font-awesome.min.css",
+      "file_hash": "4139660c25be7732604f412eee026dff",
+      "mtime_ns": 1772995214000000000,
+      "size": 31481,
+      "status": "processed"
+    },
+    "DownloadedFiles/assets_css_main.css__aac82e85d4.html": {
+      "dedup_key": "https://mpages-dev-docs.cerner.com/assets/css/main.css",
+      "file_hash": "df42b2eb152df1468a6bc5bf0a44f146",
+      "mtime_ns": 1772995212000000000,
+      "size": 159856,
+      "status": "processed"
+    },
+    "DownloadedFiles/bedrock_script_br_run_wf_fusion_custom_comp.prg__2cb5fdc983.html": {
+      "dedup_key": "https://mpages-dev-docs.cerner.com/assets/docs/bedrock/script/br_run_wf_fusion_custom_comp.prg",
+      "file_hash": "1c4bcf9909fa6dc358033f267b3eadc3",
+      "mtime_ns": 1772995354000000000,
+      "size": 4688,
+      "status": "processed"
+    },
+    "DownloadedFiles/blobget(+)+in+discern+explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHPDE/BLOBGET%28+%29+in+Discern+Explorer",
+      "file_hash": "cad29221e0868f97619d2735a6531557",
+      "mtime_ns": 1773001966000000000,
+      "size": 132294,
+      "status": "processed"
+    },
+    "DownloadedFiles/bmc+appsight.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/BMC+AppSight",
+      "file_hash": "59f59fdff8f1eded32317985d775037a",
+      "mtime_ns": 1772969058000000000,
+      "size": 189782,
+      "status": "processed"
+    },
+    "DownloadedFiles/bmc+performance+manager.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/BMC+Performance+Manager",
+      "file_hash": "c961ff7af79978ab153737e6d9e4fd5f",
+      "mtime_ns": 1772969058000000000,
+      "size": 188513,
+      "status": "processed"
+    },
     "DownloadedFiles/bob ross - Oracle Health (1).html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/search",
       "file_hash": "82936db94d92f5cebe10be13d415b0c1",
       "mtime_ns": 1772781322446301000,
       "size": 751240,
       "status": "duplicate_url"
+    },
+    "DownloadedFiles/businessobjects.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/BusinessObjects",
+      "file_hash": "28c48fee5de792e2eebf02cdf522f548",
+      "mtime_ns": 1772969070000000000,
+      "size": 202806,
+      "status": "processed"
+    },
+    "DownloadedFiles/call+echorecord+in+discern+explorer.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHPDE/CALL+ECHORECORD+in+Discern+Explorer",
+      "file_hash": "c3c6ed8af07ec08418caf44ae8b8f021",
+      "mtime_ns": 1772969078000000000,
+      "size": 167515,
+      "status": "processed"
     },
     "DownloadedFiles/can-i-use-applink-to-call-an-mpage-view-that-doesn-039-t-have-an-associated-toc-tab.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1770754/can-i-use-applink-to-call-an-mpage-view-that-doesn-039-t-have-an-associated-toc-tab",
@@ -7033,6 +9476,27 @@
       "file_hash": "b64929e40377dbdf72bd099dc803bcf6",
       "mtime_ns": 1772383891478554400,
       "size": 4196209,
+      "status": "processed"
+    },
+    "DownloadedFiles/carefx.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/CareFX",
+      "file_hash": "00a434210a80eb1311b53181d26c313e",
+      "mtime_ns": 1772969090000000000,
+      "size": 189861,
+      "status": "processed"
+    },
+    "DownloadedFiles/case.html": {
+      "dedup_key": "3c8baed56fc0970d495e8ebdb2dba9bb",
+      "file_hash": "3c8baed56fc0970d495e8ebdb2dba9bb",
+      "mtime_ns": 1772967866000000000,
+      "size": 140899,
+      "status": "processed"
+    },
+    "DownloadedFiles/category.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/new-events/category",
+      "file_hash": "52cc9e1e90268b7a021f0cc206b19e1e",
+      "mtime_ns": 1773001504000000000,
+      "size": 492811,
       "status": "processed"
     },
     "DownloadedFiles/ccl prg aggregation - Page 2 \u2014 Oracle Health.html": {
@@ -7056,11 +9520,32 @@
       "size": 513741,
       "status": "duplicate_url"
     },
+    "DownloadedFiles/cds+batch+history+purge+job+template+help.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CDS+Batch+History+Purge+Job+Template+Help",
+      "file_hash": "593dbb33da3ad2e9c7f96d513be92b8f",
+      "mtime_ns": 1772998844000000000,
+      "size": 147770,
+      "status": "processed"
+    },
+    "DownloadedFiles/cerner+cloud+appliance.html": {
+      "dedup_key": "https://wiki.cerner.com/display/CernerWorksRP/Cerner+Cloud+Appliance",
+      "file_hash": "f1b0f3ae0ddb586c9141362926220f9e",
+      "mtime_ns": 1772969100000000000,
+      "size": 191270,
+      "status": "processed"
+    },
     "DownloadedFiles/changed subroutine from Synchronous XMLCCLREQUEST to Asynchronous XMLCCLREQUEST, still not working \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1774801/changed-subroutine-from-synchronous-xmlcclrequest-to-asynchronous-xmlcclrequest-still-not-working",
       "file_hash": "c07593cc4a18387db02cae1f6f7f4ed9",
       "mtime_ns": 1772383925675417700,
       "size": 4196167,
+      "status": "processed"
+    },
+    "DownloadedFiles/chart+search+reference+pages.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Chart+Search+Reference+Pages",
+      "file_hash": "a77c592b0177228df99711989ec144a9",
+      "mtime_ns": 1773000356000000000,
+      "size": 195765,
       "status": "processed"
     },
     "DownloadedFiles/clinical note - Oracle Health.html": {
@@ -7558,6 +10043,13 @@
       "file_hash": "7c7266c06367fc572a9e980738ff5e77",
       "mtime_ns": 1772384595435526600,
       "size": 1042733,
+      "status": "processed"
+    },
+    "DownloadedFiles/{modal\uff1a true} and xmlcclrequest \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/457611/modal-true-and-xmlcclrequest",
+      "file_hash": "60c63a1d4e3206f217bb42de609f67e2",
+      "mtime_ns": 1772904604000000000,
+      "size": 802579,
       "status": "processed"
     },
     "DownloadedFiles/}Decrease binary size of program to under 255 blocks for best performance \u2014 Oracle Health.html": {
