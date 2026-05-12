@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-Content \"C:\\\\Users\\\\BRIANK~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-briankehoe-Documents-Work-Python-CernerScraper-Development-CernerScraper\\\\971d53b6-fdee-485e-ba01-b1b132b68cf5\\\\tasks\\\\bk3345g59.output\")",
+      "Bash(Select-Object -Last 30)",
+      "Bash(python -c \"import os; p='c:/Users/briankehoe/Documents/Work/Python/CernerScraper/Development/CernerScraper/Outputs/Corpus/mpages_chunks.jsonl'; st=os.stat\\(p\\); print\\(f'Modified: {st.st_mtime}, size: {st.st_size:,}'\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(.venv/Scripts/python.exe Outputs/Tools/corpus_qa.py)",
+      "Bash(.venv/Scripts/python.exe Outputs/Tools/agent_corpus_search.py --query \"XMLCCLRequest timeout\" --mode hybrid --format text)",
+      "Bash(.venv/Scripts/python.exe Outputs/Tools/agent_corpus_search.py --query \"DCP_FORMS_ACTIVITY_PRSNL\" --mode exact --format text)",
+      "Bash(.venv/Scripts/python.exe Outputs/Tools/agent_corpus_search.py --query \"XMLCCLRequest\" --integration-pattern xmlcclrequest --format text)",
+      "Bash(.venv/Scripts/python.exe Outputs/Tools/agent_corpus_search.py --query \"EKS_.*_L\" --mode regex --format text)",
+      "Bash(.venv/Scripts/python.exe Outputs/Tools/agent_corpus_search.py --query \"edge\" --integration-pattern xmlcclrequest --format text)",
+      "Bash(.venv/Scripts/python.exe -c ' *)",
+      "Bash(.venv/Scripts/python.exe Outputs/Tools/agent_corpus_search.py --expand-doc-id forum_321330 --format text)"
+    ]
+  }
+}
