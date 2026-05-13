@@ -51,6 +51,7 @@ declare v_med_dose_total  = i4 with noconstant(0)
 declare v_row_cnt     = i4 with noconstant(0)
 declare v_med_attr    = vc with noconstant("")
 declare v_all_days_list = vc with noconstant(""), maxlen=65534
+declare v_table_dot_days_list = vc with noconstant(""), maxlen=65534
 declare v_grand_total_dot   = i4 with noconstant(0)
 declare v_cell_bg         = vc with noconstant("")
 declare v_indication       = vc with noconstant(""), maxlen=255
@@ -599,6 +600,7 @@ select into "nl:"
   med_name = trim(oc.primary_mnemonic)
 , admin_src = admin_rec->qual[d.seq].src
 , day_key = format(admin_rec->qual[d.seq].admin_dt_tm, "YYYYMMDD;;D")
+, src_id = admin_rec->qual[d.seq].admin_id
 , o.current_start_dt_tm
 , o_order_status_disp = uar_get_code_display(o.order_status_cd)
 , o.status_dt_tm
@@ -623,10 +625,11 @@ join od_strengthunit where od_strengthunit.order_id = outerjoin(o.order_id) and 
 join od_volume where od_volume.order_id = outerjoin(o.order_id) and od_volume.oe_field_meaning_id = outerjoin(2058)
 join od_volumeunit where od_volumeunit.order_id = outerjoin(o.order_id) and od_volumeunit.oe_field_meaning_id = outerjoin(2059)
 join ea where ea.encntr_id = outerjoin(o.encntr_id) and ea.encntr_alias_type_cd = outerjoin(1077.00)
-order by o.order_id, cnvtupper(trim(oc.primary_mnemonic)), day_key
+order by o.order_id, cnvtupper(trim(oc.primary_mnemonic)), day_key, src_id
 
 head report
   v_row_cnt = 0
+  v_table_dot_days_list = ""
 
 head o.order_id
   v_drug = med_name
@@ -645,9 +648,13 @@ head o.order_id
   v_doses = 0
 
 head day_key
-  v_dot = v_dot + 1
+  v_key8 = concat(cnvtupper(trim(med_name)), "|", day_key)
+  if (findstring(concat("~", v_key8, "~"), v_table_dot_days_list) = 0)
+    v_dot = v_dot + 1
+    v_table_dot_days_list = concat(v_table_dot_days_list, "~", v_key8, "~")
+  endif
 
-detail
+head src_id
   v_doses = v_doses + 1
 
 foot o.order_id
@@ -882,7 +889,7 @@ set _memory_reply_string = concat(_memory_reply_string, concat('<div class="char
 set _memory_reply_string = concat(_memory_reply_string, concat('<div class="grid-cell label sticky-med hdr-intersect always-on">Medication</div><div class="grid-cell label sticky-doses hdr-intersect always-on">Doses</div><div class="grid-cell label sticky-dot hdr-intersect always-on">DOT</div><div class="grid-cell label axis-header always-on" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), '; min-width:320px;">Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', trim(cnvtstring(v_days), 3), ' days)</div>'))
 
 if (textlen(v_header_html) > 0)
-  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell hdr-intersect always-on route-toggle-cell" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"><span class="route-toggle-wrap"><span class="route-toggle-label">Route</span><button type="button" id="routeToggle" class="route-toggle" aria-pressed="false" title="Toggle chart squares between dose counts and route codes"></button></span></div>')
+  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell hdr-intersect always-on route-toggle-cell" style="background:var(--header-bg);border-bottom:1px solid var(--border-dark);"><span class="route-toggle-wrap"><span class="route-toggle-label">Route</span><button type="button" id="routeToggle" class="route-toggle" aria-pressed="false" title="Toggle chart squares between dose counts and route codes"></button></span></div>')
   set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell hdr-intersect always-on" style="grid-column:span 2;background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
   set _memory_reply_string = concat(_memory_reply_string, v_month_html)
   set _memory_reply_string = concat(_memory_reply_string, concat('<div class="grid-cell hdr-intersect always-on" style="grid-column:span 3;background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>'))
