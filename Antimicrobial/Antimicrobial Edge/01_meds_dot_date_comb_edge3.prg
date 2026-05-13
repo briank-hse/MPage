@@ -56,6 +56,9 @@ declare v_cell_bg         = vc with noconstant("")
 declare v_indication       = vc with noconstant(""), maxlen=255
 declare v_discontinue_rsn  = vc with noconstant(""), maxlen=255
 declare v_route            = vc with noconstant(""), maxlen=255
+declare v_route_upper      = vc with noconstant(""), maxlen=255
+declare v_route_code       = vc with noconstant(""), maxlen=8
+declare v_route_class      = vc with noconstant(""), maxlen=16
 declare v_low_dt      = dq8 with noconstant(null)
 declare v_high_now_dt = dq8 with noconstant(null)
 declare v_today        = dq8 with noconstant(0)
@@ -369,8 +372,40 @@ foot med_name
         if (trim(v_route, 3) = "")
           v_route = "--"
         endif
+        v_route_upper = cnvtupper(trim(v_route, 3))
+        if (v_route_upper = "--")
+          v_route_code = "--"
+          v_route_class = " route-unk"
+        elseif (findstring("INTRAVENOUS", v_route_upper) > 0 or v_route_upper = "IV")
+          v_route_code = "IV"
+          v_route_class = " route-iv"
+        elseif (findstring("ORAL", v_route_upper) > 0 or v_route_upper = "PO" or findstring("BY MOUTH", v_route_upper) > 0)
+          v_route_code = "PO"
+          v_route_class = " route-po"
+        elseif (findstring("INTRAMUSCULAR", v_route_upper) > 0 or v_route_upper = "IM")
+          v_route_code = "IM"
+          v_route_class = " route-im"
+        elseif (findstring("SUBCUT", v_route_upper) > 0 or v_route_upper = "SC" or v_route_upper = "SQ")
+          v_route_code = "SC"
+          v_route_class = " route-sc"
+        elseif (findstring("ENTERAL", v_route_upper) > 0 or findstring("NASOGASTRIC", v_route_upper) > 0 or findstring("NG", v_route_upper) > 0)
+          v_route_code = "EN"
+          v_route_class = " route-en"
+        elseif (findstring("RECTAL", v_route_upper) > 0 or v_route_upper = "PR")
+          v_route_code = "PR"
+          v_route_class = " route-pr"
+        elseif (findstring("INHAL", v_route_upper) > 0 or findstring("NEB", v_route_upper) > 0)
+          v_route_code = "IN"
+          v_route_class = " route-in"
+        elseif (findstring("TOPICAL", v_route_upper) > 0)
+          v_route_code = "TP"
+          v_route_class = " route-tp"
+        else
+          v_route_code = "OT"
+          v_route_class = " route-ot"
+        endif
         v_title = concat(v_curr_med, " - ", format(v_min_dt + v_i,"DD/MM/YYYY;;D"), " / ", v_count_str, if(v_count_i = 1) " admin" else " admins" endif, "&#10;Indication: ", v_indication, "&#10;Discontinue Reason: ", v_discontinue_rsn, "&#10;Route: ", v_route)
-        v_strip = concat(v_strip, '<div class="grid-cell cell on dimmable', v_cell_bg, '"', v_med_attr, ' title="', v_title, '">', trim(v_count_str), '</div>')
+        v_strip = concat(v_strip, '<div class="grid-cell cell on dimmable', v_cell_bg, v_route_class, '"', v_med_attr, ' title="', v_title, '"><span class="dose-count">', trim(v_count_str), '</span><span class="route-code">', v_route_code, '</span></div>')
       else
         v_strip = concat(v_strip, '<div class="grid-cell cell dimmable', v_cell_bg, '"', v_med_attr, ' title="', format(v_min_dt + v_i,"DD/MM/YYYY;;D"), '"></div>')
       endif
@@ -667,6 +702,29 @@ foot o.order_id
     v_fin = "--"
   endif
 
+  v_route_upper = cnvtupper(trim(v_disp, 3))
+  if (trim(v_route_upper, 3) = "")
+    v_route_class = " route-unk"
+  elseif (findstring("INTRAVENOUS", v_route_upper) > 0 or v_route_upper = "IV" or findstring(" IV", v_route_upper) > 0)
+    v_route_class = " route-iv"
+  elseif (findstring("ORAL", v_route_upper) > 0 or findstring(" PO", v_route_upper) > 0 or findstring("BY MOUTH", v_route_upper) > 0)
+    v_route_class = " route-po"
+  elseif (findstring("INTRAMUSCULAR", v_route_upper) > 0 or findstring(" IM", v_route_upper) > 0)
+    v_route_class = " route-im"
+  elseif (findstring("SUBCUT", v_route_upper) > 0 or findstring(" SC", v_route_upper) > 0 or findstring(" SQ", v_route_upper) > 0)
+    v_route_class = " route-sc"
+  elseif (findstring("ENTERAL", v_route_upper) > 0 or findstring("NASOGASTRIC", v_route_upper) > 0 or findstring(" NG", v_route_upper) > 0)
+    v_route_class = " route-en"
+  elseif (findstring("RECTAL", v_route_upper) > 0 or findstring(" PR", v_route_upper) > 0)
+    v_route_class = " route-pr"
+  elseif (findstring("INHAL", v_route_upper) > 0 or findstring("NEB", v_route_upper) > 0)
+    v_route_class = " route-in"
+  elseif (findstring("TOPICAL", v_route_upper) > 0)
+    v_route_class = " route-tp"
+  else
+    v_route_class = " route-ot"
+  endif
+
   v_row_cnt = v_row_cnt + 1
 
   /* APPEND TO TABLE ARRAY */
@@ -679,7 +737,7 @@ foot o.order_id
       '<td class="dot-val"><span class="pill">', trim(cnvtstring(v_dot), 3), '</span></td>',
       "<td>", v_dose_str, "</td>",
       '<td style="display:none;">', v_actual_dose_str, '</td>',
-      "<td>", v_disp, "</td>",
+      '<td class="order-detail', v_route_class, '">', v_disp, "</td>",
       "<td>", v_ind, "</td>",
       "<td>", v_start, "</td>",
       "<td>", v_stat, "</td>",
@@ -739,6 +797,27 @@ set _memory_reply_string = concat(_memory_reply_string, '.dot-val { justify-cont
 set _memory_reply_string = concat(_memory_reply_string, concat('.grid-cell.medname { padding:2px 6px; font-size:', v_med_font_size, ' !important; }'))
 set _memory_reply_string = concat(_memory_reply_string, '.med-trigger { cursor: pointer; color: #111; transition: background 0.2s; }')
 set _memory_reply_string = concat(_memory_reply_string, '.med-trigger:hover { background-color: #e0f0ff !important; }')
+set _memory_reply_string = concat(_memory_reply_string, '.route-toggle-cell{justify-content:flex-start;padding:2px 6px!important;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-toggle-wrap{display:flex;align-items:center;gap:6px;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-toggle-label{font-size:11px;line-height:1;color:#2f3c4b;font-weight:600;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-toggle{position:relative;width:30px;height:16px;border:1px solid #9eb4c8;border-radius:999px;background:#fff;padding:0;cursor:pointer;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-toggle::after{content:"";position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:#7b8794;transition:left .15s ease,background .15s ease;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-toggle:hover{border-color:#0086ce;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-toggle.active{background:#e0f0ff;border-color:#0086ce;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-toggle.active::after{left:16px;background:#0086ce;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-code{display:none;font-size:8px;line-height:1;font-weight:700;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .dose-count{display:none;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .route-code{display:inline;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-iv::after{background:#0086ce;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-po::after{background:#2f9e44;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-im::after{background:#ae3ec9;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-sc::after{background:#f08c00;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-en::after{background:#0ca678;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-pr::after{background:#d6336c;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-in::after{background:#15aabf;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-tp::after{background:#7048e8;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-ot::after{background:#495057;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-unk::after{background:#adb5bd;}')
 set _memory_reply_string = concat(_memory_reply_string, '.filter-icon { font-size: 8px; opacity: 0.5; margin-left: 6px; }')
 set _memory_reply_string = concat(_memory_reply_string, '.dimmed { opacity: 0.15; filter: grayscale(100%); pointer-events: none; transition: opacity 0.3s ease; }')
 set _memory_reply_string = concat(_memory_reply_string, '.dimmable { transition: opacity 0.3s ease; }')
@@ -778,6 +857,19 @@ set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th:nth-c
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th:nth-child(4), table.data-tbl td:nth-child(4) { box-sizing:border-box !important; width:100px; min-width:100px; max-width:100px; }')
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th:nth-child(6), table.data-tbl td:nth-child(6) { box-sizing:border-box !important; width:350px; min-width:350px; max-width:350px; }')
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th:nth-child(7), table.data-tbl td:nth-child(7) { box-sizing:border-box !important; width:250px; min-width:250px; max-width:250px; }')
+set _memory_reply_string = concat(_memory_reply_string, '.order-detail{position:relative;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail{padding-left:22px!important;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail::before{content:"--";position:absolute;left:0;top:0;bottom:0;width:17px;background:#adb5bd;color:#fff;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;line-height:1;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail.route-iv::before{content:"IV";background:#0086ce;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail.route-po::before{content:"PO";background:#2f9e44;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail.route-im::before{content:"IM";background:#ae3ec9;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail.route-sc::before{content:"SC";background:#f08c00;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail.route-en::before{content:"EN";background:#0ca678;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail.route-pr::before{content:"PR";background:#d6336c;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail.route-in::before{content:"IN";background:#15aabf;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail.route-tp::before{content:"TP";background:#7048e8;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail.route-ot::before{content:"OT";background:#495057;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail.route-unk::before{content:"--";background:#adb5bd;}')
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl tr.even td { background:var(--bg-alt); }')
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl tbody tr:last-child td { border-bottom:none; }')
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl tbody tr:hover td { background-color: #f0f7ff; cursor: default; }')
@@ -790,7 +882,8 @@ set _memory_reply_string = concat(_memory_reply_string, concat('<div class="char
 set _memory_reply_string = concat(_memory_reply_string, concat('<div class="grid-cell label sticky-med hdr-intersect always-on">Medication</div><div class="grid-cell label sticky-doses hdr-intersect always-on">Doses</div><div class="grid-cell label sticky-dot hdr-intersect always-on">DOT</div><div class="grid-cell label axis-header always-on" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), '; min-width:320px;">Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', trim(cnvtstring(v_days), 3), ' days)</div>'))
 
 if (textlen(v_header_html) > 0)
-  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="grid-cell hdr-intersect always-on" style="grid-column:span 3;background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>'))
+  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell hdr-intersect always-on route-toggle-cell" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"><span class="route-toggle-wrap"><span class="route-toggle-label">Route</span><button type="button" id="routeToggle" class="route-toggle" aria-pressed="false" title="Toggle chart squares between dose counts and route codes"></button></span></div>')
+  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell hdr-intersect always-on" style="grid-column:span 2;background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
   set _memory_reply_string = concat(_memory_reply_string, v_month_html)
   set _memory_reply_string = concat(_memory_reply_string, concat('<div class="grid-cell hdr-intersect always-on" style="grid-column:span 3;background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>'))
   set _memory_reply_string = concat(_memory_reply_string, v_header_html)
@@ -835,6 +928,17 @@ set _memory_reply_string = concat(_memory_reply_string, '<script>')
 set _memory_reply_string = concat(_memory_reply_string, 'document.addEventListener("DOMContentLoaded", function() {')
 set _memory_reply_string = concat(_memory_reply_string, '  const items = document.querySelectorAll(".dimmable");')
 set _memory_reply_string = concat(_memory_reply_string, '  const triggers = document.querySelectorAll(".med-trigger");')
+set _memory_reply_string = concat(_memory_reply_string, '  const routeToggle = document.getElementById("routeToggle");')
+set _memory_reply_string = concat(_memory_reply_string, '  const chartWrap = document.querySelector(".chart-wrap");')
+set _memory_reply_string = concat(_memory_reply_string, '  const routeRoot = document.body;')
+set _memory_reply_string = concat(_memory_reply_string, '  if (routeToggle && chartWrap) {')
+set _memory_reply_string = concat(_memory_reply_string, '    routeToggle.addEventListener("click", function() {')
+set _memory_reply_string = concat(_memory_reply_string, '      const routeMode = !routeRoot.classList.contains("route-mode");')
+set _memory_reply_string = concat(_memory_reply_string, '      routeRoot.classList.toggle("route-mode", routeMode);')
+set _memory_reply_string = concat(_memory_reply_string, '      routeToggle.classList.toggle("active", routeMode);')
+set _memory_reply_string = concat(_memory_reply_string, '      routeToggle.setAttribute("aria-pressed", routeMode ? "true" : "false");')
+set _memory_reply_string = concat(_memory_reply_string, '    });')
+set _memory_reply_string = concat(_memory_reply_string, '  }')
 set _memory_reply_string = concat(_memory_reply_string, '  triggers.forEach(function(trigger) {')
 set _memory_reply_string = concat(_memory_reply_string, '    trigger.addEventListener("click", function() {')
 set _memory_reply_string = concat(_memory_reply_string, '      const medName = this.getAttribute("data-med");')
