@@ -107,6 +107,11 @@ declare track_ends[50]  = i4
 declare stat            = i4 with noconstant(0)
 
 declare v_min_date     = i4 with noconstant(0)
+declare v_debug_admins = vc with noconstant(""), maxlen=65534
+declare v_debug_meds   = vc with noconstant(""), maxlen=65534
+declare v_debug_display = vc with noconstant(""), maxlen=65534
+declare v_debug_cells   = vc with noconstant(""), maxlen=65534
+declare v_debug_table   = vc with noconstant(""), maxlen=65534
 declare v_begin_dt_str = vc with noconstant("")
 declare v_end_dt_str   = vc with noconstant("")
 declare v_sum_strip    = vc with noconstant(""), maxlen=65534
@@ -184,6 +189,26 @@ head smai.sa_med_admin_item_id
   admin_rec->qual[admin_rec->cnt].src = "SN"
 with nocounter
 
+
+/* Build admin timestamp sample for debug */
+set v_debug_admins = ""
+set v_i = 1
+while (v_i <= admin_rec->cnt and v_i <= 8)
+  set v_debug_admins = concat(v_debug_admins,
+    trim(cnvtstring(v_i),3), ": ",
+    format(admin_rec->qual[v_i].admin_dt_tm,"DD-MMM-YYYY HH:MM;;D"),
+    " | key=", format(admin_rec->qual[v_i].admin_dt_tm,"YYYYMMDD;;D"),
+    " | raw=", cnvtstring(admin_rec->qual[v_i].admin_dt_tm),
+    " (", admin_rec->qual[v_i].src, ")<br/>")
+  set v_i = v_i + 1
+endwhile
+if (admin_rec->cnt > 8)
+  set v_debug_admins = concat(v_debug_admins, "...last: ",
+    format(admin_rec->qual[admin_rec->cnt].admin_dt_tm,"DD-MMM-YYYY HH:MM;;D"),
+    " | key=", format(admin_rec->qual[admin_rec->cnt].admin_dt_tm,"YYYYMMDD;;D"),
+    " | raw=", cnvtstring(admin_rec->qual[admin_rec->cnt].admin_dt_tm),
+    " (", admin_rec->qual[admin_rec->cnt].src, ")<br/>")
+endif
 
 /* ========================================================================== */
 /* PASS 1: DATE DIMENSIONS                                                    */
@@ -339,6 +364,7 @@ foot med_name
     v_row_cnt = v_row_cnt + 1
     v_grand_total_dot = v_grand_total_dot + v_med_dot_total
     v_strip = ""
+    v_debug_cells = ""
     v_i = 0
     v_cell_bg = if(mod(v_row_cnt, 2) = 0) ' even-cell' else '' endif
     v_med_attr = concat(' data-med="', v_curr_med, '"')
@@ -427,6 +453,7 @@ foot med_name
           v_cell_class = ""
         endif
         v_strip = concat(v_strip, '<div class="grid-cell cell on dimmable', v_cell_bg, v_route_class, v_cell_class, '"', v_med_attr, ' title="', v_title, '"><span class="dose-count">', trim(v_count_str), '</span><span class="route-code">', v_route_code, '</span></div>')
+        v_debug_cells = concat(v_debug_cells, if ((v_min_date + v_i) = curdate) "*" else "" endif, trim(v_count_str), " ")
       else
         if ((v_min_date + v_i) = curdate)
           v_cell_class = " today-col"
@@ -434,6 +461,7 @@ foot med_name
           v_cell_class = ""
         endif
         v_strip = concat(v_strip, '<div class="grid-cell cell dimmable', v_cell_bg, v_cell_class, '"', v_med_attr, ' title="', format(v_min_date + v_i,"DD/MM/YYYY;;D"), '"></div>')
+        v_debug_cells = concat(v_debug_cells, if ((v_min_date + v_i) = curdate) "*" else "" endif, ". ")
       endif
       v_i = v_i + 1
     endwhile
@@ -447,12 +475,20 @@ foot med_name
       '<div class="grid-cell dot-val sticky-dot dimmable', v_cell_bg, '"', v_med_attr, '><span class="pill" title="', v_curr_med, ' - Total Days of Therapy: ', trim(cnvtstring(v_med_dot_total), 3), '">', trim(cnvtstring(v_med_dot_total), 3), '</span></div>',
       v_strip
     )
+    v_debug_meds = concat(v_debug_meds, v_curr_med,
+      ": doses=", trim(cnvtstring(v_med_dose_total),3),
+      " DOT=", trim(cnvtstring(v_med_dot_total),3), "<br/>")
+    v_debug_display = concat(v_debug_display, v_curr_med,
+      " | Doses=", trim(cnvtstring(v_med_dose_total),3),
+      " DOT=", trim(cnvtstring(v_med_dot_total),3),
+      " | ", v_debug_cells, "<br/>")
   endif
 
 foot report
   if (v_days > 0)
       v_sum_strip = ""
       v_spacer_strip = ""
+      v_debug_cells = ""
       v_i = 0
       while (v_i < v_days)
           v_key8 = format(v_min_date + v_i, "YYYYMMDD;;D")
@@ -463,11 +499,16 @@ foot report
           endif
           if (findstring(concat("~", v_key8, "~"), v_all_days_list) > 0)
              v_sum_strip = concat(v_sum_strip, '<div class="grid-cell cell sum-yes sum-border', v_cell_class, '" title="Antimicrobial Administered"></div>')
+             v_debug_cells = concat(v_debug_cells, if ((v_min_date + v_i) = curdate) "*" else "" endif, "Y ")
           else
              v_sum_strip = concat(v_sum_strip, '<div class="grid-cell cell sum-no sum-border', v_cell_class, '" title="No Antimicrobials"></div>')
+             v_debug_cells = concat(v_debug_cells, if ((v_min_date + v_i) = curdate) "*" else "" endif, ". ")
           endif
           v_i = v_i + 1
       endwhile
+      v_debug_display = concat(v_debug_display,
+        "Antimicrobial Summary | Grand DOT=", trim(cnvtstring(v_grand_total_dot),3),
+        " | ", v_debug_cells, "<br/>")
 
       /* APPEND SUMMARY TO RECORD ARRAY */
       html_chart->cnt = html_chart->cnt + 1
@@ -679,9 +720,10 @@ head o.order_id
   v_oid = cnvtstring(o.order_id)
   v_dot = 0
   v_doses = 0
+  v_table_dot_days_list = ""
 
 head day_key
-  v_key8 = concat(cnvtupper(trim(med_name)), "|", day_key)
+  v_key8 = day_key
   if (findstring(concat("~", v_key8, "~"), v_table_dot_days_list) = 0)
     v_dot = v_dot + 1
     v_table_dot_days_list = concat(v_table_dot_days_list, "~", v_key8, "~")
@@ -786,6 +828,14 @@ foot o.order_id
       build2(~<td><a href="javascript:APPLINK(0,'Powerchart.exe','/PERSONID=~, trim(cnvtstring($PAT_PersonId, 20, 0), 3), ~ /ENCNTRID=~, v_encntr_id, ~')">~, v_fin, ~</a></td>~),
     "</tr>"
   )
+  v_debug_table = concat(v_debug_table,
+    trim(cnvtstring(html_table->cnt),3), ". ",
+    v_drug,
+    " | Doses=", trim(cnvtstring(v_doses),3),
+    " DOT=", trim(cnvtstring(v_dot),3),
+    " | Order ID=", v_oid,
+    " | FIN=", v_fin,
+    "<br/>")
 with nocounter
 endif
 
@@ -827,6 +877,8 @@ set _memory_reply_string = concat(_memory_reply_string, '.grid-cell { border-rig
 set _memory_reply_string = concat(_memory_reply_string, '.grid-cell.label, .grid-cell.sticky-med, .grid-cell.sticky-doses, .grid-cell.sticky-dot { border-right-color: var(--border-dark) !important; border-bottom: 1px solid var(--border-dark) !important; }')
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th, .grid-cell.label:not(.medname) { background: var(--header-bg) !important; color: #2f3c4b; font-weight: 600 !important; padding: 4px 8px; }')
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th { text-align:left; height:26px; font-size:12px !important; }')
+set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th.has-help{cursor:help;text-decoration:underline dotted #6b7280;text-underline-offset:2px;position:relative;overflow:visible!important;}')
+set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th.has-help:hover::after{content:attr(data-help);position:absolute;left:50%;top:100%;transform:translateX(-50%);z-index:2000;width:260px;padding:6px 8px;border:1px solid #6b7280;background:#fff;color:#111;text-align:left;font-weight:400;line-height:1.25;white-space:normal;box-shadow:0 2px 6px rgba(0,0,0,.18);}')
 set _memory_reply_string = concat(_memory_reply_string, '.grid-cell.label { min-height: 26px; }')
 set _memory_reply_string = concat(_memory_reply_string, '.sticky-med { position:sticky; left:0; z-index:10; background:var(--sticky-bg); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; width:200px; min-width:200px; max-width:200px; }')
 set _memory_reply_string = concat(_memory_reply_string, '.sticky-doses { position:sticky; left:200px; z-index:10; background:var(--sticky-bg); width:40px; min-width:40px; max-width:40px; text-align:center; justify-content:center; }')
@@ -951,7 +1003,7 @@ set _memory_reply_string = concat(_memory_reply_string, '<col style="width:250px
 set _memory_reply_string = concat(_memory_reply_string, '<col><col><col><col><col>')
 set _memory_reply_string = concat(_memory_reply_string, '</colgroup>')
 set _memory_reply_string = concat(_memory_reply_string, '<thead><tr>')
-set _memory_reply_string = concat(_memory_reply_string, '<th>Medication</th><th style="text-align:center;">Doses</th><th style="text-align:center;">DOT</th><th>Target Dose</th><th style="display:none;">Dose</th><th>Order Detail</th><th>Indication</th>')
+set _memory_reply_string = concat(_memory_reply_string, '<th>Medication</th><th style="text-align:center;">Doses</th><th class="has-help" style="text-align:center;" data-help="Order-level DOT: number of calendar days this individual order was administered. Overlapping orders for the same medication may each have DOT on the same day, so order DOT values may not sum to medication-level DOT.">DOT</th><th>Target Dose</th><th style="display:none;">Dose</th><th>Order Detail</th><th>Indication</th>')
 set _memory_reply_string = concat(_memory_reply_string, '<th>Start Date</th><th>Latest Status</th><th>Status Date</th><th>Order ID</th><th>FIN</th>')
 set _memory_reply_string = concat(_memory_reply_string, '</tr></thead>')
 set _memory_reply_string = concat(_memory_reply_string, '<tbody>')
@@ -1020,20 +1072,38 @@ set _memory_reply_string = concat(_memory_reply_string, '});')
 set _memory_reply_string = concat(_memory_reply_string, '</script>')
 
 /* --- DEBUG PANEL --- */
-set _memory_reply_string = concat(_memory_reply_string, '<div id="debug-panel" style="margin-top:24px;padding:10px 14px;border:1px solid #f0a000;background:#fffbe6;color:#333;font-size:11px;font-family:monospace;">')
-set _memory_reply_string = concat(_memory_reply_string, '<b style="font-size:12px;">&#9888; DEBUG INFO (Array Buffer Mode Active)</b><br/>')
+set _memory_reply_string = concat(_memory_reply_string, '<details id="debug-panel" style="margin-top:24px;padding:10px 14px;border:1px solid #f0a000;background:#fffbe6;color:#333;font-size:11px;font-family:monospace;">')
+set _memory_reply_string = concat(_memory_reply_string, '<summary style="cursor:pointer;font-size:12px;font-weight:bold;user-select:none;">&#9888; DEBUG INFO</summary><div style="margin-top:8px;">')
 set _memory_reply_string = concat(_memory_reply_string, concat('Patient ID: ', trim(cnvtstring($PAT_PersonId), 3), ' &nbsp;|&nbsp; Lookback: ', trim(cnvtstring($LOOKBACK), 3), ' days<br/>'))
-set _memory_reply_string = concat(_memory_reply_string, concat('MRN: ', v_mrn, '<br/>'))
 set _memory_reply_string = concat(_memory_reply_string, concat('Admission: ', v_admit_dt, ' &nbsp;|&nbsp; LOS: ', v_los, ' days<br/>'))
 set _memory_reply_string = concat(_memory_reply_string, concat('Query window: ', v_begin_dt_str, ' to ', v_end_dt_str, '<br/>'))
-set _memory_reply_string = concat(_memory_reply_string, concat('Total admin_rec entries: ', trim(cnvtstring(admin_rec->cnt), 3), ' (PowerChart: ', trim(cnvtstring(v_pc_cnt), 3), ', SN Anesthesia: ', trim(cnvtstring(v_sn_cnt), 3), ')<br/>'))
-set _memory_reply_string = concat(_memory_reply_string, concat('v_min_dt: ', format(v_min_dt,"DD-MMM-YYYY HH:MM:SS;;D"), ' (raw: ', cnvtstring(v_min_dt), ')<br/>'))
-set _memory_reply_string = concat(_memory_reply_string, concat('v_max_dt: ', format(v_max_dt,"DD-MMM-YYYY HH:MM:SS;;D"), ' (raw: ', cnvtstring(v_max_dt), ')<br/>'))
-set _memory_reply_string = concat(_memory_reply_string, concat('v_today:  ', format(v_today, "DD-MMM-YYYY HH:MM:SS;;D"), ' (raw: ', cnvtstring(v_today), ')<br/>'))
-set _memory_reply_string = concat(_memory_reply_string, concat('Chart date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', trim(cnvtstring(v_days), 3), ' days)<br/>'))
-set _memory_reply_string = concat(_memory_reply_string, concat('html_chart array count: ', trim(cnvtstring(html_chart->cnt), 3), '<br/>'))
-set _memory_reply_string = concat(_memory_reply_string, concat('html_table array count: ', trim(cnvtstring(html_table->cnt), 3), '<br/>'))
-set _memory_reply_string = concat(_memory_reply_string, '</div>')
+set _memory_reply_string = concat(_memory_reply_string, concat('Total admin_rec: ', trim(cnvtstring(admin_rec->cnt), 3), ' (PC: ', trim(cnvtstring(v_pc_cnt), 3), ', SN: ', trim(cnvtstring(v_sn_cnt), 3), ')<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, '<hr style="border:0;border-top:1px solid #e0c060;margin:4px 0;"/>')
+set _memory_reply_string = concat(_memory_reply_string, concat('v_min_dt:   ', format(v_min_dt,"DD-MMM-YYYY HH:MM:SS;;D"), ' (raw: ', cnvtstring(v_min_dt), ')<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, concat('v_max_dt:   ', format(v_max_dt,"DD-MMM-YYYY HH:MM:SS;;D"), ' (raw: ', cnvtstring(v_max_dt), ')<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, concat('v_today:    ', format(v_today,"DD-MMM-YYYY HH:MM:SS;;D"), ' (raw: ', cnvtstring(v_today), ')<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, concat('v_min_date: ', format(v_min_date,"DD-MMM-YYYY;;D"), ' (raw i4: ', cnvtstring(v_min_date), ')<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, concat('Chart range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', trim(cnvtstring(v_days), 3), ' days) | Grand DOT: ', trim(cnvtstring(v_grand_total_dot),3), '<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, '<hr style="border:0;border-top:1px solid #e0c060;margin:4px 0;"/>')
+set _memory_reply_string = concat(_memory_reply_string, '<b>Unique admin day keys (chart lookup keys):</b><br/>')
+set _memory_reply_string = concat(_memory_reply_string, concat(v_all_days_list, '<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, '<hr style="border:0;border-top:1px solid #e0c060;margin:4px 0;"/>')
+set _memory_reply_string = concat(_memory_reply_string, '<b>Admin timestamps (first 8 + last):</b><br/>')
+set _memory_reply_string = concat(_memory_reply_string, v_debug_admins)
+set _memory_reply_string = concat(_memory_reply_string, '<hr style="border:0;border-top:1px solid #e0c060;margin:4px 0;"/>')
+set _memory_reply_string = concat(_memory_reply_string, '<b>Per-medication (chart):</b><br/>')
+set _memory_reply_string = concat(_memory_reply_string, v_debug_meds)
+set _memory_reply_string = concat(_memory_reply_string, '<hr style="border:0;border-top:1px solid #e0c060;margin:4px 0;"/>')
+set _memory_reply_string = concat(_memory_reply_string, '<b>Actual emitted MPage display:</b><br/>')
+set _memory_reply_string = concat(_memory_reply_string, concat('Date range header: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', trim(cnvtstring(v_days), 3), ' days)<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, concat('Today highlight column: ', format(curdate,"YYYYMMDD;;D"), '<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, 'Chart rows emitted from html_chart buffers (. = empty, number = admin square dose count, Y = summary admin day, * = today column):<br/>')
+set _memory_reply_string = concat(_memory_reply_string, v_debug_display)
+set _memory_reply_string = concat(_memory_reply_string, '<br/><b>Actual emitted table rows:</b><br/>')
+set _memory_reply_string = concat(_memory_reply_string, v_debug_table)
+set _memory_reply_string = concat(_memory_reply_string, '<hr style="border:0;border-top:1px solid #e0c060;margin:4px 0;"/>')
+set _memory_reply_string = concat(_memory_reply_string, concat('html_chart rows: ', trim(cnvtstring(html_chart->cnt), 3), ' | html_table rows: ', trim(cnvtstring(html_table->cnt), 3), '<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, '</div></details>')
 
 /* --- FOOTER --- */
 set _memory_reply_string = concat(_memory_reply_string, build2('<div style="margin-top:24px;padding-top:8px;border-top:1px solid var(--border-dark);color:#666;font-size:12px;">Generated on ', format(cnvtdatetime(curdate, curtime), "YYYY-MM-DD HH:MM:SS;;D"), '.</div></div></body></html>'))
