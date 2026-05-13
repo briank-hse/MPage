@@ -106,6 +106,7 @@ declare v_color_idx     = i4 with noconstant(0)
 declare track_ends[50]  = i4
 declare stat            = i4 with noconstant(0)
 
+declare v_min_date     = i4 with noconstant(0)
 declare v_begin_dt_str = vc with noconstant("")
 declare v_end_dt_str   = vc with noconstant("")
 declare v_sum_strip    = vc with noconstant(""), maxlen=65534
@@ -144,8 +145,10 @@ record enc_sort_rec (1 cnt=i4 1 qual[*] 2 orig_idx=i4 2 start_idx=i4 2 end_idx=i
 /* ========================================================================== */
 select into "nl:"
 from clinical_event ce, med_admin_event m, orders o, code_value_event_r cr, order_catalog oc, order_catalog_synonym ocs, order_entry_format oe
-plan ce where ce.person_id = $PAT_PersonId and ce.performed_dt_tm between cnvtdatetime(curdate-$LOOKBACK,0) and cnvtdatetime(curdate,235959)
-join m where m.event_id = ce.event_id and m.event_type_cd = value(uar_get_code_by("MEANING",4000040,"TASKCOMPLETE"))
+plan ce where ce.person_id = $PAT_PersonId
+  and ce.performed_dt_tm between cnvtdatetime(curdate-$LOOKBACK,0) and cnvtdatetime(curdate,curtime)
+  and ce.result_status_cd = 25.00
+join m where m.event_id = ce.event_id and m.event_type_cd = 8912520.00
 join o where o.order_id = m.template_order_id
 join cr where cr.event_cd = ce.event_cd
 join oc where oc.catalog_cd = cr.parent_cd and oc.catalog_type_cd = 2516
@@ -166,7 +169,9 @@ select into "nl:"
 from orders o, sa_medication_admin sma, sa_med_admin_item smai, order_catalog_synonym ocs, order_entry_format oe
 plan o where o.person_id = $PAT_PersonId
 join sma where sma.order_id = o.order_id and sma.active_ind = 1
-join smai where smai.sa_medication_admin_id = sma.sa_medication_admin_id and smai.active_ind = 1 and smai.admin_start_dt_tm >= cnvtdatetimeutc(cnvtdatetime(curdate-$LOOKBACK,0))
+join smai where smai.sa_medication_admin_id = sma.sa_medication_admin_id and smai.active_ind = 1
+  and smai.admin_start_dt_tm >= cnvtdatetimeutc(cnvtdatetime(curdate-$LOOKBACK,0))
+  and smai.admin_start_dt_tm <= cnvtdatetimeutc(cnvtdatetime(curdate,curtime))
 join ocs where ocs.synonym_id = o.synonym_id
 join oe where oe.oe_format_id = ocs.oe_format_id and oe.oe_format_id in (14497910, 14498121)
 order by smai.sa_med_admin_item_id
@@ -195,7 +200,7 @@ head report
   v_admit_dt = format(e.arrive_dt_tm,"DD/MM/YYYY;;d")
   v_low_dt = cnvtdatetime(cnvtdate(e.arrive_dt_tm),0)
   v_high_now_dt = cnvtdatetime(curdate,0)
-  v_today = cnvtdate(curdate)
+  v_today = cnvtdatetime(curdate, 0)
   v_los = cnvtstring((datetimediff(v_high_now_dt,v_low_dt,7))+1)
   v_lookback = cnvtstring($LOOKBACK)
   v_begin_dt_str = format((curdate-$LOOKBACK),"DD/MM/YYYY;;d")
@@ -204,12 +209,16 @@ with nocounter
 
 if (admin_rec->cnt > 0)
   set v_first = 0
-  set v_min_dt = cnvtdate(admin_rec->qual[1].admin_dt_tm)
-  set v_max_dt = cnvtdate(admin_rec->qual[1].admin_dt_tm)
-  set v_i = 1
+  set v_min_dt = cnvtdatetime(concat(format(admin_rec->qual[1].admin_dt_tm, "DD-MMM-YYYY;;D"), " 00:00:00"))
+  set v_max_dt = v_min_dt
+  set v_i = 2
   while (v_i <= admin_rec->cnt)
-    if (cnvtdate(admin_rec->qual[v_i].admin_dt_tm) < v_min_dt) set v_min_dt = cnvtdate(admin_rec->qual[v_i].admin_dt_tm) endif
-    if (cnvtdate(admin_rec->qual[v_i].admin_dt_tm) > v_max_dt) set v_max_dt = cnvtdate(admin_rec->qual[v_i].admin_dt_tm) endif
+    if (format(admin_rec->qual[v_i].admin_dt_tm, "YYYYMMDD;;D") < format(v_min_dt, "YYYYMMDD;;D"))
+      set v_min_dt = cnvtdatetime(concat(format(admin_rec->qual[v_i].admin_dt_tm, "DD-MMM-YYYY;;D"), " 00:00:00"))
+    endif
+    if (format(admin_rec->qual[v_i].admin_dt_tm, "YYYYMMDD;;D") > format(v_max_dt, "YYYYMMDD;;D"))
+      set v_max_dt = cnvtdatetime(concat(format(admin_rec->qual[v_i].admin_dt_tm, "DD-MMM-YYYY;;D"), " 00:00:00"))
+    endif
     set v_i = v_i + 1
   endwhile
   if (v_max_dt < v_today) set v_max_dt = v_today endif
@@ -233,7 +242,8 @@ if (v_first = 1)
   set stat = alterlist(html_chart->qual, 1)
   set html_chart->qual[1].text = '<div class="grid-cell" style="grid-column: 1 / -1; padding: 10px;">No administrations found.</div>'
 else
-  set v_days = (datetimediff(v_max_dt, v_min_dt, 7)) + 1
+  set v_days = cnvtint(datetimediff(v_max_dt, v_min_dt, 1)) + 1
+  set v_min_date = curdate - (v_days - 1)
   set v_axis_html = concat(' <span style="font-weight:normal; font-size:11px; color:#555;">(Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ')</span>')
   set v_header_html = ''
   set v_month_html  = ''
@@ -243,19 +253,24 @@ else
   set v_i = 0
   /* Pass A: day-number row */
   while (v_i < v_days)
-    set v_header_html = concat(v_header_html, '<div class="grid-cell tick" title="', format(v_min_dt + v_i,"YYYY-MM-DD;;D"), '">', format(v_min_dt + v_i,"DD;;D"), '</div>')
+    if ((v_min_date + v_i) = curdate)
+      set v_cell_class = " today-col"
+    else
+      set v_cell_class = ""
+    endif
+    set v_header_html = concat(v_header_html, '<div class="grid-cell tick', v_cell_class, '" title="', format(v_min_date + v_i,"YYYY-MM-DD;;D"), '">', format(v_min_date + v_i,"DD;;D"), '</div>')
     set v_i = v_i + 1
   endwhile
   /* Pass B: month-span row - walk days, emit span div when month changes or at end */
   set v_i = 0
   while (v_i < v_days)
     if (v_i = 0)
-      set v_mo_name  = format(v_min_dt + v_i, "MMM;;D")
+      set v_mo_name  = format(v_min_date + v_i, "MMM;;D")
       set v_mo_start = 0
       set v_mo_span  = 1
-    elseif (format(v_min_dt + v_i,"MM;;D") != format(v_min_dt + v_i - 1,"MM;;D"))
+    elseif (format(v_min_date + v_i,"MM;;D") != format(v_min_date + v_i - 1,"MM;;D"))
       set v_month_html = concat(v_month_html, '<div class="grid-cell mo-span always-on" style="grid-column:span ', trim(cnvtstring(v_mo_span),3), ';">', v_mo_name, '</div>')
-      set v_mo_name  = format(v_min_dt + v_i, "MMM;;D")
+      set v_mo_name  = format(v_min_date + v_i, "MMM;;D")
       set v_mo_start = v_i
       set v_mo_span  = 1
     else
@@ -329,7 +344,7 @@ foot med_name
     v_med_attr = concat(' data-med="', v_curr_med, '"')
 
     while (v_i < v_days)
-      v_key8 = format(v_min_dt + v_i, "YYYYMMDD;;D")
+      v_key8 = format(v_min_date + v_i, "YYYYMMDD;;D")
       v_findpos = findstring(concat("~", v_key8, ":"), v_dates_kv)
       if (v_findpos > 0)
         v_after  = substring(v_findpos + 10, textlen(v_dates_kv) - (v_findpos + 9), v_dates_kv)
@@ -405,10 +420,20 @@ foot med_name
           v_route_code = "OT"
           v_route_class = " route-ot"
         endif
-        v_title = concat(v_curr_med, " - ", format(v_min_dt + v_i,"DD/MM/YYYY;;D"), " / ", v_count_str, if(v_count_i = 1) " admin" else " admins" endif, "&#10;Indication: ", v_indication, "&#10;Discontinue Reason: ", v_discontinue_rsn, "&#10;Route: ", v_route)
-        v_strip = concat(v_strip, '<div class="grid-cell cell on dimmable', v_cell_bg, v_route_class, '"', v_med_attr, ' title="', v_title, '"><span class="dose-count">', trim(v_count_str), '</span><span class="route-code">', v_route_code, '</span></div>')
+        v_title = concat(v_curr_med, " - ", format(v_min_date + v_i,"DD/MM/YYYY;;D"), " / ", v_count_str, if(v_count_i = 1) " admin" else " admins" endif, "&#10;Indication: ", v_indication, "&#10;Discontinue Reason: ", v_discontinue_rsn, "&#10;Route: ", v_route)
+        if ((v_min_date + v_i) = curdate)
+          v_cell_class = " today-col"
+        else
+          v_cell_class = ""
+        endif
+        v_strip = concat(v_strip, '<div class="grid-cell cell on dimmable', v_cell_bg, v_route_class, v_cell_class, '"', v_med_attr, ' title="', v_title, '"><span class="dose-count">', trim(v_count_str), '</span><span class="route-code">', v_route_code, '</span></div>')
       else
-        v_strip = concat(v_strip, '<div class="grid-cell cell dimmable', v_cell_bg, '"', v_med_attr, ' title="', format(v_min_dt + v_i,"DD/MM/YYYY;;D"), '"></div>')
+        if ((v_min_date + v_i) = curdate)
+          v_cell_class = " today-col"
+        else
+          v_cell_class = ""
+        endif
+        v_strip = concat(v_strip, '<div class="grid-cell cell dimmable', v_cell_bg, v_cell_class, '"', v_med_attr, ' title="', format(v_min_date + v_i,"DD/MM/YYYY;;D"), '"></div>')
       endif
       v_i = v_i + 1
     endwhile
@@ -430,11 +455,16 @@ foot report
       v_spacer_strip = ""
       v_i = 0
       while (v_i < v_days)
-          v_key8 = format(v_min_dt + v_i, "YYYYMMDD;;D")
-          if (findstring(concat("~", v_key8, "~"), v_all_days_list) > 0)
-             v_sum_strip = concat(v_sum_strip, '<div class="grid-cell cell sum-yes sum-border" title="Antimicrobial Administered"></div>')
+          v_key8 = format(v_min_date + v_i, "YYYYMMDD;;D")
+          if ((v_min_date + v_i) = curdate)
+            v_cell_class = " today-col"
           else
-             v_sum_strip = concat(v_sum_strip, '<div class="grid-cell cell sum-no sum-border" title="No Antimicrobials"></div>')
+            v_cell_class = ""
+          endif
+          if (findstring(concat("~", v_key8, "~"), v_all_days_list) > 0)
+             v_sum_strip = concat(v_sum_strip, '<div class="grid-cell cell sum-yes sum-border', v_cell_class, '" title="Antimicrobial Administered"></div>')
+          else
+             v_sum_strip = concat(v_sum_strip, '<div class="grid-cell cell sum-no sum-border', v_cell_class, '" title="No Antimicrobials"></div>')
           endif
           v_i = v_i + 1
       endwhile
@@ -574,6 +604,9 @@ if (admin_rec->cnt > 0 and v_days > 0)
             endif
           endif
         endfor
+        if ((v_min_date + v_i) = curdate)
+          set v_cell_class = concat(v_cell_class, " today-col")
+        endif
         set v_strip = concat(v_strip, '<div class="grid-cell cell ', v_cell_class, '" title="', v_cell_title, '"><span class="enc-cell-text">', v_cell_text, '</span></div>')
         set v_i = v_i + 1
       endwhile
@@ -825,6 +858,8 @@ set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap
 set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-tp::after{background:#7048e8;}')
 set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-ot::after{background:#495057;}')
 set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-unk::after{background:#adb5bd;}')
+set _memory_reply_string = concat(_memory_reply_string, '.tick.today-col{background:#e7f4ff!important;}')
+set _memory_reply_string = concat(_memory_reply_string, 'body .cell.on.today-col::after{background:#7dc4eb;}')
 set _memory_reply_string = concat(_memory_reply_string, '.filter-icon { font-size: 8px; opacity: 0.5; margin-left: 6px; }')
 set _memory_reply_string = concat(_memory_reply_string, '.dimmed { opacity: 0.15; filter: grayscale(100%); pointer-events: none; transition: opacity 0.3s ease; }')
 set _memory_reply_string = concat(_memory_reply_string, '.dimmable { transition: opacity 0.3s ease; }')
@@ -883,7 +918,7 @@ set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl tbody tr
 set _memory_reply_string = concat(_memory_reply_string, '</style></head><body><div class="wrap">')
 
 /* --- CHART SECTION --- */
-set _memory_reply_string = concat(_memory_reply_string, '<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given. &nbsp;<b>Encounter:</b> &#9650; Admit, &#9660; Discharge, &#9670; Same-day admit &amp; discharge.<br/><b>Interactive:</b> Click a medication name to isolate its history across the chart and table.</div>')
+set _memory_reply_string = concat(_memory_reply_string, '<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day. Light blue column = current day to present time.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given. &nbsp;<b>Encounter:</b> &#9650; Admit, &#9660; Discharge, &#9670; Same-day admit &amp; discharge.<br/><b>Interactive:</b> Click a medication name to isolate its history across the chart and table.</div>')
 set _memory_reply_string = concat(_memory_reply_string, '<div class="chart-wrap">')
 set _memory_reply_string = concat(_memory_reply_string, concat('<div class="chart-grid" style="grid-template-columns: 200px 40px 40px repeat(', trim(cnvtstring(v_days), 3), ', 14px);">'))
 set _memory_reply_string = concat(_memory_reply_string, concat('<div class="grid-cell label sticky-med hdr-intersect always-on">Medication</div><div class="grid-cell label sticky-doses hdr-intersect always-on">Doses</div><div class="grid-cell label sticky-dot hdr-intersect always-on">DOT</div><div class="grid-cell label axis-header always-on" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), '; min-width:320px;">Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', trim(cnvtstring(v_days), 3), ' days)</div>'))
@@ -985,13 +1020,16 @@ set _memory_reply_string = concat(_memory_reply_string, '});')
 set _memory_reply_string = concat(_memory_reply_string, '</script>')
 
 /* --- DEBUG PANEL --- */
-set _memory_reply_string = concat(_memory_reply_string, '<div id="debug-panel" style="display:none;margin-top:24px;padding:10px 14px;border:1px solid #f0a000;background:#fffbe6;color:#333;font-size:11px;font-family:monospace;">')
+set _memory_reply_string = concat(_memory_reply_string, '<div id="debug-panel" style="margin-top:24px;padding:10px 14px;border:1px solid #f0a000;background:#fffbe6;color:#333;font-size:11px;font-family:monospace;">')
 set _memory_reply_string = concat(_memory_reply_string, '<b style="font-size:12px;">&#9888; DEBUG INFO (Array Buffer Mode Active)</b><br/>')
 set _memory_reply_string = concat(_memory_reply_string, concat('Patient ID: ', trim(cnvtstring($PAT_PersonId), 3), ' &nbsp;|&nbsp; Lookback: ', trim(cnvtstring($LOOKBACK), 3), ' days<br/>'))
 set _memory_reply_string = concat(_memory_reply_string, concat('MRN: ', v_mrn, '<br/>'))
 set _memory_reply_string = concat(_memory_reply_string, concat('Admission: ', v_admit_dt, ' &nbsp;|&nbsp; LOS: ', v_los, ' days<br/>'))
 set _memory_reply_string = concat(_memory_reply_string, concat('Query window: ', v_begin_dt_str, ' to ', v_end_dt_str, '<br/>'))
 set _memory_reply_string = concat(_memory_reply_string, concat('Total admin_rec entries: ', trim(cnvtstring(admin_rec->cnt), 3), ' (PowerChart: ', trim(cnvtstring(v_pc_cnt), 3), ', SN Anesthesia: ', trim(cnvtstring(v_sn_cnt), 3), ')<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, concat('v_min_dt: ', format(v_min_dt,"DD-MMM-YYYY HH:MM:SS;;D"), ' (raw: ', cnvtstring(v_min_dt), ')<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, concat('v_max_dt: ', format(v_max_dt,"DD-MMM-YYYY HH:MM:SS;;D"), ' (raw: ', cnvtstring(v_max_dt), ')<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, concat('v_today:  ', format(v_today, "DD-MMM-YYYY HH:MM:SS;;D"), ' (raw: ', cnvtstring(v_today), ')<br/>'))
 set _memory_reply_string = concat(_memory_reply_string, concat('Chart date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', trim(cnvtstring(v_days), 3), ' days)<br/>'))
 set _memory_reply_string = concat(_memory_reply_string, concat('html_chart array count: ', trim(cnvtstring(html_chart->cnt), 3), '<br/>'))
 set _memory_reply_string = concat(_memory_reply_string, concat('html_table array count: ', trim(cnvtstring(html_table->cnt), 3), '<br/>'))
