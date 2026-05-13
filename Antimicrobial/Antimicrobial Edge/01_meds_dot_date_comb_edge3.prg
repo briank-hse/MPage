@@ -517,7 +517,7 @@ foot report
       html_chart->cnt = html_chart->cnt + 1
       stat = alterlist(html_chart->qual, html_chart->cnt)
       html_chart->qual[html_chart->cnt].text = concat(
-          '<div class="grid-cell label sticky-med sum-border always-on">Antimicrobial Summary</div>',
+          '<div class="grid-cell label sticky-med sum-border always-on has-help" data-help="Summary: Red = Antimicrobial given, Green = No antimicrobial given." title="Summary: Red = Antimicrobial given, Green = No antimicrobial given.">Antimicrobial Summary</div>',
           '<div class="grid-cell label sticky-doses sum-border always-on"></div>',
           '<div class="grid-cell label dot-val sticky-dot sum-border always-on"><span class="pill" title="Total Summary Days of Therapy: ', trim(cnvtstring(v_grand_total_dot), 3), '">', trim(cnvtstring(v_grand_total_dot), 3), '</span></div>',
           v_sum_strip
@@ -659,7 +659,7 @@ if (admin_rec->cnt > 0 and v_days > 0)
       set html_chart->cnt = html_chart->cnt + 1
       set stat = alterlist(html_chart->qual, html_chart->cnt)
       set html_chart->qual[html_chart->cnt].text = concat(
-        '<div class="grid-cell label enc-label-cell sticky-med always-on">Encounter</div>',
+        '<div class="grid-cell label enc-label-cell sticky-med always-on has-help" data-help="Encounter: &#9650; Admit, &#9660; Discharge, &#9670; Same-day admit &amp; discharge." title="Encounter: &#9650; Admit, &#9660; Discharge, &#9670; Same-day admit &amp; discharge.">Encounter</div>',
         '<div class="grid-cell label sticky-doses always-on"></div>',
         '<div class="grid-cell label sticky-dot always-on"></div>',
         v_strip
@@ -800,14 +800,14 @@ foot o.order_id
     v_route_class = " route-sc"
   elseif (findstring("ENTERAL", v_route_upper) > 0 or findstring("NASOGASTRIC", v_route_upper) > 0 or findstring(" NG", v_route_upper) > 0)
     v_route_class = " route-en"
-  elseif (findstring("RECTAL", v_route_upper) > 0 or findstring(" PR", v_route_upper) > 0)
-    v_route_class = " route-pr"
   elseif (findstring("INHAL", v_route_upper) > 0 or findstring("NEB", v_route_upper) > 0)
     v_route_class = " route-in"
   elseif (findstring("TOPICAL", v_route_upper) > 0)
     v_route_class = " route-tp"
   elseif (findstring("BUCCAL", v_route_upper) > 0)
     v_route_class = " route-bu"
+  elseif (findstring("RECTAL", v_route_upper) > 0 or findstring(" PR,", v_route_upper) > 0 or findstring(" PR ", v_route_upper) > 0)
+    v_route_class = " route-pr"
   else
     v_route_class = " route-ot"
   endif
@@ -876,16 +876,18 @@ set _memory_reply_string = concat(_memory_reply_string, 'h2{font-size:15px;margi
 set _memory_reply_string = concat(_memory_reply_string, '.sub{color:#444;margin:4px 0 16px;}')
 set _memory_reply_string = concat(_memory_reply_string, '.meta-flex { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }')
 set _memory_reply_string = concat(_memory_reply_string, '.legend{margin-top:6px;color:#555;font-size:12px}')
-set _memory_reply_string = concat(_memory_reply_string, '.chart-wrap { overflow-x:auto; overflow-y:hidden; margin-bottom:12px; width:100%; display:block; }')
+set _memory_reply_string = concat(_memory_reply_string, '.chart-wrap { overflow-x:auto; overflow-y:visible; margin-bottom:12px; width:100%; display:block; }')
 set _memory_reply_string = concat(_memory_reply_string, '.chart-grid { display: grid; background: var(--bg-main); width: max-content; border-left: 1px solid var(--border-dark); font-size: 12px; }')
 set _memory_reply_string = concat(_memory_reply_string, '.grid-cell { border-right: 1px solid var(--border-light); border-bottom: none; background: var(--bg-main); padding: 0; display: flex; align-items: center; min-width: 0; }')
 set _memory_reply_string = concat(_memory_reply_string, '.grid-cell.label, .grid-cell.sticky-med, .grid-cell.sticky-doses, .grid-cell.sticky-dot { border-right-color: var(--border-dark) !important; border-bottom: 1px solid var(--border-dark) !important; }')
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th, .grid-cell.label:not(.medname) { background: var(--header-bg) !important; color: #2f3c4b; font-weight: 600 !important; padding: 4px 8px; }')
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th { text-align:left; height:26px; font-size:12px !important; }')
-set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th.has-help{cursor:help;text-decoration:underline dotted #6b7280;text-underline-offset:2px;position:relative;overflow:visible!important;}')
-set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th.has-help:hover::after{content:attr(data-help);position:absolute;left:50%;top:100%;transform:translateX(-50%);z-index:2000;width:260px;padding:6px 8px;border:1px solid #6b7280;background:#fff;color:#111;text-align:left;font-weight:400;line-height:1.25;white-space:normal;box-shadow:0 2px 6px rgba(0,0,0,.18);}')
+set _memory_reply_string = concat(_memory_reply_string, '.has-help{cursor:help;text-decoration:underline dotted #6b7280;text-underline-offset:2px;position:relative;overflow:visible!important;}')
+set _memory_reply_string = concat(_memory_reply_string, '.has-help:hover::after{content:attr(data-help);position:absolute;left:50%;top:100%;transform:translateX(-50%);z-index:2000;width:260px;padding:6px 8px;border:1px solid #6b7280;background:#fff;color:#111;text-align:left;font-weight:400;line-height:1.25;white-space:normal;box-shadow:0 2px 6px rgba(0,0,0,.18);}')
+set _memory_reply_string = concat(_memory_reply_string, '.grid-cell.has-help:hover::after{content:none;display:none;}')
 set _memory_reply_string = concat(_memory_reply_string, '.grid-cell.label { min-height: 26px; }')
 set _memory_reply_string = concat(_memory_reply_string, '.sticky-med { position:sticky; left:0; z-index:10; background:var(--sticky-bg); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; width:200px; min-width:200px; max-width:200px; }')
+set _memory_reply_string = concat(_memory_reply_string, '.sticky-med.has-help{overflow:visible!important;z-index:50;}')
 set _memory_reply_string = concat(_memory_reply_string, '.sticky-doses { position:sticky; left:200px; z-index:10; background:var(--sticky-bg); width:40px; min-width:40px; max-width:40px; text-align:center; justify-content:center; }')
 set _memory_reply_string = concat(_memory_reply_string, '.sticky-dot { position:sticky; left:240px; z-index:10; background:var(--sticky-bg); box-shadow: 2px 0 5px -2px rgba(0,0,0,0.2); width:40px; min-width:40px; max-width:40px; text-align:center; justify-content:center; }')
 set _memory_reply_string = concat(_memory_reply_string, '.hdr-intersect { z-index:20 !important; border-top:1px solid var(--border-dark) !important; }')
@@ -977,7 +979,7 @@ set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl tbody tr
 set _memory_reply_string = concat(_memory_reply_string, '</style></head><body><div class="wrap">')
 
 /* --- CHART SECTION --- */
-set _memory_reply_string = concat(_memory_reply_string, '<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day. Light blue column = current day to present time.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given. &nbsp;<b>Encounter:</b> &#9650; Admit, &#9660; Discharge, &#9670; Same-day admit &amp; discharge.<br/><b>Interactive:</b> Click a medication name to isolate its history across the chart and table.</div>')
+set _memory_reply_string = concat(_memory_reply_string, '<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day. Light blue column = current day to present time.<br/><b>Interactive:</b> Click a medication name to isolate its history across the chart and table.</div>')
 set _memory_reply_string = concat(_memory_reply_string, '<div class="chart-wrap">')
 if (v_days > 0)
   set _memory_reply_string = concat(_memory_reply_string, concat('<div class="chart-grid" style="grid-template-columns: 200px 40px 40px repeat(', trim(cnvtstring(v_days), 3), ', 14px);">'))
