@@ -972,28 +972,33 @@ set _memory_reply_string = concat(_memory_reply_string, '</style></head><body><d
 /* --- CHART SECTION --- */
 set _memory_reply_string = concat(_memory_reply_string, '<div class="legend">Each blue square marks a <b>day</b> where the medication has been administered. A number indicates the count of administrations for that day. Light blue column = current day to present time.<br><b>Summary:</b> Red = Antimicrobial given, Green = No antimicrobial given. &nbsp;<b>Encounter:</b> &#9650; Admit, &#9660; Discharge, &#9670; Same-day admit &amp; discharge.<br/><b>Interactive:</b> Click a medication name to isolate its history across the chart and table.</div>')
 set _memory_reply_string = concat(_memory_reply_string, '<div class="chart-wrap">')
-set _memory_reply_string = concat(_memory_reply_string, concat('<div class="chart-grid" style="grid-template-columns: 200px 40px 40px repeat(', trim(cnvtstring(v_days), 3), ', 14px);">'))
-set _memory_reply_string = concat(_memory_reply_string, concat('<div class="grid-cell label sticky-med hdr-intersect always-on">Medication</div><div class="grid-cell label sticky-doses hdr-intersect always-on">Doses</div><div class="grid-cell label sticky-dot hdr-intersect always-on">DOT</div><div class="grid-cell label axis-header always-on" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), '; min-width:320px;">Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', trim(cnvtstring(v_days), 3), ' days)</div>'))
+if (v_days > 0)
+  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="chart-grid" style="grid-template-columns: 200px 40px 40px repeat(', trim(cnvtstring(v_days), 3), ', 14px);">'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="grid-cell label sticky-med hdr-intersect always-on">Medication</div><div class="grid-cell label sticky-doses hdr-intersect always-on">Doses</div><div class="grid-cell label sticky-dot hdr-intersect always-on">DOT</div><div class="grid-cell label axis-header always-on" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), '; min-width:320px;">Date range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', trim(cnvtstring(v_days), 3), ' days)</div>'))
 
-if (textlen(v_header_html) > 0)
-  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-med hdr-intersect always-on route-toggle-cell" style="background:var(--header-bg);border-bottom:1px solid var(--border-dark);"><span class="route-toggle-wrap"><span class="route-toggle-label">Route</span><button type="button" id="routeToggle" class="route-toggle" aria-pressed="false" title="Toggle chart squares between dose counts and route codes"></button></span></div>')
-  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-doses hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
-  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-dot hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
-  set _memory_reply_string = concat(_memory_reply_string, v_month_html)
-  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-med hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
-  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-doses hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
-  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-dot hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
-  set _memory_reply_string = concat(_memory_reply_string, v_header_html)
+  if (textlen(v_header_html) > 0)
+    set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-med hdr-intersect always-on route-toggle-cell" style="background:var(--header-bg);border-bottom:1px solid var(--border-dark);"><span class="route-toggle-wrap"><span class="route-toggle-label">Route</span><button type="button" id="routeToggle" class="route-toggle" aria-pressed="false" title="Toggle chart squares between dose counts and route codes"></button></span></div>')
+    set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-doses hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
+    set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-dot hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
+    set _memory_reply_string = concat(_memory_reply_string, v_month_html)
+    set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-med hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
+    set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-doses hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
+    set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-dot hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
+    set _memory_reply_string = concat(_memory_reply_string, v_header_html)
+  endif
+
+  /* Output Chart HTML Array */
+  set v_i = 1
+  while (v_i <= html_chart->cnt)
+    set _memory_reply_string = concat(_memory_reply_string, html_chart->qual[v_i].text)
+    set v_i = v_i + 1
+  endwhile
+
+  set _memory_reply_string = concat(_memory_reply_string, '</div>')
+else
+  set _memory_reply_string = concat(_memory_reply_string, '<div style="padding:10px;border:1px solid var(--border-dark);background:var(--bg-main);">No administrations found.</div>')
 endif
-
-/* Output Chart HTML Array */
-set v_i = 1
-while (v_i <= html_chart->cnt)
-  set _memory_reply_string = concat(_memory_reply_string, html_chart->qual[v_i].text)
-  set v_i = v_i + 1
-endwhile
-
-set _memory_reply_string = concat(_memory_reply_string, '</div></div>')
+set _memory_reply_string = concat(_memory_reply_string, '</div>')
 
 /* --- TABLE SECTION --- */
 set _memory_reply_string = concat(_memory_reply_string, '<h2>Antimicrobial Order Details</h2>')
