@@ -442,6 +442,9 @@ foot med_name
         elseif (findstring("TOPICAL", v_route_upper) > 0)
           v_route_code = "TP"
           v_route_class = " route-tp"
+        elseif (findstring("BUCCAL", v_route_upper) > 0)
+          v_route_code = "BU"
+          v_route_class = " route-bu"
         else
           v_route_code = "OT"
           v_route_class = " route-ot"
@@ -803,6 +806,8 @@ foot o.order_id
     v_route_class = " route-in"
   elseif (findstring("TOPICAL", v_route_upper) > 0)
     v_route_class = " route-tp"
+  elseif (findstring("BUCCAL", v_route_upper) > 0)
+    v_route_class = " route-bu"
   else
     v_route_class = " route-ot"
   endif
@@ -908,6 +913,7 @@ set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap
 set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-pr::after{background:#d6336c;}')
 set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-in::after{background:#15aabf;}')
 set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-tp::after{background:#7048e8;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-bu::after{background:#7950f2;}')
 set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-ot::after{background:#495057;}')
 set _memory_reply_string = concat(_memory_reply_string, '.route-mode .chart-wrap .cell.on.route-unk::after{background:#adb5bd;}')
 set _memory_reply_string = concat(_memory_reply_string, '.tick.today-col{background:#e7f4ff!important;}')
@@ -962,6 +968,7 @@ set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-deta
 set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail.route-pr::before{content:"PR";background:#d6336c;}')
 set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail.route-in::before{content:"IN";background:#15aabf;}')
 set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail.route-tp::before{content:"TP";background:#7048e8;}')
+set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail.route-bu::before{content:"BU";background:#7950f2;}')
 set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail.route-ot::before{content:"OT";background:#495057;}')
 set _memory_reply_string = concat(_memory_reply_string, '.route-mode .order-detail.route-unk::before{content:"--";background:#adb5bd;}')
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl tr.even td { background:var(--bg-alt); }')
