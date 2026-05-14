@@ -10,6 +10,22 @@ Use minimal patch edits instead of rewriting entire files.
 
 Confirm file paths before editing.
 
+When reading or editing files in this workspace, use absolute paths rooted at:
+
+`z:\Meds Management\MPage`
+
+PowerShell sessions may start in `C:\WINDOWS\System32\WindowsPowerShell\v1.0` even when the tool context says the cwd is this repository. Do not rely on relative paths until `Get-Location` has confirmed the shell is actually in `z:\Meds Management\MPage`.
+
+Preferred file-read pattern:
+
+`Get-Content "z:\Meds Management\MPage\<relative repo path>"`
+
+Preferred search pattern:
+
+`rg -n "<pattern>" "z:\Meds Management\MPage\<relative repo path or directory>"`
+
+Before editing, confirm the exact absolute target path. Edit the repository file directly; do not make a temporary copy elsewhere and copy it back.
+
 
 
 Cerner / SPA rules:
@@ -30,3 +46,18 @@ Do not introduce backend-supplied executable JS.
 
 Use phased migration with legacy fallback until module sign-off.
 
+
+
+CernerScraper corpus rules:
+
+For CCL examples, code-value discovery, Discern corpus searches, or prior-art lookup, consult the CernerScraper workspace here:
+
+`C:\Users\briankehoe\Documents\Work\Python\CernerScraper\Development\CernerScraper`
+
+Before using that corpus, read its local instructions:
+
+`C:\Users\briankehoe\Documents\Work\Python\CernerScraper\Development\CernerScraper\AGENTS.md`
+
+Use `agent_corpus_search.py` from the CernerScraper workspace when the user asks to search the corpus. Follow that workspace's `AGENTS.md` for the correct command shape and search workflow.
+
+The CernerScraper workspace is reference-only for this repository unless the user explicitly asks for changes there. Do not copy files from CernerScraper into this repository; use findings as guidance and apply minimal patches directly in `z:\Meds Management\MPage`.
