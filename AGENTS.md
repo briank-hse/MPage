@@ -16,6 +16,8 @@ When reading or editing files in this workspace, use absolute paths rooted at:
 
 PowerShell sessions may start in `C:\WINDOWS\System32\WindowsPowerShell\v1.0` even when the tool context says the cwd is this repository. Do not rely on relative paths until `Get-Location` has confirmed the shell is actually in `z:\Meds Management\MPage`.
 
+The `Z:` repository path may be blocked by the local sandbox on first access even for read-only commands. When using developer shell tools to read, search, diff, or inspect files under `z:\Meds Management\MPage`, request sandbox escalation up front for the narrow command instead of first running an un-escalated command that will fail with `Access is denied`.
+
 Preferred file-read pattern:
 
 `Get-Content "z:\Meds Management\MPage\<relative repo path>"`

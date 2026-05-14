@@ -119,11 +119,12 @@ declare v_sum_strip    = vc with noconstant(""), maxlen=65534
 declare v_spacer_strip = vc with noconstant(""), maxlen=65534
 declare v_day_idx      = i4 with noconstant(0)
 declare v_plot_w       = i4 with noconstant(0)
-declare v_plot_h       = i4 with noconstant(44)
-declare v_plot_y0      = i4 with noconstant(7)
+declare v_plot_h       = i4 with noconstant(72)
+declare v_plot_y0      = i4 with noconstant(9)
 declare v_x            = i4 with noconstant(0)
 declare v_y            = i4 with noconstant(0)
 declare v_y2           = i4 with noconstant(0)
+declare v_map_y        = i4 with noconstant(0)
 declare v_vital_val    = f8 with noconstant(0.0)
 declare v_vital_title  = vc with noconstant(""), maxlen=500
 declare v_temp_points  = vc with noconstant(""), maxlen=65534
@@ -134,6 +135,8 @@ declare v_sys_points   = vc with noconstant(""), maxlen=65534
 declare v_dia_points   = vc with noconstant(""), maxlen=65534
 declare v_bp_poly      = vc with noconstant(""), maxlen=65534
 declare v_bp_dia_poly  = vc with noconstant(""), maxlen=65534
+declare v_bp_beams     = vc with noconstant(""), maxlen=65534
+declare v_map_marks    = vc with noconstant(""), maxlen=65534
 declare v_sys_marks    = vc with noconstant(""), maxlen=65534
 declare v_dia_marks    = vc with noconstant(""), maxlen=65534
 declare v_spo2_points  = vc with noconstant(""), maxlen=65534
@@ -799,6 +802,8 @@ if (v_days > 0)
   set v_dia_points = ""
   set v_bp_poly = ""
   set v_bp_dia_poly = ""
+  set v_bp_beams = ""
+  set v_map_marks = ""
   set v_sys_marks = ""
   set v_dia_marks = ""
   set v_spo2_points = ""
@@ -815,7 +820,7 @@ if (v_days > 0)
       set v_y = v_plot_y0 + cnvtint(((40.0 - v_vital_val) * v_plot_h) / 6.0)
       set v_temp_points = concat(v_temp_points, trim(cnvtstring(v_x), 3), ",", trim(cnvtstring(v_y), 3), " ")
       set v_vital_title = concat(vital_day_rec->qual[v_i].temp_name, " ", trim(format(vital_day_rec->qual[v_i].temp_val, "###.##")), " ", vital_day_rec->qual[v_i].temp_units, " - ", format(vital_day_rec->qual[v_i].temp_dt, "DD-MMM-YYYY HH:MM;;D"))
-      set v_temp_marks = concat(v_temp_marks, '<circle class="vital-dot temp-dot" data-day-idx="', trim(cnvtstring(v_i - 1), 3), '" cx="', trim(cnvtstring(v_x), 3), '" cy="', trim(cnvtstring(v_y), 3), '" r="2.5"><title>', v_vital_title, '</title></circle>')
+      set v_temp_marks = concat(v_temp_marks, '<polygon class="vital-dot temp-dot" data-day-idx="', trim(cnvtstring(v_i - 1), 3), '" data-vital-title="', v_vital_title, '" points="', trim(cnvtstring(v_x), 3), ',', trim(cnvtstring(v_y - 3), 3), ' ', trim(cnvtstring(v_x - 3), 3), ',', trim(cnvtstring(v_y + 3), 3), ' ', trim(cnvtstring(v_x + 3), 3), ',', trim(cnvtstring(v_y + 3), 3), '"><title>', v_vital_title, '</title></polygon>')
       set v_temp_count = v_temp_count + 1
     endif
 
@@ -826,7 +831,7 @@ if (v_days > 0)
       set v_y = v_plot_y0 + cnvtint(((180.0 - v_vital_val) * v_plot_h) / 140.0)
       set v_hr_points = concat(v_hr_points, trim(cnvtstring(v_x), 3), ",", trim(cnvtstring(v_y), 3), " ")
       set v_vital_title = concat(vital_day_rec->qual[v_i].hr_name, " ", trim(format(vital_day_rec->qual[v_i].hr_val, "###.##")), " ", vital_day_rec->qual[v_i].hr_units, " - ", format(vital_day_rec->qual[v_i].hr_dt, "DD-MMM-YYYY HH:MM;;D"))
-      set v_hr_marks = concat(v_hr_marks, '<circle class="vital-dot hr-dot" data-day-idx="', trim(cnvtstring(v_i - 1), 3), '" cx="', trim(cnvtstring(v_x), 3), '" cy="', trim(cnvtstring(v_y), 3), '" r="2.5"><title>', v_vital_title, '</title></circle>')
+      set v_hr_marks = concat(v_hr_marks, '<circle class="vital-dot hr-dot" data-day-idx="', trim(cnvtstring(v_i - 1), 3), '" data-vital-title="', v_vital_title, '" cx="', trim(cnvtstring(v_x), 3), '" cy="', trim(cnvtstring(v_y), 3), '" r="2.6"><title>', v_vital_title, '</title></circle>')
       set v_hr_count = v_hr_count + 1
     endif
 
@@ -837,7 +842,6 @@ if (v_days > 0)
       set v_y = v_plot_y0 + cnvtint(((200.0 - v_vital_val) * v_plot_h) / 160.0)
       set v_sys_points = concat(v_sys_points, trim(cnvtstring(v_x), 3), ",", trim(cnvtstring(v_y), 3), " ")
       set v_vital_title = concat(vital_day_rec->qual[v_i].sys_name, " ", trim(format(vital_day_rec->qual[v_i].sys_val, "###.##")), " ", vital_day_rec->qual[v_i].sys_units, " - ", format(vital_day_rec->qual[v_i].sys_dt, "DD-MMM-YYYY HH:MM;;D"))
-      set v_sys_marks = concat(v_sys_marks, '<circle class="vital-dot bp-dot" data-day-idx="', trim(cnvtstring(v_i - 1), 3), '" cx="', trim(cnvtstring(v_x), 3), '" cy="', trim(cnvtstring(v_y), 3), '" r="2.5"><title>', v_vital_title, '</title></circle>')
       set v_bp_count = v_bp_count + 1
     endif
 
@@ -848,7 +852,6 @@ if (v_days > 0)
       set v_y2 = v_plot_y0 + cnvtint(((200.0 - v_vital_val) * v_plot_h) / 160.0)
       set v_dia_points = concat(v_dia_points, trim(cnvtstring(v_x), 3), ",", trim(cnvtstring(v_y2), 3), " ")
       set v_vital_title = concat(vital_day_rec->qual[v_i].dia_name, " ", trim(format(vital_day_rec->qual[v_i].dia_val, "###.##")), " ", vital_day_rec->qual[v_i].dia_units, " - ", format(vital_day_rec->qual[v_i].dia_dt, "DD-MMM-YYYY HH:MM;;D"))
-      set v_dia_marks = concat(v_dia_marks, '<circle class="vital-dot bp-dot" data-day-idx="', trim(cnvtstring(v_i - 1), 3), '" cx="', trim(cnvtstring(v_x), 3), '" cy="', trim(cnvtstring(v_y2), 3), '" r="2.5"><title>', v_vital_title, '</title></circle>')
       if (vital_day_rec->qual[v_i].sys_val <= 0)
         set v_bp_count = v_bp_count + 1
       endif
@@ -857,8 +860,13 @@ if (v_days > 0)
         if (v_vital_val < 40.0) set v_vital_val = 40.0 endif
         if (v_vital_val > 200.0) set v_vital_val = 200.0 endif
         set v_y = v_plot_y0 + cnvtint(((200.0 - v_vital_val) * v_plot_h) / 160.0)
-        set v_bp_poly = concat(v_bp_poly, trim(cnvtstring(v_x), 3), ",", trim(cnvtstring(v_y), 3), " ")
-        set v_bp_dia_poly = concat(trim(cnvtstring(v_x), 3), ",", trim(cnvtstring(v_y2), 3), " ", v_bp_dia_poly)
+        set v_vital_val = ((vital_day_rec->qual[v_i].sys_val + (2.0 * vital_day_rec->qual[v_i].dia_val)) / 3.0)
+        if (v_vital_val < 40.0) set v_vital_val = 40.0 endif
+        if (v_vital_val > 200.0) set v_vital_val = 200.0 endif
+        set v_map_y = v_plot_y0 + cnvtint(((200.0 - v_vital_val) * v_plot_h) / 160.0)
+        set v_vital_title = concat("BP ", trim(format(vital_day_rec->qual[v_i].sys_val, "###")), "/", trim(format(vital_day_rec->qual[v_i].dia_val, "###")), " MAP ", trim(format(((vital_day_rec->qual[v_i].sys_val + (2.0 * vital_day_rec->qual[v_i].dia_val)) / 3.0), "###.##")), " - ", format(vital_day_rec->qual[v_i].sys_dt, "DD-MMM-YYYY HH:MM;;D"))
+        set v_bp_beams = concat(v_bp_beams, '<line class="bp-ibeam" data-day-idx="', trim(cnvtstring(v_i - 1), 3), '" x1="', trim(cnvtstring(v_x), 3), '" y1="', trim(cnvtstring(v_y), 3), '" x2="', trim(cnvtstring(v_x), 3), '" y2="', trim(cnvtstring(v_y2), 3), '"><title>', v_vital_title, '</title></line><line class="bp-cap" x1="', trim(cnvtstring(v_x - 4), 3), '" y1="', trim(cnvtstring(v_y), 3), '" x2="', trim(cnvtstring(v_x + 4), 3), '" y2="', trim(cnvtstring(v_y), 3), '"></line><line class="bp-cap" x1="', trim(cnvtstring(v_x - 4), 3), '" y1="', trim(cnvtstring(v_y2), 3), '" x2="', trim(cnvtstring(v_x + 4), 3), '" y2="', trim(cnvtstring(v_y2), 3), '"></line>')
+        set v_map_marks = concat(v_map_marks, '<circle class="vital-dot map-dot" data-day-idx="', trim(cnvtstring(v_i - 1), 3), '" data-vital-title="', v_vital_title, '" cx="', trim(cnvtstring(v_x), 3), '" cy="', trim(cnvtstring(v_map_y), 3), '" r="3"><title>', v_vital_title, '</title></circle>')
       endif
     endif
 
@@ -869,7 +877,7 @@ if (v_days > 0)
       set v_y = v_plot_y0 + cnvtint(((100.0 - v_vital_val) * v_plot_h) / 20.0)
       set v_spo2_points = concat(v_spo2_points, trim(cnvtstring(v_x), 3), ",", trim(cnvtstring(v_y), 3), " ")
       set v_vital_title = concat(vital_day_rec->qual[v_i].spo2_name, " ", trim(format(vital_day_rec->qual[v_i].spo2_val, "###.##")), " ", vital_day_rec->qual[v_i].spo2_units, " - ", format(vital_day_rec->qual[v_i].spo2_dt, "DD-MMM-YYYY HH:MM;;D"))
-      set v_spo2_marks = concat(v_spo2_marks, '<circle class="vital-dot spo2-dot" data-day-idx="', trim(cnvtstring(v_i - 1), 3), '" cx="', trim(cnvtstring(v_x), 3), '" cy="', trim(cnvtstring(v_y), 3), '" r="2.5"><title>', v_vital_title, '</title></circle>')
+      set v_spo2_marks = concat(v_spo2_marks, '<circle class="vital-dot spo2-dot" data-day-idx="', trim(cnvtstring(v_i - 1), 3), '" data-vital-title="', v_vital_title, '" cx="', trim(cnvtstring(v_x), 3), '" cy="', trim(cnvtstring(v_y), 3), '" r="2.5"><title>', v_vital_title, '</title></circle>')
       set v_spo2_count = v_spo2_count + 1
     endif
 
@@ -1165,18 +1173,22 @@ set _memory_reply_string = concat(_memory_reply_string, '.enc-cell-text { font-s
 set _memory_reply_string = concat(_memory_reply_string, '.vitals-wrap{position:relative;overflow-x:auto;overflow-y:visible;width:100%;margin:2px 0 10px;display:block;}')
 set _memory_reply_string = concat(_memory_reply_string, '.vitals-grid{display:grid;width:max-content;border-left:1px solid var(--border-dark);background:var(--bg-main);font-size:12px;}')
 set _memory_reply_string = concat(_memory_reply_string, '.vitals-grid .grid-cell{border-bottom:1px solid var(--border-dark);}')
+set _memory_reply_string = concat(_memory_reply_string, '.vitals-grid .sticky-med{white-space:normal;line-height:1.2;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vitals-grid .sticky-doses{width:80px;min-width:80px;max-width:80px;}')
 set _memory_reply_string = concat(_memory_reply_string, '.vitals-title{font-size:14px!important;font-weight:700!important;color:#111!important;background:var(--bg-main)!important;}')
-set _memory_reply_string = concat(_memory_reply_string, '.vital-scale{font-size:10px;color:#2f3c4b;line-height:1.15;justify-content:center;text-align:center;}')
-set _memory_reply_string = concat(_memory_reply_string, '.vital-plot{height:58px;background:repeating-linear-gradient(to right,#f7f8fa 0,#f7f8fa 13px,#e7eaee 13px,#e7eaee 14px);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);position:relative;overflow:hidden;}')
-set _memory_reply_string = concat(_memory_reply_string, '.vital-svg{display:block;width:100%;height:58px;overflow:hidden;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vital-scale{font-size:9px;color:#2f3c4b;line-height:1.15;justify-content:space-between;text-align:right;align-items:stretch;flex-direction:column;padding:4px 5px!important;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vital-plot{height:90px;background:repeating-linear-gradient(to right,#f7f8fa 0,#f7f8fa 13px,#e7eaee 13px,#e7eaee 14px);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);position:relative;overflow:hidden;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vital-svg{display:block;width:100%;height:90px;overflow:hidden;}')
+set _memory_reply_string = concat(_memory_reply_string, '.axis-line{stroke:#4b5563;stroke-width:1.2;vector-effect:non-scaling-stroke;}.grid-major{stroke:#c5ccd3;stroke-width:1;stroke-dasharray:3 3;vector-effect:non-scaling-stroke;}.tick-major{stroke:#4b5563;stroke-width:1;vector-effect:non-scaling-stroke;}.tick-minor{stroke:#9aa3ad;stroke-width:.8;vector-effect:non-scaling-stroke;}')
 set _memory_reply_string = concat(_memory_reply_string, '.vital-line{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;}')
 set _memory_reply_string = concat(_memory_reply_string, '.temp-line{stroke:#2f5f9f;}.hr-line{stroke:#9b2f2f;}.sys-line{stroke:#2f8f46;}.dia-line{stroke:#b57921;}.spo2-line{stroke:#25aeb8;}')
-set _memory_reply_string = concat(_memory_reply_string, '.vital-dot{stroke:#fff;stroke-width:.9;vector-effect:non-scaling-stroke;}.temp-dot{fill:#2f5f9f;}.hr-dot{fill:#9b2f2f;}.bp-dot{fill:#2f8f46;}.spo2-dot{fill:#25aeb8;}')
-set _memory_reply_string = concat(_memory_reply_string, '.bp-fill-band{fill:#84c98f;opacity:.22;stroke:none;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vital-dot{stroke:#fff;stroke-width:.9;vector-effect:non-scaling-stroke;}.temp-dot{fill:#2f5f9f;}.hr-dot{fill:#9b2f2f;}.spo2-dot{fill:#25aeb8;}.map-dot{fill:#1f5fd0;stroke:#fff;stroke-width:1;}')
+set _memory_reply_string = concat(_memory_reply_string, '.bp-ibeam{stroke:#111;stroke-width:1.2;vector-effect:non-scaling-stroke;}.bp-cap{stroke:#d22;stroke-width:1.4;vector-effect:non-scaling-stroke;}')
 set _memory_reply_string = concat(_memory_reply_string, '.vital-ref{stroke:#6b7280;stroke-width:1;stroke-dasharray:3 3;opacity:.65;vector-effect:non-scaling-stroke;}')
 set _memory_reply_string = concat(_memory_reply_string, '.spo2-threshold{stroke:#25aeb8;stroke-width:1;stroke-dasharray:4 3;opacity:.8;vector-effect:non-scaling-stroke;}')
 set _memory_reply_string = concat(_memory_reply_string, '.vital-no-data{position:absolute;inset:0;display:flex;align-items:center;padding-left:8px;color:#777;font-size:11px;background:rgba(255,255,255,.7);}')
-set _memory_reply_string = concat(_memory_reply_string, '.vital-guide{display:none;position:absolute;top:0;bottom:0;width:1px;background:#111;opacity:.45;z-index:100;pointer-events:none;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vital-guide{display:none;position:absolute;top:0;bottom:0;width:14px;background:#777;opacity:.32;z-index:100;pointer-events:none;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vital-tip{display:none;position:absolute;top:28px;left:0;z-index:120;max-width:320px;padding:6px 8px;border:1px solid #7b8794;background:#fff9c4;color:#111;font-size:11px;line-height:1.3;white-space:pre-line;box-shadow:0 2px 6px rgba(0,0,0,.18);pointer-events:none;}')
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl { width:100%; min-width:1460px; border-collapse:separate; border-spacing:0; margin-top:2px; font-size:12px; border-top:1px solid var(--border-dark); border-left:1px solid var(--border-dark); border-bottom:2px solid #a0a0a0; table-layout:fixed; }')
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th, table.data-tbl td { border-right:1px solid var(--border-dark); border-bottom:1px solid var(--border-dark); padding:4px 6px; text-align:left; background:var(--bg-main); word-break:break-word; overflow-wrap:break-word; overflow:hidden; transition: background-color 0.2s; }')
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th:nth-child(1), table.data-tbl td:nth-child(1) { box-sizing:border-box !important; width:200px; min-width:200px; max-width:200px; }')
@@ -1237,39 +1249,41 @@ set _memory_reply_string = concat(_memory_reply_string, '</div>')
 
 /* --- CLINICAL MONITORING TRENDS --- */
 if (v_days > 0)
-  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="vitals-wrap"><div id="vitalGuide" class="vital-guide"></div><div class="vitals-grid" style="grid-template-columns: 200px 40px 40px repeat(', trim(cnvtstring(v_days), 3), ', 14px);">'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="vitals-wrap"><div id="vitalGuide" class="vital-guide"></div><div id="vitalTip" class="vital-tip"></div><div class="vitals-grid" style="grid-template-columns: 200px 80px repeat(', trim(cnvtstring(v_days), 3), ', 14px);">'))
   set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell label sticky-med hdr-intersect always-on vitals-title">Clinical Monitoring Trends</div>')
   set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-doses hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
-  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-dot hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
   set _memory_reply_string = concat(_memory_reply_string, v_month_html)
   set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-med hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
   set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-doses hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
-  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-dot hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
   set _memory_reply_string = concat(_memory_reply_string, v_header_html)
 
-  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell label sticky-med always-on">Temperature</div><div class="grid-cell label sticky-doses always-on vital-scale">40C<br/>34C</div><div class="grid-cell label sticky-dot always-on"></div>')
-  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="vital-plot" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), '; width:', trim(cnvtstring(v_plot_w), 3), 'px;"><svg class="vital-svg" width="', trim(cnvtstring(v_plot_w), 3), '" height="58" viewBox="0 0 ', trim(cnvtstring(v_plot_w), 3), ' 58" preserveAspectRatio="none"><polyline class="vital-line temp-line" points="', v_temp_points, '"></polyline>', v_temp_marks, '</svg>'))
-  if (v_temp_count = 0)
-    set _memory_reply_string = concat(_memory_reply_string, '<div class="vital-no-data">No temperature data</div>')
+  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell label sticky-med always-on"><span style="color:#2f5f9f;">&#9650; T (DegC) [36.7-37.5]</span><br/><span style="color:#9b2f2f;">&#9679; HR (bpm) [60-100]</span></div><div class="grid-cell label sticky-doses always-on vital-scale"><span>40C / 180</span><span>39C / 157</span><span>38C / 133</span><span>37C / 110</span><span>36C / 87</span><span>35C / 63</span><span>34C / 40</span></div>')
+  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="vital-plot" style="grid-column: 3 / span ', trim(cnvtstring(v_days), 3), '; width:', trim(cnvtstring(v_plot_w), 3), 'px;"><svg class="vital-svg" width="', trim(cnvtstring(v_plot_w), 3), '" height="90" viewBox="0 0 ', trim(cnvtstring(v_plot_w), 3), ' 90" preserveAspectRatio="none">'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="axis-line" x1="0" y1="9" x2="0" y2="81"></line><line class="grid-major" x1="0" y1="9" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="9"></line><line class="grid-major" x1="0" y1="21" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="21"></line>'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="grid-major" x1="0" y1="33" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="33"></line><line class="grid-major" x1="0" y1="45" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="45"></line><line class="grid-major" x1="0" y1="57" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="57"></line>'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="grid-major" x1="0" y1="69" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="69"></line><line class="grid-major" x1="0" y1="81" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="81"></line><line class="vital-ref" x1="0" y1="50" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="50"></line>'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<polyline class="vital-line temp-line" points="', v_temp_points, '"></polyline><polyline class="vital-line hr-line" points="', v_hr_points, '"></polyline>', v_temp_marks, v_hr_marks, '</svg>'))
+  if (v_temp_count = 0 and v_hr_count = 0)
+    set _memory_reply_string = concat(_memory_reply_string, '<div class="vital-no-data">No temperature or heart rate data</div>')
   endif
   set _memory_reply_string = concat(_memory_reply_string, '</div>')
 
-  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell label sticky-med always-on">Heart Rate / Pulse</div><div class="grid-cell label sticky-doses always-on vital-scale">180<br/>40</div><div class="grid-cell label sticky-dot always-on"></div>')
-  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="vital-plot" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), '; width:', trim(cnvtstring(v_plot_w), 3), 'px;"><svg class="vital-svg" width="', trim(cnvtstring(v_plot_w), 3), '" height="58" viewBox="0 0 ', trim(cnvtstring(v_plot_w), 3), ' 58" preserveAspectRatio="none"><line class="vital-ref" x1="0" y1="32" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="32"></line><polyline class="vital-line hr-line" points="', v_hr_points, '"></polyline>', v_hr_marks, '</svg>'))
-  if (v_hr_count = 0)
-    set _memory_reply_string = concat(_memory_reply_string, '<div class="vital-no-data">No heart rate data</div>')
-  endif
-  set _memory_reply_string = concat(_memory_reply_string, '</div>')
-
-  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell label sticky-med always-on">Blood Pressure</div><div class="grid-cell label sticky-doses always-on vital-scale">200<br/>40</div><div class="grid-cell label sticky-dot always-on">Sys<br/>Dia</div>')
-  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="vital-plot" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), '; width:', trim(cnvtstring(v_plot_w), 3), 'px;"><svg class="vital-svg" width="', trim(cnvtstring(v_plot_w), 3), '" height="58" viewBox="0 0 ', trim(cnvtstring(v_plot_w), 3), ' 58" preserveAspectRatio="none"><polygon class="bp-fill-band" points="', v_bp_poly, v_bp_dia_poly, '"></polygon><polyline class="vital-line sys-line" points="', v_sys_points, '"></polyline><polyline class="vital-line dia-line" points="', v_dia_points, '"></polyline>', v_sys_marks, v_dia_marks, '</svg>'))
+  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell label sticky-med always-on"><span style="color:#d22;">&#9474; BP SBP/DBP (mmHg)</span><br/><span style="color:#1f5fd0;">&#9679; MAP [70-100]</span></div><div class="grid-cell label sticky-doses always-on vital-scale"><span>200</span><span>180</span><span>160</span><span>140</span><span>120</span><span>100</span><span>80</span><span>60</span><span>40</span></div>')
+  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="vital-plot" style="grid-column: 3 / span ', trim(cnvtstring(v_days), 3), '; width:', trim(cnvtstring(v_plot_w), 3), 'px;"><svg class="vital-svg" width="', trim(cnvtstring(v_plot_w), 3), '" height="90" viewBox="0 0 ', trim(cnvtstring(v_plot_w), 3), ' 90" preserveAspectRatio="none">'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="axis-line" x1="0" y1="9" x2="0" y2="81"></line><line class="grid-major" x1="0" y1="9" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="9"></line><line class="grid-major" x1="0" y1="18" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="18"></line>'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="grid-major" x1="0" y1="27" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="27"></line><line class="grid-major" x1="0" y1="36" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="36"></line><line class="grid-major" x1="0" y1="45" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="45"></line>'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="grid-major" x1="0" y1="54" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="54"></line><line class="grid-major" x1="0" y1="63" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="63"></line><line class="grid-major" x1="0" y1="72" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="72"></line>'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="grid-major" x1="0" y1="81" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="81"></line>', v_bp_beams, v_map_marks, '</svg>'))
   if (v_bp_count = 0)
     set _memory_reply_string = concat(_memory_reply_string, '<div class="vital-no-data">No blood pressure data</div>')
   endif
   set _memory_reply_string = concat(_memory_reply_string, '</div>')
 
-  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell label sticky-med always-on">SpO2</div><div class="grid-cell label sticky-doses always-on vital-scale">100<br/>80</div><div class="grid-cell label sticky-dot always-on"></div>')
-  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="vital-plot" style="grid-column: 4 / span ', trim(cnvtstring(v_days), 3), '; width:', trim(cnvtstring(v_plot_w), 3), 'px;"><svg class="vital-svg" width="', trim(cnvtstring(v_plot_w), 3), '" height="58" viewBox="0 0 ', trim(cnvtstring(v_plot_w), 3), ' 58" preserveAspectRatio="none"><line class="spo2-threshold" x1="0" y1="20" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="20"><title>SpO2 94% threshold</title></line><polyline class="vital-line spo2-line" points="', v_spo2_points, '"></polyline>', v_spo2_marks, '</svg>'))
+  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell label sticky-med always-on"><span style="color:#25aeb8;">&#9679; SpO2 (%) [94-100]</span></div><div class="grid-cell label sticky-doses always-on vital-scale"><span>100</span><span>95</span><span>90</span><span>85</span><span>80</span></div>')
+  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="vital-plot" style="grid-column: 3 / span ', trim(cnvtstring(v_days), 3), '; width:', trim(cnvtstring(v_plot_w), 3), 'px;"><svg class="vital-svg" width="', trim(cnvtstring(v_plot_w), 3), '" height="90" viewBox="0 0 ', trim(cnvtstring(v_plot_w), 3), ' 90" preserveAspectRatio="none">'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="axis-line" x1="0" y1="9" x2="0" y2="81"></line><line class="grid-major" x1="0" y1="9" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="9"></line><line class="grid-major" x1="0" y1="27" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="27"></line>'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="grid-major" x1="0" y1="45" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="45"></line><line class="grid-major" x1="0" y1="63" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="63"></line><line class="grid-major" x1="0" y1="81" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="81"></line>'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="spo2-threshold" x1="0" y1="31" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="31"><title>SpO2 94% threshold</title></line><polyline class="vital-line spo2-line" points="', v_spo2_points, '"></polyline>', v_spo2_marks, '</svg>'))
   if (v_spo2_count = 0)
     set _memory_reply_string = concat(_memory_reply_string, '<div class="vital-no-data">No SpO2 data</div>')
   endif
@@ -1310,6 +1324,7 @@ set _memory_reply_string = concat(_memory_reply_string, '  const routeToggle = d
 set _memory_reply_string = concat(_memory_reply_string, '  const chartWrap = document.querySelector(".chart-wrap");')
 set _memory_reply_string = concat(_memory_reply_string, '  const vitalsWrap = document.querySelector(".vitals-wrap");')
 set _memory_reply_string = concat(_memory_reply_string, '  const vitalGuide = document.getElementById("vitalGuide");')
+set _memory_reply_string = concat(_memory_reply_string, '  const vitalTip = document.getElementById("vitalTip");')
 set _memory_reply_string = concat(_memory_reply_string, '  const dayTargets = document.querySelectorAll("[data-day-idx]");')
 set _memory_reply_string = concat(_memory_reply_string, '  const routeRoot = document.body;')
 set _memory_reply_string = concat(_memory_reply_string, '  if (chartWrap && vitalsWrap) {')
@@ -1320,10 +1335,19 @@ set _memory_reply_string = concat(_memory_reply_string, '  function showDayGuide
 set _memory_reply_string = concat(_memory_reply_string, '    if (!vitalGuide) return;')
 set _memory_reply_string = concat(_memory_reply_string, '    var idx = parseInt(dayIdx, 10);')
 set _memory_reply_string = concat(_memory_reply_string, '    if (isNaN(idx)) return;')
-set _memory_reply_string = concat(_memory_reply_string, '    vitalGuide.style.left = ((idx * 14) + 287) + "px";')
+set _memory_reply_string = concat(_memory_reply_string, '    var values = [];')
+set _memory_reply_string = concat(_memory_reply_string, ~    document.querySelectorAll('.vitals-wrap [data-day-idx="' + idx + '"][data-vital-title]').forEach(function(el) {~)
+set _memory_reply_string = concat(_memory_reply_string, '      values.push(el.getAttribute("data-vital-title"));')
+set _memory_reply_string = concat(_memory_reply_string, '    });')
+set _memory_reply_string = concat(_memory_reply_string, '    vitalGuide.style.left = ((idx * 14) + 280) + "px";')
 set _memory_reply_string = concat(_memory_reply_string, '    vitalGuide.style.display = "block";')
+set _memory_reply_string = concat(_memory_reply_string, '    if (vitalTip) {')
+set _memory_reply_string = concat(_memory_reply_string, '      vitalTip.textContent = values.join("\n");')
+set _memory_reply_string = concat(_memory_reply_string, '      vitalTip.style.left = ((idx * 14) + 298) + "px";')
+set _memory_reply_string = concat(_memory_reply_string, '      vitalTip.style.display = values.length ? "block" : "none";')
+set _memory_reply_string = concat(_memory_reply_string, '    }')
 set _memory_reply_string = concat(_memory_reply_string, '  }')
-set _memory_reply_string = concat(_memory_reply_string, '  function hideDayGuide() { if (vitalGuide) vitalGuide.style.display = "none"; }')
+set _memory_reply_string = concat(_memory_reply_string, '  function hideDayGuide() { if (vitalGuide) vitalGuide.style.display = "none"; if (vitalTip) vitalTip.style.display = "none"; }')
 set _memory_reply_string = concat(_memory_reply_string, '  dayTargets.forEach(function(el) {')
 set _memory_reply_string = concat(_memory_reply_string, '    el.addEventListener("mouseenter", function() { showDayGuide(this.getAttribute("data-day-idx")); });')
 set _memory_reply_string = concat(_memory_reply_string, '    el.addEventListener("mouseleave", hideDayGuide);')
