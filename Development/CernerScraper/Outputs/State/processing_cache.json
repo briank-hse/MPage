@@ -924,6 +924,13 @@
       "size": 192890,
       "status": "processed"
     },
+    "DownloadedFiles/All About Discern Explorer Program Efficiency Checklist - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/All+About+Discern+Explorer+Program+Efficiency+Checklist",
+      "file_hash": "a146aa205332b3687ecc7832a0dc713a",
+      "mtime_ns": 1778923805256841500,
+      "size": 331301,
+      "status": "processed"
+    },
     "DownloadedFiles/All About Outside Records MPages View - Reference Pages - Cerner Wiki.htm": {
       "dedup_key": "https://wiki.cerner.com/display/reference/All+About+Outside+Records+MPages+View",
       "file_hash": "827727627f9c33a402ffc71ac57108ba",
@@ -1036,6 +1043,13 @@
       "size": 30441,
       "status": "processed"
     },
+    "DownloadedFiles/Another EXPAND_LOCATEVALSORT Blind spot \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/767274/another-expand-locatevalsort-blind-spot",
+      "file_hash": "9774a5be9b5d680a070688fc80858e51",
+      "mtime_ns": 1778928580874293900,
+      "size": 1160621,
+      "status": "processed"
+    },
     "DownloadedFiles/Answers+To+Exercises+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Answers+To+Exercises+Using+Discern+Explorer",
       "file_hash": "fe6fced4be11a4f6df46f6acf4f87235",
@@ -1106,6 +1120,13 @@
       "size": 2252,
       "status": "duplicate_hash"
     },
+    "DownloadedFiles/Article -\uff02Don't Use Dummyt and Expand() to Qualify....\uff02 Question \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/838657/article-dont-use-dummyt-and-expand-to-qualify-question",
+      "file_hash": "63765e3903eae452f0cccbf1091f5e0a",
+      "mtime_ns": 1778928644733031000,
+      "size": 1167232,
+      "status": "processed"
+    },
     "DownloadedFiles/AsOfSCN+Control+Option+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/AsOfSCN+Control+Option+Using+Discern+Explorer",
       "file_hash": "1db9d1231ea18a37b7dd4996ca9b78a1",
@@ -1160,6 +1181,13 @@
       "file_hash": "10d3922a156f7c3f12e0fe8ff7da1736",
       "mtime_ns": 1772722690468721100,
       "size": 797714,
+      "status": "processed"
+    },
+    "DownloadedFiles/Attempt to use EXPAND but not working \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/960592/attempt-to-use-expand-but-not-working",
+      "file_hash": "3eadb4ee3ce4f94953dee8eae9e860aa",
+      "mtime_ns": 1778928642222082600,
+      "size": 1158448,
       "status": "processed"
     },
     "DownloadedFiles/Attestation codes for clinical notes \u2014 Oracle Health.html": {
@@ -1538,6 +1566,13 @@
       "file_hash": "a053fbc6aeb9e1ed0fe5031b519de434",
       "mtime_ns": 1772782524238752200,
       "size": 1000277,
+      "status": "processed"
+    },
+    "DownloadedFiles/Best practices when using expand() with a large record structure list \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/566024/best-practices-when-using-expand-with-a-large-record-structure-list",
+      "file_hash": "411bc753b5fd63ee9342259341c13c1d",
+      "mtime_ns": 1778928643587685200,
+      "size": 1173523,
       "status": "processed"
     },
     "DownloadedFiles/Best way to link a custom SQL report parameter to a DA2 query parameter \u2014 Oracle Health.html": {
@@ -1923,6 +1958,13 @@
       "file_hash": "11826a48e90be6167e8cb70f2f4bd590",
       "mtime_ns": 1772998806000000000,
       "size": 150340,
+      "status": "processed"
+    },
+    "DownloadedFiles/CCL EXPAND function with alpha-numeric argument not working \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/705309/ccl-expand-function-with-alpha-numeric-argument-not-working",
+      "file_hash": "e1e07350d54a2c6cc53a3e34e7c18e40",
+      "mtime_ns": 1778928540320213000,
+      "size": 1180480,
       "status": "processed"
     },
     "DownloadedFiles/CCL Error Joining Two Tables \u2014 Oracle Health.html": {
@@ -3150,6 +3192,13 @@
       "size": 187802,
       "status": "processed"
     },
+    "DownloadedFiles/CHECK Control Option Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CHECK+Control+Option+Using+Discern+Explorer",
+      "file_hash": "8b7b9a4d67a80b13694e69639b2f8810",
+      "mtime_ns": 1778924011559066000,
+      "size": 187087,
+      "status": "processed"
+    },
     "DownloadedFiles/CHECK+Control+Option+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/CHECK+Control+Option+Using+Discern+Explorer",
       "file_hash": "a8ddcaab03f6b74dd2814282a5934ec5",
@@ -3920,6 +3969,13 @@
       "size": 525968,
       "status": "processed"
     },
+    "DownloadedFiles/Can I use EXPAND range qualification ex. \uff02\uff1e=\uff02 \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/687584/can-i-use-expand-range-qualification-ex",
+      "file_hash": "27cd78ca2b0babceefdbab2e22374276",
+      "mtime_ns": 1778928642353911300,
+      "size": 1165731,
+      "status": "processed"
+    },
     "DownloadedFiles/Can OPENLINK create a pdf file from an inbound HL7 base 64 encoded report\uff1f \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/857765/can-openlink-create-a-pdf-file-from-an-inbound-hl7-base-64-encoded-report",
       "file_hash": "0a253669919f94148c1bd96e1d76da2f",
@@ -3939,6 +3995,13 @@
       "file_hash": "4ef1cc2e576e9c21d55ef8081609910a",
       "mtime_ns": 1772721731804610800,
       "size": 807035,
+      "status": "processed"
+    },
+    "DownloadedFiles/Can date range between be used in conjunction with expand\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/880631/can-date-range-between-be-used-in-conjunction-with-expand",
+      "file_hash": "052e4f2584bfdd6f98f430600dae1592",
+      "mtime_ns": 1778928644186449200,
+      "size": 1154829,
       "status": "processed"
     },
     "DownloadedFiles/Can the CONCAT function be utilized in SET\uff1f (See details for example) \u2014 Oracle Health.html": {
@@ -3962,11 +4025,32 @@
       "size": 1000964,
       "status": "processed"
     },
+    "DownloadedFiles/Can you expand with a CCLODA program\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1761892/can-you-expand-with-a-ccloda-program",
+      "file_hash": "c78b97db2da522a11b6b6e418a311114",
+      "mtime_ns": 1778928642654276400,
+      "size": 1177636,
+      "status": "processed"
+    },
     "DownloadedFiles/Can you stop dcd order labels from printing using pha_label_parameters\uff1f \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/339201/can-you-stop-dcd-order-labels-from-printing-using-pha-label-parameters",
       "file_hash": "da1a125474acd5450d1d65d72bf703cf",
       "mtime_ns": 1777461089282529900,
       "size": 1013931,
+      "status": "processed"
+    },
+    "DownloadedFiles/Can you use NOT with EXPAND\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1777749/can-you-use-not-with-expand",
+      "file_hash": "d1b3d05825b1f8898c3666fc634ca774",
+      "mtime_ns": 1778928641592354400,
+      "size": 1154219,
+      "status": "processed"
+    },
+    "DownloadedFiles/Can you use datetimetrunc() in an expand\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/655720/can-you-use-datetimetrunc-in-an-expand",
+      "file_hash": "09daac965cfc0a82b5dd8536df070f8f",
+      "mtime_ns": 1778928642227591300,
+      "size": 1161347,
       "status": "processed"
     },
     "DownloadedFiles/Cannot refresh mPage if another has ongoing query \u2014 Oracle Health.html": {
@@ -5404,6 +5488,13 @@
       "size": 22370,
       "status": "processed"
     },
+    "DownloadedFiles/Control Options Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Control+Options+Using+Discern+Explorer",
+      "file_hash": "e054c7c450c467541aecd6c3a8f3c14d",
+      "mtime_ns": 1778927812041520700,
+      "size": 618897,
+      "status": "processed"
+    },
     "DownloadedFiles/Control+Options+Selection+Using+Visual+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Control+Options+Selection+Using+Visual+Explorer",
       "file_hash": "45fda5b53540185ba9d3ba4e6a90f2ae",
@@ -6048,6 +6139,13 @@
       "size": 186673,
       "status": "processed"
     },
+    "DownloadedFiles/DA2 Report Creates Extra Rows with Data Expected in Previous Row \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1533222/da2-report-creates-extra-rows-with-data-expected-in-previous-row",
+      "file_hash": "ddadc7583969e1e8adefdf8daa1562c0",
+      "mtime_ns": 1778924001899843100,
+      "size": 631186,
+      "status": "processed"
+    },
     "DownloadedFiles/DATEBIRTHFORMAT+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/DATEBIRTHFORMAT+Using+Discern+Explorer",
       "file_hash": "bb3a712d43cc6cfab3c81a66c52ab60c",
@@ -6081,6 +6179,13 @@
       "file_hash": "4e698d9f36edbf8f88fc4c083c041396",
       "mtime_ns": 1772969188000000000,
       "size": 191430,
+      "status": "processed"
+    },
+    "DownloadedFiles/DATETIMEDIFF( ) using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/DATETIMEDIFF%28+%29+using+Discern+Explorer",
+      "file_hash": "76b17f1f9928060e3a2e5ab1375ecb38",
+      "mtime_ns": 1778927595373089400,
+      "size": 526073,
       "status": "processed"
     },
     "DownloadedFiles/DATETIMEDIFF+Using+Discern+Explorer.html": {
@@ -7329,6 +7434,34 @@
       "size": 188892,
       "status": "processed"
     },
+    "DownloadedFiles/Display Format Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Display+Format+Using+Discern+Explorer",
+      "file_hash": "6d7e2a1b3e9dd5623879abbda841c578",
+      "mtime_ns": 1778927815676321000,
+      "size": 647580,
+      "status": "processed"
+    },
+    "DownloadedFiles/Display Options Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Display+Options+Using+Discern+Explorer",
+      "file_hash": "afb19879b617448eb1c5156810205ba8",
+      "mtime_ns": 1778927857721032200,
+      "size": 639843,
+      "status": "processed"
+    },
+    "DownloadedFiles/Display Qualifier Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Display+Qualifier+Using+Discern+Explorer",
+      "file_hash": "fe91ea7a6f9f8939f03745a68699796c",
+      "mtime_ns": 1778927819004040600,
+      "size": 991496,
+      "status": "processed"
+    },
+    "DownloadedFiles/Display Template Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Display+Template+Using+Discern+Explorer",
+      "file_hash": "1178d3164d2ccda12a934b900275977b",
+      "mtime_ns": 1778927822705211100,
+      "size": 664745,
+      "status": "processed"
+    },
     "DownloadedFiles/Display+Format+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Display+Format+Using+Discern+Explorer",
       "file_hash": "2a4e11bf3cebd7a94e69dfe9f10be455",
@@ -7434,6 +7567,13 @@
       "size": 186632,
       "status": "processed"
     },
+    "DownloadedFiles/Displaying Information That is Currently in a Record Structure Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Displaying+Information+That+is+Currently+in+a+Record+Structure+Using+Discern+Explorer",
+      "file_hash": "70fb2ac1945f92877ba898b807b5233f",
+      "mtime_ns": 1778927597815263400,
+      "size": 1015635,
+      "status": "processed"
+    },
     "DownloadedFiles/Displaying+Filenames+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Displaying+Filenames+Using+Discern+Explorer",
       "file_hash": "46342301df896cc80955328c75bb23b0",
@@ -7537,6 +7677,13 @@
       "file_hash": "6b050bb7c7ac6b2c9fa44c3ae5435ac7",
       "mtime_ns": 1776415544860207300,
       "size": 855017,
+      "status": "processed"
+    },
+    "DownloadedFiles/Don't Use Dummyt and Expand() to Qualify Using Values in a 2nd Level Record Structure List \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1406121/dont-use-dummyt-and-expand-to-qualify-using-values-in-a-2nd-level-record-structure-list",
+      "file_hash": "6fa7e6290fe14c865472eb3120e3dec7",
+      "mtime_ns": 1778928644264919800,
+      "size": 1163742,
       "status": "processed"
     },
     "DownloadedFiles/Doubt regarding json output recieving \u2014 Oracle Health(1).html": {
@@ -7775,6 +7922,20 @@
       "file_hash": "fa039d37f3ee658162dcba3012e7917d",
       "mtime_ns": 1772969242000000000,
       "size": 186958,
+      "status": "processed"
+    },
+    "DownloadedFiles/EXPAND Control Option Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/EXPAND+Control+Option+Using+Discern+Explorer",
+      "file_hash": "d7996a51bb49ab09efa6eeada011c537",
+      "mtime_ns": 1778927598086643200,
+      "size": 996545,
+      "status": "processed"
+    },
+    "DownloadedFiles/EXPAND Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/EXPAND+Using+Discern+Explorer",
+      "file_hash": "d9208057e2487c4cd14275554aa8a4a5",
+      "mtime_ns": 1778927596281217200,
+      "size": 1002346,
       "status": "processed"
     },
     "DownloadedFiles/EXPAND+Control+Option+Using+Discern+Explorer.html": {
@@ -8526,6 +8687,41 @@
       "size": 2252,
       "status": "duplicate_hash"
     },
+    "DownloadedFiles/Expand = 1 hung report and DB \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1618087/expand-1-hung-report-and-db",
+      "file_hash": "91c0f892509996873634ecc3e7bd6c39",
+      "mtime_ns": 1778928642654276400,
+      "size": 1156372,
+      "status": "processed"
+    },
+    "DownloadedFiles/Expand = 1 in a query not using expand \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/658510/expand-1-in-a-query-not-using-expand",
+      "file_hash": "212d07e0fb2ada03c7b04ef907a12ae9",
+      "mtime_ns": 1778928531162058100,
+      "size": 1149778,
+      "status": "processed"
+    },
+    "DownloadedFiles/Expand All Option is not working \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/879953/expand-all-option-is-not-working",
+      "file_hash": "02cdc10fc22ce4cfc1d0f74414d13157",
+      "mtime_ns": 1778928641857107100,
+      "size": 1156684,
+      "status": "processed"
+    },
+    "DownloadedFiles/Expand Clause Difficulty \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/377008/expand-clause-difficulty",
+      "file_hash": "0aecfcc0d3dec9b7ec62bcc0a2d1215c",
+      "mtime_ns": 1778928642518009700,
+      "size": 1160879,
+      "status": "processed"
+    },
+    "DownloadedFiles/Expand Flexible Specimen override to change specimen expiration if transfusion occurs to all product \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1778928/expand-flexible-specimen-override-to-change-specimen-expiration-if-transfusion-occurs-to-all-product",
+      "file_hash": "58bcfb01f3f903beae1b66ddd2bcd12a",
+      "mtime_ns": 1778928643343691600,
+      "size": 1150219,
+      "status": "processed"
+    },
     "DownloadedFiles/Expand Function and Wildcard Charaters \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/414449/expand-function-and-wildcard-charaters",
       "file_hash": "7d476089a75674899cbe9de033485b50",
@@ -8540,6 +8736,20 @@
       "size": 1033585,
       "status": "processed"
     },
+    "DownloadedFiles/Expand Functionality \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/261634/expand-functionality",
+      "file_hash": "47f872edbcc91259d07f2d82d890abdc",
+      "mtime_ns": 1778928643068470800,
+      "size": 1149825,
+      "status": "processed"
+    },
+    "DownloadedFiles/Expand Transactions View or offer a Ledger View \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1770789/expand-transactions-view-or-offer-a-ledger-view",
+      "file_hash": "3499b42cfb848caf7cd168789f1dde54",
+      "mtime_ns": 1778928643999583700,
+      "size": 1151377,
+      "status": "processed"
+    },
     "DownloadedFiles/Expand UPDT_CNT in Order_Catalog Table \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1530926/expand-updt-cnt-in-order-catalog-table",
       "file_hash": "39f62117371bf6ce9946be8be4b0cb12",
@@ -8547,11 +8757,81 @@
       "size": 1005800,
       "status": "processed"
     },
+    "DownloadedFiles/Expand encountered (2894) values not handled as bind parameters since max param reached. \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/601630/expand-encountered-2894-values-not-handled-as-bind-parameters-since-max-param-reached",
+      "file_hash": "3fe6948e48a8117b92810aa768e66941",
+      "mtime_ns": 1778928641311781500,
+      "size": 1147840,
+      "status": "processed"
+    },
+    "DownloadedFiles/Expand function , CCLQUERY and Indexes \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/269832/expand-function-cclquery-and-indexes",
+      "file_hash": "6eaad0ad0c80821b2b872c1c69862813",
+      "mtime_ns": 1778928641363416100,
+      "size": 1160593,
+      "status": "processed"
+    },
     "DownloadedFiles/Expand function help \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/254358/expand-function-help",
       "file_hash": "3b7a0db16e7c10d3c821e9e23ff4b508",
       "mtime_ns": 1777019930249897500,
       "size": 1044577,
+      "status": "processed"
+    },
+    "DownloadedFiles/Expand function on 3rd level record structure and Range Entry Not Found error \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/235348/expand-function-on-3rd-level-record-structure-and-range-entry-not-found-error",
+      "file_hash": "6fbcc7b80652ceb35d10993c29f942e2",
+      "mtime_ns": 1778928643779981700,
+      "size": 1285045,
+      "status": "processed"
+    },
+    "DownloadedFiles/Expand function with record structure retrieval - issues \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/328569/expand-function-with-record-structure-retrieval-issues",
+      "file_hash": "9564c8794edd27f23df8dc85a5f5881f",
+      "mtime_ns": 1778928642581692100,
+      "size": 1151892,
+      "status": "processed"
+    },
+    "DownloadedFiles/Expand is returning a expression type mismatch error. \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1746684/expand-is-returning-a-expression-type-mismatch-error",
+      "file_hash": "beb0a9eea706a92ac681e653ae350031",
+      "mtime_ns": 1778928642373975900,
+      "size": 1150203,
+      "status": "processed"
+    },
+    "DownloadedFiles/Expand seems to only pick up 1 of the unique values being expanded \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1561323/expand-seems-to-only-pick-up-1-of-the-unique-values-being-expanded",
+      "file_hash": "0dbec8e69359a32f13509dde972c914b",
+      "mtime_ns": 1778928544295588700,
+      "size": 1171687,
+      "status": "processed"
+    },
+    "DownloadedFiles/Expand vs in-clause tipping point \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/835286/expand-vs-in-clause-tipping-point",
+      "file_hash": "abde9e58924e580738df5b9fb85160bc",
+      "mtime_ns": 1778928642040108100,
+      "size": 1153814,
+      "status": "processed"
+    },
+    "DownloadedFiles/Expand() and Indexes \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/279160/expand-and-indexes",
+      "file_hash": "84976f93b1547b56d2de675496e10eab",
+      "mtime_ns": 1778928642337383600,
+      "size": 1144638,
+      "status": "processed"
+    },
+    "DownloadedFiles/Expand() problem with optimizer\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/256692/expand-problem-with-optimizer",
+      "file_hash": "f524e21cbb4dd77e5a75331edfd602f7",
+      "mtime_ns": 1778928643640118800,
+      "size": 1256514,
+      "status": "processed"
+    },
+    "DownloadedFiles/Expand_Locate \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/765672/expand-locate",
+      "file_hash": "0796ad2577bfaa17e2c4e3b3e2acf02d",
+      "mtime_ns": 1778928642215558400,
+      "size": 1165560,
       "status": "processed"
     },
     "DownloadedFiles/Explorer+Menu+Main+Window+in+Explorer+Menu.html": {
@@ -8587,6 +8867,13 @@
       "file_hash": "5d05d82c898ee5ed50367a72f90e4358",
       "mtime_ns": 1772720113437709700,
       "size": 193604,
+      "status": "processed"
+    },
+    "DownloadedFiles/Expressions Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Expressions+Using+Discern+Explorer",
+      "file_hash": "a0c9c5ada41c900e089147ef38f07647",
+      "mtime_ns": 1778927825789046600,
+      "size": 642552,
       "status": "processed"
     },
     "DownloadedFiles/Expressions+Selection+Using+Visual+Explorer.html": {
@@ -8657,6 +8944,13 @@
       "file_hash": "ff0241fb19e690a729c8ad126d91f024",
       "mtime_ns": 1772901882000000000,
       "size": 1019616,
+      "status": "processed"
+    },
+    "DownloadedFiles/FILESORT Control Option Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/FILESORT+Control+Option+Using+Discern+Explorer",
+      "file_hash": "42f5bee951c4ba5f87ae18b885b53ba2",
+      "mtime_ns": 1778927628029960500,
+      "size": 986995,
       "status": "processed"
     },
     "DownloadedFiles/FILESORT+Control+Option+Using+Discern+Explorer.html": {
@@ -8743,11 +9037,25 @@
       "size": 187793,
       "status": "processed"
     },
+    "DownloadedFiles/FOR Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/FOR+Using+Discern+Explorer",
+      "file_hash": "9514a095a885719e85639f96985cf67b",
+      "mtime_ns": 1778927597554064800,
+      "size": 990691,
+      "status": "processed"
+    },
     "DownloadedFiles/FOR+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/FOR+Using+Discern+Explorer",
       "file_hash": "198d86ae7ed049a8c776b9d2d74a9264",
       "mtime_ns": 1772969246000000000,
       "size": 190949,
+      "status": "processed"
+    },
+    "DownloadedFiles/FORMAT (Record) Control Option Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/FORMAT+%28Record%29+Control+Option+Using+Discern+Explorer",
+      "file_hash": "ed4070ab86f24ea9ba3115f0a1c12cc1",
+      "mtime_ns": 1778927837896664300,
+      "size": 652634,
       "status": "processed"
     },
     "DownloadedFiles/FORMAT+(DATE)+Control+Option+Using+Discern+Explorer.html": {
@@ -9338,6 +9646,13 @@
       "size": 187107,
       "status": "processed"
     },
+    "DownloadedFiles/GROUP BY Clause in Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/GROUP+BY+Clause+in+Discern+Explorer",
+      "file_hash": "6335129e58bbef8e55a04d17f39e4383",
+      "mtime_ns": 1778927860447115400,
+      "size": 638398,
+      "status": "processed"
+    },
     "DownloadedFiles/GROUP+BY+Clause+in+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
@@ -9548,6 +9863,13 @@
       "size": 187032,
       "status": "processed"
     },
+    "DownloadedFiles/HAVING Clause in Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/HAVING+Clause+in+Discern+Explorer",
+      "file_hash": "eb8708dff055fa81c402bc2887292b7b",
+      "mtime_ns": 1778927626102325400,
+      "size": 986344,
+      "status": "processed"
+    },
     "DownloadedFiles/HAVING+Clause+in+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
@@ -9595,6 +9917,13 @@
       "file_hash": "36b10cd63520aa945d1bdf068d28e124",
       "mtime_ns": 1772969268000000000,
       "size": 187867,
+      "status": "processed"
+    },
+    "DownloadedFiles/HHFUNCTIONS Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/HHFUNCTIONS+Using+Discern+Explorer",
+      "file_hash": "002e3c68a7fd25a6d8ac4e9b419f9035",
+      "mtime_ns": 1778928893284319200,
+      "size": 1044125,
       "status": "processed"
     },
     "DownloadedFiles/HHFUNCTIONS+Using+Discern+Explorer.html": {
@@ -9681,6 +10010,13 @@
       "size": 826338,
       "status": "processed"
     },
+    "DownloadedFiles/Handling over 200 items with IN lists _ Expand \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/710860/handling-over-200-items-with-in-lists-expand",
+      "file_hash": "8cc1692a55ff29998ba838a6a54c2361",
+      "mtime_ns": 1778928644763654200,
+      "size": 1164881,
+      "status": "processed"
+    },
     "DownloadedFiles/Has anyone had success writing a custom frontend_backend print script for a worklist mPage\uff1f \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1772569/has-anyone-had-success-writing-a-custom-frontend-backend-print-script-for-a-worklist-mpage",
       "file_hash": "83203c395f84b558019809ffd00ff119",
@@ -9709,6 +10045,13 @@
       "size": 1001305,
       "status": "duplicate_url"
     },
+    "DownloadedFiles/Having trouble qualifying on dx code when expanding. \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1657577/having-trouble-qualifying-on-dx-code-when-expanding",
+      "file_hash": "f08b589bcdec9c786e5dbb6bf92ee49a",
+      "mtime_ns": 1778928641361908000,
+      "size": 1243603,
+      "status": "processed"
+    },
     "DownloadedFiles/Head+Group+Expression+Using+Visual+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Head+Group+Expression+Using+Visual+Explorer",
       "file_hash": "20dfc33388c71329e3eb24b5d94d79df",
@@ -9735,6 +10078,13 @@
       "file_hash": "7679cef865cc083b37e0d16482be65fe",
       "mtime_ns": 1777454333082385600,
       "size": 1074197,
+      "status": "processed"
+    },
+    "DownloadedFiles/Help making program run faster \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/257289/help-making-program-run-faster",
+      "file_hash": "680fe37ab9d95ff6a98dc9aa55713d9d",
+      "mtime_ns": 1778923710697861500,
+      "size": 658117,
       "status": "processed"
     },
     "DownloadedFiles/Help with Powernote Table Structure \u2014 Oracle Health.html": {
@@ -9765,6 +10115,13 @@
       "size": 1271322,
       "status": "processed"
     },
+    "DownloadedFiles/Help with expand function \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/971982/help-with-expand-function",
+      "file_hash": "9fdee4c7aaa9b0fce9a2718727e1f18f",
+      "mtime_ns": 1778928643898316300,
+      "size": 1218052,
+      "status": "processed"
+    },
     "DownloadedFiles/Help+Menu.html": {
       "dedup_key": "https://wiki.cerner.com/display/help/Help+Menu",
       "file_hash": "2dd5699e7539158e18c9f08a3bebc75a",
@@ -9791,6 +10148,13 @@
       "file_hash": "2c3742c45ff2688dd11606c0fcec07a1",
       "mtime_ns": 1772372016000000000,
       "size": 185640,
+      "status": "processed"
+    },
+    "DownloadedFiles/High Level Process for Improving the Efficiency of Discern Explorer Programs and Queries_ \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1258725/high-level-process-for-improving-the-efficiency-of-discern-explorer-programs-and-queries",
+      "file_hash": "2b6c3845545d94701313a8c884731e31",
+      "mtime_ns": 1778923702922263100,
+      "size": 720949,
       "status": "processed"
     },
     "DownloadedFiles/Host+Technologies.html": {
@@ -9940,6 +10304,13 @@
       "size": 996353,
       "status": "processed"
     },
+    "DownloadedFiles/How to expand an existing record to add more data\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/691018/how-to-expand-an-existing-record-to-add-more-data",
+      "file_hash": "f84f176050085627c1896ad94ab3f7de",
+      "mtime_ns": 1778928644220702200,
+      "size": 1190023,
+      "status": "processed"
+    },
     "DownloadedFiles/How to extract data from Long_Blob and Long_Text tables\uff1f \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1542796/how-to-extract-data-from-long-blob-and-long-text-tables",
       "file_hash": "34ea9a53f8ca0526155502d6afefefd0",
@@ -10038,6 +10409,13 @@
       "size": 596594,
       "status": "processed"
     },
+    "DownloadedFiles/How to use the expand() multi-level array \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/806372/how-to-use-the-expand-multi-level-array",
+      "file_hash": "d934217dedfdbf25c4a9713248d2d781",
+      "mtime_ns": 1778928644271805900,
+      "size": 1170088,
+      "status": "processed"
+    },
     "DownloadedFiles/How to write to CMB log files \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/922295/how-to-write-to-cmb-log-files",
       "file_hash": "97763c939b87d72a0fe24fba192d753b",
@@ -10113,6 +10491,13 @@
       "file_hash": "1cc871828c76b571b27dd1399d740adf",
       "mtime_ns": 1772969272000000000,
       "size": 187882,
+      "status": "processed"
+    },
+    "DownloadedFiles/IF with EXPAND \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/650542/if-with-expand",
+      "file_hash": "a2ccc7e7c363b5ebbf84889926bf47b1",
+      "mtime_ns": 1778928642087746100,
+      "size": 1165225,
       "status": "processed"
     },
     "DownloadedFiles/IF+Using+Discern+Explorer.html": {
@@ -10393,6 +10778,13 @@
       "file_hash": "441fc6daad4b5ac2c7630bdfb616d38e",
       "mtime_ns": 1776415496216010900,
       "size": 812914,
+      "status": "processed"
+    },
+    "DownloadedFiles/Incorporating a secondary dummy structure into an EXPAND call \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/826100/incorporating-a-secondary-dummy-structure-into-an-expand-call",
+      "file_hash": "ce1db1ab0e59cc05185a164156906f5a",
+      "mtime_ns": 1778928641201274700,
+      "size": 1155472,
       "status": "processed"
     },
     "DownloadedFiles/Index+Character+Column+Using+Discern+Explorer.html": {
@@ -10703,6 +11095,13 @@
       "size": 1111877,
       "status": "processed"
     },
+    "DownloadedFiles/Issue with Expand() and LocateVal() \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/693493/issue-with-expand-and-locateval",
+      "file_hash": "938e9280bb954da5ddddf3b08a00e6de",
+      "mtime_ns": 1778928644120957800,
+      "size": 1181329,
+      "status": "processed"
+    },
     "DownloadedFiles/Issue with MU Reports and FS ADT System after discharge \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/442957/issue-with-mu-reports-and-fs-adt-system-after-discharge",
       "file_hash": "8efa755edd63389535b25a22c53c539b",
@@ -10715,6 +11114,13 @@
       "file_hash": "864d9a58fef0263f38b8901de5932e0f",
       "mtime_ns": 1772383895623916500,
       "size": 4336779,
+      "status": "processed"
+    },
+    "DownloadedFiles/Issue with using the same EXPAND_Array_var multiple times in one SELECT\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/718031/issue-with-using-the-same-expand-array-var-multiple-times-in-one-select",
+      "file_hash": "251ce4167b6790389021d3b8a1001eb7",
+      "mtime_ns": 1778928642798555200,
+      "size": 1160955,
       "status": "processed"
     },
     "DownloadedFiles/Issues launching PowerNote from MPAGE\uff1f \u2014 Oracle Health.html": {
@@ -10750,6 +11156,13 @@
       "file_hash": "343c3d9f78919567e8945148ff407a9f",
       "mtime_ns": 1773000200000000000,
       "size": 188160,
+      "status": "processed"
+    },
+    "DownloadedFiles/JOIN Options Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/JOIN+Options+Using+Discern+Explorer",
+      "file_hash": "eebd6760289b9c0422c0c29fdb7c3037",
+      "mtime_ns": 1778927627894153700,
+      "size": 1007216,
       "status": "processed"
     },
     "DownloadedFiles/JOIN+Messages+and+Oracle+Indexes+Using+Discern+Explorer.html": {
@@ -11067,6 +11480,13 @@
       "size": 1027375,
       "status": "processed"
     },
+    "DownloadedFiles/Layout Builder and Expand \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/259482/layout-builder-and-expand",
+      "file_hash": "c80cb2b148f5781ad62c1eeacb16bd62",
+      "mtime_ns": 1778928643496594200,
+      "size": 1146708,
+      "status": "processed"
+    },
     "DownloadedFiles/Layout Builder and No Data \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/426295/layout-builder-and-no-data",
       "file_hash": "8f35c7c3ddbce21cb165dd450d20f41d",
@@ -11340,6 +11760,13 @@
       "size": 197304,
       "status": "processed"
     },
+    "DownloadedFiles/MAXCOL Control Option Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/MAXCOL+Control+Option+Using+Discern+Explorer",
+      "file_hash": "81967c83114484cab24badee8a45289a",
+      "mtime_ns": 1778927834853846200,
+      "size": 640543,
+      "status": "processed"
+    },
     "DownloadedFiles/MAXCOL+Control+Option+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/MAXCOL+Control+Option+Using+Discern+Explorer",
       "file_hash": "5932fc56d5891b3c235754f5c6bfc908",
@@ -11359,6 +11786,13 @@
       "file_hash": "1bf91d1c689b13d7f63a25051f7f3212",
       "mtime_ns": 1772969298000000000,
       "size": 187663,
+      "status": "processed"
+    },
+    "DownloadedFiles/MAXREC Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/MAXREC+Using+Discern+Explorer",
+      "file_hash": "54167cb15b2213ac39392f8e705ec64a",
+      "mtime_ns": 1778927597442189200,
+      "size": 989461,
       "status": "processed"
     },
     "DownloadedFiles/MAXREC+Control+Option+Using+Discern+Explorer.html": {
@@ -11417,11 +11851,25 @@
       "size": 191723,
       "status": "processed"
     },
+    "DownloadedFiles/MEMSORT Control Option Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/MEMSORT+Control+Option+Using+Discern+Explorer",
+      "file_hash": "4a83d3f061481ad149617ae90c144d85",
+      "mtime_ns": 1778927627774944600,
+      "size": 989647,
+      "status": "processed"
+    },
     "DownloadedFiles/MEMSORT+Control+Option+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/MEMSORT+Control+Option+Using+Discern+Explorer",
       "file_hash": "70feeab46b12f084accede9e8e01a197",
       "mtime_ns": 1772967744000000000,
       "size": 190446,
+      "status": "processed"
+    },
+    "DownloadedFiles/MERGE Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/MERGE+Using+Discern+Explorer",
+      "file_hash": "0128cbe1b5462ab40fecd8a9e2f18933",
+      "mtime_ns": 1778928892033005700,
+      "size": 1000403,
       "status": "processed"
     },
     "DownloadedFiles/MERGE+Using+Discern+Explorer.html": {
@@ -14266,6 +14714,13 @@
       "size": 1005075,
       "status": "processed"
     },
+    "DownloadedFiles/More expand challenges, can't get data from second query even though records qualify \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/760160/more-expand-challenges-cant-get-data-from-second-query-even-though-records-qualify",
+      "file_hash": "6b13ce16b4470e20c6136b69b2c8c75c",
+      "mtime_ns": 1778928641723768100,
+      "size": 1178150,
+      "status": "processed"
+    },
     "DownloadedFiles/Moving+Medications+Between+Antibiotics+Using+EksMicroMed.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Moving+Medications+Between+Antibiotics+Using+EksMicroMed",
       "file_hash": "f920723dc2a81e52ec09df4cbe145609",
@@ -14362,6 +14817,13 @@
       "file_hash": "09d810ec30cb3e9e37693025f992f738",
       "mtime_ns": 1772781055535224100,
       "size": 1073690,
+      "status": "processed"
+    },
+    "DownloadedFiles/Multiple expand () in one select statement \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/481303/multiple-expand-in-one-select-statement",
+      "file_hash": "19c5c43a54f5fdb8420f6c70fbcd3ae6",
+      "mtime_ns": 1778928492442279600,
+      "size": 1160662,
       "status": "processed"
     },
     "DownloadedFiles/Multiple joins to the same table with nested selects \u2014 Oracle Health.html": {
@@ -14481,6 +14943,13 @@
       "file_hash": "f6c071b0b85b8684c5329fe1522d023f",
       "mtime_ns": 1772969334000000000,
       "size": 184713,
+      "status": "processed"
+    },
+    "DownloadedFiles/NOT EXISTS Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/NOT+EXISTS+Using+Discern+Explorer",
+      "file_hash": "5be2a7942521ece775fdd192d512cda8",
+      "mtime_ns": 1778927875092051200,
+      "size": 643374,
       "status": "processed"
     },
     "DownloadedFiles/NOT+EXISTS+Using+Discern+Explorer.html": {
@@ -14763,6 +15232,13 @@
       "size": 1024730,
       "status": "processed"
     },
+    "DownloadedFiles/No matches found using Expand_locatevalsort \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/785515/no-matches-found-using-expand-locatevalsort",
+      "file_hash": "f4b0f56fae7101e37b93cb7b6e84b305",
+      "mtime_ns": 1778928641974436000,
+      "size": 1163691,
+      "status": "processed"
+    },
     "DownloadedFiles/No title.html": {
       "dedup_key": "https://mpages-dev-docs.cerner.com/assets/docs/tutorials/workflow-component/overview/mp_retrieve_mock_data.prg",
       "file_hash": "029ef0a76f7ffdca373be19d4c81c879",
@@ -14782,6 +15258,13 @@
       "file_hash": "8653ee5552f86d30b8a7c6557dcc2057",
       "mtime_ns": 1777281613758550000,
       "size": 960594,
+      "status": "processed"
+    },
+    "DownloadedFiles/Not finding all results from Expand \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/862915/not-finding-all-results-from-expand",
+      "file_hash": "a6474714861e872508223e26cf68133a",
+      "mtime_ns": 1778928641381965400,
+      "size": 1157381,
       "status": "processed"
     },
     "DownloadedFiles/Not read\uff1a RE\uff1a Does anyone have a CCL that limits the results returned based on the user's org securi \u2014 Oracle Health.html": {
@@ -15113,6 +15596,13 @@
       "size": 189597,
       "status": "processed"
     },
+    "DownloadedFiles/ORAHINTCBO Control Option Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ORAHINTCBO+Control+Option+Using+Discern+Explorer",
+      "file_hash": "245f23ffdca63f7ec1f0b23abde34383",
+      "mtime_ns": 1778923930691148100,
+      "size": 185770,
+      "status": "processed"
+    },
     "DownloadedFiles/ORAHINTCBO+Control+Option+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/ORAHINTCBO+Control+Option+Using+Discern+Explorer",
       "file_hash": "0f4feb12e694de6778ac014f3deedeae",
@@ -15160,6 +15650,27 @@
       "file_hash": "b1127c8c2eb314ee67dee7c62ddd5a9e",
       "mtime_ns": 1772969346000000000,
       "size": 185210,
+      "status": "processed"
+    },
+    "DownloadedFiles/OUTERJOIN Control Option Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/OUTERJOIN+Control+Option+Using+Discern+Explorer",
+      "file_hash": "a4d9fb564d440f07ecc0c83fbae05978",
+      "mtime_ns": 1778927597941227600,
+      "size": 986045,
+      "status": "processed"
+    },
+    "DownloadedFiles/OUTERJOIN Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/OUTERJOIN+Using+Discern+Explorer",
+      "file_hash": "6cdaacee0c914ad266db982ceca6c952",
+      "mtime_ns": 1778927624093115400,
+      "size": 998769,
+      "status": "processed"
+    },
+    "DownloadedFiles/OUTERJOIN or LEFT JOIN Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/OUTERJOIN+or+LEFT+JOIN+Using+Discern+Explorer",
+      "file_hash": "1e9c59d0da1b3706f385f59e78ea9b57",
+      "mtime_ns": 1778928892331796400,
+      "size": 992365,
       "status": "processed"
     },
     "DownloadedFiles/OUTERJOIN+Control+Option+Using+Discern+Explorer.html": {
@@ -15244,6 +15755,13 @@
       "file_hash": "2876be25f116632fafd630a74ed763fa",
       "mtime_ns": 1777289668962143800,
       "size": 1094794,
+      "status": "processed"
+    },
+    "DownloadedFiles/Omitting Duplicate Information With Distinct Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Omitting+Duplicate+Information+With+Distinct+Using+Discern+Explorer",
+      "file_hash": "3aa49e89d80f8e1956ff8d611e2d1987",
+      "mtime_ns": 1778927598413301400,
+      "size": 992537,
       "status": "processed"
     },
     "DownloadedFiles/Omitting+Duplicate+Information+With+Distinct+Using+Discern+Explorer.html": {
@@ -15575,6 +16093,27 @@
       "size": 808874,
       "status": "processed"
     },
+    "DownloadedFiles/Oracle CBO - Explain Plan vs. Execution Plan - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Oracle+CBO+-+Explain+Plan+vs.+Execution+Plan",
+      "file_hash": "3c3f3eb20368f17949a8a9144652084c",
+      "mtime_ns": 1778923839782410400,
+      "size": 197506,
+      "status": "processed"
+    },
+    "DownloadedFiles/Oracle CBO - Viewing Object Statistics - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Oracle+CBO+-+Viewing+Object+Statistics",
+      "file_hash": "6dc06a03bf6b1500f137e750eff998ae",
+      "mtime_ns": 1778923921860725900,
+      "size": 194537,
+      "status": "processed"
+    },
+    "DownloadedFiles/Oracle CBO - Viewing SQL Execution Plans - Reference Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/reference/Oracle+CBO+-+Viewing+SQL+Execution+Plans",
+      "file_hash": "b9e49aac0a56fee8789763145814d1f5",
+      "mtime_ns": 1778923823197874400,
+      "size": 220150,
+      "status": "processed"
+    },
     "DownloadedFiles/Oracle Health Reference Lab Network Reference Pages - Reference Pages - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/reference/Oracle+Health+Reference+Lab+Network+Reference+Pages",
       "file_hash": "64ca399b1889eddd3398b33dac9dff45",
@@ -15587,6 +16126,20 @@
       "file_hash": "4272f25d546f139aa3c8dac359310ae2",
       "mtime_ns": 1772904454000000000,
       "size": 707492,
+      "status": "processed"
+    },
+    "DownloadedFiles/Oracle error ORA-00933 sql command not properly ended occurs with expand function \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/723603/oracle-error-ora-00933-sql-command-not-properly-ended-occurs-with-expand-function",
+      "file_hash": "424215cdec251c8635173aabd3df1519",
+      "mtime_ns": 1778928642843428500,
+      "size": 1149153,
+      "status": "processed"
+    },
+    "DownloadedFiles/Oracle error while trying to run a CCL query with expand clause \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/700446/oracle-error-while-trying-to-run-a-ccl-query-with-expand-clause",
+      "file_hash": "d7e0391fe09ed49da4c771d3accdf7d1",
+      "mtime_ns": 1778928643516657500,
+      "size": 1229741,
       "status": "processed"
     },
     "DownloadedFiles/Oracle+Health+Millennium+Platform+Middleware+Architecture+Overview.html": {
@@ -15692,6 +16245,13 @@
       "file_hash": "9c7a77d23cfa9b737095060fa2e920ae",
       "mtime_ns": 1776415488241233100,
       "size": 833907,
+      "status": "processed"
+    },
+    "DownloadedFiles/Output Device Control in Discern Prompt Library - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Output+Device+Control+in+Discern+Prompt+Library",
+      "file_hash": "b2b0d8cad4eaec6fd24ea6f1cb74af0e",
+      "mtime_ns": 1778927828715955600,
+      "size": 642759,
       "status": "processed"
     },
     "DownloadedFiles/Output+Device+Control+in+Discern+Prompt+Library.html": {
@@ -16170,6 +16730,13 @@
       "size": 184843,
       "status": "processed"
     },
+    "DownloadedFiles/PARAMETER Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/PARAMETER+Using+Discern+Explorer",
+      "file_hash": "c7b671aa5250968203f1e4bee0370703",
+      "mtime_ns": 1778927844273470000,
+      "size": 645130,
+      "status": "processed"
+    },
     "DownloadedFiles/PARAMETER+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/PARAMETER+Using+Discern+Explorer",
       "file_hash": "08e3c74aa318a30b44f2231bc8c07b48",
@@ -16315,6 +16882,13 @@
       "file_hash": "6e5f5e7e742b1f43e254a7a77f4f93e0",
       "mtime_ns": 1772967766000000000,
       "size": 194699,
+      "status": "processed"
+    },
+    "DownloadedFiles/PLANS and JOINS Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/PLANS+and+JOINS+Using+Discern+Explorer",
+      "file_hash": "0c6ec55620f89eb49f53073b9fa20d9e",
+      "mtime_ns": 1778927627615149200,
+      "size": 992393,
       "status": "processed"
     },
     "DownloadedFiles/PLANS+and+JOINS+Using+Discern+Explorer.html": {
@@ -17367,6 +17941,13 @@
       "size": 961905,
       "status": "processed"
     },
+    "DownloadedFiles/QUERY, RECORD STRUCTURE & EXPAND \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/964321/query-record-structure-expand",
+      "file_hash": "0f46d52877658ff204aee68d2cf1add2",
+      "mtime_ns": 1778928643038125100,
+      "size": 1150520,
+      "status": "processed"
+    },
     "DownloadedFiles/Qualification+Selection+Using+Visual+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Qualification+Selection+Using+Visual+Explorer",
       "file_hash": "fd93a1571105f247319a42c874837db1",
@@ -17416,6 +17997,13 @@
       "size": 190862,
       "status": "processed"
     },
+    "DownloadedFiles/Qualifiers Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Qualifiers+Using+Discern+Explorer",
+      "file_hash": "31fa98ceff527b5193d97a10b9728d19",
+      "mtime_ns": 1778927849883602800,
+      "size": 641253,
+      "status": "processed"
+    },
     "DownloadedFiles/Qualifiers+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Qualifiers+Using+Discern+Explorer",
       "file_hash": "5a06cc867900d319b62bef6bb5571ffe",
@@ -17435,6 +18023,13 @@
       "file_hash": "49466377fb79827db452ff2a1fd055c7",
       "mtime_ns": 1772781050032198100,
       "size": 1055558,
+      "status": "processed"
+    },
+    "DownloadedFiles/Qualifying on Indexes Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Qualifying+on+Indexes+Using+Discern+Explorer",
+      "file_hash": "742d538ce4b359af612919263f60d320",
+      "mtime_ns": 1778927628310981200,
+      "size": 986269,
       "status": "processed"
     },
     "DownloadedFiles/Qualifying on a date in the EXPAND function\uff1f \u2014 Oracle Health.html": {
@@ -17885,6 +18480,13 @@
       "size": 185569,
       "status": "processed"
     },
+    "DownloadedFiles/REPLACE Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/REPLACE+Using+Discern+Explorer",
+      "file_hash": "9d903f4a2087e528f1b2500c4cb265c7",
+      "mtime_ns": 1778924019882382000,
+      "size": 189449,
+      "status": "processed"
+    },
     "DownloadedFiles/REPLACE+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/REPLACE+Using+Discern+Explorer",
       "file_hash": "ef55e591f2c695a7e05afe740249c722",
@@ -18130,6 +18732,13 @@
       "size": 994335,
       "status": "processed"
     },
+    "DownloadedFiles/Record structure issue with expand \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/780449/record-structure-issue-with-expand",
+      "file_hash": "a398c603f07bc27a6fe0aba99154148b",
+      "mtime_ns": 1778928641628531600,
+      "size": 1169817,
+      "status": "processed"
+    },
     "DownloadedFiles/Record structure \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/305024/record-structure",
       "file_hash": "d9abcc9deee23d94a26bddafc7a0ffa4",
@@ -18228,6 +18837,13 @@
       "size": 2252,
       "status": "duplicate_hash"
     },
+    "DownloadedFiles/Relational Operators Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Relational+Operators+Using+Discern+Explorer",
+      "file_hash": "5b1128986bba71b6f0aeec31bdedd102",
+      "mtime_ns": 1778927852453835700,
+      "size": 624309,
+      "status": "processed"
+    },
     "DownloadedFiles/Relational+Database+Concepts+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Relational+Database+Concepts+Using+Discern+Explorer",
       "file_hash": "7ec1ee93a5ae356930e58514a1c679e7",
@@ -18282,6 +18898,13 @@
       "file_hash": "d9154e2b4e4df61ff1b44ef78b54c15d",
       "mtime_ns": 1772366896000000000,
       "size": 529106,
+      "status": "processed"
+    },
+    "DownloadedFiles/Report Designer Basics Using a Data Cube - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Report+Designer+Basics+Using+a+Data+Cube",
+      "file_hash": "95daf5a205c6105e01b3572fbbb6cd46",
+      "mtime_ns": 1778928890890348700,
+      "size": 993202,
       "status": "processed"
     },
     "DownloadedFiles/Report Writer question \u2014 Oracle Health.html": {
@@ -18774,6 +19397,41 @@
       "size": 1095328,
       "status": "processed"
     },
+    "DownloadedFiles/SELECT Expressions Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/SELECT+Expressions+Using+Discern+Explorer",
+      "file_hash": "18f85853340a82b1792e0e30686fd636",
+      "mtime_ns": 1778927855050447200,
+      "size": 596281,
+      "status": "processed"
+    },
+    "DownloadedFiles/SELECT IF Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/SELECT+IF+Using+Discern+Explorer",
+      "file_hash": "1a678f02ad79b64a699e8a1e15f48626",
+      "mtime_ns": 1778927805717606200,
+      "size": 643964,
+      "status": "processed"
+    },
+    "DownloadedFiles/SELECT INTO TABLE Table_Name Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/SELECT+INTO+TABLE+Table_Name+Using+Discern+Explorer",
+      "file_hash": "d09e9ae161edc69e85cc15accb5d7c5c",
+      "mtime_ns": 1778927841282833300,
+      "size": 620880,
+      "status": "processed"
+    },
+    "DownloadedFiles/SELECT Reportwriter Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/SELECT+Reportwriter+Using+Discern+Explorer",
+      "file_hash": "9076019969afe26a98a6b8e7fcdcc8e5",
+      "mtime_ns": 1778927808550023400,
+      "size": 602876,
+      "status": "processed"
+    },
+    "DownloadedFiles/SELECT Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/SELECT+Using+Discern+Explorer",
+      "file_hash": "c7c2bf0763d7f93d21f6cf13ef86c2cd",
+      "mtime_ns": 1778924035494565500,
+      "size": 242369,
+      "status": "processed"
+    },
     "DownloadedFiles/SELECT+Expressions+Using+Discern+Explorer.html": {
       "dedup_key": "85407d3945ea296d8ca11493b8fc0718",
       "file_hash": "85407d3945ea296d8ca11493b8fc0718",
@@ -18870,6 +19528,13 @@
       "file_hash": "232ea1ef5450db232cdeaeb7ed346db4",
       "mtime_ns": 1772969402000000000,
       "size": 188558,
+      "status": "processed"
+    },
+    "DownloadedFiles/SET TRACE Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/SET+TRACE+Using+Discern+Explorer",
+      "file_hash": "6d4a146ed7aa6fa90a3b21b0df6bef1c",
+      "mtime_ns": 1778928893403644700,
+      "size": 1058107,
       "status": "processed"
     },
     "DownloadedFiles/SET+ACCEPT+Using+Discern+Explorer.html": {
@@ -19640,6 +20305,13 @@
       "file_hash": "2c238bf608471a774dabff99897978cb",
       "mtime_ns": 1773001454000000000,
       "size": 186738,
+      "status": "processed"
+    },
+    "DownloadedFiles/Selecting Information That is Related to Values Currently in a Record Structure Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Selecting+Information+That+is+Related+to+Values+Currently+in+a+Record+Structure+Using+Discern+Explorer",
+      "file_hash": "0ac0cbac512c4a3931b32ef4556d8457",
+      "mtime_ns": 1778927485689803900,
+      "size": 1046360,
       "status": "processed"
     },
     "DownloadedFiles/Selecting+Information+That+is+Related+to+Values+Currently+in+a+Record+Structure+Using+Discern+Explorer.html": {
@@ -21518,6 +22190,13 @@
       "size": 204699,
       "status": "processed"
     },
+    "DownloadedFiles/Troubleshooting Expand()\uff1a Works w_ Person_ID but not Order_ID \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/989811/troubleshooting-expand-works-w-person-id-but-not-order-id",
+      "file_hash": "a4f27f92493f91cd6c957bdd96cd50bd",
+      "mtime_ns": 1778928641612005200,
+      "size": 1178693,
+      "status": "processed"
+    },
     "DownloadedFiles/Troubleshooting Using the OEN_MENU Utility - Reference Pages - Cerner Wiki.html": {
       "dedup_key": "https://wiki.cerner.com/display/reference/Troubleshooting+Using+the+OEN_MENU+Utility",
       "file_hash": "e9d1cbc9152df28f54a435945802eb60",
@@ -21573,6 +22252,13 @@
       "mtime_ns": 1772723989252418900,
       "size": 2252,
       "status": "duplicate_hash"
+    },
+    "DownloadedFiles/Types of Qualifications Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Types+of+Qualifications+Using+Discern+Explorer",
+      "file_hash": "12c76c78a93597f658ff73a8901bfe8b",
+      "mtime_ns": 1778927847310884700,
+      "size": 602851,
+      "status": "processed"
     },
     "DownloadedFiles/Types+of+Qualifications+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/Types+of+Qualifications+Using+Discern+Explorer",
@@ -22120,6 +22806,27 @@
       "size": 820944,
       "status": "duplicate_url"
     },
+    "DownloadedFiles/Using Expand() more complex where statement \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/382471/using-expand-more-complex-where-statement",
+      "file_hash": "c7388c35b0066d8280465ae185facf23",
+      "mtime_ns": 1778928643824542300,
+      "size": 1234859,
+      "status": "processed"
+    },
+    "DownloadedFiles/Using Expand() to find non-qualifiers \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/690431/using-expand-to-find-non-qualifiers",
+      "file_hash": "9e6e2edd4fd922da4bfc84e6630b246f",
+      "mtime_ns": 1778928644034646900,
+      "size": 1159784,
+      "status": "processed"
+    },
+    "DownloadedFiles/Using Expand\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/395369/using-expand",
+      "file_hash": "7c41c5fcf866bc8edb0151b5a67fe7c6",
+      "mtime_ns": 1778928642485800000,
+      "size": 1192091,
+      "status": "processed"
+    },
     "DownloadedFiles/Using MPAGES_EVENT in _a href..._ and the Switch from IE to Edge as default browser \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1769732/using-mpages-event-in-and-the-switch-from-ie-to-edge-as-default-browser",
       "file_hash": "4cf35c94534a487ae628b16b53b3d840",
@@ -22181,6 +22888,41 @@
       "file_hash": "07ae2514dea98e3f8f621820d3f370a1",
       "mtime_ns": 1772781076199373900,
       "size": 1011136,
+      "status": "processed"
+    },
+    "DownloadedFiles/Using dummyt vs expand clause with record structures \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/611970/using-dummyt-vs-expand-clause-with-record-structures",
+      "file_hash": "be0f55e22db317373536ae853fa58968",
+      "mtime_ns": 1778928641976951600,
+      "size": 1158798,
+      "status": "processed"
+    },
+    "DownloadedFiles/Using expand and max function together\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/515456/using-expand-and-max-function-together",
+      "file_hash": "c6610f4d87ab1ba23a30db6aebe61690",
+      "mtime_ns": 1778928643977527700,
+      "size": 1160439,
+      "status": "processed"
+    },
+    "DownloadedFiles/Using expand value in sort and report writer header \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1778160/using-expand-value-in-sort-and-report-writer-header",
+      "file_hash": "390b3131d4e1666d28c8455f81975309",
+      "mtime_ns": 1778928531152536400,
+      "size": 1164027,
+      "status": "processed"
+    },
+    "DownloadedFiles/Using expand() or DummyT with a rather large record structure \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/264779/using-expand-or-dummyt-with-a-rather-large-record-structure",
+      "file_hash": "50567f14a270a703e8fa3616121487d9",
+      "mtime_ns": 1778928641290733300,
+      "size": 1159646,
+      "status": "processed"
+    },
+    "DownloadedFiles/Using expand() to qualify from different tables \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1739921/using-expand-to-qualify-from-different-tables",
+      "file_hash": "9d5e9211b3789ab90954c6f8a49484de",
+      "mtime_ns": 1778928643424422700,
+      "size": 1157270,
       "status": "processed"
     },
     "DownloadedFiles/Using iframe to display child html contents \u2014 Oracle Health.html": {
@@ -22426,6 +23168,13 @@
       "file_hash": "ef9e5eb9a4766ad61ccaa78422eae97f",
       "mtime_ns": 1772969488000000000,
       "size": 195583,
+      "status": "processed"
+    },
+    "DownloadedFiles/VERSION Control Option Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/VERSION+Control+Option+Using+Discern+Explorer",
+      "file_hash": "f4b1177771ed157f0dde1b8e91f85695",
+      "mtime_ns": 1778927831609060600,
+      "size": 641373,
       "status": "processed"
     },
     "DownloadedFiles/VERSION+Control+Option+Using+Discern+Explorer.html": {
@@ -22729,12 +23478,26 @@
       "size": 185634,
       "status": "processed"
     },
+    "DownloadedFiles/WHILE Using Discern Explorer - Discern Help Pages - Cerner Wiki.html": {
+      "dedup_key": "https://wiki.cerner.com/display/1101discernHP/WHILE+Using+Discern+Explorer",
+      "file_hash": "3a4c425217d7d4b3001f21bdf9f2cde5",
+      "mtime_ns": 1778927597674007900,
+      "size": 989023,
+      "status": "processed"
+    },
     "DownloadedFiles/WHILE+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/WHILE+Using+Discern+Explorer",
       "file_hash": "30ae8fae5faea8c1d0bc636898271c9c",
       "mtime_ns": 1772969498000000000,
       "size": 188325,
       "status": "processed"
+    },
+    "DownloadedFiles/WITH EXPAND - Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/search",
+      "file_hash": "8209029507f0339935b165d1c7133137",
+      "mtime_ns": 1778928643931899500,
+      "size": 930348,
+      "status": "duplicate_url"
     },
     "DownloadedFiles/WITH+Subquery+Factoring+Control+Option+Using+Discern+Explorer.html": {
       "dedup_key": "https://wiki.cerner.com/display/1101discernHP/WITH+Subquery+Factoring+Control+Option+Using+Discern+Explorer",
@@ -22820,6 +23583,13 @@
       "size": 4219365,
       "status": "processed"
     },
+    "DownloadedFiles/What is the purpose of the first parameter in an expand\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/646178/what-is-the-purpose-of-the-first-parameter-in-an-expand",
+      "file_hash": "f631eb1be2af5a3852b877ffe9ba4ae4",
+      "mtime_ns": 1778928643162840200,
+      "size": 1162622,
+      "status": "processed"
+    },
     "DownloadedFiles/What job descriptions are MPage clients using to build their teams\uff1f \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/299014/what-job-descriptions-are-mpage-clients-using-to-build-their-teams",
       "file_hash": "3575481884c1ec7721745fb680e67397",
@@ -22860,6 +23630,13 @@
       "file_hash": "f44c51123eafb1e0e4a14543431bc868",
       "mtime_ns": 1775751043025582300,
       "size": 986154,
+      "status": "processed"
+    },
+    "DownloadedFiles/When to use EXPAND vs. Join to Dummyt \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/508530/when-to-use-expand-vs-join-to-dummyt",
+      "file_hash": "156df46d08ae74c6938baae7259d655e",
+      "mtime_ns": 1778928641865624700,
+      "size": 1155971,
       "status": "processed"
     },
     "DownloadedFiles/When+To+Cycle+Servers.html": {
@@ -23541,6 +24318,13 @@
       "size": 842577,
       "status": "processed"
     },
+    "DownloadedFiles/current EXPAND= best practice\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/815016/current-expand-best-practice",
+      "file_hash": "61e9a7fd3245f58223c5476cb649e61b",
+      "mtime_ns": 1778928642200035700,
+      "size": 1159863,
+      "status": "processed"
+    },
     "DownloadedFiles/custom compontents in 5.0\uff0b \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/658879/custom-compontents-in-5-0",
       "file_hash": "cab9b512ecdc55d4dcbfada98e8e052d",
@@ -23588,6 +24372,13 @@
       "file_hash": "e39348d4aee3e42cdc8b117cfc67527e",
       "mtime_ns": 1772969192000000000,
       "size": 187378,
+      "status": "processed"
+    },
+    "DownloadedFiles/declare itemlist variable, or use expand outside query \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/577479/declare-itemlist-variable-or-use-expand-outside-query",
+      "file_hash": "0ac541a8fe1288f2465c34d25fd3b648",
+      "mtime_ns": 1778928641304264200,
+      "size": 1160544,
       "status": "processed"
     },
     "DownloadedFiles/delete+in+discern+explorer.html": {
@@ -23807,11 +24598,46 @@
       "size": 185803,
       "status": "processed"
     },
+    "DownloadedFiles/expand function correctly running through entire structure\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/289466/expand-function-correctly-running-through-entire-structure",
+      "file_hash": "95e518930a259fad71b851a88f9dad01",
+      "mtime_ns": 1778928642943618400,
+      "size": 1200223,
+      "status": "processed"
+    },
+    "DownloadedFiles/expand function error \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/759193/expand-function-error",
+      "file_hash": "66e8252fe81ded0983881d43f3bef070",
+      "mtime_ns": 1778928643944935800,
+      "size": 1145640,
+      "status": "processed"
+    },
+    "DownloadedFiles/expand function not working with an update\uff1f \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/261240/expand-function-not-working-with-an-update",
+      "file_hash": "a78757a5b0eda40704cfc2b9a8a6bfc0",
+      "mtime_ns": 1778928641441125400,
+      "size": 1150277,
+      "status": "processed"
+    },
     "DownloadedFiles/expand runs slower than dummyt\uff1f \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/1506743/expand-runs-slower-than-dummyt",
       "file_hash": "c3fa317b68cb9579afddff193d41e8d6",
       "mtime_ns": 1772782491537606500,
       "size": 1027977,
+      "status": "processed"
+    },
+    "DownloadedFiles/expand() and CCLQUERY \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/437188/expand-and-cclquery",
+      "file_hash": "5b50b06f5080a549597325ac0367a040",
+      "mtime_ns": 1778928642708431200,
+      "size": 1174282,
+      "status": "processed"
+    },
+    "DownloadedFiles/expansive use of expand syntax \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/373377/expansive-use-of-expand-syntax",
+      "file_hash": "3e4a58ec873efcf4bb581aa2e08e9540",
+      "mtime_ns": 1778928430990393100,
+      "size": 1151182,
       "status": "processed"
     },
     "DownloadedFiles/explorer+menu+help.html": {
@@ -24066,6 +24892,13 @@
       "size": 1003690,
       "status": "processed"
     },
+    "DownloadedFiles/is EXPAND the best solution for accessing record structures in a subselect \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/732660/is-expand-the-best-solution-for-accessing-record-structures-in-a-subselect",
+      "file_hash": "2be5cb037ae47b9d0f959e12f13062b3",
+      "mtime_ns": 1778928642753441000,
+      "size": 1166520,
+      "status": "processed"
+    },
     "DownloadedFiles/is cer_script a folder\uff1f \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/988881/is-cer-script-a-folder",
       "file_hash": "c133b07583cb9fe72c1c28a6ab4a26ec",
@@ -24141,6 +24974,13 @@
       "file_hash": "97872e9b16189743d87fd74f1c9aa810",
       "mtime_ns": 1772782473446499200,
       "size": 1059122,
+      "status": "processed"
+    },
+    "DownloadedFiles/left join and expand examples missing a key form I can't get to work \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/758813/left-join-and-expand-examples-missing-a-key-form-i-cant-get-to-work",
+      "file_hash": "c98de2916b8987ee98aaefe6f9a21cc8",
+      "mtime_ns": 1778928643715098700,
+      "size": 1159946,
       "status": "processed"
     },
     "DownloadedFiles/loadForm+in+Discern+Prompt+Library.html": {
@@ -24633,6 +25473,13 @@
       "size": 225039,
       "status": "processed"
     },
+    "DownloadedFiles/replacing dummyT with expand() \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/433984/replacing-dummyt-with-expand",
+      "file_hash": "f2add3a11d39ee9dfcbbaa191e244824",
+      "mtime_ns": 1778928643527182900,
+      "size": 1174056,
+      "status": "processed"
+    },
     "DownloadedFiles/retrieving repeating fields form powernotes \u2014 Oracle Health.html": {
       "dedup_key": "https://community.oracle.com/oraclehealth/discussion/263464/retrieving-repeating-fields-form-powernotes",
       "file_hash": "712499be4c062f170ad97eaec8314bea",
@@ -24876,6 +25723,13 @@
       "file_hash": "746af7a4a76f7aa3b9ebcfee21cf1e5d",
       "mtime_ns": 1777281273359111100,
       "size": 973621,
+      "status": "processed"
+    },
+    "DownloadedFiles/using EXPAND and NOT IN \u2014 Oracle Health.html": {
+      "dedup_key": "https://community.oracle.com/oraclehealth/discussion/565781/using-expand-and-not-in",
+      "file_hash": "04c947d9941dabad3a4290c32ab839ec",
+      "mtime_ns": 1778928644806473700,
+      "size": 1157405,
       "status": "processed"
     },
     "DownloadedFiles/using chromium browser in Mpages \u2014 Oracle Health.html": {
