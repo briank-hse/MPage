@@ -1,5 +1,5 @@
-drop program 01_meds_dot_date_comb_edge3:Group1 go
-create program 01_meds_dot_date_comb_edge3:Group1
+drop program 01_meds_dot_date_comb_edge4:Group1 go
+create program 01_meds_dot_date_comb_edge4:Group1
 
 /*****************************************************************************
   Antimicrobial Days of Therapy - Combined Chart and Table View (EDGE 5)
@@ -63,6 +63,7 @@ declare v_route_class      = vc with noconstant(""), maxlen=16
 declare v_low_dt      = dq8 with noconstant(null)
 declare v_high_now_dt = dq8 with noconstant(null)
 declare v_today        = dq8 with noconstant(0)
+declare v_vitals_end_dt = dq8 with noconstant(0)
 
 declare v_findpos          = i4 with noconstant(0)
 declare v_after            = vc with noconstant(""), maxlen=65534
@@ -116,6 +117,36 @@ declare v_begin_dt_str = vc with noconstant("")
 declare v_end_dt_str   = vc with noconstant("")
 declare v_sum_strip    = vc with noconstant(""), maxlen=65534
 declare v_spacer_strip = vc with noconstant(""), maxlen=65534
+declare v_day_idx      = i4 with noconstant(0)
+declare v_plot_w       = i4 with noconstant(0)
+declare v_plot_h       = i4 with noconstant(72)
+declare v_plot_y0      = i4 with noconstant(9)
+declare v_x            = i4 with noconstant(0)
+declare v_y            = i4 with noconstant(0)
+declare v_y2           = i4 with noconstant(0)
+declare v_map_y        = i4 with noconstant(0)
+declare v_vital_val    = f8 with noconstant(0.0)
+declare v_vital_title  = vc with noconstant(""), maxlen=500
+declare v_temp_points  = vc with noconstant(""), maxlen=65534
+declare v_temp_marks   = vc with noconstant(""), maxlen=65534
+declare v_hr_points    = vc with noconstant(""), maxlen=65534
+declare v_hr_marks     = vc with noconstant(""), maxlen=65534
+declare v_sys_points   = vc with noconstant(""), maxlen=65534
+declare v_dia_points   = vc with noconstant(""), maxlen=65534
+declare v_bp_poly      = vc with noconstant(""), maxlen=65534
+declare v_bp_dia_poly  = vc with noconstant(""), maxlen=65534
+declare v_bp_beams     = vc with noconstant(""), maxlen=65534
+declare v_map_marks    = vc with noconstant(""), maxlen=65534
+declare v_sys_marks    = vc with noconstant(""), maxlen=65534
+declare v_dia_marks    = vc with noconstant(""), maxlen=65534
+declare v_spo2_points  = vc with noconstant(""), maxlen=65534
+declare v_spo2_marks   = vc with noconstant(""), maxlen=65534
+declare v_vitals_html  = vc with noconstant(""), maxlen=65534
+declare v_vitals_count = i4 with noconstant(0)
+declare v_temp_count   = i4 with noconstant(0)
+declare v_hr_count     = i4 with noconstant(0)
+declare v_bp_count     = i4 with noconstant(0)
+declare v_spo2_count   = i4 with noconstant(0)
 
 /* ========================================================================== */
 /* HTML OUTPUT BUFFERS (Bypasses 64k limit)                                   */
@@ -143,6 +174,32 @@ record enc_rec (1 cnt=i4 1 qual[*] 2 encntr_id=f8 2 fin=vc 2 arrive_dt=dq8 2 dis
 
 free record enc_sort_rec
 record enc_sort_rec (1 cnt=i4 1 qual[*] 2 orig_idx=i4 2 start_idx=i4 2 end_idx=i4)
+
+free record vital_day_rec
+record vital_day_rec (
+  1 cnt = i4
+  1 qual[*]
+    2 temp_val = f8
+    2 temp_dt = dq8
+    2 temp_name = vc
+    2 temp_units = vc
+    2 hr_val = f8
+    2 hr_dt = dq8
+    2 hr_name = vc
+    2 hr_units = vc
+    2 sys_val = f8
+    2 sys_dt = dq8
+    2 sys_name = vc
+    2 sys_units = vc
+    2 dia_val = f8
+    2 dia_dt = dq8
+    2 dia_name = vc
+    2 dia_units = vc
+    2 spo2_val = f8
+    2 spo2_dt = dq8
+    2 spo2_name = vc
+    2 spo2_units = vc
+)
 
 
 /* ========================================================================== */
@@ -455,7 +512,7 @@ foot med_name
         else
           v_cell_class = ""
         endif
-        v_strip = concat(v_strip, '<div class="grid-cell cell on dimmable', v_cell_bg, v_route_class, v_cell_class, '"', v_med_attr, ' title="', v_title, '"><span class="dose-count">', trim(v_count_str), '</span><span class="route-code">', v_route_code, '</span></div>')
+        v_strip = concat(v_strip, '<div class="grid-cell cell on dimmable', v_cell_bg, v_route_class, v_cell_class, '"', v_med_attr, ' data-day-idx="', trim(cnvtstring(v_i), 3), '" title="', v_title, '"><span class="dose-count">', trim(v_count_str), '</span><span class="route-code">', v_route_code, '</span></div>')
         v_debug_cells = concat(v_debug_cells, if ((v_min_date + v_i) = curdate) "*" else "" endif, trim(v_count_str), " ")
       else
         if ((v_min_date + v_i) = curdate)
@@ -463,7 +520,7 @@ foot med_name
         else
           v_cell_class = ""
         endif
-        v_strip = concat(v_strip, '<div class="grid-cell cell dimmable', v_cell_bg, v_cell_class, '"', v_med_attr, ' title="', format(v_min_date + v_i,"DD/MM/YYYY;;D"), '"></div>')
+        v_strip = concat(v_strip, '<div class="grid-cell cell dimmable', v_cell_bg, v_cell_class, '"', v_med_attr, ' data-day-idx="', trim(cnvtstring(v_i), 3), '" title="', format(v_min_date + v_i,"DD/MM/YYYY;;D"), '"></div>')
         v_debug_cells = concat(v_debug_cells, if ((v_min_date + v_i) = curdate) "*" else "" endif, ". ")
       endif
       v_i = v_i + 1
@@ -666,6 +723,168 @@ if (admin_rec->cnt > 0 and v_days > 0)
       )
     endfor
   endif
+endif
+
+/* ========================================================================== */
+/* PASS 2.75: CLINICAL MONITORING TRENDS                                      */
+/* ========================================================================== */
+set v_vitals_html = ""
+set v_vitals_count = 0
+set v_temp_count = 0
+set v_hr_count = 0
+set v_bp_count = 0
+set v_spo2_count = 0
+
+if (v_days > 0)
+  set vital_day_rec->cnt = v_days
+  set stat = alterlist(vital_day_rec->qual, v_days)
+
+  select into "nl:"
+    vital_dt = ce.event_end_dt_tm
+  , vital_cd = ce.event_cd
+  , vital_str = ce.result_val
+  , vital_name = substring(1, 80, uar_get_code_display(ce.event_cd))
+  , vital_units = substring(1, 30, uar_get_code_display(ce.result_units_cd))
+  from clinical_event ce
+  plan ce where ce.person_id = $PAT_PersonId
+    and ce.event_end_dt_tm >= cnvtdatetime(v_min_date, 0)
+    and ce.event_end_dt_tm <= cnvtdatetime(v_min_date + v_days - 1, 235959)
+    and ce.valid_until_dt_tm > cnvtdatetime(curdate, curtime)
+    and ce.result_status_cd in (25.00, 34.00, 35.00)
+    and ce.event_cd in (
+      10933766.00, 10933787.00, 10933780.00, 14516112.00,
+      10933752.00, 14506600.00,
+      9096676.00, 9096691.00,
+      9111827.00
+    )
+  order by ce.event_end_dt_tm, ce.event_id
+  detail
+    v_vital_val = cnvtreal(substring(1, 30, trim(vital_str)))
+    v_day_idx = datetimediff(vital_dt, v_min_dt, 7)
+    if (v_vital_val > 0.0 and v_day_idx >= 0 and v_day_idx < v_days)
+      v_day_idx = v_day_idx + 1
+      if (vital_cd = 10933766.00 or vital_cd = 10933787.00 or vital_cd = 10933780.00 or vital_cd = 14516112.00)
+        vital_day_rec->qual[v_day_idx].temp_val = v_vital_val
+        vital_day_rec->qual[v_day_idx].temp_dt = vital_dt
+        vital_day_rec->qual[v_day_idx].temp_name = vital_name
+        vital_day_rec->qual[v_day_idx].temp_units = vital_units
+      elseif (vital_cd = 10933752.00 or vital_cd = 14506600.00)
+        vital_day_rec->qual[v_day_idx].hr_val = v_vital_val
+        vital_day_rec->qual[v_day_idx].hr_dt = vital_dt
+        vital_day_rec->qual[v_day_idx].hr_name = vital_name
+        vital_day_rec->qual[v_day_idx].hr_units = vital_units
+      elseif (vital_cd = 9096676.00)
+        vital_day_rec->qual[v_day_idx].sys_val = v_vital_val
+        vital_day_rec->qual[v_day_idx].sys_dt = vital_dt
+        vital_day_rec->qual[v_day_idx].sys_name = vital_name
+        vital_day_rec->qual[v_day_idx].sys_units = vital_units
+      elseif (vital_cd = 9096691.00)
+        vital_day_rec->qual[v_day_idx].dia_val = v_vital_val
+        vital_day_rec->qual[v_day_idx].dia_dt = vital_dt
+        vital_day_rec->qual[v_day_idx].dia_name = vital_name
+        vital_day_rec->qual[v_day_idx].dia_units = vital_units
+      elseif (vital_cd = 9111827.00)
+        vital_day_rec->qual[v_day_idx].spo2_val = v_vital_val
+        vital_day_rec->qual[v_day_idx].spo2_dt = vital_dt
+        vital_day_rec->qual[v_day_idx].spo2_name = vital_name
+        vital_day_rec->qual[v_day_idx].spo2_units = vital_units
+      endif
+    endif
+  with nocounter
+
+  set v_plot_w = v_days * 14
+
+  set v_temp_points = ""
+  set v_temp_marks = ""
+  set v_hr_points = ""
+  set v_hr_marks = ""
+  set v_sys_points = ""
+  set v_dia_points = ""
+  set v_bp_poly = ""
+  set v_bp_dia_poly = ""
+  set v_bp_beams = ""
+  set v_map_marks = ""
+  set v_sys_marks = ""
+  set v_dia_marks = ""
+  set v_spo2_points = ""
+  set v_spo2_marks = ""
+
+  set v_i = 1
+  while (v_i <= v_days)
+    set v_x = ((v_i - 1) * 14) + 7
+
+    if (vital_day_rec->qual[v_i].temp_val > 0)
+      set v_vital_val = vital_day_rec->qual[v_i].temp_val
+      if (v_vital_val < 34.0) set v_vital_val = 34.0 endif
+      if (v_vital_val > 40.0) set v_vital_val = 40.0 endif
+      set v_y = v_plot_y0 + cnvtint(((40.0 - v_vital_val) * v_plot_h) / 6.0)
+      set v_temp_points = concat(v_temp_points, trim(cnvtstring(v_x), 3), ",", trim(cnvtstring(v_y), 3), " ")
+      set v_vital_title = concat(vital_day_rec->qual[v_i].temp_name, " ", trim(format(vital_day_rec->qual[v_i].temp_val, "###.##")), " ", vital_day_rec->qual[v_i].temp_units, " - ", format(vital_day_rec->qual[v_i].temp_dt, "DD-MMM-YYYY HH:MM;;D"))
+      set v_temp_marks = concat(v_temp_marks, '<polygon class="vital-dot temp-dot" data-day-idx="', trim(cnvtstring(v_i - 1), 3), '" data-vital-title="', v_vital_title, '" points="', trim(cnvtstring(v_x), 3), ',', trim(cnvtstring(v_y - 3), 3), ' ', trim(cnvtstring(v_x - 3), 3), ',', trim(cnvtstring(v_y + 3), 3), ' ', trim(cnvtstring(v_x + 3), 3), ',', trim(cnvtstring(v_y + 3), 3), '"><title>', v_vital_title, '</title></polygon>')
+      set v_temp_count = v_temp_count + 1
+    endif
+
+    if (vital_day_rec->qual[v_i].hr_val > 0)
+      set v_vital_val = vital_day_rec->qual[v_i].hr_val
+      if (v_vital_val < 40.0) set v_vital_val = 40.0 endif
+      if (v_vital_val > 180.0) set v_vital_val = 180.0 endif
+      set v_y = v_plot_y0 + cnvtint(((180.0 - v_vital_val) * v_plot_h) / 140.0)
+      set v_hr_points = concat(v_hr_points, trim(cnvtstring(v_x), 3), ",", trim(cnvtstring(v_y), 3), " ")
+      set v_vital_title = concat(vital_day_rec->qual[v_i].hr_name, " ", trim(format(vital_day_rec->qual[v_i].hr_val, "###.##")), " ", vital_day_rec->qual[v_i].hr_units, " - ", format(vital_day_rec->qual[v_i].hr_dt, "DD-MMM-YYYY HH:MM;;D"))
+      set v_hr_marks = concat(v_hr_marks, '<circle class="vital-dot hr-dot" data-day-idx="', trim(cnvtstring(v_i - 1), 3), '" data-vital-title="', v_vital_title, '" cx="', trim(cnvtstring(v_x), 3), '" cy="', trim(cnvtstring(v_y), 3), '" r="2.6"><title>', v_vital_title, '</title></circle>')
+      set v_hr_count = v_hr_count + 1
+    endif
+
+    if (vital_day_rec->qual[v_i].sys_val > 0)
+      set v_vital_val = vital_day_rec->qual[v_i].sys_val
+      if (v_vital_val < 40.0) set v_vital_val = 40.0 endif
+      if (v_vital_val > 200.0) set v_vital_val = 200.0 endif
+      set v_y = v_plot_y0 + cnvtint(((200.0 - v_vital_val) * v_plot_h) / 160.0)
+      set v_sys_points = concat(v_sys_points, trim(cnvtstring(v_x), 3), ",", trim(cnvtstring(v_y), 3), " ")
+      set v_vital_title = concat(vital_day_rec->qual[v_i].sys_name, " ", trim(format(vital_day_rec->qual[v_i].sys_val, "###.##")), " ", vital_day_rec->qual[v_i].sys_units, " - ", format(vital_day_rec->qual[v_i].sys_dt, "DD-MMM-YYYY HH:MM;;D"))
+      set v_bp_count = v_bp_count + 1
+    endif
+
+    if (vital_day_rec->qual[v_i].dia_val > 0)
+      set v_vital_val = vital_day_rec->qual[v_i].dia_val
+      if (v_vital_val < 40.0) set v_vital_val = 40.0 endif
+      if (v_vital_val > 200.0) set v_vital_val = 200.0 endif
+      set v_y2 = v_plot_y0 + cnvtint(((200.0 - v_vital_val) * v_plot_h) / 160.0)
+      set v_dia_points = concat(v_dia_points, trim(cnvtstring(v_x), 3), ",", trim(cnvtstring(v_y2), 3), " ")
+      set v_vital_title = concat(vital_day_rec->qual[v_i].dia_name, " ", trim(format(vital_day_rec->qual[v_i].dia_val, "###.##")), " ", vital_day_rec->qual[v_i].dia_units, " - ", format(vital_day_rec->qual[v_i].dia_dt, "DD-MMM-YYYY HH:MM;;D"))
+      if (vital_day_rec->qual[v_i].sys_val <= 0)
+        set v_bp_count = v_bp_count + 1
+      endif
+      if (vital_day_rec->qual[v_i].sys_val > 0)
+        set v_vital_val = vital_day_rec->qual[v_i].sys_val
+        if (v_vital_val < 40.0) set v_vital_val = 40.0 endif
+        if (v_vital_val > 200.0) set v_vital_val = 200.0 endif
+        set v_y = v_plot_y0 + cnvtint(((200.0 - v_vital_val) * v_plot_h) / 160.0)
+        set v_vital_val = ((vital_day_rec->qual[v_i].sys_val + (2.0 * vital_day_rec->qual[v_i].dia_val)) / 3.0)
+        if (v_vital_val < 40.0) set v_vital_val = 40.0 endif
+        if (v_vital_val > 200.0) set v_vital_val = 200.0 endif
+        set v_map_y = v_plot_y0 + cnvtint(((200.0 - v_vital_val) * v_plot_h) / 160.0)
+        set v_vital_title = concat("BP ", trim(format(vital_day_rec->qual[v_i].sys_val, "###")), "/", trim(format(vital_day_rec->qual[v_i].dia_val, "###")), " MAP ", trim(format(((vital_day_rec->qual[v_i].sys_val + (2.0 * vital_day_rec->qual[v_i].dia_val)) / 3.0), "###.##")), " - ", format(vital_day_rec->qual[v_i].sys_dt, "DD-MMM-YYYY HH:MM;;D"))
+        set v_bp_beams = concat(v_bp_beams, '<line class="bp-ibeam" data-day-idx="', trim(cnvtstring(v_i - 1), 3), '" x1="', trim(cnvtstring(v_x), 3), '" y1="', trim(cnvtstring(v_y), 3), '" x2="', trim(cnvtstring(v_x), 3), '" y2="', trim(cnvtstring(v_y2), 3), '"><title>', v_vital_title, '</title></line><line class="bp-cap" x1="', trim(cnvtstring(v_x - 4), 3), '" y1="', trim(cnvtstring(v_y), 3), '" x2="', trim(cnvtstring(v_x + 4), 3), '" y2="', trim(cnvtstring(v_y), 3), '"></line><line class="bp-cap" x1="', trim(cnvtstring(v_x - 4), 3), '" y1="', trim(cnvtstring(v_y2), 3), '" x2="', trim(cnvtstring(v_x + 4), 3), '" y2="', trim(cnvtstring(v_y2), 3), '"></line>')
+        set v_map_marks = concat(v_map_marks, '<circle class="vital-dot map-dot" data-day-idx="', trim(cnvtstring(v_i - 1), 3), '" data-vital-title="', v_vital_title, '" cx="', trim(cnvtstring(v_x), 3), '" cy="', trim(cnvtstring(v_map_y), 3), '" r="3"><title>', v_vital_title, '</title></circle>')
+      endif
+    endif
+
+    if (vital_day_rec->qual[v_i].spo2_val > 0)
+      set v_vital_val = vital_day_rec->qual[v_i].spo2_val
+      if (v_vital_val < 80.0) set v_vital_val = 80.0 endif
+      if (v_vital_val > 100.0) set v_vital_val = 100.0 endif
+      set v_y = v_plot_y0 + cnvtint(((100.0 - v_vital_val) * v_plot_h) / 20.0)
+      set v_spo2_points = concat(v_spo2_points, trim(cnvtstring(v_x), 3), ",", trim(cnvtstring(v_y), 3), " ")
+      set v_vital_title = concat(vital_day_rec->qual[v_i].spo2_name, " ", trim(format(vital_day_rec->qual[v_i].spo2_val, "###.##")), " ", vital_day_rec->qual[v_i].spo2_units, " - ", format(vital_day_rec->qual[v_i].spo2_dt, "DD-MMM-YYYY HH:MM;;D"))
+      set v_spo2_marks = concat(v_spo2_marks, '<circle class="vital-dot spo2-dot" data-day-idx="', trim(cnvtstring(v_i - 1), 3), '" data-vital-title="', v_vital_title, '" cx="', trim(cnvtstring(v_x), 3), '" cy="', trim(cnvtstring(v_y), 3), '" r="2.5"><title>', v_vital_title, '</title></circle>')
+      set v_spo2_count = v_spo2_count + 1
+    endif
+
+    set v_i = v_i + 1
+  endwhile
+
+  set v_vitals_count = v_temp_count + v_hr_count + v_bp_count + v_spo2_count
 endif
 
 /* ========================================================================== */
@@ -951,6 +1170,25 @@ set _memory_reply_string = concat(_memory_reply_string, '.enc-border { border-to
 set _memory_reply_string = concat(_memory_reply_string, '.enc-label-cell { font-size:11px !important; }')
 set _memory_reply_string = concat(_memory_reply_string, '.enc-label-cell a { color:var(--cerner-blue); text-decoration:none; font-weight:600; }')
 set _memory_reply_string = concat(_memory_reply_string, '.enc-cell-text { font-size:8px; font-weight:700; color:#111; line-height:1; overflow:hidden; max-width:14px; display:block; text-align:center; }')
+set _memory_reply_string = concat(_memory_reply_string, '.vitals-wrap{position:relative;overflow-x:auto;overflow-y:visible;width:100%;margin:2px 0 10px;display:block;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vitals-grid{display:grid;width:max-content;border-left:1px solid var(--border-dark);background:var(--bg-main);font-size:12px;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vitals-grid .grid-cell{border-bottom:1px solid var(--border-dark);}')
+set _memory_reply_string = concat(_memory_reply_string, '.vitals-grid .sticky-med{white-space:normal;line-height:1.2;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vitals-grid .sticky-doses{width:80px;min-width:80px;max-width:80px;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vitals-title{font-size:14px!important;font-weight:700!important;color:#111!important;background:var(--bg-main)!important;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vital-scale{font-size:9px;color:#2f3c4b;line-height:1.15;justify-content:space-between;text-align:right;align-items:stretch;flex-direction:column;padding:4px 5px!important;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vital-plot{height:90px;background:repeating-linear-gradient(to right,#f7f8fa 0,#f7f8fa 13px,#e7eaee 13px,#e7eaee 14px);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);position:relative;overflow:hidden;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vital-svg{display:block;width:100%;height:90px;overflow:hidden;}')
+set _memory_reply_string = concat(_memory_reply_string, '.axis-line{stroke:#4b5563;stroke-width:1.2;vector-effect:non-scaling-stroke;}.grid-major{stroke:#c5ccd3;stroke-width:1;stroke-dasharray:3 3;vector-effect:non-scaling-stroke;}.tick-major{stroke:#4b5563;stroke-width:1;vector-effect:non-scaling-stroke;}.tick-minor{stroke:#9aa3ad;stroke-width:.8;vector-effect:non-scaling-stroke;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vital-line{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;}')
+set _memory_reply_string = concat(_memory_reply_string, '.temp-line{stroke:#2f5f9f;}.hr-line{stroke:#9b2f2f;}.sys-line{stroke:#2f8f46;}.dia-line{stroke:#b57921;}.spo2-line{stroke:#25aeb8;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vital-dot{stroke:#fff;stroke-width:.9;vector-effect:non-scaling-stroke;}.temp-dot{fill:#2f5f9f;}.hr-dot{fill:#9b2f2f;}.spo2-dot{fill:#25aeb8;}.map-dot{fill:#1f5fd0;stroke:#fff;stroke-width:1;}')
+set _memory_reply_string = concat(_memory_reply_string, '.bp-ibeam{stroke:#111;stroke-width:1.2;vector-effect:non-scaling-stroke;}.bp-cap{stroke:#d22;stroke-width:1.4;vector-effect:non-scaling-stroke;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vital-ref{stroke:#6b7280;stroke-width:1;stroke-dasharray:3 3;opacity:.65;vector-effect:non-scaling-stroke;}')
+set _memory_reply_string = concat(_memory_reply_string, '.spo2-threshold{stroke:#25aeb8;stroke-width:1;stroke-dasharray:4 3;opacity:.8;vector-effect:non-scaling-stroke;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vital-no-data{position:absolute;inset:0;display:flex;align-items:center;padding-left:8px;color:#777;font-size:11px;background:rgba(255,255,255,.7);}')
+set _memory_reply_string = concat(_memory_reply_string, '.vital-guide{display:none;position:absolute;top:0;bottom:0;width:14px;background:#777;opacity:.32;z-index:100;pointer-events:none;}')
+set _memory_reply_string = concat(_memory_reply_string, '.vital-tip{display:none;position:absolute;top:28px;left:0;z-index:120;max-width:320px;padding:6px 8px;border:1px solid #7b8794;background:#fff9c4;color:#111;font-size:11px;line-height:1.3;white-space:pre-line;box-shadow:0 2px 6px rgba(0,0,0,.18);pointer-events:none;}')
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl { width:100%; min-width:1460px; border-collapse:separate; border-spacing:0; margin-top:2px; font-size:12px; border-top:1px solid var(--border-dark); border-left:1px solid var(--border-dark); border-bottom:2px solid #a0a0a0; table-layout:fixed; }')
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th, table.data-tbl td { border-right:1px solid var(--border-dark); border-bottom:1px solid var(--border-dark); padding:4px 6px; text-align:left; background:var(--bg-main); word-break:break-word; overflow-wrap:break-word; overflow:hidden; transition: background-color 0.2s; }')
 set _memory_reply_string = concat(_memory_reply_string, 'table.data-tbl th:nth-child(1), table.data-tbl td:nth-child(1) { box-sizing:border-box !important; width:200px; min-width:200px; max-width:200px; }')
@@ -1009,6 +1247,49 @@ else
 endif
 set _memory_reply_string = concat(_memory_reply_string, '</div>')
 
+/* --- CLINICAL MONITORING TRENDS --- */
+if (v_days > 0)
+  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="vitals-wrap"><div id="vitalGuide" class="vital-guide"></div><div id="vitalTip" class="vital-tip"></div><div class="vitals-grid" style="grid-template-columns: 200px 80px repeat(', trim(cnvtstring(v_days), 3), ', 14px);">'))
+  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell label sticky-med hdr-intersect always-on vitals-title">Clinical Monitoring Trends</div>')
+  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-doses hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
+  set _memory_reply_string = concat(_memory_reply_string, v_month_html)
+  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-med hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
+  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell sticky-doses hdr-intersect always-on" style="background:var(--header-bg);border-right:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);"></div>')
+  set _memory_reply_string = concat(_memory_reply_string, v_header_html)
+
+  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell label sticky-med always-on"><span style="color:#2f5f9f;">&#9650; T (DegC) [36.7-37.5]</span><br/><span style="color:#9b2f2f;">&#9679; HR (bpm) [60-100]</span></div><div class="grid-cell label sticky-doses always-on vital-scale"><span>40C / 180</span><span>39C / 157</span><span>38C / 133</span><span>37C / 110</span><span>36C / 87</span><span>35C / 63</span><span>34C / 40</span></div>')
+  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="vital-plot" style="grid-column: 3 / span ', trim(cnvtstring(v_days), 3), '; width:', trim(cnvtstring(v_plot_w), 3), 'px;"><svg class="vital-svg" width="', trim(cnvtstring(v_plot_w), 3), '" height="90" viewBox="0 0 ', trim(cnvtstring(v_plot_w), 3), ' 90" preserveAspectRatio="none">'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="axis-line" x1="0" y1="9" x2="0" y2="81"></line><line class="grid-major" x1="0" y1="9" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="9"></line><line class="grid-major" x1="0" y1="21" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="21"></line>'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="grid-major" x1="0" y1="33" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="33"></line><line class="grid-major" x1="0" y1="45" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="45"></line><line class="grid-major" x1="0" y1="57" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="57"></line>'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="grid-major" x1="0" y1="69" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="69"></line><line class="grid-major" x1="0" y1="81" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="81"></line><line class="vital-ref" x1="0" y1="50" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="50"></line>'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<polyline class="vital-line temp-line" points="', v_temp_points, '"></polyline><polyline class="vital-line hr-line" points="', v_hr_points, '"></polyline>', v_temp_marks, v_hr_marks, '</svg>'))
+  if (v_temp_count = 0 and v_hr_count = 0)
+    set _memory_reply_string = concat(_memory_reply_string, '<div class="vital-no-data">No temperature or heart rate data</div>')
+  endif
+  set _memory_reply_string = concat(_memory_reply_string, '</div>')
+
+  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell label sticky-med always-on"><span style="color:#d22;">&#9474; BP SBP/DBP (mmHg)</span><br/><span style="color:#1f5fd0;">&#9679; MAP [70-100]</span></div><div class="grid-cell label sticky-doses always-on vital-scale"><span>200</span><span>180</span><span>160</span><span>140</span><span>120</span><span>100</span><span>80</span><span>60</span><span>40</span></div>')
+  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="vital-plot" style="grid-column: 3 / span ', trim(cnvtstring(v_days), 3), '; width:', trim(cnvtstring(v_plot_w), 3), 'px;"><svg class="vital-svg" width="', trim(cnvtstring(v_plot_w), 3), '" height="90" viewBox="0 0 ', trim(cnvtstring(v_plot_w), 3), ' 90" preserveAspectRatio="none">'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="axis-line" x1="0" y1="9" x2="0" y2="81"></line><line class="grid-major" x1="0" y1="9" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="9"></line><line class="grid-major" x1="0" y1="18" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="18"></line>'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="grid-major" x1="0" y1="27" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="27"></line><line class="grid-major" x1="0" y1="36" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="36"></line><line class="grid-major" x1="0" y1="45" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="45"></line>'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="grid-major" x1="0" y1="54" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="54"></line><line class="grid-major" x1="0" y1="63" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="63"></line><line class="grid-major" x1="0" y1="72" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="72"></line>'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="grid-major" x1="0" y1="81" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="81"></line>', v_bp_beams, v_map_marks, '</svg>'))
+  if (v_bp_count = 0)
+    set _memory_reply_string = concat(_memory_reply_string, '<div class="vital-no-data">No blood pressure data</div>')
+  endif
+  set _memory_reply_string = concat(_memory_reply_string, '</div>')
+
+  set _memory_reply_string = concat(_memory_reply_string, '<div class="grid-cell label sticky-med always-on"><span style="color:#25aeb8;">&#9679; SpO2 (%) [94-100]</span></div><div class="grid-cell label sticky-doses always-on vital-scale"><span>100</span><span>95</span><span>90</span><span>85</span><span>80</span></div>')
+  set _memory_reply_string = concat(_memory_reply_string, concat('<div class="vital-plot" style="grid-column: 3 / span ', trim(cnvtstring(v_days), 3), '; width:', trim(cnvtstring(v_plot_w), 3), 'px;"><svg class="vital-svg" width="', trim(cnvtstring(v_plot_w), 3), '" height="90" viewBox="0 0 ', trim(cnvtstring(v_plot_w), 3), ' 90" preserveAspectRatio="none">'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="axis-line" x1="0" y1="9" x2="0" y2="81"></line><line class="grid-major" x1="0" y1="9" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="9"></line><line class="grid-major" x1="0" y1="27" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="27"></line>'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="grid-major" x1="0" y1="45" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="45"></line><line class="grid-major" x1="0" y1="63" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="63"></line><line class="grid-major" x1="0" y1="81" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="81"></line>'))
+  set _memory_reply_string = concat(_memory_reply_string, concat('<line class="spo2-threshold" x1="0" y1="31" x2="', trim(cnvtstring(v_plot_w), 3), '" y2="31"><title>SpO2 94% threshold</title></line><polyline class="vital-line spo2-line" points="', v_spo2_points, '"></polyline>', v_spo2_marks, '</svg>'))
+  if (v_spo2_count = 0)
+    set _memory_reply_string = concat(_memory_reply_string, '<div class="vital-no-data">No SpO2 data</div>')
+  endif
+  set _memory_reply_string = concat(_memory_reply_string, '</div></div></div>')
+endif
+
 /* --- TABLE SECTION --- */
 set _memory_reply_string = concat(_memory_reply_string, '<h2>Antimicrobial Order Details</h2>')
 set _memory_reply_string = concat(_memory_reply_string, '<div style="width: 100%; overflow-x: auto; display: block;">')
@@ -1041,7 +1322,36 @@ set _memory_reply_string = concat(_memory_reply_string, '  const items = documen
 set _memory_reply_string = concat(_memory_reply_string, '  const triggers = document.querySelectorAll(".med-trigger");')
 set _memory_reply_string = concat(_memory_reply_string, '  const routeToggle = document.getElementById("routeToggle");')
 set _memory_reply_string = concat(_memory_reply_string, '  const chartWrap = document.querySelector(".chart-wrap");')
+set _memory_reply_string = concat(_memory_reply_string, '  const vitalsWrap = document.querySelector(".vitals-wrap");')
+set _memory_reply_string = concat(_memory_reply_string, '  const vitalGuide = document.getElementById("vitalGuide");')
+set _memory_reply_string = concat(_memory_reply_string, '  const vitalTip = document.getElementById("vitalTip");')
+set _memory_reply_string = concat(_memory_reply_string, '  const dayTargets = document.querySelectorAll("[data-day-idx]");')
 set _memory_reply_string = concat(_memory_reply_string, '  const routeRoot = document.body;')
+set _memory_reply_string = concat(_memory_reply_string, '  if (chartWrap && vitalsWrap) {')
+set _memory_reply_string = concat(_memory_reply_string, '    chartWrap.addEventListener("scroll", function() { vitalsWrap.scrollLeft = chartWrap.scrollLeft; });')
+set _memory_reply_string = concat(_memory_reply_string, '    vitalsWrap.addEventListener("scroll", function() { chartWrap.scrollLeft = vitalsWrap.scrollLeft; });')
+set _memory_reply_string = concat(_memory_reply_string, '  }')
+set _memory_reply_string = concat(_memory_reply_string, '  function showDayGuide(dayIdx) {')
+set _memory_reply_string = concat(_memory_reply_string, '    if (!vitalGuide) return;')
+set _memory_reply_string = concat(_memory_reply_string, '    var idx = parseInt(dayIdx, 10);')
+set _memory_reply_string = concat(_memory_reply_string, '    if (isNaN(idx)) return;')
+set _memory_reply_string = concat(_memory_reply_string, '    var values = [];')
+set _memory_reply_string = concat(_memory_reply_string, ~    document.querySelectorAll('.vitals-wrap [data-day-idx="' + idx + '"][data-vital-title]').forEach(function(el) {~)
+set _memory_reply_string = concat(_memory_reply_string, '      values.push(el.getAttribute("data-vital-title"));')
+set _memory_reply_string = concat(_memory_reply_string, '    });')
+set _memory_reply_string = concat(_memory_reply_string, '    vitalGuide.style.left = ((idx * 14) + 280) + "px";')
+set _memory_reply_string = concat(_memory_reply_string, '    vitalGuide.style.display = "block";')
+set _memory_reply_string = concat(_memory_reply_string, '    if (vitalTip) {')
+set _memory_reply_string = concat(_memory_reply_string, '      vitalTip.textContent = values.join("\n");')
+set _memory_reply_string = concat(_memory_reply_string, '      vitalTip.style.left = ((idx * 14) + 298) + "px";')
+set _memory_reply_string = concat(_memory_reply_string, '      vitalTip.style.display = values.length ? "block" : "none";')
+set _memory_reply_string = concat(_memory_reply_string, '    }')
+set _memory_reply_string = concat(_memory_reply_string, '  }')
+set _memory_reply_string = concat(_memory_reply_string, '  function hideDayGuide() { if (vitalGuide) vitalGuide.style.display = "none"; if (vitalTip) vitalTip.style.display = "none"; }')
+set _memory_reply_string = concat(_memory_reply_string, '  dayTargets.forEach(function(el) {')
+set _memory_reply_string = concat(_memory_reply_string, '    el.addEventListener("mouseenter", function() { showDayGuide(this.getAttribute("data-day-idx")); });')
+set _memory_reply_string = concat(_memory_reply_string, '    el.addEventListener("mouseleave", hideDayGuide);')
+set _memory_reply_string = concat(_memory_reply_string, '  });')
 set _memory_reply_string = concat(_memory_reply_string, '  if (routeToggle && chartWrap) {')
 set _memory_reply_string = concat(_memory_reply_string, '    routeToggle.addEventListener("click", function() {')
 set _memory_reply_string = concat(_memory_reply_string, '      const routeMode = !routeRoot.classList.contains("route-mode");')
@@ -1101,6 +1411,7 @@ set _memory_reply_string = concat(_memory_reply_string, concat('v_max_dt:   ', f
 set _memory_reply_string = concat(_memory_reply_string, concat('v_today:    ', format(v_today,"DD-MMM-YYYY HH:MM:SS;;D"), ' (raw: ', cnvtstring(v_today), ')<br/>'))
 set _memory_reply_string = concat(_memory_reply_string, concat('v_min_date: ', format(v_min_date,"DD-MMM-YYYY;;D"), ' (raw i4: ', cnvtstring(v_min_date), ')<br/>'))
 set _memory_reply_string = concat(_memory_reply_string, concat('Chart range: ', format(v_min_dt,"DD-MMM-YYYY;;D"), ' to ', format(v_max_dt,"DD-MMM-YYYY;;D"), ' (', trim(cnvtstring(v_days), 3), ' days) | Grand DOT: ', trim(cnvtstring(v_grand_total_dot),3), '<br/>'))
+set _memory_reply_string = concat(_memory_reply_string, concat('Vitals plotted days: ', trim(cnvtstring(v_vitals_count), 3), ' (Temp: ', trim(cnvtstring(v_temp_count), 3), ', HR: ', trim(cnvtstring(v_hr_count), 3), ', BP: ', trim(cnvtstring(v_bp_count), 3), ', SpO2: ', trim(cnvtstring(v_spo2_count), 3), ')<br/>'))
 set _memory_reply_string = concat(_memory_reply_string, '<hr style="border:0;border-top:1px solid #e0c060;margin:4px 0;"/>')
 set _memory_reply_string = concat(_memory_reply_string, '<b>Unique admin day keys (chart lookup keys):</b><br/>')
 set _memory_reply_string = concat(_memory_reply_string, concat(v_all_days_list, '<br/>'))

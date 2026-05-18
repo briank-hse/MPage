@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\briankehoe\\\\Documents\\\\Work\\\\Python\\\\CernerScraper\\\\Development\\\\CernerScraper\" -File -Recurse | Where-Object { $_.Extension -match '\\\\.\\(prg|ccl|txt|sql\\)$' } | Select-Object FullName)",
+      "PowerShell(Select-String -Path \"C:\\\\Users\\\\briankehoe\\\\Documents\\\\Work\\\\Python\\\\CernerScraper\\\\Development\\\\CernerScraper\\\\Outputs\\\\Corpus\\\\mpages_documents.jsonl\" -Pattern \"cnvtdatetime|cnvtdate|datetimediff\" | Select-Object -First 3 | ForEach-Object { $_.Line.Substring\\(0, [Math]::Min\\(500, $_.Line.Length\\)\\) })",
+      "PowerShell($content = Get-Content \"C:\\\\Users\\\\briankehoe\\\\Documents\\\\Work\\\\Python\\\\CernerScraper\\\\Development\\\\CernerScraper\\\\Outputs\\\\Corpus\\\\mpages_documents.jsonl\" -Raw | ConvertFrom-Json -AsHashtable; $lines = Get-Content \"C:\\\\Users\\\\briankehoe\\\\Documents\\\\Work\\\\Python\\\\CernerScraper\\\\Development\\\\CernerScraper\\\\Outputs\\\\Corpus\\\\mpages_documents.jsonl\"; $count = 0; foreach \\($line in $lines\\) { if \\($line -match 'cnvtdatetime|cnvtdate|datetimediff'\\) { $count++; if \\($count -le 3\\) { \"Line $count \\(length: $\\($line.Length\\)\\):\"; $line.Substring\\(0, [Math]::Min\\(1000, $line.Length\\)\\); \"\" } } } \"Total lines matching: $count\")",
+      "PowerShell($lines = Get-Content \"C:\\\\Users\\\\briankehoe\\\\Documents\\\\Work\\\\Python\\\\CernerScraper\\\\Development\\\\CernerScraper\\\\Outputs\\\\Corpus\\\\mpages_chunks.jsonl\"; $count = 0; foreach \\($line in $lines\\) { if \\($line -match 'cnvtdatetime|cnvtdate|datetimediff'\\) { $count++; if \\($count -le 3\\) { \"=== Chunk $count ===\"; $json = $line | ConvertFrom-Json; \"Title: $\\($json.parent_doc_title\\)\"; \"Content \\(first 500 chars\\): \" + \\($json.content -replace '\\\\s+', ' '\\).Substring\\(0, [Math]::Min\\(800, $json.content.Length\\)\\); \"\" } } }; \"Total matching chunks: $count\")",
+      "Bash(python3 -m json.tool)",
+      "Bash(python3)",
+      "Bash(python .\\\\Outputs\\\\Tools\\\\agent_corpus_search.py --query \"datetimediff cnvtdate midnight normalize dq8 days\" --mode hybrid --format text)",
+      "Bash(python .\\\\Outputs\\\\Tools\\\\agent_corpus_search.py --expand-doc-id wiki_74f79fb0fe89f352 --format text)"
+    ]
+  }
+}

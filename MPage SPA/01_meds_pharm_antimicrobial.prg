@@ -50,6 +50,7 @@ DECLARE v_detail_str     = vc WITH NOCONSTANT("")
 DECLARE v_pipe_pos       = i4 WITH NOCONSTANT(0)
 DECLARE v_indication     = vc WITH NOCONSTANT(""), MAXLEN=255
 DECLARE v_discontinue_rsn = vc WITH NOCONSTANT(""), MAXLEN=255
+DECLARE v_route          = vc WITH NOCONSTANT(""), MAXLEN=255
 DECLARE v_drug           = vc WITH NOCONSTANT("")
 DECLARE v_dose           = f8 WITH NOCONSTANT(0.0)
 DECLARE v_unit           = vc WITH NOCONSTANT("")
@@ -392,6 +393,7 @@ SELECT INTO "nl:"
 , mdy                = FORMAT(admin_rec->qual[d.seq].admin_dt_tm, "YYYYMMDD;;D")
 , indication         = SUBSTRING(1,60,TRIM(OD_INDICATION.OE_FIELD_DISPLAY_VALUE))
 , discontinue_reason = SUBSTRING(1,60,TRIM(OD_DCREASON.OE_FIELD_DISPLAY_VALUE))
+, route              = SUBSTRING(1,60,TRIM(OD_ROUTE.OE_FIELD_DISPLAY_VALUE))
 , src_id             = admin_rec->qual[d.seq].admin_id
 , admin_src          = admin_rec->qual[d.seq].src
 FROM
@@ -400,6 +402,7 @@ FROM
 , ORDER_CATALOG OC
 , ORDER_DETAIL OD_INDICATION
 , ORDER_DETAIL OD_DCREASON
+, ORDER_DETAIL OD_ROUTE
 PLAN D
 JOIN O WHERE O.ORDER_ID = admin_rec->qual[d.seq].order_id
 JOIN OC WHERE OC.CATALOG_CD = O.CATALOG_CD
@@ -407,6 +410,8 @@ JOIN OD_INDICATION WHERE OD_INDICATION.ORDER_ID = OUTERJOIN(O.ORDER_ID)
   AND OD_INDICATION.OE_FIELD_MEANING = OUTERJOIN("INDICATION")
 JOIN OD_DCREASON WHERE OD_DCREASON.ORDER_ID = OUTERJOIN(O.ORDER_ID)
   AND OD_DCREASON.OE_FIELD_MEANING = OUTERJOIN("DCREASON")
+JOIN OD_ROUTE WHERE OD_ROUTE.ORDER_ID = OUTERJOIN(O.ORDER_ID)
+  AND OD_ROUTE.OE_FIELD_MEANING_ID = OUTERJOIN(2050)
 ORDER BY CNVTUPPER(TRIM(OC.PRIMARY_MNEMONIC)), MDY, SRC_ID
 
 HEAD REPORT
@@ -434,7 +439,7 @@ HEAD src_id
 
 FOOT mdy
   v_dates_kv = CONCAT(v_dates_kv, "~", mdy, ":", CNVTSTRING(v_cnt_day), "~")
-  v_details_kv = CONCAT(v_details_kv, "~", mdy, ":", indication, "|", discontinue_reason, "~")
+  v_details_kv = CONCAT(v_details_kv, "~", mdy, ":", indication, "|", discontinue_reason, "|", route, "~")
   v_med_dot_total = v_med_dot_total + 1
   IF (FINDSTRING(CONCAT("~", mdy, "~"), v_all_days_list) = 0)
     v_all_days_list = CONCAT(v_all_days_list, "~", mdy, "~")
@@ -471,6 +476,7 @@ FOOT med_name
 
       v_indication = ""
       v_discontinue_rsn = ""
+      v_route = ""
       v_findpos = FINDSTRING(CONCAT("~", v_key8, ":"), v_details_kv)
       IF (v_findpos > 0)
         v_after = SUBSTRING(v_findpos + 10, TEXTLEN(v_details_kv) - (v_findpos + 9), v_details_kv)
@@ -484,18 +490,29 @@ FOOT med_name
         v_pipe_pos = FINDSTRING("|", v_detail_str)
         IF (v_pipe_pos > 0)
           v_indication = SUBSTRING(1, v_pipe_pos - 1, v_detail_str)
-          v_discontinue_rsn = SUBSTRING(v_pipe_pos + 1, TEXTLEN(v_detail_str) - v_pipe_pos, v_detail_str)
+          v_after = SUBSTRING(v_pipe_pos + 1, TEXTLEN(v_detail_str) - v_pipe_pos, v_detail_str)
+          v_pipe_pos = FINDSTRING("|", v_after)
+          IF (v_pipe_pos > 0)
+            v_discontinue_rsn = SUBSTRING(1, v_pipe_pos - 1, v_after)
+            v_route = SUBSTRING(v_pipe_pos + 1, TEXTLEN(v_after) - v_pipe_pos, v_after)
+          ELSE
+            v_discontinue_rsn = v_after
+          ENDIF
         ELSE
           v_indication = v_detail_str
         ENDIF
       ENDIF
 
       IF (v_count_i > 0)
+        IF (TRIM(v_route, 3) = "")
+          v_route = "--"
+        ENDIF
         v_title = CONCAT(v_curr_med, " - ", FORMAT(v_min_dt + v_i,"DD/MM/YYYY;;D"),
           " / ", v_count_str,
           IF(v_count_i = 1) " admin" ELSE " admins" ENDIF,
           "&#10;Indication: ", v_indication,
-          "&#10;Discontinue Reason: ", v_discontinue_rsn)
+          "&#10;Discontinue Reason: ", v_discontinue_rsn,
+          "&#10;Route: ", v_route)
       ELSE
         v_title = FORMAT(v_min_dt + v_i,"DD/MM/YYYY;;D")
       ENDIF
@@ -709,7 +726,7 @@ IF (admin_rec->cnt > 0)
 SELECT INTO "nl:"
   med_name                 = TRIM(OC.PRIMARY_MNEMONIC)
 , admin_src                = admin_rec->qual[d.seq].src
-, day_key                  = FORMAT(admin_rec->qual[d.seq].admin_dt_tm, "YYYYMMDD")
+, day_key                  = FORMAT(admin_rec->qual[d.seq].admin_dt_tm, "YYYYMMDD;;D")
 , O.CURRENT_START_DT_TM
 , o_order_status_disp      = UAR_GET_CODE_DISPLAY(O.ORDER_STATUS_CD)
 , O.STATUS_DT_TM
